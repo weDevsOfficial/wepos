@@ -608,6 +608,20 @@ body {
     }
 }
 
+div:focus, span:focus, button:focus, input:focus {
+    outline: none !important;
+}
+
+.v-popover {
+    &:focus {
+        outline: none;
+    }
+
+    span {
+        width: 100%;
+    }
+}
+
 .tooltip {
   display: block !important;
   z-index: 10000;
@@ -616,7 +630,6 @@ body {
     background: black;
     color: white;
     border-radius: 16px;
-    padding: 5px 10px 4px;
     max-width: 300px;
   }
 
@@ -692,15 +705,12 @@ body {
 
   &.popover {
     color: #f9f9f9;
-
     .popover-inner {
-      background: #f9f9f9;
-      color: #000;
-      padding: 24px;
+      background: #fff;
+      color: #212121;
       border-radius: 5px;
       box-shadow: 0 5px 30px rgba(0,0,0, .1);
     }
-
     .popover-arrow {
       border-color: #f9f9f9;
     }

@@ -1,12 +1,13 @@
 	/*
   	Flaticon icon font: Flaticon
-  	Creation date: 07/01/2019 09:13
+  	Creation date: 01/02/2019 03:46
   	*/
 
 @font-face {
   font-family: "Flaticon";
   src: url("../fonts/Flaticon.eot");
   src: url("../fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/Flaticon.woff2") format("woff2"),
        url("../fonts/Flaticon.woff") format("woff"),
        url("../fonts/Flaticon.ttf") format("truetype"),
        url("../fonts/Flaticon.svg#Flaticon") format("svg");
@@ -24,8 +25,8 @@
 [class^="flaticon-"]:before, [class*=" flaticon-"]:before,
 [class^="flaticon-"]:after, [class*=" flaticon-"]:after {
   font-family: Flaticon;
-        font-size: 20px;
-font-style: normal;
+  font-size: 20px;
+  font-style: normal;
 }
 
 .flaticon-supermarket-scanner:before { content: "\f100"; }
@@ -49,3 +50,4 @@ font-style: normal;
 .flaticon-sent-mail:before { content: "\f112"; }
 .flaticon-printer:before { content: "\f113"; }
 .flaticon-giftbox:before { content: "\f114"; }
+.flaticon-backspace:before { content: "\f115"; }

@@ -48,58 +48,50 @@
                     </template>
 
                     <template v-if="product.type == 'variable'">
-                        <div class="item-wrap" @click="selectVariationProduct( product )" v-popover.right="{ name: 'variation-' + product.id }">
-                            <div class="img">
-                                <img :src="getProductImage(product)" :alt="getProductImageName( product )">
+                        <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end" :open="viewVariationPopover">
+                            <div class="item-wrap" @click="selectVariationProduct( product )">
+                                <div class="img">
+                                    <img :src="getProductImage(product)" :alt="getProductImageName( product )">
+                                </div>
+                                <div class="title" v-if="productView=='grid'">
+                                    {{ truncate( product.name, 20, '...' ) }}
+                                </div>
+                                <div class="title" v-else>
+                                    {{ product.name }}
+                                </div>
+                                <span class="add-product-icon flaticon-add" :class="productView"></span>
                             </div>
-                            <div class="title" v-if="productView=='grid'">
-                                {{ truncate( product.name, 20, '...' ) }}
-                            </div>
-                            <div class="title" v-else>
-                                {{ product.name }}
-                            </div>
-                            <span class="add-product-icon flaticon-add" :class="productView"></span>
-                        </div>
-                        <popover :name="`variation-${product.id}`" :width="237" class="product-variation" v-if="togglePopover">
-                            <div class="variation-header">
-                                Select Variations
-                            </div>
-                            <div class="variation-body">
-                                <template v-for="attribute in product.attributes">
-                                    <div class="attribute">
-                                        <p>{{ attribute.name }}</p>
-                                        <div class="options">
-                                            <template v-for="option in attribute.options">
-                                                <label>
-                                                    <input type="radio" v-model="selectedAttribute[attribute.name]" :value="option">
-                                                    <div class="box">
-                                                        {{ option }}
-                                                    </div>
-                                                </label>
-                                            </template>
+                            <template slot="popover">
+                                <div class="variation-header">
+                                    Select Variations
+                                </div>
+                                <div class="variation-body">
+                                    <template v-for="attribute in product.attributes">
+                                        <div class="attribute">
+                                            <p>{{ attribute.name }}</p>
+                                            <div class="options">
+                                                <template v-for="option in attribute.options">
+                                                    <label>
+                                                        <input type="radio" v-model="selectedAttribute[attribute.name]" :value="option">
+                                                        <div class="box">
+                                                            {{ option }}
+                                                        </div>
+                                                    </label>
+                                                </template>
+                                            </div>
                                         </div>
-                                    </div>
-                                </template>
-                            </div>
-                            <div class="variation-footer">
-                                <button :disabled="attributeDisabled" @click.prevent="addVariationProduct">Add Product</button>
-                            </div>
-                        </popover>
+                                    </template>
+                                </div>
+                                <div class="variation-footer">
+                                    <button :disabled="attributeDisabled" @click.prevent="addVariationProduct">Add Product</button>
+                                </div>
+                            </template>
+                        </v-popover>
                     </template>
                 </div>
                 <mugen-scroll :handler="fetchProducts" v-show="productLoading" :should-handle="!productLoading" scroll-container="items-wrapper" class="product-loading">
                     Loading...
                 </mugen-scroll>
-
-                <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
-                  <!-- This will be the popover target (for the events and position) -->
-                  <button class="tooltip-target b3">Click me</button>
-
-                  <!-- This will be the content of the popover -->
-                  <template slot="popover">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor, vel error? Optio ipsa ratione, culpa itaque alias, minus autem corrupti sunt debitis adipisci nesciunt, quo, voluptatum quia aliquid laborum minima!
-                  </template>
-                </v-popover>
             </div>
         </div>
         <div class="content-cart">
@@ -139,7 +131,7 @@
                             <template v-if="orderdata.line_items.length > 0">
                                 <template v-for="(item,key) in orderdata.line_items">
                                     <tr>
-                                        <td class="name">
+                                        <td class="name" @click="toggleEditQuantity( item, key )">
                                             {{ item.name }}
                                             <div class="attribute" v-if="item.attribute.length > 0">
                                                 <ul>
@@ -147,8 +139,8 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                        <td class="qty">{{ item.quantity }}</td>
-                                        <td class="price">
+                                        <td class="qty" @click="toggleEditQuantity( item, key )">{{ item.quantity }}</td>
+                                        <td class="price" @click="toggleEditQuantity( item, key )">
                                             <template v-if="item.on_sale">
                                                 <span class="sale-price">{{ formatPrice( item.quantity*item.sale_price ) }}</span>
                                                 <span class="regular-price">{{ formatPrice( item.quantity*item.regular_price ) }}</span>
@@ -169,7 +161,7 @@
                                             <span class="qty">Quantity</span>
                                             <span class="qty-number"><input type="number" min="1" step="1" v-model="item.quantity"></span>
                                             <span class="qty-action">
-                                                <a href="#" class="add" @click.prevent="item.quantity++">&#43;</a>
+                                                <a href="#" class="add" @click.prevent="addQuantity(item)">&#43;</a>
                                                 <a href="#" class="minus" @click.prevent="removeQuantity(item)">&#45;</a>
                                             </span>
                                         </td>
@@ -198,12 +190,13 @@
                                 </tr>
                                 <template v-if="orderdata.fee_lines.length > 0">
                                     <tr class="cart-meta-data" v-for="(fee,key) in orderdata.fee_lines">
-                                        <template v-if="fee.isEdit">
-                                            <template v-if="fee.type == 'discount'">
-                                                <td class="label"><input type="text" v-model="orderdata.fee_lines[key].name" placeholder="Discount Name"></td>
-                                                <td class="price"><input type="number" min="0" step="any" v-model="orderdata.fee_lines[key].total" placeholder="Discount Amount"> <button :disabled="orderdata.fee_lines[key].name == ''" @click="setFee(key, 'discount');">Apply</button></td>
-                                            </template>
-                                            <template v-else>
+                                        <template v-if="fee.type=='discount'">
+                                            <td class="label">Discount <span class="name">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                                            <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                                            <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
+                                        </template>
+                                        <template v-else>
+                                            <template v-if="fee.isEdit">
                                                 <td class="label" colspan="2">
                                                     <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" placeholder="Fee Name">
                                                     <input type="number" class="fee-amount"  min="0" step="any" v-model="orderdata.fee_lines[key].total" placeholder="Fee Amount">
@@ -213,19 +206,13 @@
                                                     </select>
                                                     <button :disabled="orderdata.fee_lines[key].name == ''" @click="setFee(key, 'fee');">Apply</button>
                                                 </td>
-                                            </template>
-                                            <td class="action"><span class="flaticon-cancel-music" @click="removeFee(key)"></span></td>
-                                        </template>
-                                        <template v-else>
-                                            <template v-if="fee.type=='fee'">
-                                                <td class="label">Fee <span class="name">{{ fee.name }}</span></td>
-                                                <td class="price">{{ formatPrice( fee.total ) }}</td>
+                                                <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                             <template v-else>
-                                                <td class="label">Discount <span class="name">{{ fee.name }}</span></td>
-                                                <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                                                <td class="label">Fee <span class="name">{{ fee.name }}</span></td>
+                                                <td class="price">{{ formatPrice( fee.total ) }}</td>
+                                                <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
-                                            <td class="action"><span class="flaticon-cancel-music" @click="removeFee(key)"></span></td>
                                         </template>
                                     </tr>
                                 </template>
@@ -236,7 +223,7 @@
                                 </tr>
                                 <tr class="cart-action">
                                     <td colspan="3">
-                                        <a href="#" @click.prevent="addFee('discount')">Add Discount</a>
+                                        <discount-keypad @discount="setDiscount"></discount-keypad>
                                         <a href="#" @click.prevent="addFee('fee')">Add Fee</a>
                                         <a href="#" @click.prevent="showCustomerNote = !showCustomerNote">
                                             <span v-if="showCustomerNote">Remove Note</span>
@@ -435,7 +422,7 @@ export default {
         return {
             productView: 'grid',
             productLoading: false,
-            togglePopover: true,
+            viewVariationPopover: false,
             showModal: false,
             showPaymentReceipt: false,
             products: [],
@@ -489,12 +476,12 @@ export default {
             var discount = 0;
             weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
                 if ( item.type == 'discount' ) {
-                    discount += Math.abs(item.total)
+                    discount += Number( Math.abs( item.total ) );
                 }
             });
+
             return discount;
         },
-
         getTotalTax() {
             var self = this,
                 taxLineTotal = 0,
@@ -514,11 +501,12 @@ export default {
 
             return taxLineTotal + taxFeeTotal;
         },
-
-        getTotal() {
-            return (this.getSubtotal + this.getTotalFee + this.getTotalTax )-(this.getTotalDiscount);
+        getOrderTotal() {
+            return (this.getSubtotal + this.getTotalFee + this.getTotalTax );
         },
-
+        getTotal() {
+            return this.getOrderTotal-this.getTotalDiscount;
+        },
         changeAmount() {
             var returnMoney = this.cashAmount-this.getTotal;
             return returnMoney > 0 ? returnMoney : 0;
@@ -548,7 +536,7 @@ export default {
                 billing: {},
                 shipping: {},
                 line_items: [],
-                fee_lines: []
+                fee_lines: [],
             };
             this.showPaymentReceipt = false;
             this.cashAmount = '';
@@ -638,18 +626,37 @@ export default {
                 tax_class: 'standard'
             });
         },
-        addCustomerNote() {
-
+        setDiscount( value, type ) {
+            this.orderdata.fee_lines.push({
+                name: 'Discount',
+                type: 'discount',
+                value: value.toString(),
+                isEdit: false,
+                discount_type: type,
+                tax_status: 'none',
+                tax_class: 'standard',
+                total: 0
+            });
+            this.calculateDiscount();
         },
-        setFee( key, type ) {
-            this.orderdata.fee_lines[key].isEdit = false;
-            if ( 'discount' == this.orderdata.fee_lines[key].type ) {
-                this.orderdata.fee_lines[key].total = '-' + Math.abs( this.orderdata.fee_lines[key].total ).toString();
-            } else {
-                this.orderdata.fee_lines[key].total = Math.abs( this.orderdata.fee_lines[key].total ).toString();
+        calculateDiscount() {
+            if ( this.orderdata.fee_lines.length > 0 ) {
+                weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
+                    if ( item.type == "discount" ) {
+                        if ( item.discount_type == 'percent' ) {
+                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber( ( this.getOrderTotal*Math.abs( item.value ) )/100 );
+                        } else {
+                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber( Math.abs( item.value ) );
+                        }
+                    }
+                } );
             }
         },
-        removeFee( key ) {
+        setFee( key ) {
+            this.orderdata.fee_lines[key].total = Math.abs( this.orderdata.fee_lines[key].total ).toString();
+            this.orderdata.fee_lines[key].isEdit = false;
+        },
+        removeFeeLine( key ) {
             this.orderdata.fee_lines.splice( key, 1 );
         },
 
@@ -680,7 +687,7 @@ export default {
         },
 
         selectVariationProduct( product ) {
-            this.togglePopover = true;
+            this.viewVariationPopover = true;
             this.selectedVariationProduct = product;
         },
 
@@ -690,8 +697,9 @@ export default {
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type      = this.selectedVariationProduct.type;
             variationProduct.name      = this.selectedVariationProduct.name;
-            this.togglePopover = false;
-
+            this.viewVariationPopover  = false;
+            this.selectedAttribute     = {};
+            this.attributeDisabled     = true;
             this.addToCart( variationProduct );
         },
         addToCart( product ) {
@@ -716,19 +724,27 @@ export default {
             } else {
                 self.orderdata.line_items[index].quantity += 1;
             }
+
+            this.calculateDiscount();
         },
         toggleEditQuantity( product, index ) {
             this.orderdata.line_items[index].editQuantity = ! this.orderdata.line_items[index].editQuantity;
         },
         removeItem( key ) {
             this.orderdata.line_items.splice( key, 1 );
+            this.calculateDiscount();
+        },
+        addQuantity(item) {
+            item.quantity++;
+            this.calculateDiscount();
         },
         removeQuantity(item) {
             if ( item.quantity <= 1 ) {
+                this.calculateDiscount();
                 return 1;
             }
-
-            return item.quantity--;
+            item.quantity--;
+            this.calculateDiscount();
         },
         fetchGateway() {
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/payment/gateways' )
@@ -1097,12 +1113,18 @@ export default {
                     text-align: center;
                     padding: 0 10px;
                     margin-bottom: 20px;
+                    &:focus {
+                        outline: none;
+                    }
                     .item-wrap {
                         background: #fff;
                         margin-bottom: -2px;
                         cursor: pointer;
                         position: relative;
-
+                        &:focus {
+                            outline: none;
+                            -webkit-appearance:none
+                        }
                         img {
                             width: 100%;
                         }

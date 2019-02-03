@@ -198,7 +198,7 @@
                                         <template v-else>
                                             <template v-if="fee.isEdit">
                                                 <td class="label" colspan="2">
-                                                    <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" placeholder="Fee Name">
+                                                    <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" placeholder="Fee Name" ref="fee_name">
                                                     <input type="number" class="fee-amount"  min="0" step="any" v-model="orderdata.fee_lines[key].total" placeholder="Fee Amount">
                                                     <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="orderdata.fee_lines[key].tax_status" :true-value="'taxable'" :false-value="'none'"> Taxable</label>
                                                     <select class="fee-tax-class" v-model="orderdata.fee_lines[key].tax_class" v-if="orderdata.fee_lines[key].tax_status=='taxable'">
@@ -625,6 +625,9 @@ export default {
                 tax_status: 'none',
                 tax_class: 'standard'
             });
+            this.$nextTick(() => {
+                jQuery( this.$refs.fee_name ).focus();
+            })
         },
         setDiscount( value, type ) {
             this.orderdata.fee_lines.push({

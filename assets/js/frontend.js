@@ -1,6 +1,20 @@
-pluginWebpack([0],{
-
-/***/ 15:
+pluginWebpack([0],[
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56,8 +70,14 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 23:
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74,8 +94,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-
-/***/ 24:
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -709,6 +728,9 @@ if (false) {(function () {
                 tax_status: 'none',
                 tax_class: 'standard'
             });
+            this.$nextTick(() => {
+                jQuery(this.$refs.fee_name).focus();
+            });
         },
         setDiscount(value, type) {
             this.orderdata.fee_lines.push({
@@ -878,8 +900,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-
-/***/ 25:
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -899,8 +920,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-
-/***/ 26:
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1069,15 +1089,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-
-/***/ 261:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 27:
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1147,8 +1159,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-
-/***/ 28:
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1320,8 +1331,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-
-/***/ 29:
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1389,6 +1399,10 @@ if (false) {(function () {
                     this.input = '';
                 }
             }
+
+            if (this.input == '') {
+                jQuery(this.$refs.discountinput).focus();
+            }
         },
         inputChange() {
             if (!isNaN(this.displayValue)) {
@@ -1396,17 +1410,25 @@ if (false) {(function () {
             } else {
                 this.displayValue = this.input;
             }
+
+            if (this.input == '') {
+                jQuery(this.$refs.discountinput).focus();
+            }
         },
         showDiscountKeypad() {
             this.viewDiscountKeypad = true;
-            this.$nextTick(() => this.$refs.discountinput.focus());
+            setTimeout(() => {
+                jQuery(this.$refs.discountinput).focus();
+            }, 500);
+            // this.$nextTick( () => {
+            //     jQuery( this.$refs.discountinput ).focus();
+            // } );
         }
     }
 });
 
 /***/ }),
-
-/***/ 30:
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1599,8 +1621,8 @@ const Tokens = {
 });
 
 /***/ }),
-
-/***/ 32:
+/* 31 */,
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1621,8 +1643,41 @@ const Tokens = {
 });
 
 /***/ }),
-
-/***/ 67:
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1653,8 +1708,7 @@ new Vue({
 });
 
 /***/ }),
-
-/***/ 68:
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1711,15 +1765,13 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 69:
+/* 69 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 70:
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1746,8 +1798,7 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 71:
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1785,8 +1836,7 @@ exports.default = new Router({
 });
 
 /***/ }),
-
-/***/ 72:
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1843,15 +1893,13 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 73:
+/* 73 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 74:
+/* 74 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1907,15 +1955,13 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 75:
+/* 75 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 76:
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1937,8 +1983,7 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 77:
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1994,22 +2039,19 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 78:
+/* 78 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 79:
+/* 79 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 80:
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2077,8 +2119,7 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 81:
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2430,8 +2471,7 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 82:
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2487,15 +2527,13 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 83:
+/* 83 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 84:
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3056,8 +3094,7 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 85:
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3113,15 +3150,13 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 86:
+/* 86 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 87:
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3131,7 +3166,7 @@ if (false) {(function () {
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(261)
+  __webpack_require__(88)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -3177,8 +3212,13 @@ if (false) {(function () {
 
 
 /***/ }),
+/* 88 */
+/***/ (function(module, exports) {
 
-/***/ 89:
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 89 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3244,8 +3284,7 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 90:
+/* 90 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3348,8 +3387,8 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 92:
+/* 91 */,
+/* 92 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4100,6 +4139,8 @@ var render = function() {
                                                       "orderdata.fee_lines[key].name"
                                                   }
                                                 ],
+                                                ref: "fee_name",
+                                                refInFor: true,
                                                 staticClass: "fee-name",
                                                 attrs: {
                                                   type: "text",
@@ -5120,8 +5161,7 @@ if (false) {
 }
 
 /***/ }),
-
-/***/ 93:
+/* 93 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5178,15 +5218,13 @@ if (false) {(function () {
 
 
 /***/ }),
-
-/***/ 94:
+/* 94 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-
-/***/ 95:
+/* 95 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5210,5 +5248,4 @@ if (false) {
 }
 
 /***/ })
-
-},[67]);
+],[67]);

@@ -61,6 +61,10 @@ export default {
                     this.input = '';
                 }
             }
+
+            if ( this.input == '' ) {
+                jQuery( this.$refs.discountinput ).focus();
+            }
         },
         inputChange() {
             if ( !isNaN( this.displayValue ) ) {
@@ -68,10 +72,19 @@ export default {
             } else {
                 this.displayValue = this.input;
             }
+
+            if ( this.input == '' ) {
+                jQuery( this.$refs.discountinput ).focus();
+            }
         },
         showDiscountKeypad() {
             this.viewDiscountKeypad = true;
-            this.$nextTick( () => this.$refs.discountinput.focus() );
+            setTimeout( () => {
+                jQuery( this.$refs.discountinput ).focus();
+            }, 500 );
+            // this.$nextTick( () => {
+            //     jQuery( this.$refs.discountinput ).focus();
+            // } );
         }
     }
 };

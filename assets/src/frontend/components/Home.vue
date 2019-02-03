@@ -1,5 +1,5 @@
 <template>
-    <div id="wepos-main">
+    <div id="wepos-main" v-cloak>
         <div class="content-product">
             <div class="top-panel">
                 <div class="search-bar">
@@ -199,18 +199,19 @@
                                             <template v-if="fee.isEdit">
                                                 <td class="label" colspan="2">
                                                     <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" placeholder="Fee Name" ref="fee_name">
-                                                    <input type="number" class="fee-amount"  min="0" step="any" v-model="orderdata.fee_lines[key].total" placeholder="Fee Amount">
-                                                    <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="orderdata.fee_lines[key].tax_status" :true-value="'taxable'" :false-value="'none'"> Taxable</label>
-                                                    <select class="fee-tax-class" v-model="orderdata.fee_lines[key].tax_class" v-if="orderdata.fee_lines[key].tax_status=='taxable'">
-                                                        <option v-for="feeTax in availableTax" :value="feeTax.class">{{ unSanitizeString( feeTax.class ) }} - {{ feeTax.percentage_rate }}</option>
-                                                    </select>
-                                                    <button :disabled="orderdata.fee_lines[key].name == ''" @click="setFee(key, 'fee');">Apply</button>
+                                                    <template v-if="settings.wepos_general.enable_fee_tax == 'yes'">
+                                                        <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="orderdata.fee_lines[key].tax_status" :true-value="'taxable'" :false-value="'none'"> Taxable</label>
+                                                        <select class="fee-tax-class" v-model="orderdata.fee_lines[key].tax_class" v-if="orderdata.fee_lines[key].tax_status=='taxable'">
+                                                            <option v-for="feeTax in availableTax" :value="feeTax.class == 'standard' ? '' : feeTax.class">{{ unSanitizeString( feeTax.class ) }} - {{ feeTax.percentage_rate }}</option>
+                                                        </select>
+                                                    </template>
+                                                    <button :disabled="orderdata.fee_lines[key].name == ''" @click="saveFee(key);">Apply</button>
                                                 </td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                             <template v-else>
-                                                <td class="label">Fee <span class="name">{{ fee.name }}</span></td>
-                                                <td class="price">{{ formatPrice( fee.total ) }}</td>
+                                                <td class="label" @dblclick="orderdata.fee_lines[key].isEdit = true">Fee <span class="name">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                                                <td class="price">{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                         </template>
@@ -223,8 +224,8 @@
                                 </tr>
                                 <tr class="cart-action">
                                     <td colspan="3">
-                                        <discount-keypad @discount="setDiscount"></discount-keypad>
-                                        <a href="#" @click.prevent="addFee('fee')">Add Fee</a>
+                                        <fee-keypad @inputfee="setDiscount" name="Discount"></fee-keypad>
+                                        <fee-keypad @inputfee="setFee" name="Fee"></fee-keypad>
                                         <a href="#" @click.prevent="showCustomerNote = !showCustomerNote">
                                             <span v-if="showCustomerNote">Remove Note</span>
                                             <span v-else>Add Note</span>
@@ -314,16 +315,16 @@
                                 <template v-if="orderdata.fee_lines.length > 0">
                                     <li class="wepos-clearfix" v-for="(fee,key) in orderdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
-                                            <span class="wepos-left">Discount <span class="metadata">{{ fee.name }}</span></span>
+                                            <span class="wepos-left">Discount <span class="metadata">{{ fee.name }} {{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
                                             <span class="wepos-right">-{{ formatPrice( Math.abs( fee.total ) ) }}</span>
                                         </template>
                                         <template v-else>
-                                            <span class="wepos-left">Fee <span class="metadata">{{ fee.name }}</span></span>
+                                            <span class="wepos-left">Fee <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
                                             <span class="wepos-right">{{ formatPrice( fee.total ) }}</span>
                                         </template>
                                     </li>
                                 </template>
-                                <li class="wepos-clearfix">
+                                <li class="wepos-clearfix" v-if="getTotalTax">
                                     <span class="wepos-left">Tax</span>
                                     <span class="wepos-right">{{ formatPrice( getTotalTax ) }}</span>
                                 </li>
@@ -401,7 +402,7 @@
 import Overlay from './Overlay.vue';
 import ProductInlineSearch from './ProductInlineSearch.vue';
 import CustomerSearch from './CustomerSearch.vue';
-import DiscountKeypad from './DiscountKeypad.vue';
+import FeeKeypad from './FeeKeypad.vue';
 import Modal from './Modal.vue';
 import MugenScroll from 'vue-mugen-scroll'
 
@@ -415,7 +416,7 @@ export default {
         Overlay,
         Modal,
         MugenScroll,
-        DiscountKeypad
+        FeeKeypad
     },
 
     data () {
@@ -564,34 +565,36 @@ export default {
                 }
             ];
 
-            // var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.payment-option');
-            // $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+            console.log( self.orderdata );
 
-            // wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', this.orderdata )
-            // .done( response => {
-            //     wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/payment/process', response )
-            //     .done( data => {
-            //         if ( data.result == 'success' ) {
-            //             this.$router.push({
-            //                 name: 'Home',
-            //                 query: {
-            //                     order_key: response.order_key,
-            //                     payment: 'success'
-            //                 }
-            //             });
-            //         } else {
-            //             $contentWrap.unblock();
-            //         }
-            //     }).fail( data => {
-            //         $contentWrap.unblock();
-            //         alert( data.responseJSON.message );
-            //     });
+            var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
+            $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
 
-            //     $contentWrap.unblock();
-            // }).fail( response => {
-            //     $contentWrap.unblock();
-            //     alert( response.responseJSON.message );
-            // } );
+            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', this.orderdata )
+            .done( response => {
+                wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/payment/process', response )
+                .done( data => {
+                    if ( data.result == 'success' ) {
+                        this.$router.push({
+                            name: 'Home',
+                            query: {
+                                order_key: response.order_key,
+                                payment: 'success'
+                            }
+                        });
+                    } else {
+                        $contentWrap.unblock();
+                    }
+                }).fail( data => {
+                    $contentWrap.unblock();
+                    alert( data.responseJSON.message );
+                });
+
+                $contentWrap.unblock();
+            }).fail( response => {
+                $contentWrap.unblock();
+                alert( response.responseJSON.message );
+            } );
         },
 
         backGatewaySelection() {
@@ -616,19 +619,6 @@ export default {
         getProductImageName(product) {
             return ( product.images.length > 0 ) ? product.images[0].name : product.name;
         },
-        addFee( type ) {
-            this.orderdata.fee_lines.push({
-                name: '',
-                total: '0',
-                isEdit: true,
-                type: type,
-                tax_status: 'none',
-                tax_class: 'standard'
-            });
-            this.$nextTick(() => {
-                jQuery( this.$refs.fee_name ).focus();
-            })
-        },
         setDiscount( value, type ) {
             this.orderdata.fee_lines.push({
                 name: 'Discount',
@@ -637,10 +627,34 @@ export default {
                 isEdit: false,
                 discount_type: type,
                 tax_status: 'none',
-                tax_class: 'standard',
+                tax_class: '',
                 total: 0
             });
             this.calculateDiscount();
+            this.calculateFee();
+        },
+        saveFee( key ) {
+            this.orderdata.fee_lines[key].isEdit = false;
+            this.$nextTick(() => {
+                jQuery( this.$refs.fee_name ).focus();
+            })
+        },
+        setFee( value, type ) {
+            this.orderdata.fee_lines.push({
+                name: 'Fee',
+                type: 'fee',
+                value: value.toString(),
+                isEdit: false,
+                fee_type: type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+            this.calculateFee();
+            this.calculateDiscount();
+        },
+        removeFeeLine( key ) {
+            this.orderdata.fee_lines.splice( key, 1 );
         },
         calculateDiscount() {
             if ( this.orderdata.fee_lines.length > 0 ) {
@@ -655,14 +669,19 @@ export default {
                 } );
             }
         },
-        setFee( key ) {
-            this.orderdata.fee_lines[key].total = Math.abs( this.orderdata.fee_lines[key].total ).toString();
-            this.orderdata.fee_lines[key].isEdit = false;
+        calculateFee() {
+            if ( this.orderdata.fee_lines.length > 0 ) {
+                weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
+                    if ( item.type == 'fee' ) {
+                        if ( item.fee_type == 'percent' ) {
+                            this.orderdata.fee_lines[key].total = this.formatNumber( ( this.getOrderTotal*Math.abs( item.value ) )/100 );
+                        } else {
+                            this.orderdata.fee_lines[key].total = this.formatNumber( Math.abs( item.value ) );
+                        }
+                    }
+                } );
+            }
         },
-        removeFeeLine( key ) {
-            this.orderdata.fee_lines.splice( key, 1 );
-        },
-
         fetchProducts() {
             this.productLoading = true;
             if ( ( this.totalPages >= this.page ) || this.totalPages === 0 ) {
@@ -729,6 +748,7 @@ export default {
             }
 
             this.calculateDiscount();
+            this.calculateFee();
         },
         toggleEditQuantity( product, index ) {
             this.orderdata.line_items[index].editQuantity = ! this.orderdata.line_items[index].editQuantity;
@@ -736,18 +756,22 @@ export default {
         removeItem( key ) {
             this.orderdata.line_items.splice( key, 1 );
             this.calculateDiscount();
+            this.calculateFee();
         },
         addQuantity(item) {
             item.quantity++;
             this.calculateDiscount();
+            this.calculateFee();
         },
         removeQuantity(item) {
             if ( item.quantity <= 1 ) {
                 this.calculateDiscount();
+                this.calculateFee();
                 return 1;
             }
             item.quantity--;
             this.calculateDiscount();
+            this.calculateFee();
         },
         fetchGateway() {
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/payment/gateways' )
@@ -802,6 +826,9 @@ export default {
 </script>
 
 <style lang="less">
+[v-cloak] {
+  display: none;
+}
 #wepos-main {
     padding: 20px;
     display: flex;

@@ -1,20 +1,6 @@
-pluginWebpack([0],[
-/* 0 */,
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */
+pluginWebpack([0],{
+
+/***/ 15:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70,14 +56,8 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */
+
+/***/ 23:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -94,17 +74,19 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 24 */
+
+/***/ 24:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(74);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductInlineSearch_vue__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__DiscountKeypad_vue__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(262);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Modal_vue__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll__);
+//
 //
 //
 //
@@ -522,7 +504,7 @@ if (false) {(function () {
         Overlay: __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__["a" /* default */],
         Modal: __WEBPACK_IMPORTED_MODULE_4__Modal_vue__["a" /* default */],
         MugenScroll: __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll___default.a,
-        DiscountKeypad: __WEBPACK_IMPORTED_MODULE_3__DiscountKeypad_vue__["a" /* default */]
+        FeeKeypad: __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__["a" /* default */]
     },
 
     data() {
@@ -667,34 +649,34 @@ if (false) {(function () {
                 value: self.changeAmount.toString()
             }];
 
-            // var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.payment-option');
-            // $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+            console.log(self.orderdata);
 
-            // wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', this.orderdata )
-            // .done( response => {
-            //     wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/payment/process', response )
-            //     .done( data => {
-            //         if ( data.result == 'success' ) {
-            //             this.$router.push({
-            //                 name: 'Home',
-            //                 query: {
-            //                     order_key: response.order_key,
-            //                     payment: 'success'
-            //                 }
-            //             });
-            //         } else {
-            //             $contentWrap.unblock();
-            //         }
-            //     }).fail( data => {
-            //         $contentWrap.unblock();
-            //         alert( data.responseJSON.message );
-            //     });
+            var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
+            $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
 
-            //     $contentWrap.unblock();
-            // }).fail( response => {
-            //     $contentWrap.unblock();
-            //     alert( response.responseJSON.message );
-            // } );
+            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', this.orderdata).done(response => {
+                wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/payment/process', response).done(data => {
+                    if (data.result == 'success') {
+                        this.$router.push({
+                            name: 'Home',
+                            query: {
+                                order_key: response.order_key,
+                                payment: 'success'
+                            }
+                        });
+                    } else {
+                        $contentWrap.unblock();
+                    }
+                }).fail(data => {
+                    $contentWrap.unblock();
+                    alert(data.responseJSON.message);
+                });
+
+                $contentWrap.unblock();
+            }).fail(response => {
+                $contentWrap.unblock();
+                alert(response.responseJSON.message);
+            });
         },
 
         backGatewaySelection() {
@@ -719,19 +701,6 @@ if (false) {(function () {
         getProductImageName(product) {
             return product.images.length > 0 ? product.images[0].name : product.name;
         },
-        addFee(type) {
-            this.orderdata.fee_lines.push({
-                name: '',
-                total: '0',
-                isEdit: true,
-                type: type,
-                tax_status: 'none',
-                tax_class: 'standard'
-            });
-            this.$nextTick(() => {
-                jQuery(this.$refs.fee_name).focus();
-            });
-        },
         setDiscount(value, type) {
             this.orderdata.fee_lines.push({
                 name: 'Discount',
@@ -740,10 +709,34 @@ if (false) {(function () {
                 isEdit: false,
                 discount_type: type,
                 tax_status: 'none',
-                tax_class: 'standard',
+                tax_class: '',
                 total: 0
             });
             this.calculateDiscount();
+            this.calculateFee();
+        },
+        saveFee(key) {
+            this.orderdata.fee_lines[key].isEdit = false;
+            this.$nextTick(() => {
+                jQuery(this.$refs.fee_name).focus();
+            });
+        },
+        setFee(value, type) {
+            this.orderdata.fee_lines.push({
+                name: 'Fee',
+                type: 'fee',
+                value: value.toString(),
+                isEdit: false,
+                fee_type: type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+            this.calculateFee();
+            this.calculateDiscount();
+        },
+        removeFeeLine(key) {
+            this.orderdata.fee_lines.splice(key, 1);
         },
         calculateDiscount() {
             if (this.orderdata.fee_lines.length > 0) {
@@ -758,14 +751,19 @@ if (false) {(function () {
                 });
             }
         },
-        setFee(key) {
-            this.orderdata.fee_lines[key].total = Math.abs(this.orderdata.fee_lines[key].total).toString();
-            this.orderdata.fee_lines[key].isEdit = false;
+        calculateFee() {
+            if (this.orderdata.fee_lines.length > 0) {
+                weLo_.forEach(this.orderdata.fee_lines, (item, key) => {
+                    if (item.type == 'fee') {
+                        if (item.fee_type == 'percent') {
+                            this.orderdata.fee_lines[key].total = this.formatNumber(this.getOrderTotal * Math.abs(item.value) / 100);
+                        } else {
+                            this.orderdata.fee_lines[key].total = this.formatNumber(Math.abs(item.value));
+                        }
+                    }
+                });
+            }
         },
-        removeFeeLine(key) {
-            this.orderdata.fee_lines.splice(key, 1);
-        },
-
         fetchProducts() {
             this.productLoading = true;
             if (this.totalPages >= this.page || this.totalPages === 0) {
@@ -831,6 +829,7 @@ if (false) {(function () {
             }
 
             this.calculateDiscount();
+            this.calculateFee();
         },
         toggleEditQuantity(product, index) {
             this.orderdata.line_items[index].editQuantity = !this.orderdata.line_items[index].editQuantity;
@@ -838,18 +837,22 @@ if (false) {(function () {
         removeItem(key) {
             this.orderdata.line_items.splice(key, 1);
             this.calculateDiscount();
+            this.calculateFee();
         },
         addQuantity(item) {
             item.quantity++;
             this.calculateDiscount();
+            this.calculateFee();
         },
         removeQuantity(item) {
             if (item.quantity <= 1) {
                 this.calculateDiscount();
+                this.calculateFee();
                 return 1;
             }
             item.quantity--;
             this.calculateDiscount();
+            this.calculateFee();
         },
         fetchGateway() {
             wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/payment/gateways').done(response => {
@@ -900,7 +903,8 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 25 */
+
+/***/ 25:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -920,7 +924,8 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 26 */
+
+/***/ 26:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1089,7 +1094,277 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 27 */
+
+/***/ 261:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(87);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    name: 'FeeKeypad',
+
+    components: {
+        keyboard: __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__["a" /* default */]
+    },
+    props: {
+        name: {
+            type: String,
+            default: 'Fee'
+        },
+        className: {
+            type: String,
+            default: ''
+        }
+    },
+    data() {
+        return {
+            input: '',
+            displayValue: '',
+            viewFeeKeypad: false
+        };
+    },
+    methods: {
+        layout() {
+            return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0' + wepos.currency_format_decimal_sep + '|{% ' + this.name + ':percent}{' + wepos.currency_format_symbol + ' ' + this.name + ':flat}';
+        },
+        percentFee(keyboard) {
+            this.$emit('inputfee', keyboard.value.toString(), 'percent');
+            this.viewFeeKeypad = false;
+            this.input = '';
+            this.displayValue = '';
+        },
+        flatFee(keyboard) {
+            this.$emit('inputfee', keyboard.value.toString(), 'flat');
+            this.viewFeeKeypad = false;
+            this.input = '';
+            this.displayValue = '';
+        },
+        change(value) {
+            if (!isNaN(value)) {
+                this.displayValue = value;
+                this.input = this.displayValue;
+            } else {
+                this.input = this.displayValue;
+                if (this.displayValue == '') {
+                    this.input = '';
+                }
+            }
+
+            jQuery(this.$refs.feeinput).focus();
+
+            if (this.input == '') {
+                jQuery(this.$refs.feeinput).focus();
+            }
+        },
+        inputChange() {
+            if (!isNaN(this.displayValue)) {
+                this.input = this.displayValue;
+            } else {
+                this.displayValue = this.input;
+            }
+
+            if (this.input == '') {
+                jQuery(this.$refs.feeinput).focus();
+            }
+        },
+        showFeeKeypad() {
+            this.viewFeeKeypad = true;
+            setTimeout(() => {
+                jQuery(this.$refs.feeinput).focus();
+            }, 500);
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 262:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(261);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(264);
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(263)
+}
+var normalizeComponent = __webpack_require__(0)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "assets/src/frontend/components/FeeKeypad.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0bc4dc95", Component.options)
+  } else {
+    hotAPI.reload("data-v-0bc4dc95", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+
+/***/ 263:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 264:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "wepos-fee-keypad-wrap", class: _vm.className },
+    [
+      _c(
+        "v-popover",
+        {
+          attrs: {
+            offset: "5",
+            "popover-base-class": "fee-keypad tooltip popover",
+            placement: "top",
+            open: _vm.viewFeeKeypad
+          }
+        },
+        [
+          _c(
+            "a",
+            {
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.showFeeKeypad()
+                }
+              }
+            },
+            [_vm._v("Add " + _vm._s(_vm.name))]
+          ),
+          _vm._v(" "),
+          _c(
+            "template",
+            { slot: "popover" },
+            [
+              _c("form", [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.displayValue,
+                      expression: "displayValue"
+                    }
+                  ],
+                  ref: "feeinput",
+                  attrs: { type: "text" },
+                  domProps: { value: _vm.displayValue },
+                  on: {
+                    keyup: _vm.inputChange,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.displayValue = $event.target.value
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("keyboard", {
+                attrs: { layouts: _vm.layout() },
+                on: {
+                  percent: _vm.percentFee,
+                  flat: _vm.flatFee,
+                  input: _vm.change
+                },
+                model: {
+                  value: _vm.input,
+                  callback: function($$v) {
+                    _vm.input = $$v
+                  },
+                  expression: "input"
+                }
+              })
+            ],
+            1
+          )
+        ],
+        2
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0bc4dc95", esExports)
+  }
+}
+
+/***/ }),
+
+/***/ 27:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1159,7 +1434,8 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 28 */
+
+/***/ 28:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1331,104 +1607,8 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 29 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(87);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-    name: 'DiscountKeypad',
-
-    components: {
-        keyboard: __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__["a" /* default */]
-    },
-    props: {
-        className: {
-            type: String,
-            default: ''
-        }
-    },
-    data() {
-        return {
-            input: '',
-            displayValue: '',
-            viewDiscountKeypad: false
-        };
-    },
-    methods: {
-        layout() {
-            return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0' + wepos.currency_format_decimal_sep + '|{% Discount:percent}{' + wepos.currency_format_symbol + ' Discount:flat}';
-        },
-        percentDiscount(keyboard) {
-            this.$emit('discount', keyboard.value.toString(), 'percent');
-            this.viewDiscountKeypad = false;
-            this.input = '';
-            this.displayValue = '';
-        },
-        flatDiscount(keyboard) {
-            this.$emit('discount', keyboard.value.toString(), 'flat');
-            this.viewDiscountKeypad = false;
-            this.input = '';
-            this.displayValue = '';
-        },
-        change(value) {
-            if (!isNaN(value)) {
-                this.displayValue = value;
-                this.input = this.displayValue;
-            } else {
-                this.input = this.displayValue;
-                if (this.displayValue == '') {
-                    this.input = '';
-                }
-            }
-
-            if (this.input == '') {
-                jQuery(this.$refs.discountinput).focus();
-            }
-        },
-        inputChange() {
-            if (!isNaN(this.displayValue)) {
-                this.input = this.displayValue;
-            } else {
-                this.displayValue = this.input;
-            }
-
-            if (this.input == '') {
-                jQuery(this.$refs.discountinput).focus();
-            }
-        },
-        showDiscountKeypad() {
-            this.viewDiscountKeypad = true;
-            setTimeout(() => {
-                jQuery(this.$refs.discountinput).focus();
-            }, 500);
-            // this.$nextTick( () => {
-            //     jQuery( this.$refs.discountinput ).focus();
-            // } );
-        }
-    }
-});
-
-/***/ }),
-/* 30 */
+/***/ 30:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1621,8 +1801,8 @@ const Tokens = {
 });
 
 /***/ }),
-/* 31 */,
-/* 32 */
+
+/***/ 32:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1643,41 +1823,8 @@ const Tokens = {
 });
 
 /***/ }),
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */
+
+/***/ 67:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1708,7 +1855,8 @@ new Vue({
 });
 
 /***/ }),
-/* 68 */
+
+/***/ 68:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1765,13 +1913,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 69 */
+
+/***/ 69:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 70 */
+
+/***/ 70:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1798,7 +1948,8 @@ if (false) {
 }
 
 /***/ }),
-/* 71 */
+
+/***/ 71:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1836,7 +1987,8 @@ exports.default = new Router({
 });
 
 /***/ }),
-/* 72 */
+
+/***/ 72:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1893,13 +2045,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 73 */
+
+/***/ 73:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 74 */
+
+/***/ 74:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1955,13 +2109,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 75 */
+
+/***/ 75:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 76 */
+
+/***/ 76:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1983,7 +2139,8 @@ if (false) {
 }
 
 /***/ }),
-/* 77 */
+
+/***/ 77:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2039,19 +2196,22 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 78 */
+
+/***/ 78:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 79 */
+
+/***/ 79:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 80 */
+
+/***/ 80:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2119,7 +2279,8 @@ if (false) {
 }
 
 /***/ }),
-/* 81 */
+
+/***/ 81:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2471,7 +2632,8 @@ if (false) {
 }
 
 /***/ }),
-/* 82 */
+
+/***/ 82:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2527,13 +2689,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 83 */
+
+/***/ 83:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 84 */
+
+/***/ 84:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3094,69 +3258,8 @@ if (false) {
 }
 
 /***/ }),
-/* 85 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DiscountKeypad_vue__ = __webpack_require__(29);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_524a232c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DiscountKeypad_vue__ = __webpack_require__(90);
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(86)
-}
-var normalizeComponent = __webpack_require__(0)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DiscountKeypad_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_524a232c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DiscountKeypad_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "assets/src/frontend/components/DiscountKeypad.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-524a232c", Component.options)
-  } else {
-    hotAPI.reload("data-v-524a232c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 87 */
+/***/ 87:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3212,13 +3315,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 88 */
+
+/***/ 88:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 89 */
+
+/***/ 89:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3284,111 +3389,8 @@ if (false) {
 }
 
 /***/ }),
-/* 90 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "wepos-discount-keypad-wrap", class: _vm.className },
-    [
-      _c(
-        "v-popover",
-        {
-          attrs: {
-            offset: "5",
-            "popover-base-class": "discount-keypad tooltip popover",
-            placement: "top",
-            open: _vm.viewDiscountKeypad
-          }
-        },
-        [
-          _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.showDiscountKeypad()
-                }
-              }
-            },
-            [_vm._v("Add Discount")]
-          ),
-          _vm._v(" "),
-          _c(
-            "template",
-            { slot: "popover" },
-            [
-              _c("form", [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.displayValue,
-                      expression: "displayValue"
-                    }
-                  ],
-                  ref: "discountinput",
-                  attrs: { type: "text" },
-                  domProps: { value: _vm.displayValue },
-                  on: {
-                    keyup: _vm.inputChange,
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.displayValue = $event.target.value
-                    }
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("keyboard", {
-                attrs: { layouts: _vm.layout() },
-                on: {
-                  percent: _vm.percentDiscount,
-                  flat: _vm.flatDiscount,
-                  input: _vm.change
-                },
-                model: {
-                  value: _vm.input,
-                  callback: function($$v) {
-                    _vm.input = $$v
-                  },
-                  expression: "input"
-                }
-              })
-            ],
-            1
-          )
-        ],
-        2
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-524a232c", esExports)
-  }
-}
-
-/***/ }),
-/* 91 */,
-/* 92 */
+/***/ 92:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4169,227 +4171,223 @@ var render = function() {
                                                 }
                                               }),
                                               _vm._v(" "),
-                                              _c("input", {
-                                                directives: [
-                                                  {
-                                                    name: "model",
-                                                    rawName: "v-model",
-                                                    value:
-                                                      _vm.orderdata.fee_lines[
-                                                        key
-                                                      ].total,
-                                                    expression:
-                                                      "orderdata.fee_lines[key].total"
-                                                  }
-                                                ],
-                                                staticClass: "fee-amount",
-                                                attrs: {
-                                                  type: "number",
-                                                  min: "0",
-                                                  step: "any",
-                                                  placeholder: "Fee Amount"
-                                                },
-                                                domProps: {
-                                                  value:
-                                                    _vm.orderdata.fee_lines[key]
-                                                      .total
-                                                },
-                                                on: {
-                                                  input: function($event) {
-                                                    if (
-                                                      $event.target.composing
-                                                    ) {
-                                                      return
-                                                    }
-                                                    _vm.$set(
-                                                      _vm.orderdata.fee_lines[
-                                                        key
-                                                      ],
-                                                      "total",
-                                                      $event.target.value
-                                                    )
-                                                  }
-                                                }
-                                              }),
-                                              _vm._v(" "),
-                                              _c(
-                                                "label",
-                                                {
-                                                  attrs: {
-                                                    for: "fee-tax-status"
-                                                  }
-                                                },
-                                                [
-                                                  _c("input", {
-                                                    directives: [
+                                              _vm.settings.wepos_general
+                                                .enable_fee_tax == "yes"
+                                                ? [
+                                                    _c(
+                                                      "label",
                                                       {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value:
-                                                          _vm.orderdata
-                                                            .fee_lines[key]
-                                                            .tax_status,
-                                                        expression:
-                                                          "orderdata.fee_lines[key].tax_status"
-                                                      }
-                                                    ],
-                                                    staticClass:
-                                                      "fee-tax-status",
-                                                    attrs: {
-                                                      type: "checkbox",
-                                                      id: "fee-tax-status",
-                                                      "true-value": "taxable",
-                                                      "false-value": "none"
-                                                    },
-                                                    domProps: {
-                                                      checked: Array.isArray(
-                                                        _vm.orderdata.fee_lines[
-                                                          key
-                                                        ].tax_status
-                                                      )
-                                                        ? _vm._i(
-                                                            _vm.orderdata
-                                                              .fee_lines[key]
-                                                              .tax_status,
-                                                            null
-                                                          ) > -1
-                                                        : _vm._q(
-                                                            _vm.orderdata
-                                                              .fee_lines[key]
-                                                              .tax_status,
-                                                            "taxable"
-                                                          )
-                                                    },
-                                                    on: {
-                                                      change: function($event) {
-                                                        var $$a =
-                                                            _vm.orderdata
-                                                              .fee_lines[key]
-                                                              .tax_status,
-                                                          $$el = $event.target,
-                                                          $$c = $$el.checked
-                                                            ? "taxable"
-                                                            : "none"
-                                                        if (
-                                                          Array.isArray($$a)
-                                                        ) {
-                                                          var $$v = null,
-                                                            $$i = _vm._i(
-                                                              $$a,
-                                                              $$v
-                                                            )
-                                                          if ($$el.checked) {
-                                                            $$i < 0 &&
-                                                              (_vm.orderdata.fee_lines[
-                                                                key
-                                                              ].tax_status = $$a.concat(
-                                                                [$$v]
-                                                              ))
-                                                          } else {
-                                                            $$i > -1 &&
-                                                              (_vm.orderdata.fee_lines[
-                                                                key
-                                                              ].tax_status = $$a
-                                                                .slice(0, $$i)
-                                                                .concat(
-                                                                  $$a.slice(
-                                                                    $$i + 1
-                                                                  )
-                                                                ))
-                                                          }
-                                                        } else {
-                                                          _vm.$set(
-                                                            _vm.orderdata
-                                                              .fee_lines[key],
-                                                            "tax_status",
-                                                            $$c
-                                                          )
+                                                        attrs: {
+                                                          for: "fee-tax-status"
                                                         }
-                                                      }
-                                                    }
-                                                  }),
-                                                  _vm._v(" Taxable")
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _vm.orderdata.fee_lines[key]
-                                                .tax_status == "taxable"
-                                                ? _c(
-                                                    "select",
-                                                    {
-                                                      directives: [
-                                                        {
-                                                          name: "model",
-                                                          rawName: "v-model",
-                                                          value:
-                                                            _vm.orderdata
-                                                              .fee_lines[key]
-                                                              .tax_class,
-                                                          expression:
-                                                            "orderdata.fee_lines[key].tax_class"
-                                                        }
-                                                      ],
-                                                      staticClass:
-                                                        "fee-tax-class",
-                                                      on: {
-                                                        change: function(
-                                                          $event
-                                                        ) {
-                                                          var $$selectedVal = Array.prototype.filter
-                                                            .call(
-                                                              $event.target
-                                                                .options,
-                                                              function(o) {
-                                                                return o.selected
-                                                              }
-                                                            )
-                                                            .map(function(o) {
-                                                              var val =
-                                                                "_value" in o
-                                                                  ? o._value
-                                                                  : o.value
-                                                              return val
-                                                            })
-                                                          _vm.$set(
-                                                            _vm.orderdata
-                                                              .fee_lines[key],
-                                                            "tax_class",
-                                                            $event.target
-                                                              .multiple
-                                                              ? $$selectedVal
-                                                              : $$selectedVal[0]
-                                                          )
-                                                        }
-                                                      }
-                                                    },
-                                                    _vm._l(
-                                                      _vm.availableTax,
-                                                      function(feeTax) {
-                                                        return _c(
-                                                          "option",
-                                                          {
-                                                            domProps: {
+                                                      },
+                                                      [
+                                                        _c("input", {
+                                                          directives: [
+                                                            {
+                                                              name: "model",
+                                                              rawName:
+                                                                "v-model",
                                                               value:
-                                                                feeTax.class
+                                                                _vm.orderdata
+                                                                  .fee_lines[
+                                                                  key
+                                                                ].tax_status,
+                                                              expression:
+                                                                "orderdata.fee_lines[key].tax_status"
+                                                            }
+                                                          ],
+                                                          staticClass:
+                                                            "fee-tax-status",
+                                                          attrs: {
+                                                            type: "checkbox",
+                                                            id:
+                                                              "fee-tax-status",
+                                                            "true-value":
+                                                              "taxable",
+                                                            "false-value":
+                                                              "none"
+                                                          },
+                                                          domProps: {
+                                                            checked: Array.isArray(
+                                                              _vm.orderdata
+                                                                .fee_lines[key]
+                                                                .tax_status
+                                                            )
+                                                              ? _vm._i(
+                                                                  _vm.orderdata
+                                                                    .fee_lines[
+                                                                    key
+                                                                  ].tax_status,
+                                                                  null
+                                                                ) > -1
+                                                              : _vm._q(
+                                                                  _vm.orderdata
+                                                                    .fee_lines[
+                                                                    key
+                                                                  ].tax_status,
+                                                                  "taxable"
+                                                                )
+                                                          },
+                                                          on: {
+                                                            change: function(
+                                                              $event
+                                                            ) {
+                                                              var $$a =
+                                                                  _vm.orderdata
+                                                                    .fee_lines[
+                                                                    key
+                                                                  ].tax_status,
+                                                                $$el =
+                                                                  $event.target,
+                                                                $$c = $$el.checked
+                                                                  ? "taxable"
+                                                                  : "none"
+                                                              if (
+                                                                Array.isArray(
+                                                                  $$a
+                                                                )
+                                                              ) {
+                                                                var $$v = null,
+                                                                  $$i = _vm._i(
+                                                                    $$a,
+                                                                    $$v
+                                                                  )
+                                                                if (
+                                                                  $$el.checked
+                                                                ) {
+                                                                  $$i < 0 &&
+                                                                    (_vm.orderdata.fee_lines[
+                                                                      key
+                                                                    ].tax_status = $$a.concat(
+                                                                      [$$v]
+                                                                    ))
+                                                                } else {
+                                                                  $$i > -1 &&
+                                                                    (_vm.orderdata.fee_lines[
+                                                                      key
+                                                                    ].tax_status = $$a
+                                                                      .slice(
+                                                                        0,
+                                                                        $$i
+                                                                      )
+                                                                      .concat(
+                                                                        $$a.slice(
+                                                                          $$i +
+                                                                            1
+                                                                        )
+                                                                      ))
+                                                                }
+                                                              } else {
+                                                                _vm.$set(
+                                                                  _vm.orderdata
+                                                                    .fee_lines[
+                                                                    key
+                                                                  ],
+                                                                  "tax_status",
+                                                                  $$c
+                                                                )
+                                                              }
+                                                            }
+                                                          }
+                                                        }),
+                                                        _vm._v(" Taxable")
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _vm.orderdata.fee_lines[key]
+                                                      .tax_status == "taxable"
+                                                      ? _c(
+                                                          "select",
+                                                          {
+                                                            directives: [
+                                                              {
+                                                                name: "model",
+                                                                rawName:
+                                                                  "v-model",
+                                                                value:
+                                                                  _vm.orderdata
+                                                                    .fee_lines[
+                                                                    key
+                                                                  ].tax_class,
+                                                                expression:
+                                                                  "orderdata.fee_lines[key].tax_class"
+                                                              }
+                                                            ],
+                                                            staticClass:
+                                                              "fee-tax-class",
+                                                            on: {
+                                                              change: function(
+                                                                $event
+                                                              ) {
+                                                                var $$selectedVal = Array.prototype.filter
+                                                                  .call(
+                                                                    $event
+                                                                      .target
+                                                                      .options,
+                                                                    function(
+                                                                      o
+                                                                    ) {
+                                                                      return o.selected
+                                                                    }
+                                                                  )
+                                                                  .map(function(
+                                                                    o
+                                                                  ) {
+                                                                    var val =
+                                                                      "_value" in
+                                                                      o
+                                                                        ? o._value
+                                                                        : o.value
+                                                                    return val
+                                                                  })
+                                                                _vm.$set(
+                                                                  _vm.orderdata
+                                                                    .fee_lines[
+                                                                    key
+                                                                  ],
+                                                                  "tax_class",
+                                                                  $event.target
+                                                                    .multiple
+                                                                    ? $$selectedVal
+                                                                    : $$selectedVal[0]
+                                                                )
+                                                              }
                                                             }
                                                           },
-                                                          [
-                                                            _vm._v(
-                                                              _vm._s(
-                                                                _vm.unSanitizeString(
-                                                                  feeTax.class
-                                                                )
-                                                              ) +
-                                                                " - " +
-                                                                _vm._s(
-                                                                  feeTax.percentage_rate
-                                                                )
-                                                            )
-                                                          ]
+                                                          _vm._l(
+                                                            _vm.availableTax,
+                                                            function(feeTax) {
+                                                              return _c(
+                                                                "option",
+                                                                {
+                                                                  domProps: {
+                                                                    value:
+                                                                      feeTax.class ==
+                                                                      "standard"
+                                                                        ? ""
+                                                                        : feeTax.class
+                                                                  }
+                                                                },
+                                                                [
+                                                                  _vm._v(
+                                                                    _vm._s(
+                                                                      _vm.unSanitizeString(
+                                                                        feeTax.class
+                                                                      )
+                                                                    ) +
+                                                                      " - " +
+                                                                      _vm._s(
+                                                                        feeTax.percentage_rate
+                                                                      )
+                                                                  )
+                                                                ]
+                                                              )
+                                                            }
+                                                          )
                                                         )
-                                                      }
-                                                    )
-                                                  )
+                                                      : _vm._e()
+                                                  ]
                                                 : _vm._e(),
                                               _vm._v(" "),
                                               _c(
@@ -4403,13 +4401,14 @@ var render = function() {
                                                   },
                                                   on: {
                                                     click: function($event) {
-                                                      _vm.setFee(key, "fee")
+                                                      _vm.saveFee(key)
                                                     }
                                                   }
                                                 },
                                                 [_vm._v("Apply")]
                                               )
-                                            ]
+                                            ],
+                                            2
                                           ),
                                           _vm._v(" "),
                                           _c("td", { staticClass: "action" }, [
@@ -4425,18 +4424,48 @@ var render = function() {
                                           ])
                                         ]
                                       : [
-                                          _c("td", { staticClass: "label" }, [
-                                            _vm._v("Fee "),
-                                            _c(
-                                              "span",
-                                              { staticClass: "name" },
-                                              [_vm._v(_vm._s(fee.name))]
-                                            )
-                                          ]),
+                                          _c(
+                                            "td",
+                                            {
+                                              staticClass: "label",
+                                              on: {
+                                                dblclick: function($event) {
+                                                  _vm.orderdata.fee_lines[
+                                                    key
+                                                  ].isEdit = true
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _vm._v("Fee "),
+                                              _c(
+                                                "span",
+                                                { staticClass: "name" },
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(fee.name) +
+                                                      " " +
+                                                      _vm._s(
+                                                        fee.fee_type ==
+                                                        "percent"
+                                                          ? fee.value + "%"
+                                                          : _vm.formatPrice(
+                                                              fee.value
+                                                            )
+                                                      )
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          ),
                                           _vm._v(" "),
                                           _c("td", { staticClass: "price" }, [
                                             _vm._v(
-                                              _vm._s(_vm.formatPrice(fee.total))
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  Math.abs(fee.total)
+                                                )
+                                              )
                                             )
                                           ]),
                                           _vm._v(" "),
@@ -4476,23 +4505,15 @@ var render = function() {
                         "td",
                         { attrs: { colspan: "3" } },
                         [
-                          _c("discount-keypad", {
-                            on: { discount: _vm.setDiscount }
+                          _c("fee-keypad", {
+                            attrs: { name: "Discount" },
+                            on: { inputfee: _vm.setDiscount }
                           }),
                           _vm._v(" "),
-                          _c(
-                            "a",
-                            {
-                              attrs: { href: "#" },
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  _vm.addFee("fee")
-                                }
-                              }
-                            },
-                            [_vm._v("Add Fee")]
-                          ),
+                          _c("fee-keypad", {
+                            attrs: { name: "Fee" },
+                            on: { inputfee: _vm.setFee }
+                          }),
                           _vm._v(" "),
                           _c(
                             "a",
@@ -4818,7 +4839,20 @@ var render = function() {
                                               _c(
                                                 "span",
                                                 { staticClass: "metadata" },
-                                                [_vm._v(_vm._s(fee.name))]
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(fee.name) +
+                                                      " " +
+                                                      _vm._s(
+                                                        fee.discount_type ==
+                                                        "percent"
+                                                          ? fee.value + "%"
+                                                          : _vm.formatPrice(
+                                                              fee.value
+                                                            )
+                                                      )
+                                                  )
+                                                ]
                                               )
                                             ]
                                           ),
@@ -4847,7 +4881,20 @@ var render = function() {
                                               _c(
                                                 "span",
                                                 { staticClass: "metadata" },
-                                                [_vm._v(_vm._s(fee.name))]
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(fee.name) +
+                                                      " " +
+                                                      _vm._s(
+                                                        fee.fee_type ==
+                                                        "percent"
+                                                          ? fee.value + "%"
+                                                          : _vm.formatPrice(
+                                                              fee.value
+                                                            )
+                                                      )
+                                                  )
+                                                ]
                                               )
                                             ]
                                           ),
@@ -4870,15 +4917,19 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
-                          _c("li", { staticClass: "wepos-clearfix" }, [
-                            _c("span", { staticClass: "wepos-left" }, [
-                              _vm._v("Tax")
-                            ]),
-                            _vm._v(" "),
-                            _c("span", { staticClass: "wepos-right" }, [
-                              _vm._v(_vm._s(_vm.formatPrice(_vm.getTotalTax)))
-                            ])
-                          ]),
+                          _vm.getTotalTax
+                            ? _c("li", { staticClass: "wepos-clearfix" }, [
+                                _c("span", { staticClass: "wepos-left" }, [
+                                  _vm._v("Tax")
+                                ]),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "wepos-right" }, [
+                                  _vm._v(
+                                    _vm._s(_vm.formatPrice(_vm.getTotalTax))
+                                  )
+                                ])
+                              ])
+                            : _vm._e(),
                           _vm._v(" "),
                           _c("li", { staticClass: "wepos-clearfix" }, [
                             _c("span", { staticClass: "wepos-left" }, [
@@ -5161,7 +5212,8 @@ if (false) {
 }
 
 /***/ }),
-/* 93 */
+
+/***/ 93:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5218,13 +5270,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 94 */
+
+/***/ 94:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 95 */
+
+/***/ 95:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5248,4 +5302,5 @@ if (false) {
 }
 
 /***/ })
-],[67]);
+
+},[67]);

@@ -1,12 +1,12 @@
 <template>
-    <div class="wepos-discount-keypad-wrap" :class="className">
-        <v-popover offset="5" popover-base-class="discount-keypad tooltip popover" placement="top" :open="viewDiscountKeypad">
-            <a href="#" @click.prevent="showDiscountKeypad()">Add Discount</a>
+    <div class="wepos-fee-keypad-wrap" :class="className">
+        <v-popover offset="5" popover-base-class="fee-keypad tooltip popover" placement="top" :open="viewFeeKeypad">
+            <a href="#" @click.prevent="showFeeKeypad()">Add {{ name }}</a>
             <template slot="popover">
                 <form>
-                    <input type="text" v-model="displayValue" ref="discountinput" @keyup="inputChange">
+                    <input type="text" v-model="displayValue" ref="feeinput" @keyup="inputChange">
                 </form>
-                <keyboard v-model="input" :layouts="layout()" @percent="percentDiscount" @flat="flatDiscount" @input="change"/>
+                <keyboard v-model="input" :layouts="layout()" @percent="percentFee" @flat="flatFee" @input="change"/>
             </template>
         </v-popover>
     </div>
@@ -17,12 +17,16 @@ import keyboard from './Keyboard.vue';
 
 export default {
 
-    name: 'DiscountKeypad',
+    name: 'FeeKeypad',
 
     components : {
         keyboard
     },
     props: {
+        name: {
+            type: String,
+            default: 'Fee'
+        },
         className: {
             type: String,
             default: ''
@@ -32,22 +36,22 @@ export default {
         return {
             input: '',
             displayValue: '',
-            viewDiscountKeypad: false
+            viewFeeKeypad: false
         };
     },
     methods: {
         layout() {
-            return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0'+wepos.currency_format_decimal_sep+'|{% Discount:percent}{'+ wepos.currency_format_symbol +' Discount:flat}';
+            return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0'+wepos.currency_format_decimal_sep+'|{% '+this.name+':percent}{'+ wepos.currency_format_symbol + ' '+ this.name+':flat}';
         },
-        percentDiscount( keyboard ) {
-            this.$emit( 'discount', keyboard.value.toString(), 'percent' );
-            this.viewDiscountKeypad = false;
+        percentFee( keyboard ) {
+            this.$emit( 'inputfee', keyboard.value.toString(), 'percent' );
+            this.viewFeeKeypad = false;
             this.input='';
             this.displayValue='';
         },
-        flatDiscount( keyboard ) {
-            this.$emit( 'discount', keyboard.value.toString(), 'flat' );
-            this.viewDiscountKeypad = false;
+        flatFee( keyboard ) {
+            this.$emit( 'inputfee', keyboard.value.toString(), 'flat' );
+            this.viewFeeKeypad = false;
             this.input='';
             this.displayValue='';
         },
@@ -62,8 +66,10 @@ export default {
                 }
             }
 
+            jQuery( this.$refs.feeinput ).focus();
+
             if ( this.input == '' ) {
-                jQuery( this.$refs.discountinput ).focus();
+                jQuery( this.$refs.feeinput ).focus();
             }
         },
         inputChange() {
@@ -74,29 +80,26 @@ export default {
             }
 
             if ( this.input == '' ) {
-                jQuery( this.$refs.discountinput ).focus();
+                jQuery( this.$refs.feeinput ).focus();
             }
         },
-        showDiscountKeypad() {
-            this.viewDiscountKeypad = true;
+        showFeeKeypad() {
+            this.viewFeeKeypad = true;
             setTimeout( () => {
-                jQuery( this.$refs.discountinput ).focus();
+                jQuery( this.$refs.feeinput ).focus();
             }, 500 );
-            // this.$nextTick( () => {
-            //     jQuery( this.$refs.discountinput ).focus();
-            // } );
         }
     }
 };
 </script>
 
 <style lang="less">
-.wepos-discount-keypad-wrap {
+.wepos-fee-keypad-wrap {
     display: inline-block;
     float: left;
 }
 
-.discount-keypad {
+.fee-keypad {
     .tooltip-inner {
         input {
             width: 87%;

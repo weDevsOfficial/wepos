@@ -1,5 +1,5 @@
 <template>
-    <div class="customer-search-box" v-click-outside="onblur">
+    <div class="customer-search-box" v-click-outside="onblur" v-hotkey="hotkeys">
         <form action="" autocomplete="off">
             <svg class="customer-icon" width="19px" height="19px" viewBox="0 0 19 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <defs>
@@ -24,8 +24,8 @@
                     </g>
                 </g>
             </svg>
-            <input type="text" name="customer_search" id="customer-search" placeholder="Search customer" v-model="serachInput" @focus.prevent="triggerFocus" @keyup="searchCustomer">
-            <span class="add-new-customer flaticon-add" @click.prevent="showNewCustomerModal = true"></span>
+            <input type="text" ref="customerSearch" name="customer_search" id="customer-search" placeholder="Search customer (or Press ctrl+c)" v-model="serachInput" @focus.prevent="triggerFocus" @keyup="searchCustomer">
+            <span class="add-new-customer flaticon-add" @click.prevent="addNewCustomer()"></span>
             <div class="search-result" v-show="showCustomerResults">
                 <div v-if="customers.length">
                     <keyboard-control :listLength="customers.length" @selected="selectedHandler" @key-down="onKeyDown" @key-up="onKeyUp">
@@ -116,8 +116,28 @@ export default {
             showNewCustomerModal: false
         }
     },
-
+    computed: {
+        hotkeys() {
+            return {
+                'ctrl+c': this.focusCustomerSearch,
+                'ctrl+shift+c': this.addNewCustomer,
+                'esc': this.searchClose,
+            }
+        }
+    },
     methods: {
+        focusCustomerSearch() {
+            this.$refs.customerSearch.focus();
+        },
+        searchClose() {
+            this.showCustomerResults = false;
+            this.serachInput = '';
+            this.showNewCustomerModal= false;
+            this.$refs.customerSearch.blur();
+        },
+        addNewCustomer() {
+            this.showNewCustomerModal = true;
+        },
         selectedHandler(selectedIndex) {
             var selectedCustomer = this.customers[selectedIndex];
             this.selectCustomer( selectedCustomer );

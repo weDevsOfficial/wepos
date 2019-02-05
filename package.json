@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.11",
+    "v-hotkey": "^0.3.0",
     "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.5.2",
     "vue-js-popover": "^1.1.8",

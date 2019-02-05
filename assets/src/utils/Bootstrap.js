@@ -7,6 +7,7 @@ import Popover  from 'vue-js-popover'
 import Loading from "admin/components/Loading.vue"
 import TextEditor from "admin/components/TextEditor.vue"
 import { VTooltip, VPopover, VClosePopover } from 'v-tooltip'
+import VueHotkey from 'v-hotkey'
 
 Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )
@@ -43,7 +44,8 @@ Vue.directive('click-outside', {
 });
 
 Vue.mixin( Mixin );
-Vue.use(Popover);
+Vue.use(Popover, { defaultBoundariesElement: document.body } );
+Vue.use(VueHotkey);
 
 window.wepos_get_lib = function( lib ) {
     return window.wepos.libs[lib];

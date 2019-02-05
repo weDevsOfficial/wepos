@@ -1,5 +1,5 @@
 <template>
-    <div class="wepos-fee-keypad-wrap" :class="className">
+    <div class="wepos-fee-keypad-wrap" :class="className" v-hotkey="hotkeys">
         <v-popover offset="5" popover-base-class="fee-keypad tooltip popover" placement="top" :open="viewFeeKeypad">
             <a href="#" @click.prevent="showFeeKeypad()">Add {{ name }}</a>
             <template slot="popover">
@@ -22,12 +22,31 @@ export default {
     components : {
         keyboard
     },
+    computed: {
+        hotkeys() {
+            var keymap = {
+                discount : {
+                    'alt+d' : this.showFeeKeypad,
+                    'esc': this.hideFeeKepad
+                },
+                fee : {
+                    'alt+f' : this.showFeeKeypad,
+                    'esc': this.hideFeeKepad
+                },
+            }
+            return keymap[this.shortKey];
+        }
+    },
     props: {
         name: {
             type: String,
             default: 'Fee'
         },
         className: {
+            type: String,
+            default: ''
+        },
+        shortKey: {
             type: String,
             default: ''
         },
@@ -40,6 +59,9 @@ export default {
         };
     },
     methods: {
+        hideFeeKepad() {
+            this.viewFeeKeypad = false;
+        },
         layout() {
             return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0'+wepos.currency_format_decimal_sep+'|{% '+this.name+':percent}{'+ wepos.currency_format_symbol + ' '+ this.name+':flat}';
         },

@@ -45,6 +45,10 @@ var _TextEditor2 = _interopRequireDefault(_TextEditor);
 
 var _vTooltip = __webpack_require__(46);
 
+var _vHotkey = __webpack_require__(274);
+
+var _vHotkey2 = _interopRequireDefault(_vHotkey);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _vue2.default.directive('tooltip', _vTooltip.VTooltip);
@@ -84,7 +88,8 @@ _vue2.default.directive('click-outside', {
 });
 
 _vue2.default.mixin(_Mixin2.default);
-_vue2.default.use(_vueJsPopover2.default);
+_vue2.default.use(_vueJsPopover2.default, { defaultBoundariesElement: document.body });
+_vue2.default.use(_vHotkey2.default);
 
 window.wepos_get_lib = function (lib) {
   return window.wepos.libs[lib];

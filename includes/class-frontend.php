@@ -23,16 +23,12 @@ class Frontend {
     public function rewrite_templates() {
         if ( 'true' == get_query_var( 'wcpos' ) ) {
             //check if user is logged in otherwise redirect to login page
-            // if ( ! is_user_logged_in() ) {
-            //     wp_redirect( wp_login_url( $this->get_dashboard_url() ) );
-            //     exit();
-            // }
+            if ( ! is_user_logged_in() ) {
+                wp_redirect( get_permalink( get_option('woocommerce_myaccount_page_id') ) );
+                exit();
+            }
 
-            // include_once WCPOS_INCLUDES . '/class-i18n.php';
-
-            // new ERP_HR_Frontend_i18n();
-            //
-            include_once WCPOS_PATH . '/templates/wcpos.php';
+            include_once WCPOS_PATH . '/templates/wepos.php';
             exit;
         }
     }

@@ -1,13 +1,12 @@
 <template>
     <div class="search-box" v-click-outside="outside">
         <form action="" autocomplete="off">
-            <input type="text" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup="searchProduct">
+            <input type="text" ref="productSearch" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup="searchProduct">
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
-
-            <div class="search-type">
-                <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">Product</a>
-                <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">Scan</a>
+            <div class="search-type" v-hotkey="hotkeys">
+                <a href="#" :class="{ active: mode == 'product'}">Product</a>
+                <a href="#" :class="{ active: mode == 'scan'}">Scan</a>
             </div>
             <div class="search-result" v-show="showResults">
                 <div v-if="searchableProduct.length">
@@ -65,7 +64,6 @@
                         </div>
                     </div>
                 </div>
-
             </template>
 
             <template slot="footer">
@@ -78,6 +76,7 @@
 <script>
 import Modal from './Modal.vue';
 import KeyboardControl from './KeyboardControl.vue';
+import VueHotkey from 'v-hotkey';
 
 export default {
     name: 'ProductInlineSearch',
@@ -95,7 +94,6 @@ export default {
         Modal,
         KeyboardControl
     },
-
     data() {
         return {
             showResults: false,
@@ -106,13 +104,19 @@ export default {
             selectedVariationProduct: {},
             attributeDisabled: true,
             chosenAttribute: {},
-            zindex: false
         }
     },
 
     computed: {
         placeholder() {
-            return ( this.mode == 'scan' ) ? 'Scan your product' : 'Search product by typing';
+            return ( this.mode == 'scan' ) ? 'Scan your product ( or Press ctrl+s or ctrl+p )' : 'Search product by typing ( or Press ctrl+s or ctrl+p )';
+        },
+        hotkeys() {
+            return {
+                'ctrl+p': this.changeProductSearch,
+                'ctrl+s': this.changeScan,
+                'esc': this.searchClose,
+            }
         }
     },
 
@@ -125,6 +129,20 @@ export default {
     },
 
     methods: {
+        changeScan() {
+            this.changeMode('scan');
+            this.$refs.productSearch.focus();
+        },
+        changeProductSearch() {
+            this.changeMode('product');
+            this.$refs.productSearch.focus();
+        },
+        searchClose() {
+            this.showResults = false;
+            this.showVariationModal = false;
+            this.changeMode('scan');
+            this.$refs.productSearch.blur();
+        },
         selectedHandler(selectedIndex) {
             var selectedProduct = this.searchableProduct[selectedIndex];
             if ( selectedProduct.type =='simple' ) {
@@ -173,7 +191,6 @@ export default {
                 }
             }
         },
-
         selectVariation( product ) {
             this.selectedVariationProduct = product;
             this.showVariationModal = true;

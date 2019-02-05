@@ -1,5 +1,5 @@
 <template>
-    <div id="wepos-main" v-cloak>
+    <div id="wepos-main" v-cloak v-hotkey="hotkeys">
         <div class="content-product">
             <div class="top-panel">
                 <div class="search-bar">
@@ -48,7 +48,7 @@
                     </template>
 
                     <template v-if="product.type == 'variable'">
-                        <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end" :open="viewVariationPopover">
+                        <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
                             <div class="item-wrap" @click="selectVariationProduct( product )">
                                 <div class="img">
                                     <img :src="getProductImage(product)" :alt="getProductImageName( product )">
@@ -104,11 +104,9 @@
                             <label>
                                 <input type="checkbox">
                                 <ul>
-                                    <li><a href="#">Action</a></li>
-                                    <li>Another Action</li>
-                                    <li>Something else here</li>
+                                    <li><a href="#" @click.prevent="emptyCart">Empty Cart</a></li>
                                     <li class="divider"></li>
-                                    <li>Separated link</li>
+                                    <li><a :href="getLogoutUrl()">Logout</a></li>
                                 </ul>
                             </label>
                         </span>
@@ -224,8 +222,8 @@
                                 </tr>
                                 <tr class="cart-action">
                                     <td colspan="3">
-                                        <fee-keypad @inputfee="setDiscount" name="Discount"></fee-keypad>
-                                        <fee-keypad @inputfee="setFee" name="Fee"></fee-keypad>
+                                        <fee-keypad @inputfee="setDiscount" name="Discount" short-key="discount"></fee-keypad>
+                                        <fee-keypad @inputfee="setFee" name="Fee" short-key="fee"></fee-keypad>
                                         <a href="#" @click.prevent="showCustomerNote = !showCustomerNote">
                                             <span v-if="showCustomerNote">Remove Note</span>
                                             <span v-else>Add Note</span>
@@ -457,6 +455,12 @@ export default {
         }
     },
     computed: {
+        hotkeys() {
+            return {
+                'ctrl+b': this.toggleProductView,
+                'ctrl+alt+p': this.initPayment
+            }
+        },
         getPrintData() {
             return {
                 line_items: this.orderdata.line_items,
@@ -553,6 +557,21 @@ export default {
     },
 
     methods: {
+        getLogoutUrl() {
+            return wepos.logout_url.toString();
+        },
+        emptyCart() {
+            this.orderdata = {
+                billing: {},
+                shipping: {},
+                line_items: [],
+                fee_lines: [],
+            };
+            this.printdata = {};
+        },
+        toggleProductView() {
+            this.productView = ( this.productView == 'grid' ) ? 'list' : 'grid';
+        },
         createNewSale() {
             this.$router.push({
                 name: 'Home',
@@ -757,7 +776,6 @@ export default {
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type      = this.selectedVariationProduct.type;
             variationProduct.name      = this.selectedVariationProduct.name;
-            this.viewVariationPopover  = false;
             this.selectedAttribute     = {};
             this.attributeDisabled     = true;
             this.addToCart( variationProduct );
@@ -859,6 +877,18 @@ export default {
         this.fetchTaxes();
         this.fetchProducts();
         this.fetchGateway();
+
+        if ( typeof(localStorage) != 'undefined' ) {
+            var cartdata = JSON.parse( localStorage.getItem('cartdata') );
+            console.log( cartdata );
+            this.orderdata = cartdata ? cartdata : this.orderdata;
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if ( typeof( localStorage ) != 'undefined' ) {
+                localStorage.setItem('cartdata', JSON.stringify( this.orderdata ) );
+            }
+        }, false)
     }
 };
 </script>
@@ -1223,7 +1253,7 @@ export default {
                             &:before {
                                 color: #fff;
                                 font-weight: normal;
-                                margin-top: 45%;
+                                margin-top: 32%;
                                 display: inline-block;
                                 font-size: 35px;
                                 text-shadow: 1px 1px 1px rgba(0,0,0,0.5);

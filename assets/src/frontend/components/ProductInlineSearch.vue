@@ -10,24 +10,28 @@
                 <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">Scan</a>
             </div>
             <div class="search-result" v-show="showResults">
-                <ul v-if="products.length">
-                    <li v-for="product in products">
-                        <template v-if="product.type == 'simple'">
-                            <a href="#" class="wepos-clearfix" @click="addToCartAction( product )">{{ product.name }}
-                                <span class="price">{{ formatPrice( product.price ) }}</span>
-                                <span class="sku" v-if="product.sku">{{ product.sku }}</span>
-                                <span class="action flaticon-enter-arrow wepos-right"></span>
-                            </a>
+                <div v-if="searchableProduct.length">
+                    <keyboard-control :listLength="searchableProduct.length" @selected="selectedHandler" @key-down="onKeyDown" @key-up="onKeyUp">
+                        <template slot-scope="{selectedIndex}">
+                            <li v-for="(product, index) in searchableProduct" class="product-search-item" :class="{'selected': index === selectedIndex}" :key="index">
+                                <template v-if="product.type == 'simple'">
+                                    <a href="#" class="wepos-clearfix" @click="addToCartAction( product )">{{ product.name }}
+                                        <span class="price">{{ formatPrice( product.price ) }}</span>
+                                        <span class="sku" v-if="product.sku">{{ product.sku }}</span>
+                                        <span class="action flaticon-enter-arrow wepos-right"></span>
+                                    </a>
+                                </template>
+                                <template v-if="product.type == 'variable'">
+                                    <a href="#" class="" @click.prevent="selectVariation( product )">{{ product.name }}
+                                        <span class="price">{{ formatPrice( product.price ) }}</span>
+                                        <span class="sku" v-if="product.sku">{{ product.sku }}</span>
+                                        <span class="action flaticon-enter-arrow wepos-right"></span>
+                                    </a>
+                                </template>
+                            </li>
                         </template>
-                        <template v-if="product.type == 'variable'">
-                            <a href="#" class="" @click.prevent="selectVariation( product )">{{ product.name }}
-                                <span class="price">{{ formatPrice( product.price ) }}</span>
-                                <span class="sku" v-if="product.sku">{{ product.sku }}</span>
-                                <span class="action flaticon-enter-arrow wepos-right"></span>
-                            </a>
-                        </template>
-                    </li>
-                </ul>
+                    </keyboard-control>
+                </div>
                 <div v-else class="no-data-found">
                     No product found
                 </div>
@@ -44,15 +48,7 @@
                 </div>
             </div>
         </form>
-        <modal
-            title="Select Variations"
-            v-if="showVariationModal"
-            @close="showVariationModal = false"
-            width="500px"
-            height="auto"
-            :footer="true"
-            :header="true"
-        >
+        <modal title="Select Variations" v-if="showVariationModal" @close="showVariationModal = false" width="500px" height="auto" :footer="true" :header="true">
             <template slot="body">
                 <div class="variation-attribute-wrapper" v-for="attribute in selectedVariationProduct.attributes">
                     <div class="attribute">
@@ -81,12 +77,23 @@
 
 <script>
 import Modal from './Modal.vue';
+import KeyboardControl from './KeyboardControl.vue';
 
 export default {
     name: 'ProductInlineSearch',
 
+    props: {
+        products: {
+            type: Array,
+            default() {
+                return [];
+            }
+        }
+    },
+
     components : {
-        Modal
+        Modal,
+        KeyboardControl
     },
 
     data() {
@@ -95,7 +102,7 @@ export default {
             showVariationModal: false,
             mode: 'scan',
             serachInput: '',
-            products: [],
+            searchableProduct: [],
             selectedVariationProduct: {},
             attributeDisabled: true,
             chosenAttribute: {},
@@ -118,6 +125,22 @@ export default {
     },
 
     methods: {
+        selectedHandler(selectedIndex) {
+            var selectedProduct = this.searchableProduct[selectedIndex];
+            if ( selectedProduct.type =='simple' ) {
+                this.addToCartAction( selectedProduct );
+            } else {
+                this.selectVariation( selectedProduct );
+            }
+        },
+        onKeyDown() {
+            jQuery('.product-search-item.selected').next().children('a').focus();
+        },
+
+        onKeyUp() {
+            jQuery('.product-search-item.selected').prev().children('a').focus();
+        },
+
         triggerFocus() {
             this.showResults = true;
             this.$emit( 'onfocus' );
@@ -131,10 +154,23 @@ export default {
         },
         searchProduct() {
             if ( this.serachInput ) {
-                wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products?search=' + this.serachInput )
-                .done(response => {
-                    this.products = response;
-                });
+                if ( this.mode == 'product' ) {
+                    this.searchableProduct = this.products.filter( (product) => {
+                        if ( product.id.toString().indexOf( this.serachInput ) != -1 ) {
+                            return true;
+                        } else if ( product.name.toString().indexOf( this.serachInput ) != -1 ) {
+                            return true
+                        } else if ( product.sku.indexOf( this.serachInput ) != -1 ) {
+                            return true
+                        } else {
+                            return false;
+                        }
+                    } );
+                }
+
+                if ( this.mode == 'scan' ) {
+                    // Search product using barcode
+                }
             }
         },
 
@@ -158,8 +194,6 @@ export default {
         addToCartAction( product ) {
             this.$emit( 'onProductAdded', product );
         }
-
-
     }
 };
 

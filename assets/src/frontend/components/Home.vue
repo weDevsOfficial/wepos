@@ -3,7 +3,7 @@
         <div class="content-product">
             <div class="top-panel">
                 <div class="search-bar">
-                    <product-inline-search @onProductAdded="addToCart"></product-inline-search>
+                    <product-inline-search @onProductAdded="addToCart" :products="products"></product-inline-search>
                 </div>
                 <div class="category">
                     <select name="product_category" id="product-category">
@@ -89,9 +89,9 @@
                         </v-popover>
                     </template>
                 </div>
-                <mugen-scroll :handler="fetchProducts" v-show="productLoading" :should-handle="!productLoading" scroll-container="items-wrapper" class="product-loading">
+                <!-- <mugen-scroll :handler="fetchProducts" v-show="productLoading" :should-handle="!productLoading" scroll-container="items-wrapper" class="product-loading">
                     Loading...
-                </mugen-scroll>
+                </mugen-scroll> -->
             </div>
         </div>
         <div class="content-cart">
@@ -258,10 +258,7 @@
                     </div>
 
                     <div class="print-section">
-                        <button class="print-btn">
-                            <span class="icon flaticon-printer"></span>
-                            <span class="label">Print Receipt</span>
-                        </button>
+                        <print-receipt></print-receipt>
                         <button class="new-sale-btn" @click.prevent="createNewSale()">
                             <span class="icon flaticon-add"></span>
                             <span class="label">New Sale</span>
@@ -394,6 +391,8 @@
         </modal>
 
         <overlay :show="showOverlay"></overlay>
+
+        <print-receipt-html v-show="createprintreceipt" :printdata="getPrintData" :settings="settings.wepos_receipts"></print-receipt-html>
     </div>
 </template>
 
@@ -404,7 +403,11 @@ import ProductInlineSearch from './ProductInlineSearch.vue';
 import CustomerSearch from './CustomerSearch.vue';
 import FeeKeypad from './FeeKeypad.vue';
 import Modal from './Modal.vue';
-import MugenScroll from 'vue-mugen-scroll'
+import MugenScroll from 'vue-mugen-scroll';
+import PrintReceipt from './PrintReceipt.vue';
+import PrintReceiptHtml from './PrintReceiptHtml.vue';
+
+let EventBus = wepos_get_lib( 'EventBus' );
 
 export default {
 
@@ -416,7 +419,9 @@ export default {
         Overlay,
         Modal,
         MugenScroll,
-        FeeKeypad
+        FeeKeypad,
+        PrintReceipt,
+        PrintReceiptHtml
     },
 
     data () {
@@ -440,6 +445,8 @@ export default {
             showCustomerNote: false,
             availableTax: [],
             settings: {},
+            printdata: {},
+            createprintreceipt: false,
             orderdata: {
                 billing: {},
                 shipping: {},
@@ -450,6 +457,23 @@ export default {
         }
     },
     computed: {
+        getPrintData() {
+            return {
+                line_items: this.orderdata.line_items,
+                fee_lines: this.orderdata.fee_lines,
+                subtotal: this.getSubtotal,
+                taxtotal: this.getTotalTax,
+                ordertotal: this.getTotal,
+                gateway: {
+                    id: 'wepos_cash',
+                    title: 'Cash'
+                },
+                order_id: 121,
+                order_date: '2017-03-22T16:28:02',
+                cashamount: this.cashAmount.toString(),
+                changeamount: this.changeAmount.toString()
+            }
+        },
         getSubtotal() {
             var subtotal = 0;
             weLo_.forEach( this.orderdata.line_items, function( item, key ) {
@@ -539,6 +563,7 @@ export default {
                 line_items: [],
                 fee_lines: [],
             };
+            this.printdata = {};
             this.showPaymentReceipt = false;
             this.cashAmount = '';
         },
@@ -565,8 +590,6 @@ export default {
                 }
             ];
 
-            console.log( self.orderdata );
-
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
 
@@ -582,6 +605,21 @@ export default {
                                 payment: 'success'
                             }
                         });
+                        this.printdata = {
+                            line_items: this.orderdata.line_items,
+                            fee_lines: this.orderdata.fee_lines,
+                            subtotal: this.getSubtotal,
+                            taxtotal: this.getTotalTax,
+                            ordertotal: this.getTotal,
+                            gateway: {
+                                id: response.payment_method,
+                                title: response.payment_method_title
+                            },
+                            order_id: response.id,
+                            order_date: response.date_created,
+                            cashamount: this.cashAmount.toString(),
+                            changeamount: this.changeAmount.toString()
+                        }
                     } else {
                         $contentWrap.unblock();
                     }
@@ -589,8 +627,6 @@ export default {
                     $contentWrap.unblock();
                     alert( data.responseJSON.message );
                 });
-
-                $contentWrap.unblock();
             }).fail( response => {
                 $contentWrap.unblock();
                 alert( response.responseJSON.message );
@@ -691,6 +727,8 @@ export default {
                     this.page += 1;
                     this.totalPages = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
                     this.productLoading = false;
+                }).then( ( response, status, xhr ) => {
+                    this.fetchProducts();
                 });
             } else {
                 this.productLoading = false;
@@ -826,9 +864,7 @@ export default {
 </script>
 
 <style lang="less">
-[v-cloak] {
-  display: none;
-}
+
 #wepos-main {
     padding: 20px;
     display: flex;
@@ -979,6 +1015,15 @@ export default {
                                         border-bottom: none;
                                     }
                                 }
+
+                                &.selected {
+                                    background: #f6f7fb;
+                                    a {
+                                        span.action {
+                                            visibility: visible;
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -987,6 +1032,7 @@ export default {
                             background: #F6F7FB;
                             color: #999DAC;
                             font-size: 11px;
+                            border-top: 1px solid #ECEEF0;
 
                             span.term {
                                 margin-right: 15px;
@@ -1375,6 +1421,14 @@ export default {
                                     border-bottom: none;
                                 }
                             }
+                            &.selected {
+                                background: #f6f7fb;
+                                a {
+                                    span.action {
+                                        visibility: visible;
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -1383,6 +1437,7 @@ export default {
                         background: #F6F7FB;
                         color: #999DAC;
                         font-size: 11px;
+                        border-top: 1px solid #ECEEF0;
 
                         span.term {
                             margin-right: 15px;

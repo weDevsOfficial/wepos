@@ -176,18 +176,25 @@ function wepos_get_settings_fields() {
             ],
         ],
         'wepos_receipts' => [
+            'receipt_width' => [
+                'name'    => 'receipt_width',
+                'label'   => __( 'Receipt Page width', 'wepos' ),
+                'desc'    => __( 'Enter your order receipt width in `px`', 'wepos' ),
+                'type'    => 'text',
+                'default' => '400'
+            ],
             'receipt_header' => [
                 'name'    => 'receipt_header',
                 'label'   => __( 'Order receipt header', 'wepos' ),
                 'desc'    => __( 'Enter your order receipt header', 'wepos' ),
-                'type'    => 'text',
+                'type'    => 'wpeditor',
                 'default' => get_option( 'blogname' )
             ],
             'receipt_footer' => [
                 'name'    => 'receipt_footer',
                 'label'   => __( 'Order receipt footer', 'wepos' ),
                 'desc'    => __( 'Enter your order receipt footer text', 'wepos' ),
-                'type'    => 'text',
+                'type'    => 'wpeditor',
                 'default' => __( 'Thank you', 'wepos' )
             ],
         ],

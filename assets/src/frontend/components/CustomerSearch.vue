@@ -27,15 +27,19 @@
             <input type="text" name="customer_search" id="customer-search" placeholder="Search customer" v-model="serachInput" @focus.prevent="triggerFocus" @keyup="searchCustomer">
             <span class="add-new-customer flaticon-add" @click.prevent="showNewCustomerModal = true"></span>
             <div class="search-result" v-show="showCustomerResults">
-                <ul v-if="customers.length">
-                    <li v-for="customer in customers">
-                        <a href="#" class="wepos-clearfix" @click="selectCustomer( customer )">
-                            <span class="avatar wepos-left"><img :src="customer.avatar_url" :alt="customer.first_name + ' ' + customer.last_name"></span>
-                            <span class="name wepos-left">{{ customer.first_name + ' ' + customer.last_name }}<span class="metadata">{{ customer.email }}</span></span>
-                            <span class="action flaticon-enter-arrow wepos-right"></span>
-                        </a>
-                    </li>
-                </ul>
+                <div v-if="customers.length">
+                    <keyboard-control :listLength="customers.length" @selected="selectedHandler" @key-down="onKeyDown" @key-up="onKeyUp">
+                        <template slot-scope="{selectedIndex}">
+                            <li v-for="(customer, index) in customers" class="customer-search-item" :class="{'selected': index === selectedIndex}" :key="index">
+                                <a href="#" class="wepos-clearfix" @click="selectCustomer( customer )">
+                                    <span class="avatar wepos-left"><img :src="customer.avatar_url" :alt="customer.first_name + ' ' + customer.last_name"></span>
+                                    <span class="name wepos-left">{{ customer.first_name + ' ' + customer.last_name }}<span class="metadata">{{ customer.email }}</span></span>
+                                    <span class="action flaticon-enter-arrow wepos-right"></span>
+                                </a>
+                            </li>
+                        </template>
+                    </keyboard-control>
+                </div>
                 <div v-else class="no-data-found">
                     No customer found
                 </div>
@@ -92,12 +96,14 @@
 
 <script>
 import Modal from './Modal.vue';
+import KeyboardControl from './KeyboardControl.vue';
 
 export default {
     name: 'CustomerSearch',
 
     components : {
-        Modal
+        Modal,
+        KeyboardControl
     },
 
     data() {
@@ -112,6 +118,17 @@ export default {
     },
 
     methods: {
+        selectedHandler(selectedIndex) {
+            var selectedCustomer = this.customers[selectedIndex];
+            this.selectCustomer( selectedCustomer );
+        },
+        onKeyDown() {
+            jQuery('.customer-search-item.selected').next().children('a').focus();
+        },
+
+        onKeyUp() {
+            jQuery('.customer-search-item.selected').prev().children('a').focus();
+        },
         triggerFocus() {
             this.showCustomerResults = true;
             this.$emit( 'onfocus' );

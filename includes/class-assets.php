@@ -68,6 +68,15 @@ class Assets {
         $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.min' : '';
 
         $scripts = [
+            'wepos-tinymce' => array(
+                'src'       => site_url( '/wp-includes/js/tinymce/tinymce.min.js' ),
+                'deps'      => array()
+            ),
+            'wepos-tinymce-plugin' => array(
+                'src'     => WCPOS_ASSETS . '/src/vendors/tinymce/code/plugin.min.js',
+                'deps'    => array('wepos-tinymce'),
+                'version' => time()
+            ),
             'wepos-i18n-jed' => array(
                 'src'       => WCPOS_ASSETS . '/js/jed.js',
                 'version'   => filemtime( WCPOS_PATH . '/assets/js/jed.js' ),
@@ -108,7 +117,8 @@ class Assets {
                 'deps'      => [ 'jquery', 'wepos-i18n-jed', 'wepos-vendor', 'wepos-bootstrap' ],
                 'version'   => filemtime( WCPOS_PATH . '/assets/js/admin.js' ),
                 'in_footer' => true
-            ]
+            ],
+
         ];
 
         return $scripts;
@@ -133,6 +143,11 @@ class Assets {
             ],
             'wepos-admin' => [
                 'src' =>  WCPOS_ASSETS . '/css/admin.css'
+            ],
+            'wepos-tinymce' => [
+                'src'     => site_url( '/wp-includes/css/editor.css' ),
+                'deps'    => array(),
+                'version' => time()
             ],
         ];
 

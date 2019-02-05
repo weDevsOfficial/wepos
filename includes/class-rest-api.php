@@ -94,7 +94,6 @@ class REST_API {
      */
     public function tax_response( $response, $tax, $request ) {
         $data = $response->get_data();
-        error_log( print_r( $tax, true ) );
         $data['percentage_rate'] = \WC_Tax::get_rate_percent( $tax->tax_rate_id );
         $response->set_data( $data );
         return $response;

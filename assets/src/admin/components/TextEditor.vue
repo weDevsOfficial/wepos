@@ -52,13 +52,13 @@
                 setup(editor) {
                     const shortcodeMenuItems = [];
 
-                    _.forEach(vm.shortcodes, (shortcodeObj, shortcodeType) => {
+                    weLo_.forEach(vm.shortcodes, (shortcodeObj, shortcodeType) => {
                         shortcodeMenuItems.push({
                             text: shortcodeObj.title,
                             classes: 'menu-section-title'
                         });
 
-                        _.forEach(shortcodeObj.codes, (codeObj, shortcode) => {
+                        weLo_.forEach(shortcodeObj.codes, (codeObj, shortcode) => {
                             shortcodeMenuItems.push({
                                 text: codeObj.title,
                                 onclick() {

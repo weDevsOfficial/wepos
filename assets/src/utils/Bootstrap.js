@@ -49,10 +49,13 @@ window.wepos_get_lib = function( lib ) {
     return window.wepos.libs[lib];
 }
 
+export const EventBus = new Vue();
+
 window.weLo_ = _;
 window.wepos._ = _;
-window.wepos.api            = new API_Helper();
-window.wepos.libs['Vue']    = Vue;
-window.wepos.libs['Router'] = Router;
-window.wepos.libs['Loading']     = Loading;
-window.wepos.libs['TextEditor']  = TextEditor;
+window.wepos.api                = new API_Helper();
+window.wepos.libs['Vue']        = Vue;
+window.wepos.libs['Router']     = Router;
+window.wepos.libs['Loading']    = Loading;
+window.wepos.libs['TextEditor'] = TextEditor;
+window.wepos.libs['EventBus']   = EventBus;

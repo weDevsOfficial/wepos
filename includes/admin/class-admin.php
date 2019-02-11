@@ -1,5 +1,5 @@
 <?php
-namespace WePOS;
+namespace WePOS\Admin;
 
 /**
  * Admin Pages Handler

@@ -204,7 +204,6 @@ final class WC_POS {
      * Nothing being called here yet.
      */
     public function activate() {
-
         $installed = get_option( 'wc_pos_installed' );
 
         if ( ! $installed ) {
@@ -234,8 +233,9 @@ final class WC_POS {
         require_once WCPOS_INCLUDES . '/class-assets.php';
 
         if ( $this->is_request( 'admin' ) ) {
-            require_once WCPOS_INCLUDES . '/class-admin.php';
-            require_once WCPOS_INCLUDES . '/class-settings.php';
+            require_once WCPOS_INCLUDES . '/admin/class-admin.php';
+            require_once WCPOS_INCLUDES . '/admin/class-settings.php';
+            require_once WCPOS_INCLUDES . '/admin/class-products.php';
         }
 
         if ( $this->is_request( 'frontend' ) ) {
@@ -272,8 +272,10 @@ final class WC_POS {
     public function init_classes() {
 
         if ( $this->is_request( 'admin' ) ) {
-            $this->container['admin'] = new WePOS\Admin();
-            $this->container['settings'] = new WePOS\Settings();
+            $this->container['admin'] = new WePOS\Admin\Admin();
+            $this->container['settings'] = new WePOS\Admin\Settings();
+
+            new WePOS\Admin\Products();
         }
 
         if ( $this->is_request( 'frontend' ) ) {

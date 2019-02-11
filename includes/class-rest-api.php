@@ -54,6 +54,8 @@ class REST_API {
      * @return void
      */
     public function product_response( $response, $product, $request ) {
+        global $_wp_additional_image_sizes;
+
         $data           = $response->get_data();
         $type           = isset( $data['type'] ) ? $data['type'] : '';
         $variation_data = [];
@@ -75,11 +77,22 @@ class REST_API {
 
         $data['regular_display_price'] = wc_format_decimal( wc_get_price_to_display( $product, [ 'price' => $product->get_regular_price() ] ), wc_get_price_decimals() );
         $data['sales_display_price']   = wc_format_decimal( wc_get_price_to_display( $product, ['price' => $product->get_sale_price() ] ), wc_get_price_decimals() );
+        $data['barcode']               = $product->get_meta( '_wepos_barcode' );
 
         $price_excl_tax     = wc_get_price_excluding_tax( $product );
         $price_incl_tax     = wc_get_price_including_tax( $product );
         $tax_amount         = $price_incl_tax - $price_excl_tax;
         $data['tax_amount'] = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
+
+        if ( ! empty( $data['images'] ) ) {
+            foreach ( $data['images'] as $key => $image) {
+                $image_urls = [];
+                foreach ( $_wp_additional_image_sizes as $size => $value ) {
+                    $image_info = wp_get_attachment_image_src( $image['id'], $size );
+                    $data['images'][$key][$size] = $image_info[0];
+                }
+            }
+        }
 
         $response->set_data( $data );
         return $response;

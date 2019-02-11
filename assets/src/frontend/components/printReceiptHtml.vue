@@ -147,7 +147,7 @@ export default {
                     tr {
                         td {
                             font-size: 14px;
-                            padding: 8px 5px;
+                            padding: 8px 10px;
                             &.name {
                                 width: 60%;
                                 font-weight: bold;

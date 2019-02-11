@@ -1,14 +1,14 @@
 <template>
     <div class="search-box" v-click-outside="outside">
-        <form action="" autocomplete="off">
-            <input type="text" ref="productSearch" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup="searchProduct">
+        <form action="" autocomplete="off" @submit.prevent="handleProductScan">
+            <input type="text" ref="productSearch" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
             <div class="search-type" v-hotkey="hotkeys">
-                <a href="#" :class="{ active: mode == 'product'}">Product</a>
-                <a href="#" :class="{ active: mode == 'scan'}">Scan</a>
+                <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">Product</a>
+                <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">Scan</a>
             </div>
-            <div class="search-result" v-show="showResults">
+            <div class="search-result" v-show="showResults && mode=='product'">
                 <div v-if="searchableProduct.length">
                     <keyboard-control :listLength="searchableProduct.length" @selected="selectedHandler" @key-down="onKeyDown" @key-up="onKeyUp">
                         <template slot-scope="{selectedIndex}">
@@ -87,6 +87,12 @@ export default {
             default() {
                 return [];
             }
+        },
+        settings: {
+            type: Object,
+            default() {
+                return {};
+            }
         }
     },
 
@@ -111,6 +117,7 @@ export default {
         placeholder() {
             return ( this.mode == 'scan' ) ? 'Scan your product ( or Press ctrl+s or ctrl+p )' : 'Search product by typing ( or Press ctrl+s or ctrl+p )';
         },
+
         hotkeys() {
             return {
                 'ctrl+p': this.changeProductSearch,
@@ -131,18 +138,19 @@ export default {
     methods: {
         changeScan() {
             this.changeMode('scan');
-            this.$refs.productSearch.focus();
         },
+
         changeProductSearch() {
             this.changeMode('product');
-            this.$refs.productSearch.focus();
         },
+
         searchClose() {
             this.showResults = false;
             this.showVariationModal = false;
             this.changeMode('scan');
             this.$refs.productSearch.blur();
         },
+
         selectedHandler(selectedIndex) {
             var selectedProduct = this.searchableProduct[selectedIndex];
             if ( selectedProduct.type =='simple' ) {
@@ -151,6 +159,7 @@ export default {
                 this.selectVariation( selectedProduct );
             }
         },
+
         onKeyDown() {
             jQuery('.product-search-item.selected').next().children('a').focus();
         },
@@ -163,14 +172,77 @@ export default {
             this.showResults = true;
             this.$emit( 'onfocus' );
         },
+
         outside() {
             this.showResults = false;
             this.$emit( 'onblur' );
         },
+
         changeMode( mode ) {
             this.mode = mode;
+            if ( this.mode == 'scan' ) {
+                this.searchableProduct = [];
+                this.showResults = false;
+            }
+            this.$refs.productSearch.focus();
         },
-        searchProduct() {
+
+        handleProductScan() {
+            if ( this.mode == 'product' ) {
+                return;
+            }
+            var generalSettings = this.settings.wepos_general,
+                field = generalSettings.barcode_scanner_field == 'custom' ? 'barcode' : generalSettings.barcode_scanner_field,
+                selectedProduct = {},
+                filterProduct = this.products.filter( (product) => {
+                    if ( product.type == 'simple' ) {
+                        if ( product[field].toString() == this.serachInput ) {
+                            return true;
+                        }
+                    }
+                    if ( product.type == 'variable' ) {
+                        var ifFound = false;
+                        if ( product.variations.length > 0 ) {
+                            weLo_.forEach( product.variations, ( item, key ) => {
+                                if ( item[field].toString() == this.serachInput ) {
+                                    ifFound = true;
+                                }
+                            } );
+                        }
+
+                        if ( ifFound ) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } );
+
+            if ( filterProduct.length > 0 ) {
+                filterProduct = filterProduct[0];
+
+                if ( filterProduct.type == 'variable' ) {
+                    var variations = filterProduct.variations;
+                    var selectedVariationProduct = variations.filter( (item) => {
+                        if ( item[field].toString() == this.serachInput ) {
+                            return true;
+                        }
+                        return false;
+                    } );
+                    selectedProduct           = selectedVariationProduct[0];
+                    selectedProduct.parent_id = filterProduct.id;
+                    selectedProduct.type      = filterProduct.type;
+                    selectedProduct.name      = filterProduct.name;
+
+                    this.$emit( 'onProductAdded', selectedProduct );
+                } else {
+                    this.$emit( 'onProductAdded', filterProduct );
+                }
+            }
+
+            this.serachInput = '';
+        },
+
+        searchProduct(e) {
             if ( this.serachInput ) {
                 if ( this.mode == 'product' ) {
                     this.searchableProduct = this.products.filter( (product) => {
@@ -185,12 +257,9 @@ export default {
                         }
                     } );
                 }
-
-                if ( this.mode == 'scan' ) {
-                    // Search product using barcode
-                }
             }
         },
+
         selectVariation( product ) {
             this.selectedVariationProduct = product;
             this.showVariationModal = true;
@@ -211,6 +280,7 @@ export default {
         addToCartAction( product ) {
             this.$emit( 'onProductAdded', product );
         }
+
     }
 };
 

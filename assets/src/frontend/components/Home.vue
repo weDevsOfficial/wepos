@@ -3,7 +3,7 @@
         <div class="content-product">
             <div class="top-panel">
                 <div class="search-bar">
-                    <product-inline-search @onProductAdded="addToCart" :products="products"></product-inline-search>
+                    <product-inline-search @onProductAdded="addToCart" :products="products" :settings="settings"></product-inline-search>
                 </div>
                 <div class="category">
                     <select name="product_category" id="product-category">
@@ -668,7 +668,7 @@ export default {
             return !( this.orderdata.payment_method == undefined || this.orderdata.payment_method == '' );
         },
         getProductImage(product) {
-            return ( product.images.length > 0 ) ? product.images[0].src : wepos.placeholder_image;
+            return ( product.images.length > 0 ) ? product.images[0].shop_thumbnail : wepos.placeholder_image;
         },
 
         getProductImageName(product) {
@@ -1248,12 +1248,12 @@ export default {
                             right: 0;
                             width: 100%;
                             height: 100%;
-                            background: rgba(0,0,0,0.03);
+                            background: rgba(0,0,0,0.1);
                             visibility: hidden;
                             &:before {
                                 color: #fff;
                                 font-weight: normal;
-                                margin-top: 32%;
+                                margin-top: 50%;
                                 display: inline-block;
                                 font-size: 35px;
                                 text-shadow: 1px 1px 1px rgba(0,0,0,0.5);

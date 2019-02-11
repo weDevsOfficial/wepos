@@ -92,6 +92,8 @@ function wepos_sort_terms_hierarchicaly( &$cats, &$into, $parent_id = 0 ) {
         $top_cat->children = array();
         wepos_sort_terms_hierarchicaly( $cats, $top_cat->children, $top_cat->term_id );
     }
+
+    error_log( print_r( $cats, true ) );
 }
 
 /**
@@ -104,7 +106,8 @@ function wepos_sort_terms_hierarchicaly( &$cats, &$into, $parent_id = 0 ) {
 function wepos_get_product_category() {
     $categories        = get_terms( 'product_cat', [ 'hide_empty' => false ] );
     $category_hierarchy = [];
-    wepos_sort_terms_hierarchicaly($categories, $category_hierarchy);
+    wepos_sort_terms_hierarchicaly( $categories, $category_hierarchy );
+    return $category_hierarchy;
 }
 
 /**
@@ -174,6 +177,18 @@ function wepos_get_settings_fields() {
                     'no'  => __( 'No', 'wepos' ),
                 ]
             ],
+            'barcode_scanner_field' => [
+                'name'    => 'barcode_scanner_field',
+                'label'   => __( 'Barcode Scanner field', 'wepos' ),
+                'desc'    => __( 'Choose your barcode field. If you select <code>Custom Field</code> then you need to set barcode number manually in product edit page', 'wepos' ),
+                'type'    => 'select',
+                'default' => 'sku',
+                'options' => [
+                    'id'     => __( 'ID', 'wepos' ),
+                    'sku'    => __( 'SKU', 'wepos' ),
+                    'custom' => __( 'Custom field', 'wepos' ),
+                ]
+            ],
         ],
         'wepos_receipts' => [
             'receipt_width' => [
@@ -202,3 +217,24 @@ function wepos_get_settings_fields() {
 
     return apply_filters( 'wepos_settings_fields', $settings_fields );
 }
+
+/**
+ * Get the value of a settings field
+ *
+ * @param string $option settings field name
+ * @param string $section the section name this field belongs to
+ * @param string $default default text if it's not found
+ *
+ * @return mixed
+ */
+function wepos_get_option( $option, $section, $default = '' ) {
+
+    $options = get_option( $section );
+
+    if ( isset( $options[ $option ] ) ) {
+        return $options[ $option ];
+    }
+
+    return $default;
+}
+

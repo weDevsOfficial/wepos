@@ -56,7 +56,7 @@
                     </tr>
                     <tr>
                         <td colspan="2">Payment method</td>
-                        <td class="price">{{ printdata.gateway.title }}</td>
+                        <td class="price">{{ printdata.gateway.title || '' }}</td>
                     </tr>
                     <template v-if="printdata.gateway.id='wepos_cash'">
                         <tr>

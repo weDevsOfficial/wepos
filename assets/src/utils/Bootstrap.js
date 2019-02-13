@@ -8,10 +8,13 @@ import Loading from "admin/components/Loading.vue"
 import TextEditor from "admin/components/TextEditor.vue"
 import { VTooltip, VPopover, VClosePopover } from 'v-tooltip'
 import VueHotkey from 'v-hotkey'
+import Multiselect from 'vue-multiselect'
+import "vue-multiselect/dist/vue-multiselect.min.css"
 
 Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )
 Vue.component( 'v-popover', VPopover )
+Vue.component( 'multiselect', Multiselect )
 
 Vue.directive('click-outside', {
     bind: function(el, binding, vNode) {

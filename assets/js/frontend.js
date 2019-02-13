@@ -504,6 +504,30 @@ if (false) {(function () {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -514,8 +538,6 @@ if (false) {(function () {
 
 
 
-
-let EventBus = wepos_get_lib('EventBus');
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 
@@ -540,6 +562,7 @@ let EventBus = wepos_get_lib('EventBus');
             showModal: false,
             showPaymentReceipt: false,
             products: [],
+            filteredProducts: [],
             totalPages: 0,
             page: 1,
             showOverlay: false,
@@ -561,7 +584,9 @@ let EventBus = wepos_get_lib('EventBus');
                 line_items: [],
                 fee_lines: [],
                 customer_note: ''
-            }
+            },
+            selectedCategory: '',
+            categories: []
         };
     },
     computed: {
@@ -570,6 +595,16 @@ let EventBus = wepos_get_lib('EventBus');
                 'ctrl+b': this.toggleProductView,
                 'ctrl+alt+p': this.initPayment
             };
+        },
+        getFilteredProduct() {
+            if (this.$route.query.category !== undefined) {
+                return this.products.filter(product => {
+                    var foundCat = weLo_.find(product.categories, { id: parseInt(this.$route.query.category) });
+                    return foundCat != undefined && Object.keys(foundCat).length > 0;
+                });
+            } else {
+                return this.products;
+            }
         },
         getPrintData() {
             return {
@@ -600,7 +635,6 @@ let EventBus = wepos_get_lib('EventBus');
 
             return subtotal;
         },
-
         getTotalFee() {
             var fee = 0;
             weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
@@ -610,7 +644,6 @@ let EventBus = wepos_get_lib('EventBus');
             });
             return fee;
         },
-
         getTotalDiscount() {
             var discount = 0;
             weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
@@ -755,7 +788,6 @@ let EventBus = wepos_get_lib('EventBus');
                 alert(response.responseJSON.message);
             });
         },
-
         backGatewaySelection() {
             this.orderdata.payment_method = '';
             this.orderdata.payment_method_title = '';
@@ -774,7 +806,6 @@ let EventBus = wepos_get_lib('EventBus');
         getProductImage(product) {
             return product.images.length > 0 ? product.images[0].shop_thumbnail : wepos.placeholder_image;
         },
-
         getProductImageName(product) {
             return product.images.length > 0 ? product.images[0].name : product.name;
         },
@@ -849,6 +880,7 @@ let EventBus = wepos_get_lib('EventBus');
                     this.page += 1;
                     this.totalPages = parseInt(xhr.getResponseHeader('X-WP-TotalPages'));
                     this.productLoading = false;
+                    // this.filteredProducts = this.products;
                 }).then((response, status, xhr) => {
                     this.fetchProducts();
                 });
@@ -867,12 +899,10 @@ let EventBus = wepos_get_lib('EventBus');
                 this.orderdata.customer_id = 0;
             }
         },
-
         selectVariationProduct(product) {
             this.viewVariationPopover = true;
             this.selectedVariationProduct = product;
         },
-
         addVariationProduct() {
             var chosenVariationProduct = this.findMatchingVariations(this.selectedVariationProduct.variations, this.selectedAttribute);
             var variationProduct = chosenVariationProduct[0];
@@ -969,6 +999,50 @@ let EventBus = wepos_get_lib('EventBus');
             wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/taxes').done(response => {
                 this.availableTax = response;
             });
+        },
+        handleCategorySelect(selectedOption, id) {
+            this.$router.push({ name: 'Home', query: { 'category': selectedOption.id } });
+        },
+        handleCategoryRemove(selectedOption, id) {
+            this.$router.push({ name: 'Home' });
+        },
+        fetchCategories() {
+            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id').then(response => {
+                response.sort(function (a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+                var tree = function (response, root) {
+                    var r = [],
+                        o = {};
+                    response.forEach(function (a) {
+                        o[a.id] = { response: a, children: o[a.id] && o[a.id].children };
+                        if (a.parent_id === root) {
+                            r.push(o[a.id]);
+                        } else {
+                            o[a.parent_id] = o[a.parent_id] || {};
+                            o[a.parent_id].children = o[a.parent_id].children || [];
+                            o[a.parent_id].children.push(o[a.id]);
+                        }
+                    });
+                    return r;
+                }(response, null);
+                var sorted = tree.reduce(function traverse(level) {
+                    return function (r, a) {
+                        a.response.level = level;
+                        return r.concat(a.response, (a.children || []).reduce(traverse(level + 1), []));
+                    };
+                }(0), []);
+                this.categories = sorted;
+
+                if (this.$route.query.category !== undefined) {
+                    this.selectedCategory = weLo_.find(response, { id: parseInt(this.$route.query.category) });
+                }
+            });
+        },
+        filterProducts() {
+            this.products = this.products.filter(product => {
+                return weLo_.findIndex(product.categories, { id: this.$route.query.category }) > 0;
+            });
         }
     },
 
@@ -977,10 +1051,10 @@ let EventBus = wepos_get_lib('EventBus');
         this.fetchTaxes();
         this.fetchProducts();
         this.fetchGateway();
+        this.fetchCategories();
 
         if (typeof localStorage != 'undefined') {
             var cartdata = JSON.parse(localStorage.getItem('cartdata'));
-            console.log(cartdata);
             this.orderdata = cartdata ? cartdata : this.orderdata;
         }
 
@@ -4479,7 +4553,7 @@ var render = function() {
               _c("td", { attrs: { colspan: "2" } }, [_vm._v("Payment method")]),
               _vm._v(" "),
               _c("td", { staticClass: "price" }, [
-                _vm._v(_vm._s(_vm.printdata.gateway.title))
+                _vm._v(_vm._s(_vm.printdata.gateway.title || ""))
               ])
             ]),
             _vm._v(" "),
@@ -4564,7 +4638,7 @@ var render = function() {
     },
     [
       _c("div", { staticClass: "content-product" }, [
-        _c("div", { staticClass: "top-panel" }, [
+        _c("div", { staticClass: "top-panel wepos-clearfix" }, [
           _c(
             "div",
             { staticClass: "search-bar" },
@@ -4577,25 +4651,83 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("div", { staticClass: "category" }, [
-            _c(
-              "select",
-              { attrs: { name: "product_category", id: "product-category" } },
-              [
-                _c("option", { attrs: { value: "-1" } }, [
-                  _vm._v(_vm._s(_vm.__("All", "wepos")))
-                ]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "2" } }, [_vm._v("Shirt")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "3" } }, [_vm._v("Pant")])
-              ]
-            ),
-            _vm._v(" "),
-            _c("span", {
-              staticClass: "select-arrow flaticon-arrow-down-sign-to-navigate"
-            })
-          ]),
+          _c(
+            "div",
+            { staticClass: "category" },
+            [
+              _c(
+                "multiselect",
+                {
+                  staticClass: "wepos-multiselect",
+                  attrs: {
+                    options: _vm.categories,
+                    selectLabel: "",
+                    deselectLabel: "",
+                    selectedLabel: ""
+                  },
+                  on: {
+                    select: _vm.handleCategorySelect,
+                    remove: _vm.handleCategoryRemove
+                  },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "singleLabel",
+                      fn: function(props) {
+                        return [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(props.option.name) +
+                              "\n                    "
+                          )
+                        ]
+                      }
+                    },
+                    {
+                      key: "option",
+                      fn: function(props) {
+                        return [
+                          _c(
+                            "span",
+                            [
+                              _vm._l(props.option.level, function(pad) {
+                                return [
+                                  _vm._v(
+                                    "\n                                 \n                            "
+                                  )
+                                ]
+                              }),
+                              _vm._v(
+                                "\n                            " +
+                                  _vm._s(props.option.name) +
+                                  "\n                        "
+                              )
+                            ],
+                            2
+                          )
+                        ]
+                      }
+                    }
+                  ]),
+                  model: {
+                    value: _vm.selectedCategory,
+                    callback: function($$v) {
+                      _vm.selectedCategory = $$v
+                    },
+                    expression: "selectedCategory"
+                  }
+                },
+                [
+                  _c("template", { slot: "noResult" }, [
+                    _c("div", { staticClass: "no-data-found" }, [
+                      _vm._v("Not found")
+                    ])
+                  ])
+                ],
+                2
+              )
+            ],
+            1
+          ),
           _vm._v(" "),
           _c("div", { staticClass: "toggle-view" }, [
             _c("div", { staticClass: "product-toggle" }, [
@@ -4623,6 +4755,8 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
+        _vm._m(0),
+        _vm._v(" "),
         _c(
           "div",
           {
@@ -4630,8 +4764,8 @@ var render = function() {
             staticClass: "items-wrapper",
             class: _vm.productView
           },
-          _vm._l(_vm.products, function(product) {
-            return _vm.products.length > 0
+          _vm._l(_vm.getFilteredProduct, function(product) {
+            return _vm.getFilteredProduct.length > 0
               ? _c(
                   "div",
                   { staticClass: "item" },
@@ -4903,7 +5037,7 @@ var render = function() {
             _c("div", { staticClass: "action" }, [
               _c("div", { staticClass: "more-options" }, [
                 _c("span", { staticClass: "dropdown right-align" }, [
-                  _vm._m(0),
+                  _vm._m(1),
                   _vm._v(" "),
                   _c("label", [
                     _c("input", { attrs: { type: "checkbox" } }),
@@ -4944,7 +5078,7 @@ var render = function() {
         _c("div", { staticClass: "cart-panel" }, [
           _c("div", { staticClass: "cart-content" }, [
             _c("table", { staticClass: "cart-table" }, [
-              _vm._m(1),
+              _vm._m(2),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -5751,7 +5885,7 @@ var render = function() {
                           _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
                         ]),
                         _vm._v(" "),
-                        _vm._m(2)
+                        _vm._m(3)
                       ]
                     )
                   ],
@@ -6319,6 +6453,20 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "breadcrumb" }, [
+      _c("ul", [
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Electronics")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("TV")])])
+      ]),
+      _vm._v(" "),
+      _c("span", { staticClass: "close-breadcrumb flaticon-cancel-music" })
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

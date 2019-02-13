@@ -92,8 +92,6 @@ function wepos_sort_terms_hierarchicaly( &$cats, &$into, $parent_id = 0 ) {
         $top_cat->children = array();
         wepos_sort_terms_hierarchicaly( $cats, $top_cat->children, $top_cat->term_id );
     }
-
-    error_log( print_r( $cats, true ) );
 }
 
 /**

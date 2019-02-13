@@ -1,17 +1,44 @@
 <template>
     <div id="wepos-main" v-cloak v-hotkey="hotkeys">
         <div class="content-product">
-            <div class="top-panel">
+            <div class="top-panel wepos-clearfix">
                 <div class="search-bar">
                     <product-inline-search @onProductAdded="addToCart" :products="products" :settings="settings"></product-inline-search>
                 </div>
                 <div class="category">
-                    <select name="product_category" id="product-category">
+                    <multiselect
+                        class="wepos-multiselect"
+                        v-model="selectedCategory"
+                        :options="categories"
+                        selectLabel=""
+                        deselectLabel=""
+                        selectedLabel=""
+                        @select="handleCategorySelect"
+                        @remove="handleCategoryRemove"
+                    >
+                        <template slot="singleLabel" slot-scope="props">
+                            {{props.option.name}}
+                        </template>
+                        <template slot="option" slot-scope="props">
+                            <span>
+                                <template v-for="pad in props.option.level">
+                                    &nbsp;
+                                </template>
+                                {{ props.option.name }}
+                            </span>
+                        </template>
+
+                        <template slot="noResult">
+                            <div class="no-data-found">Not found</div>
+                        </template>
+                    </multiselect>
+
+                    <!-- <select name="product_category" id="product-category">
                         <option value="-1">{{ __( 'All', 'wepos' ) }}</option>
                         <option value="2">Shirt</option>
                         <option value="3">Pant</option>
-                    </select>
-                    <span class="select-arrow flaticon-arrow-down-sign-to-navigate"></span>
+                    </select> -->
+                    <!-- <span class="select-arrow flaticon-arrow-down-sign-to-navigate"></span> -->
                 </div>
 
                 <div class="toggle-view">
@@ -21,16 +48,16 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="breadcrumb">
+            <div class="breadcrumb">
                 <ul>
                     <li><a href="#">Electronics</a></li>
                     <li><a href="#">TV</a></li>
 
                 </ul>
                 <span class="close-breadcrumb flaticon-cancel-music"></span>
-            </div> -->
+            </div>
             <div class="items-wrapper" :class="productView" ref="items-wrapper">
-                <div class="item" v-if="products.length > 0" v-for="product in products">
+                <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
                     <template v-if="product.type == 'simple'">
                         <div class="item-wrap" @click.prevnt="addToCart(product)">
                             <div class="img">
@@ -89,9 +116,6 @@
                         </v-popover>
                     </template>
                 </div>
-                <!-- <mugen-scroll :handler="fetchProducts" v-show="productLoading" :should-handle="!productLoading" scroll-container="items-wrapper" class="product-loading">
-                    Loading...
-                </mugen-scroll> -->
             </div>
         </div>
         <div class="content-cart">
@@ -405,8 +429,6 @@ import MugenScroll from 'vue-mugen-scroll';
 import PrintReceipt from './PrintReceipt.vue';
 import PrintReceiptHtml from './PrintReceiptHtml.vue';
 
-let EventBus = wepos_get_lib( 'EventBus' );
-
 export default {
 
     name: 'Home',
@@ -419,7 +441,7 @@ export default {
         MugenScroll,
         FeeKeypad,
         PrintReceipt,
-        PrintReceiptHtml
+        PrintReceiptHtml,
     },
 
     data () {
@@ -430,6 +452,7 @@ export default {
             showModal: false,
             showPaymentReceipt: false,
             products: [],
+            filteredProducts: [],
             totalPages: 0,
             page: 1,
             showOverlay: false,
@@ -452,6 +475,8 @@ export default {
                 fee_lines: [],
                 customer_note: '',
             },
+            selectedCategory: '',
+            categories: []
         }
     },
     computed: {
@@ -459,6 +484,16 @@ export default {
             return {
                 'ctrl+b': this.toggleProductView,
                 'ctrl+alt+p': this.initPayment
+            }
+        },
+        getFilteredProduct() {
+            if ( this.$route.query.category !== undefined ) {
+                return  this.products.filter( (product) => {
+                    var foundCat = weLo_.find( product.categories, { id : parseInt( this.$route.query.category ) } );
+                    return foundCat != undefined && Object.keys(foundCat).length > 0;
+                } );
+            } else {
+                return this.products;
             }
         },
         getPrintData() {
@@ -490,7 +525,6 @@ export default {
 
             return subtotal;
         },
-
         getTotalFee() {
             var fee = 0;
             weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
@@ -500,7 +534,6 @@ export default {
             });
             return fee;
         },
-
         getTotalDiscount() {
             var discount = 0;
             weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
@@ -553,7 +586,7 @@ export default {
                 this.showModal = false;
                 this.showPaymentReceipt = true;
             };
-        }
+        },
     },
 
     methods: {
@@ -651,7 +684,6 @@ export default {
                 alert( response.responseJSON.message );
             } );
         },
-
         backGatewaySelection() {
             this.orderdata.payment_method = '';
             this.orderdata.payment_method_title = '';
@@ -670,7 +702,6 @@ export default {
         getProductImage(product) {
             return ( product.images.length > 0 ) ? product.images[0].shop_thumbnail : wepos.placeholder_image;
         },
-
         getProductImageName(product) {
             return ( product.images.length > 0 ) ? product.images[0].name : product.name;
         },
@@ -746,6 +777,7 @@ export default {
                     this.page += 1;
                     this.totalPages = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
                     this.productLoading = false;
+                    // this.filteredProducts = this.products;
                 }).then( ( response, status, xhr ) => {
                     this.fetchProducts();
                 });
@@ -764,12 +796,10 @@ export default {
                 this.orderdata.customer_id = 0;
             }
         },
-
         selectVariationProduct( product ) {
             this.viewVariationPopover = true;
             this.selectedVariationProduct = product;
         },
-
         addVariationProduct() {
             var chosenVariationProduct = this.findMatchingVariations( this.selectedVariationProduct.variations, this.selectedAttribute );
             var variationProduct       = chosenVariationProduct[0];
@@ -869,6 +899,50 @@ export default {
             .done( response => {
                 this.availableTax = response;
             });
+        },
+        handleCategorySelect( selectedOption, id ) {
+            this.$router.push( { name: 'Home', query: { 'category' : selectedOption.id } } );
+        },
+        handleCategoryRemove( selectedOption, id ) {
+            this.$router.push( { name: 'Home' } );
+        },
+        fetchCategories() {
+            wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id' )
+            .then( response => {
+                response.sort(function (a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+                var tree = function (response, root) {
+                    var r = [], o = {};
+                    response.forEach(function (a) {
+                        o[a.id] = { response: a, children: o[a.id] && o[a.id].children };
+                        if (a.parent_id === root) {
+                            r.push(o[a.id]);
+                        } else {
+                            o[a.parent_id] = o[a.parent_id] || {};
+                            o[a.parent_id].children = o[a.parent_id].children || [];
+                            o[a.parent_id].children.push(o[a.id]);
+                        }
+                    });
+                    return r;
+                }(response, null);
+                var sorted = tree.reduce(function traverse(level) {
+                    return function (r, a) {
+                        a.response.level = level
+                        return r.concat(a.response, (a.children || []).reduce(traverse(level + 1), []));
+                    };
+                }(0), []);
+                this.categories = sorted;
+
+                if ( this.$route.query.category !== undefined ) {
+                    this.selectedCategory = weLo_.find( response, { id : parseInt( this.$route.query.category ) } );
+                }
+            } );
+        },
+        filterProducts() {
+            this.products = this.products.filter( ( product ) => {
+                return weLo_.findIndex( product.categories, { id : this.$route.query.category } ) > 0;
+            } );
         }
     },
 
@@ -877,10 +951,13 @@ export default {
         this.fetchTaxes();
         this.fetchProducts();
         this.fetchGateway();
+        this.fetchCategories();
+
+
+
 
         if ( typeof(localStorage) != 'undefined' ) {
             var cartdata = JSON.parse( localStorage.getItem('cartdata') );
-            console.log( cartdata );
             this.orderdata = cartdata ? cartdata : this.orderdata;
         }
 
@@ -904,12 +981,13 @@ export default {
         margin-right: 20px;
 
         .top-panel {
-            display: flex;
+            // display: flex;
             margin-bottom: 20px;
 
             .search-bar {
-                flex: 7;
-                margin-right: 20px;
+                width: 56%;
+                margin-right: 2%;
+                float:left;
 
                 .search-box {
                     position: relative;
@@ -1086,8 +1164,9 @@ export default {
             }
 
             .category {
-                flex: 2;
-                margin-right: 20px;
+                width: 26%;
+                margin-right: 2%;
+                float:left;
                 position: relative;
 
                 select#product-category {
@@ -1124,7 +1203,8 @@ export default {
 
             }
             .toggle-view {
-                flex: 1;
+                width: 14%;
+                float: left;
                 text-align: right;
 
                 .toggle-icon {

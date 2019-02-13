@@ -49,11 +49,18 @@ var _vHotkey = __webpack_require__(16);
 
 var _vHotkey2 = _interopRequireDefault(_vHotkey);
 
+var _vueMultiselect = __webpack_require__(148);
+
+var _vueMultiselect2 = _interopRequireDefault(_vueMultiselect);
+
+__webpack_require__(274);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _vue2.default.directive('tooltip', _vTooltip.VTooltip);
 _vue2.default.directive('close-popover', _vTooltip.VClosePopover);
 _vue2.default.component('v-popover', _vTooltip.VPopover);
+_vue2.default.component('multiselect', _vueMultiselect2.default);
 
 _vue2.default.directive('click-outside', {
   bind: function bind(el, binding, vNode) {

@@ -30,6 +30,7 @@ class REST_API {
         add_action( 'rest_api_init', array( $this, 'register_rest_routes' ), 10 );
         add_filter( 'woocommerce_rest_prepare_product_object', [ $this, 'product_response' ], 10, 3 );
         add_filter( 'woocommerce_rest_prepare_product_variation_object', [ $this, 'product_response' ], 10, 3 );
+        add_filter( 'woocommerce_rest_prepare_product_cat', [ $this, 'category_response' ], 10, 3 );
         add_filter( 'woocommerce_rest_prepare_tax', [ $this, 'tax_response' ], 10, 3 );
     }
 
@@ -108,6 +109,20 @@ class REST_API {
     public function tax_response( $response, $tax, $request ) {
         $data = $response->get_data();
         $data['percentage_rate'] = \WC_Tax::get_rate_percent( $tax->tax_rate_id );
+        $response->set_data( $data );
+        return $response;
+    }
+
+    /**
+     * Added some param in category return
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    public function category_response( $response, $category, $request ) {
+        $data = $response->get_data();
+        $data['parent_id'] = $category->parent ? $category->parent : null;
         $response->set_data( $data );
         return $response;
     }

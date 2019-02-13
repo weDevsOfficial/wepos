@@ -733,3 +733,104 @@ div:focus, span:focus, button:focus, input:focus {
     transition: opacity .15s;
   }
 }
+
+.wepos-multiselect {
+    min-height: 35px !important;
+    font-size: 13px !important;
+
+    .multiselect__select {
+        width: 35px;
+        height: 35px;
+        padding: 6px 8px;
+    }
+
+    .multiselect__tags {
+        border-radius: 3px;
+        min-height: 34px;
+        padding: 5px 30px 0 8px;
+        border: 1px solid #e9edf0;
+        background: #fff;
+        font-size: 13px;
+        .multiselect__single {
+            font-size: 13px;
+        }
+    }
+
+    .multiselect__input {
+        width: 75% !important;
+        font-size: 13px;
+        padding-left: 3px !important;
+        line-height: 22px !important;
+        margin-bottom: 0px !important;
+        &::placeholder {
+            color: #999DAC;
+            font-size: 13px;
+        }
+
+        &:-ms-input-placeholder {
+            color: #999DAC;
+            font-size: 13px;
+        }
+
+        &::-ms-input-placeholder {
+            color: #999DAC;
+            font-size: 13px;
+        }
+
+    }
+
+     &.multiselect--active {
+        .multiselect__input {
+            width: 100% !important;
+            font-size: 13px;
+            padding-left: 3px !important;
+        }
+    }
+
+    .multiselect__content-wrapper {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        box-shadow: 0 30px 45px -10px rgba(0,0,0,.2);
+        z-index: 999;
+        border-bottom: none;
+        ul {
+            li.multiselect__element {
+                border-bottom: 1px solid #e9edf0;
+                position: relative;
+
+                .multiselect__option {
+                    padding: 8px 12px;
+                    line-height: 20px;
+                    min-height: 35px;
+                }
+
+                .multiselect__option--highlight, .multiselect__option--selected {
+                    background: #f6f7fb;
+                    color: #212121;
+                    font-weight: normal;
+                }
+
+                .multiselect__option--highlight {
+                    &:after {
+                        font-family: 'Flaticon';
+                        content: "\f10f";
+                        position:absolute;
+                        top:10px;
+                        right: 12px;
+                        color: #758598;
+                        background: none;
+                        line-height: 20px;
+                        padding:0px
+                    }
+                }
+
+                .no-data-found {
+                    padding: 20px;
+                    text-align: center;
+                    color: #758598;
+                }
+            }
+        }
+    }
+}
+

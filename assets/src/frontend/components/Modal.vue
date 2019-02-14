@@ -62,7 +62,7 @@ export default {
         return {
 
         };
-    }
+    },
 };
 </script>
 

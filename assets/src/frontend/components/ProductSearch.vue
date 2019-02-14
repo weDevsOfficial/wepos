@@ -281,6 +281,10 @@ export default {
             this.$emit( 'onProductAdded', product );
         }
 
+    },
+
+    mounted() {
+        this.$refs.productSearch.focus();
     }
 };
 

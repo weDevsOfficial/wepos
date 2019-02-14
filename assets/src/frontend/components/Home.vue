@@ -3,7 +3,7 @@
         <div class="content-product">
             <div class="top-panel wepos-clearfix">
                 <div class="search-bar">
-                    <product-inline-search @onProductAdded="addToCart" :products="products" :settings="settings"></product-inline-search>
+                    <product-search @onProductAdded="addToCart" :products="products" :settings="settings"></product-search>
                 </div>
                 <div class="category">
                     <multiselect
@@ -32,13 +32,6 @@
                             <div class="no-data-found">Not found</div>
                         </template>
                     </multiselect>
-
-                    <!-- <select name="product_category" id="product-category">
-                        <option value="-1">{{ __( 'All', 'wepos' ) }}</option>
-                        <option value="2">Shirt</option>
-                        <option value="3">Pant</option>
-                    </select> -->
-                    <!-- <span class="select-arrow flaticon-arrow-down-sign-to-navigate"></span> -->
                 </div>
 
                 <div class="toggle-view">
@@ -48,13 +41,15 @@
                     </div>
                 </div>
             </div>
-            <div class="breadcrumb">
+            <div class="breadcrumb" v-if="getBreadCrums.length > 0">
                 <ul>
-                    <li><a href="#">Electronics</a></li>
-                    <li><a href="#">TV</a></li>
-
+                    <template v-for="breadcrumb in getBreadCrums">
+                        <router-link tag="li" :to="{ name: 'Home', query: { category: breadcrumb.id }}">
+                            <a>{{ breadcrumb.name }}</a>
+                        </router-link>
+                    </template>
                 </ul>
-                <span class="close-breadcrumb flaticon-cancel-music"></span>
+                <span class="close-breadcrumb flaticon-cancel-music" @click.prevent="removeBreadcrums"></span>
             </div>
             <div class="items-wrapper" :class="productView" ref="items-wrapper">
                 <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
@@ -115,6 +110,9 @@
                             </template>
                         </v-popover>
                     </template>
+                </div>
+                <div class="product-loading" v-if="getFilteredProduct.length <= 0">
+                    <div class="spinner spinner-loading"></div>
                 </div>
             </div>
         </div>
@@ -248,16 +246,14 @@
                                     <td colspan="3">
                                         <fee-keypad @inputfee="setDiscount" name="Discount" short-key="discount"></fee-keypad>
                                         <fee-keypad @inputfee="setFee" name="Fee" short-key="fee"></fee-keypad>
-                                        <a href="#" @click.prevent="showCustomerNote = !showCustomerNote">
-                                            <span v-if="showCustomerNote">Remove Note</span>
-                                            <span v-else>Add Note</span>
-                                        </a>
+                                        <customer-note @addnote="addCustomerNote" v-if="orderdata.customer_note == ''"></customer-note>
                                     </td>
                                 </tr>
-                                <tr class="note" v-if="showCustomerNote">
-                                    <td colspan="3">
-                                        <textarea name="customer-note" placeholder="Add some note" id="customer-note" rows="4" v-model="orderdata.customer_note"></textarea>
+                                <tr class="note" v-if="orderdata.customer_note">
+                                    <td colspan="2" class="note-text">
+                                        {{ orderdata.customer_note }}
                                     </td>
+                                    <td class="action"><span class="flaticon-cancel-music" @click.prevent="orderdata.customer_note = ''"></span></td>
                                 </tr>
                                 <tr class="pay-now" @click="initPayment()">
                                     <td>Pay Now</td>
@@ -297,7 +293,6 @@
                         <div class="header">
                             Sale Summary
                         </div>
-
                         <div class="content" :style="{ height: modalLeftContentHeight }">
                             <table class="sale-summary-cart">
                                 <tbody>
@@ -391,7 +386,7 @@
                                                 <p>Cash</p>
                                                 <div class="input-addon">
                                                     <span class="currency">$</span>
-                                                    <input type="text" v-model="cashAmount">
+                                                    <input type="text" v-model="cashAmount" ref="cashamount">
                                                 </div>
                                             </div>
                                         </div>
@@ -414,27 +409,28 @@
 
         <overlay :show="showOverlay"></overlay>
 
-        <print-receipt-html v-show="createprintreceipt" :printdata="getPrintData" :settings="settings.wepos_receipts"></print-receipt-html>
+        <print-receipt-html v-show="createprintreceipt" :printdata="printdata" :settings="settings.wepos_receipts"></print-receipt-html>
     </div>
 </template>
 
 <script>
 
 import Overlay from './Overlay.vue';
-import ProductInlineSearch from './ProductInlineSearch.vue';
+import ProductSearch from './ProductSearch.vue';
 import CustomerSearch from './CustomerSearch.vue';
 import FeeKeypad from './FeeKeypad.vue';
 import Modal from './Modal.vue';
 import MugenScroll from 'vue-mugen-scroll';
 import PrintReceipt from './PrintReceipt.vue';
 import PrintReceiptHtml from './PrintReceiptHtml.vue';
+import CustomerNote from './CustomerNote.vue';
 
 export default {
 
     name: 'Home',
 
     components : {
-        ProductInlineSearch,
+        ProductSearch,
         CustomerSearch,
         Overlay,
         Modal,
@@ -442,6 +438,7 @@ export default {
         FeeKeypad,
         PrintReceipt,
         PrintReceiptHtml,
+        CustomerNote
     },
 
     data () {
@@ -463,10 +460,14 @@ export default {
             modalLeftContentHeight: '',
             emptyGatewayDiv: 0,
             cashAmount: '',
-            showCustomerNote: false,
             availableTax: [],
             settings: {},
-            printdata: {},
+            printdata: {
+                gateway: {
+                    id: '',
+                    title: ''
+                },
+            },
             createprintreceipt: false,
             orderdata: {
                 billing: {},
@@ -476,14 +477,17 @@ export default {
                 customer_note: '',
             },
             selectedCategory: '',
-            categories: []
+            categories: [],
         }
     },
     computed: {
         hotkeys() {
             return {
                 'ctrl+b': this.toggleProductView,
-                'ctrl+alt+p': this.initPayment
+                'f9': this.initPayment,
+                'f10': this.processPayment,
+                'f8': this.createNewSale,
+                'esc': this.backToSale
             }
         },
         getFilteredProduct() {
@@ -494,23 +498,6 @@ export default {
                 } );
             } else {
                 return this.products;
-            }
-        },
-        getPrintData() {
-            return {
-                line_items: this.orderdata.line_items,
-                fee_lines: this.orderdata.fee_lines,
-                subtotal: this.getSubtotal,
-                taxtotal: this.getTotalTax,
-                ordertotal: this.getTotal,
-                gateway: {
-                    id: 'wepos_cash',
-                    title: 'Cash'
-                },
-                order_id: 121,
-                order_date: '2017-03-22T16:28:02',
-                cashamount: this.cashAmount.toString(),
-                changeamount: this.changeAmount.toString()
             }
         },
         getSubtotal() {
@@ -572,6 +559,34 @@ export default {
         changeAmount() {
             var returnMoney = this.cashAmount-this.getTotal;
             return returnMoney > 0 ? returnMoney : 0;
+        },
+        getBreadCrums() {
+            if ( this.$route.query.category !== undefined ) {
+                var categories = jQuery.extend(true, [], this.categories ),
+                    selectedCat = weLo_.find( this.categories, { id: parseInt( this.$route.query.category ) } ),
+                    selectedCatIndex = weLo_.findIndex( this.categories, selectedCat );
+
+                var categoriesLoop = categories.splice(0, selectedCatIndex+1);
+                var choosenCat = [];
+                if ( categoriesLoop.length > 0 ) {
+                    for ( var i = categoriesLoop.length-1; i >= 0; i-- ) {
+                        if ( choosenCat.length > 0 ) {
+                            var foundCat = weLo_.find( categoriesLoop, { id: categoriesLoop[i+1].parent_id } );
+                            if ( foundCat != undefined ) {
+                                choosenCat.push( foundCat );
+                                if (  foundCat.parent_id == null ) {
+                                    break
+                                }
+                            }
+                        } else {
+                            choosenCat.push( categoriesLoop[i] );
+                        }
+                    }
+
+                    return choosenCat.slice().reverse();
+                }
+            }
+            return [];
         }
     },
 
@@ -587,9 +602,20 @@ export default {
                 this.showPaymentReceipt = true;
             };
         },
+        '$route.query.category'() {
+            if ( this.$route.query.category != 'undefined' ) {
+                this.selectedCategory = weLo_.find( this.categories, { id : parseInt( this.$route.query.category ) } )
+            };
+        },
     },
 
     methods: {
+        addCustomerNote( note ) {
+            this.orderdata.customer_note = note.trim();
+        },
+        removeBreadcrums() {
+            this.$router.push( { name: 'Home' } );
+        },
         getLogoutUrl() {
             return wepos.logout_url.toString();
         },
@@ -599,8 +625,16 @@ export default {
                 shipping: {},
                 line_items: [],
                 fee_lines: [],
+                customer_note: ''
             };
-            this.printdata = {};
+            this.printdata = {
+                gateway: {
+                    id: '',
+                    title: ''
+                },
+            };
+            this.showPaymentReceipt = false;
+            this.cashAmount = '';
         },
         toggleProductView() {
             this.productView = ( this.productView == 'grid' ) ? 'list' : 'grid';
@@ -609,20 +643,15 @@ export default {
             this.$router.push({
                 name: 'Home',
             });
-            this.orderdata = {
-                billing: {},
-                shipping: {},
-                line_items: [],
-                fee_lines: [],
-            };
-            this.printdata = {};
-            this.showPaymentReceipt = false;
-            this.cashAmount = '';
+            this.emptyCart();
         },
         ableToProcess() {
             return this.orderdata.line_items.length > 0 && this.isSelectGateway();
         },
         processPayment() {
+            if ( ! this.ableToProcess() ) {
+                return;
+            }
             var self = this,
                 gateway = weLo_.find( this.availableGateways, { 'id' : this.orderdata.payment_method } );
 
@@ -690,7 +719,7 @@ export default {
         },
         initPayment() {
             this.showModal = true;
-            this.orderdata.payment_method = this.availableGateways[0].id
+            this.orderdata.payment_method = this.availableGateways[0].id;
         },
         backToSale() {
             this.showModal = false;
@@ -906,6 +935,7 @@ export default {
         handleCategoryRemove( selectedOption, id ) {
             this.$router.push( { name: 'Home' } );
         },
+
         fetchCategories() {
             wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id' )
             .then( response => {
@@ -926,6 +956,7 @@ export default {
                     });
                     return r;
                 }(response, null);
+
                 var sorted = tree.reduce(function traverse(level) {
                     return function (r, a) {
                         a.response.level = level
@@ -952,9 +983,6 @@ export default {
         this.fetchProducts();
         this.fetchGateway();
         this.fetchCategories();
-
-
-
 
         if ( typeof(localStorage) != 'undefined' ) {
             var cartdata = JSON.parse( localStorage.getItem('cartdata') );
@@ -1328,12 +1356,12 @@ export default {
                             right: 0;
                             width: 100%;
                             height: 100%;
-                            background: rgba(0,0,0,0.1);
+                            background: rgba(0,0,0,0.3);
                             visibility: hidden;
                             &:before {
                                 color: #fff;
                                 font-weight: normal;
-                                margin-top: 50%;
+                                margin-top: 40%;
                                 display: inline-block;
                                 font-size: 35px;
                                 text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
@@ -1393,6 +1421,7 @@ export default {
             }
             .product-loading {
                 display: block;
+                position: relative;
                 width: 100%;
                 padding: 10px;
                 text-align: center;
@@ -1765,29 +1794,8 @@ export default {
                             }
 
                             &.note {
-                                textarea#customer-note {
-                                    width: 96%;
-                                    border-radius: 3px;
-                                    border: 1px solid #EAEDF0;
-                                    height: 40px;
-                                    padding: 10px;
-                                    font-size: 13px;
-                                    &:focus {
-                                        outline: none;
-                                        -webkit-appearance:none
-                                    }
-                                    &::placeholder {
-                                        color: #999DAC;
-                                        font-size: 13px;
-                                    }
-                                    &:-ms-input-placeholder {
-                                        color: #999DAC;
-                                        font-size: 13px;
-                                    }
-                                    &::-ms-input-placeholder {
-                                        color: #999DAC;
-                                        font-size: 13px;
-                                    }
+                                .note-text {
+                                    font-weight: normal;
                                 }
                             }
 
@@ -1851,7 +1859,7 @@ export default {
 
                                 p {
                                     color: #C6CACE;
-                                    font-size: 16px;
+                                    font-size: 17px;
                                 }
                             }
 

@@ -52,27 +52,12 @@
                 <span class="close-breadcrumb flaticon-cancel-music" @click.prevent="removeBreadcrums"></span>
             </div>
             <div class="items-wrapper" :class="productView" ref="items-wrapper">
-                <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
-                    <template v-if="product.type == 'simple'">
-                        <div class="item-wrap" @click.prevnt="addToCart(product)">
-                            <div class="img">
-                                <!-- https://via.placeholder.com/138x90  -->
-                                <img :src="getProductImage(product)" :alt="getProductImageName( product )">
-                            </div>
-                            <div class="title" v-if="productView=='grid'">
-                                {{ truncate( product.name, 20, '...' ) }}
-                            </div>
-                            <div class="title" v-else>
-                                {{ product.name }}
-                            </div>
-                            <span class="add-product-icon flaticon-add" :class="productView"></span>
-                        </div>
-                    </template>
-
-                    <template v-if="product.type == 'variable'">
-                        <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
-                            <div class="item-wrap" @click="selectVariationProduct( product )">
+                <template v-if="!productLoading">
+                    <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
+                        <template v-if="product.type == 'simple'">
+                            <div class="item-wrap" @click.prevnt="addToCart(product)">
                                 <div class="img">
+                                    <!-- https://via.placeholder.com/138x90  -->
                                     <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                 </div>
                                 <div class="title" v-if="productView=='grid'">
@@ -83,35 +68,56 @@
                                 </div>
                                 <span class="add-product-icon flaticon-add" :class="productView"></span>
                             </div>
-                            <template slot="popover">
-                                <div class="variation-header">
-                                    Select Variations
+                        </template>
+
+                        <template v-if="product.type == 'variable'">
+                            <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
+                                <div class="item-wrap" @click="selectVariationProduct( product )">
+                                    <div class="img">
+                                        <img :src="getProductImage(product)" :alt="getProductImageName( product )">
+                                    </div>
+                                    <div class="title" v-if="productView=='grid'">
+                                        {{ truncate( product.name, 20, '...' ) }}
+                                    </div>
+                                    <div class="title" v-else>
+                                        {{ product.name }}
+                                    </div>
+                                    <span class="add-product-icon flaticon-add" :class="productView"></span>
                                 </div>
-                                <div class="variation-body">
-                                    <template v-for="attribute in product.attributes">
-                                        <div class="attribute">
-                                            <p>{{ attribute.name }}</p>
-                                            <div class="options">
-                                                <template v-for="option in attribute.options">
-                                                    <label>
-                                                        <input type="radio" v-model="selectedAttribute[attribute.name]" :value="option">
-                                                        <div class="box">
-                                                            {{ option }}
-                                                        </div>
-                                                    </label>
-                                                </template>
+                                <template slot="popover">
+                                    <div class="variation-header">
+                                        Select Variations
+                                    </div>
+                                    <div class="variation-body">
+                                        <template v-for="attribute in product.attributes">
+                                            <div class="attribute">
+                                                <p>{{ attribute.name }}</p>
+                                                <div class="options">
+                                                    <template v-for="option in attribute.options">
+                                                        <label>
+                                                            <input type="radio" v-model="selectedAttribute[attribute.name]" :value="option">
+                                                            <div class="box">
+                                                                {{ option }}
+                                                            </div>
+                                                        </label>
+                                                    </template>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </template>
-                                </div>
-                                <div class="variation-footer">
-                                    <button :disabled="attributeDisabled" @click.prevent="addVariationProduct">Add Product</button>
-                                </div>
-                            </template>
-                        </v-popover>
-                    </template>
-                </div>
-                <div class="product-loading" v-if="getFilteredProduct.length <= 0">
+                                        </template>
+                                    </div>
+                                    <div class="variation-footer">
+                                        <button :disabled="attributeDisabled" @click.prevent="addVariationProduct">Add Product</button>
+                                    </div>
+                                </template>
+                            </v-popover>
+                        </template>
+                    </div>
+                    <div class="no-product-found" v-if="getFilteredProduct.length <= 0">
+                        <img :src="wepos.assets_url+ '/images/no-product.png'" alt="" width="120px">
+                        <p>No Product Found</p>
+                    </div>
+                </template>
+                <div class="product-loading" v-if="productLoading">
                     <div class="spinner spinner-loading"></div>
                 </div>
             </div>
@@ -127,6 +133,7 @@
                                 <input type="checkbox">
                                 <ul>
                                     <li><a href="#" @click.prevent="emptyCart">Empty Cart</a></li>
+                                    <li><a href="#" @click.prevent="openHelp">Help</a></li>
                                     <li class="divider"></li>
                                     <li><a :href="getLogoutUrl()">Logout</a></li>
                                 </ul>
@@ -282,6 +289,76 @@
                             <span class="label">New Sale</span>
                         </button>
                     </div>
+                </div>
+            </template>
+        </modal>
+
+        <modal v-if="showHelp" @close="closeHelp()" width="700px" height="500px">
+            <template slot="body">
+                <div class="wepos-help-wrapper">
+                    <h2>Shortcut Keys</h2>
+                    <ul>
+                        <li>
+                            <span class="code"><code>f1</code></span>
+                            <span class="title">Search Product</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f2</code></span>
+                            <span class="title">Scan Product</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f3</code></span>
+                            <span class="title">Toggle Product View</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f4</code></span>
+                            <span class="title">Add Fee in cart</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f5</code></span>
+                            <span class="title">Add Discount in cart</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f6</code></span>
+                            <span class="title">Add Customer note</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f7</code></span>
+                            <span class="title">Customer Search</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>shift+f7</code></span>
+                            <span class="title">Add new Customer</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f8</code></span>
+                            <span class="title">Create New Sale</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>shift+f8</code></span>
+                            <span class="title">Empty your cart</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f9</code></span>
+                            <span class="title">Go to payment receipt</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>f10</code></span>
+                            <span class="title">Process Payment</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>ctrl/cmd+p</code></span>
+                            <span class="title">Print Receipt</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>ctrl/cmd+?</code></span>
+                            <span class="title">Show/Close(Toggle) Help</span>
+                        </li>
+                        <li>
+                            <span class="code"><code>esc</code></span>
+                            <span class="title">Close anything</span>
+                        </li>
+                    </ul>
                 </div>
             </template>
         </modal>
@@ -443,6 +520,7 @@ export default {
 
     data () {
         return {
+            showHelp: false,
             productView: 'grid',
             productLoading: false,
             viewVariationPopover: false,
@@ -487,7 +565,10 @@ export default {
                 'f9': this.initPayment,
                 'f10': this.processPayment,
                 'f8': this.createNewSale,
-                'esc': this.backToSale
+                'shift+f8': this.emptyCart,
+                'esc': this.backToSale,
+                'meta+/': this.openHelp,
+                'ctrl+/': this.openHelp
             }
         },
         getFilteredProduct() {
@@ -610,6 +691,13 @@ export default {
     },
 
     methods: {
+        openHelp(e) {
+            e.preventDefault();
+            this.showHelp = true;
+        },
+        closeHelp() {
+            this.showHelp = false;
+        },
         addCustomerNote( note ) {
             this.orderdata.customer_note = note.trim();
         },
@@ -726,6 +814,7 @@ export default {
         backToSale() {
             // e.preventDefault();
             this.showModal = false;
+            this.showHelp = false;
             this.orderdata.payment_method = '';
         },
         isSelectGateway() {
@@ -809,7 +898,6 @@ export default {
                     this.page += 1;
                     this.totalPages = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
                     this.productLoading = false;
-                    // this.filteredProducts = this.products;
                 }).then( ( response, status, xhr ) => {
                     this.fetchProducts();
                 });
@@ -938,7 +1026,6 @@ export default {
         handleCategoryRemove( selectedOption, id ) {
             this.$router.push( { name: 'Home' } );
         },
-
         fetchCategories() {
             wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id' )
             .then( response => {
@@ -1430,6 +1517,17 @@ export default {
                 text-align: center;
                 font-size: 16px;
                 color: #c6cace;
+            }
+            .no-product-found {
+                text-align: center;
+                width: 100%;
+                vertical-align: middle;
+                margin: auto 0px;
+
+                p {
+                    font-size: 18px;
+                    color: #c6cace;
+                }
             }
         }
     }
@@ -2004,6 +2102,54 @@ export default {
                 }
             }
         }
+    }
+
+    .wepos-help-wrapper {
+        padding: 15px 20px;
+        margin-top: 20px;
+        h2 {
+            margin: 0px;
+            padding: 0px 0px 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ECEEF0;
+            color: #C6CACE;
+            font-weight: normal;
+        }
+
+        ul {
+            margin: 0px;
+            padding: 0px;
+            list-style: none;
+
+            li {
+                display: inline-block;
+                width: 48%;
+                margin-right: 2%;
+                margin-bottom: 20px;
+
+                &:nth-child(even) {
+                    margin-right: 0px;
+                }
+
+                span {
+                    display: block;
+
+                    &.code {
+                        float: left;
+                        width: 40%;
+                        color: #758598;
+                        font-size: 15px;
+                    }
+
+                    &.title {
+                        float: left;
+                        display: block;
+                        width: 58%;
+                    }
+                }
+            }
+        }
+
     }
 }
 </style>

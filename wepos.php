@@ -88,6 +88,11 @@ final class WC_POS {
      */
     public function add_rewrite_rules() {
         add_rewrite_rule( '^wepos/?$', 'index.php?wepos=true', 'top' );
+
+        if ( get_transient( 'wepos-flush-rewrites' ) ) {
+            flush_rewrite_rules( true );
+            delete_transient( 'wepos-flush-rewrites' );
+        }
     }
 
     /**
@@ -217,7 +222,7 @@ final class WC_POS {
         }
 
         update_option( 'wc_pos_version', WCPOS_VERSION );
-        flush_rewrite_rules();
+        set_transient( 'wepos-flush-rewrites', 1 );
     }
 
     /**

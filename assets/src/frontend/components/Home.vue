@@ -483,7 +483,7 @@ export default {
     computed: {
         hotkeys() {
             return {
-                'ctrl+b': this.toggleProductView,
+                'f3': this.toggleProductView,
                 'f9': this.initPayment,
                 'f10': this.processPayment,
                 'f8': this.createNewSale,
@@ -636,7 +636,8 @@ export default {
             this.showPaymentReceipt = false;
             this.cashAmount = '';
         },
-        toggleProductView() {
+        toggleProductView(e) {
+            e.preventDefault();
             this.productView = ( this.productView == 'grid' ) ? 'list' : 'grid';
         },
         createNewSale() {
@@ -648,7 +649,8 @@ export default {
         ableToProcess() {
             return this.orderdata.line_items.length > 0 && this.isSelectGateway();
         },
-        processPayment() {
+        processPayment(e) {
+            e.preventDefault();
             if ( ! this.ableToProcess() ) {
                 return;
             }
@@ -722,6 +724,7 @@ export default {
             this.orderdata.payment_method = this.availableGateways[0].id;
         },
         backToSale() {
+            // e.preventDefault();
             this.showModal = false;
             this.orderdata.payment_method = '';
         },

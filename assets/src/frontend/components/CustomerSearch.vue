@@ -119,14 +119,15 @@ export default {
     computed: {
         hotkeys() {
             return {
-                'ctrl+c': this.focusCustomerSearch,
-                'ctrl+shift+c': this.addNewCustomer,
+                'f7': this.focusCustomerSearch,
+                'shift+f7': this.addNewCustomer,
                 'esc': this.searchClose,
             }
         }
     },
     methods: {
-        focusCustomerSearch() {
+        focusCustomerSearch(e) {
+            e.preventDefault();
             this.$refs.customerSearch.focus();
         },
         searchClose() {

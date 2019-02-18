@@ -135,6 +135,9 @@ class Assets {
             'wepos-flaticon' => [
                 'src' =>  WCPOS_ASSETS . '/css/flaticon.css'
             ],
+            'wepos-font' => [
+                'src' =>  WCPOS_ASSETS . '/css/fonts.css'
+            ],
             'wepos-style' => [
                 'src' =>  WCPOS_ASSETS . '/css/style.css'
             ],
@@ -158,6 +161,7 @@ class Assets {
         if ( ! is_admin() ) {
             // Enqueue all style
             wp_enqueue_style( 'wepos-flaticon' );
+            wp_enqueue_style( 'wepos-font' );
             wp_enqueue_style( 'wepos-style' );
             wp_enqueue_style( 'wepos-frontend' );
 

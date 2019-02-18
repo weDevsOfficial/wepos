@@ -120,8 +120,8 @@ export default {
 
         hotkeys() {
             return {
-                'ctrl+p': this.changeProductSearch,
-                'ctrl+s': this.changeScan,
+                'f1': this.changeProductSearch,
+                'f2': this.changeScan,
                 'esc': this.searchClose,
             }
         }
@@ -136,11 +136,13 @@ export default {
     },
 
     methods: {
-        changeScan() {
+        changeScan(e) {
+            e.preventDefault();
             this.changeMode('scan');
         },
 
-        changeProductSearch() {
+        changeProductSearch(e) {
+            e.preventDefault();
             this.changeMode('product');
         },
 

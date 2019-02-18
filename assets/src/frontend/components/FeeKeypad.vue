@@ -26,11 +26,11 @@ export default {
         hotkeys() {
             var keymap = {
                 discount : {
-                    'alt+d' : this.showFeeKeypad,
+                    'f4' : this.showFeeKeypad,
                     'esc': this.hideFeeKepad
                 },
                 fee : {
-                    'alt+f' : this.showFeeKeypad,
+                    'f5' : this.showFeeKeypad,
                     'esc': this.hideFeeKepad
                 },
             }
@@ -59,7 +59,8 @@ export default {
         };
     },
     methods: {
-        hideFeeKepad() {
+        hideFeeKepad(e) {
+            e.preventDefault();
             this.viewFeeKeypad = false;
         },
         layout() {
@@ -105,7 +106,8 @@ export default {
                 jQuery( this.$refs.feeinput ).focus();
             }
         },
-        showFeeKeypad() {
+        showFeeKeypad(e) {
+            e.preventDefault();
             this.viewFeeKeypad = true;
             setTimeout( () => {
                 jQuery( this.$refs.feeinput ).focus();

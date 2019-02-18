@@ -53,14 +53,14 @@ final class WC_POS {
      *
      * @var string
      */
-    public $version = '0.1.0';
+    public $version = '1.0.0';
 
     /**
      * Holds various class instances
      *
      * @var array
      */
-    private $container = array();
+    private $container = [];
 
     /**
      * Constructor for the WC_POS class
@@ -69,7 +69,6 @@ final class WC_POS {
      * within our plugin.
      */
     public function __construct() {
-
         $this->define_constants();
 
         register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -77,7 +76,7 @@ final class WC_POS {
 
         add_action( 'init', [ $this, 'add_rewrite_rules' ] );
         add_filter( 'query_vars', [ $this, 'register_query_var' ] );
-        add_action( 'plugins_loaded', [ $this, 'init_gateways' ], 10, 1 );
+        add_action( 'plugins_loaded', [ $this, 'init_gateways' ], 11, 1 );
 
         add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
     }
@@ -87,8 +86,8 @@ final class WC_POS {
      *
      * @return void
      */
-    function add_rewrite_rules() {
-        add_rewrite_rule( '^wcpos/?$', 'index.php?wcpos=true', 'top' );
+    public function add_rewrite_rules() {
+        add_rewrite_rule( '^wepos/?$', 'index.php?wepos=true', 'top' );
     }
 
     /**
@@ -98,8 +97,8 @@ final class WC_POS {
      *
      * @return array
      */
-    function register_query_var( $vars ) {
-        $vars[] = 'wcpos';
+    public function register_query_var( $vars ) {
+        $vars[] = 'wepos';
 
         return $vars;
     }
@@ -204,6 +203,13 @@ final class WC_POS {
      * Nothing being called here yet.
      */
     public function activate() {
+        if ( ! function_exists( 'WC' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+            deactivate_plugins( plugin_basename( __FILE__ ) );
+
+            wp_die( '<div class="error"><p>' . sprintf( wp_kses_post( '<b>WePOS</b> requires <a href="%s">WooCommerce</a> to be installed & activated! Go back your <a href="%s">Plugin page</a>', 'wepos' ), 'https://wordpress.org/plugins/woocommerce/', esc_url( admin_url( 'plugins.php' ) ) ) . '</p></div>' );
+        }
+
         $installed = get_option( 'wc_pos_installed' );
 
         if ( ! $installed ) {
@@ -211,6 +217,7 @@ final class WC_POS {
         }
 
         update_option( 'wc_pos_version', WCPOS_VERSION );
+        flush_rewrite_rules();
     }
 
     /**
@@ -228,7 +235,6 @@ final class WC_POS {
      * @return void
      */
     public function includes() {
-
         require_once WCPOS_INCLUDES . '/functions.php';
         require_once WCPOS_INCLUDES . '/class-assets.php';
 
@@ -242,13 +248,7 @@ final class WC_POS {
             require_once WCPOS_INCLUDES . '/class-frontend.php';
         }
 
-        if ( $this->is_request( 'ajax' ) ) {
-            // require_once WCPOS_INCLUDES . '/class-ajax.php';
-        }
-
-        // if ( $this->is_request( 'rest' ) ) {
         require_once WCPOS_INCLUDES . '/class-rest-api.php';
-        // }
     }
 
     /**
@@ -257,10 +257,7 @@ final class WC_POS {
      * @return void
      */
     public function init_hooks() {
-
         add_action( 'init', array( $this, 'init_classes' ) );
-
-        // Localize our plugin
         add_action( 'init', array( $this, 'localization_setup' ) );
     }
 
@@ -270,7 +267,6 @@ final class WC_POS {
      * @return void
      */
     public function init_classes() {
-
         if ( $this->is_request( 'admin' ) ) {
             $this->container['admin'] = new WePOS\Admin\Admin();
             $this->container['settings'] = new WePOS\Admin\Settings();
@@ -280,10 +276,6 @@ final class WC_POS {
 
         if ( $this->is_request( 'frontend' ) ) {
             $this->container['frontend'] = new WePOS\Frontend();
-        }
-
-        if ( $this->is_request( 'ajax' ) ) {
-            // $this->container['ajax'] =  new WePOS\Ajax();
         }
 
         $this->container['rest'] = new WePOS\REST_API();
@@ -313,9 +305,6 @@ final class WC_POS {
 
             case 'ajax' :
                 return defined( 'DOING_AJAX' );
-
-            case 'rest' :
-                return defined( 'REST_REQUEST' );
 
             case 'cron' :
                 return defined( 'DOING_CRON' );

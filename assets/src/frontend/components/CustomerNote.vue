@@ -25,7 +25,7 @@
         computed: {
             hotkeys() {
                 return {
-                    'ctrl+o': this.openNote,
+                    'f6': this.openNote,
                     'esc': this.closeNote
                 }
             }
@@ -33,7 +33,8 @@
 
 
         methods: {
-            openNote() {
+            openNote(e) {
+                e.preventDefault();
                 this.viewNotePopover = true;
                 setTimeout( () => {
                     jQuery( this.$refs.customernote ).focus();

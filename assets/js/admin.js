@@ -1652,8 +1652,10 @@ var render = function() {
                               attrs: {
                                 type: "submit",
                                 name: "submit",
-                                id: "submit",
-                                value: "Save Changes"
+                                id: "submit"
+                              },
+                              domProps: {
+                                value: _vm.__("Save Changes", "wepos")
                               },
                               on: {
                                 click: function($event) {

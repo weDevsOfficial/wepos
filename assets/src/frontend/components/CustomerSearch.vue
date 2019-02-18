@@ -24,7 +24,7 @@
                     </g>
                 </g>
             </svg>
-            <input type="text" ref="customerSearch" name="customer_search" id="customer-search" placeholder="Search customer (or Press ctrl+c)" v-model="serachInput" @focus.prevent="triggerFocus" @keyup="searchCustomer">
+            <input type="text" ref="customerSearch" name="customer_search" id="customer-search" :placeholder="__( 'Search customer', 'wepos' )" v-model="serachInput" @focus.prevent="triggerFocus" @keyup="searchCustomer">
             <span class="add-new-customer flaticon-add" @click.prevent="addNewCustomer()"></span>
             <div class="search-result" v-show="showCustomerResults">
                 <div v-if="customers.length">
@@ -41,23 +41,23 @@
                     </keyboard-control>
                 </div>
                 <div v-else class="no-data-found">
-                    No customer found
+                    {{ __( 'No customer found', 'wepos' ) }}
                 </div>
                 <div class="suggession">
                     <span class="term">
-                        <span class="flaticon-swap"></span> to navigate
+                        <span class="flaticon-swap"></span> {{ __( 'to navigate', 'wepos' ) }}
                     </span>
                     <span class="term">
-                        <span class="flaticon-enter-arrow"></span> to select
+                        <span class="flaticon-enter-arrow"></span> {{ __( 'to select', 'wepos' ) }}
                     </span>
                     <span class="term">
-                        <strong>esc</strong> to dismiss
+                        <strong>esc</strong> {{ __( 'to dismiss', 'wepos' ) }}
                     </span>
                 </div>
             </div>
         </form>
         <modal
-            title="Add New Customer"
+            :title="__( 'Add New Customer', 'wepos' )"
             v-if="showNewCustomerModal"
             @close="showNewCustomerModal = false"
             width="700px"
@@ -69,19 +69,19 @@
                 <div class="wepos-new-customer-form">
                     <form action="" class="wepos-form">
                         <div class="form-row col-2">
-                            <input type="text" placeholder="First Name" v-model="customer.first_name">
-                            <input type="text" placeholder="Last Name" v-model="customer.last_name">
+                            <input type="text" :placeholder="__( 'First Name', 'wepos' )" v-model="customer.first_name">
+                            <input type="text" :placeholder="__( 'Last Name', 'wepos' )" v-model="customer.last_name">
                         </div>
                         <div class="form-row">
-                            <input type="email" placeholder="Email" v-model="customer.email">
+                            <input type="email" :placeholder="__( 'Email', 'wepos' )" v-model="customer.email">
                         </div>
                         <div class="form-row col-2">
-                            <input type="text" placeholder="Address 1" v-model="customer.address_1">
-                            <input type="text" placeholder="Address 2 (optional)" v-model="customer.address_2">
+                            <input type="text" :placeholder="__( 'Address 1', 'wepos' )" v-model="customer.address_1">
+                            <input type="text" :placeholder="__( 'Address 2 (optional)', 'wepos' )" v-model="customer.address_2">
                         </div>
                         <div class="form-row col-2">
-                            <input type="text" placeholder="City (optional)" v-model="customer.city">
-                            <input type="text" placeholder="Phone (optional)" v-model="customer.phone">
+                            <input type="text" :placeholder="__( 'City (optional)', 'wepos' )" v-model="customer.city">
+                            <input type="text" :placeholder="__( 'Phone (optional)', 'wepos' )" v-model="customer.phone">
                         </div>
                     </form>
                 </div>
@@ -198,7 +198,7 @@ export default {
                     alert( response.responseJSON.message );
                 } );
             } else {
-                alert( 'Please enter an email address for customer' );
+                alert( this.__( 'Please enter an email address for customer', 'wepos' ) );
             }
         }
     }

@@ -2,8 +2,8 @@
     <div class="wepos-checkout-print-wrapper">
         <div class="header" v-html="settings.receipt_header"></div>
         <div class="order-info">
-            <span class="wepos-left"><strong>Order ID: #{{ printdata.order_id }}</strong></span>
-            <span class="wepos-right"><strong>Order Date: {{ formatDate( printdata.order_date ) }}</strong></span>
+            <span class="wepos-left"><strong>{{ __( 'Order ID', 'wepos' ) }}: #{{ printdata.order_id }}</strong></span>
+            <span class="wepos-right"><strong>{{ __( 'Order Date', 'wepos' ) }}: {{ formatDate( printdata.order_date ) }}</strong></span>
             <div class="wepos-clearfix"></div>
         </div>
         <div class="content">
@@ -30,41 +30,41 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="name">Subtotal</td>
+                        <td colspan="2" class="name">{{ __( 'Subtotal', 'wepos' ) }}</td>
                         <td class="price">{{ formatPrice( printdata.subtotal ) }}</td>
                     </tr>
                     <tr v-for="(fee,key) in printdata.fee_lines" class="cart-meta-data">
                         <template v-if="fee.type=='discount'">
-                            <td colspan="2" class="name">Discount <span class="metadata">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                            <td colspan="2" class="name">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
                             <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                         </template>
                         <template v-else>
-                            <td colspan="2" class="name">Fee <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                            <td colspan="2" class="name">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
                             <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                         </template>
                     </tr>
                     <tr v-if="printdata.taxtotal">
-                        <td colspan="2" class="name">Tax</td>
+                        <td colspan="2" class="name">{{ __( 'Tax', 'wepos' ) }}</td>
                         <td class="price">{{ formatPrice(printdata.taxtotal) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="name">Order Total</td>
+                        <td colspan="2" class="name">{{ __( 'Order Total', 'wepos' ) }}</td>
                         <td class="price">{{ formatPrice(printdata.ordertotal) }}</td>
                     </tr>
                     <tr class="divider">
                         <td colspan="3"></td>
                     </tr>
                     <tr>
-                        <td colspan="2">Payment method</td>
+                        <td colspan="2">{{ __( 'Payment method', 'wepos' ) }}</td>
                         <td class="price">{{ printdata.gateway.title || '' }}</td>
                     </tr>
                     <template v-if="printdata.gateway.id='wepos_cash'">
                         <tr>
-                            <td colspan="2">Cash Given</td>
+                            <td colspan="2">{{ __( 'Cash Given', 'wepos' ) }}</td>
                             <td class="price">{{ formatPrice( printdata.cashamount ) }}</td>
                         </tr>
                         <tr>
-                            <td colspan="2">Change Money</td>
+                            <td colspan="2">{{ __( 'Change Money', 'wepos' ) }}</td>
                             <td class="price">{{ formatPrice( printdata.changeamount ) }}</td>
                         </tr>
                     </template>

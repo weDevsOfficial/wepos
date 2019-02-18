@@ -1,0 +1,362 @@
+# Copyright (C) 2019 weDevs
+# This file is distributed under the GPL2.
+msgid ""
+msgstr ""
+"Project-Id-Version: WePOS 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
+"POT-Creation-Date: 2019-02-18 09:22:17+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: wp-vue-i18n 1.1.3\n"
+
+#: assets/js/admin.js:114 assets/js/admin.js:241 assets/js/admin.js:457
+#: assets/js/admin.js:549 assets/js/admin.js:1517 assets/js/bootstrap.js:534
+#: assets/js/frontend.js:2617 assets/js/frontend.js:2807
+#: assets/js/frontend.js:2897 assets/js/frontend.js:2965
+#: assets/js/frontend.js:3367 assets/js/frontend.js:3466
+#: assets/js/frontend.js:4041 assets/js/frontend.js:4268
+#: assets/js/frontend.js:4445 assets/js/frontend.js:4547
+#: assets/js/frontend.js:4878 assets/js/frontend.js:4989
+#: assets/js/frontend.js:7217 assets/js/vendor.js:23911
+#: assets/js/vendor.js:24487 assets/js/vendor.js:24597
+#: assets/js/vendor.js:24717 assets/js/vendor.js:24739
+#: assets/js/vendor.js:24796 build/wepos.1.0.0/assets/js/admin.js:114
+#: build/wepos.1.0.0/assets/js/admin.js:241
+#: build/wepos.1.0.0/assets/js/admin.js:457
+#: build/wepos.1.0.0/assets/js/admin.js:549
+#: build/wepos.1.0.0/assets/js/admin.js:1517
+#: build/wepos.1.0.0/assets/js/bootstrap.js:534
+#: build/wepos.1.0.0/assets/js/frontend.js:2617
+#: build/wepos.1.0.0/assets/js/frontend.js:2807
+#: build/wepos.1.0.0/assets/js/frontend.js:2897
+#: build/wepos.1.0.0/assets/js/frontend.js:2965
+#: build/wepos.1.0.0/assets/js/frontend.js:3367
+#: build/wepos.1.0.0/assets/js/frontend.js:3466
+#: build/wepos.1.0.0/assets/js/frontend.js:4041
+#: build/wepos.1.0.0/assets/js/frontend.js:4268
+#: build/wepos.1.0.0/assets/js/frontend.js:4445
+#: build/wepos.1.0.0/assets/js/frontend.js:4547
+#: build/wepos.1.0.0/assets/js/frontend.js:4878
+#: build/wepos.1.0.0/assets/js/frontend.js:4989
+#: build/wepos.1.0.0/assets/js/frontend.js:7217
+#: build/wepos.1.0.0/assets/js/vendor.js:23911
+#: build/wepos.1.0.0/assets/js/vendor.js:24487
+#: build/wepos.1.0.0/assets/js/vendor.js:24597
+#: build/wepos.1.0.0/assets/js/vendor.js:24717
+#: build/wepos.1.0.0/assets/js/vendor.js:24739
+#: build/wepos.1.0.0/assets/js/vendor.js:24796
+msgid "div"
+msgstr ""
+
+#: assets/js/admin.js:1926 assets/js/admin.min.js:1
+#: assets/src/admin/components/Settings.vue:136
+#: build/wepos.1.0.0/assets/js/admin.js:1926
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:3
+msgid "Choose your file"
+msgstr ""
+
+#: assets/js/admin.js:1928 assets/js/admin.min.js:1
+#: assets/src/admin/components/Fields.vue:171
+#: assets/src/admin/components/Settings.vue:138
+#: build/wepos.1.0.0/assets/js/admin.js:1928
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:4
+msgid "Select"
+msgstr ""
+
+#: assets/js/admin.min.js:1 assets/src/admin/components/ColorPicker.vue:9
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:5
+msgid "Select Color"
+msgstr ""
+
+#: assets/js/admin.min.js:1 assets/src/admin/components/ColorPicker.vue:25
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:6
+msgid "Clear"
+msgstr ""
+
+#: assets/js/admin.min.js:1 assets/src/admin/components/ColorPicker.vue:31
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:7
+msgid "Close"
+msgstr ""
+
+#: assets/js/admin.min.js:1 assets/src/admin/components/Fields.vue:167
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:8
+msgid "Active"
+msgstr ""
+
+#: assets/js/admin.min.js:1 assets/src/admin/components/Settings.vue:3
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/includes/admin/class-admin.php:28
+#: build/wepos.1.0.0/languages/wepos.php:9 includes/admin/class-admin.php:28
+msgid "Settings"
+msgstr ""
+
+#: assets/js/admin.min.js:1 assets/src/admin/components/Settings.vue:8
+#: build/wepos.1.0.0/assets/js/admin.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:10
+msgid "Dismiss this notice."
+msgstr ""
+
+#: assets/js/bootstrap.js:611 build/wepos.1.0.0/assets/js/bootstrap.js:611
+msgid "textarea"
+msgstr ""
+
+#: assets/js/bootstrap.js:765 assets/js/bootstrap.js:771
+#: assets/js/bootstrap.js:776 assets/js/bootstrap.min.js:1
+#: assets/src/admin/components/TextEditor.vue:125
+#: assets/src/admin/components/TextEditor.vue:132
+#: assets/src/admin/components/TextEditor.vue:137
+#: build/wepos.1.0.0/assets/js/bootstrap.js:765
+#: build/wepos.1.0.0/assets/js/bootstrap.js:771
+#: build/wepos.1.0.0/assets/js/bootstrap.js:776
+#: build/wepos.1.0.0/assets/js/bootstrap.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:11
+msgid "Select an image"
+msgstr ""
+
+#: assets/js/bootstrap.js:819 assets/js/bootstrap.min.js:1
+#: assets/src/admin/components/TextEditor.vue:180
+#: build/wepos.1.0.0/assets/js/bootstrap.js:819
+#: build/wepos.1.0.0/assets/js/bootstrap.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:12
+msgid "Please select an image,"
+msgstr ""
+
+#: assets/js/frontend.js:4202 build/wepos.1.0.0/assets/js/frontend.js:4202
+msgid "aside"
+msgstr ""
+
+#: assets/js/frontend.js:4792 build/wepos.1.0.0/assets/js/frontend.js:4792
+msgid "tr"
+msgstr ""
+
+#: assets/js/frontend.js:7104 build/wepos.1.0.0/assets/js/frontend.js:7104
+msgid "button"
+msgstr ""
+
+#: assets/js/frontend.js:7112 build/wepos.1.0.0/assets/js/frontend.js:7112
+msgid "thead"
+msgstr ""
+
+#: assets/js/frontend.js:7130 build/wepos.1.0.0/assets/js/frontend.js:7130
+msgid "td"
+msgstr ""
+
+#: assets/js/frontend.min.js:1
+#: assets/src/frontend/components/ProductSearch.vue:70
+#: build/wepos.1.0.0/assets/js/frontend.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:13
+msgid "Add Product"
+msgstr ""
+
+#: assets/js/frontend.min.js:1
+#: assets/src/frontend/components/CustomerSearch.vue:91
+#: build/wepos.1.0.0/assets/js/frontend.min.js:1
+#: build/wepos.1.0.0/languages/wepos.php:14
+msgid "Add Customer"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WePOS"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-admin.php:29
+#: includes/admin/class-admin.php:29
+msgid "View POS"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-products.php:38
+#: build/wepos.1.0.0/includes/admin/class-products.php:69
+#: includes/admin/class-products.php:38 includes/admin/class-products.php:69
+msgid "Barcode"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-products.php:41
+#: build/wepos.1.0.0/includes/admin/class-products.php:72
+#: includes/admin/class-products.php:41 includes/admin/class-products.php:72
+msgid "Enter your unique barcode number or text for this product"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-settings.php:33
+#: includes/admin/class-settings.php:33
+msgid "You have no permission to get settings value"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-settings.php:39
+#: build/wepos.1.0.0/includes/admin/class-settings.php:66
+#: includes/admin/class-settings.php:39 includes/admin/class-settings.php:66
+msgid "Invalid nonce"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-settings.php:61
+#: includes/admin/class-settings.php:61
+msgid "You are not authorized to perform this action."
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-settings.php:72
+#: includes/admin/class-settings.php:72
+msgid "Setting not saved properly"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/admin/class-settings.php:89
+#: includes/admin/class-settings.php:89
+msgid "Setting has been saved successfully."
+msgstr ""
+
+#: build/wepos.1.0.0/includes/api/class-payment-controller.php:76
+#: includes/api/class-payment-controller.php:76
+msgid "No order found"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/api/class-payment-controller.php:88
+#: includes/api/class-payment-controller.php:88
+msgid "No payment gateway found for processing this payment"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/class-frontend.php:109
+#: includes/class-frontend.php:109
+msgid "Point of Sale"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:121 includes/functions.php:121
+msgid "- select -"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:144 includes/functions.php:144
+msgid "General"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:149 includes/functions.php:149
+msgid "Receipts"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:169 includes/functions.php:169
+msgid "Calculate tax for Fee"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:170 includes/functions.php:170
+msgid "Choose if tax caluclate for fee in POS cart and checkout"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:174 includes/functions.php:174
+msgid "Yes"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:175 includes/functions.php:175
+msgid "No"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:180 includes/functions.php:180
+msgid "Barcode Scanner field"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:181 includes/functions.php:181
+msgid ""
+"Choose your barcode field. If you select <code>Custom Field</code> then you "
+"need to set barcode number manually in product edit page"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:185 includes/functions.php:185
+msgid "ID"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:186 includes/functions.php:186
+msgid "SKU"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:187 includes/functions.php:187
+msgid "Custom field"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:194 includes/functions.php:194
+msgid "Order receipt header"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:195 includes/functions.php:195
+msgid "Enter your order receipt header"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:201 includes/functions.php:201
+msgid "Order receipt footer"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:202 includes/functions.php:202
+msgid "Enter your order receipt footer text"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/functions.php:204 includes/functions.php:204
+msgid "Thank you"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:36
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:58
+#: includes/gateways/class-cash-gateway.php:36
+#: includes/gateways/class-cash-gateway.php:58
+msgid "Cash"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:37
+#: includes/gateways/class-cash-gateway.php:37
+msgid "Have your customers pay with cash"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:48
+#: includes/gateways/class-cash-gateway.php:48
+msgid "Enable/Disable"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:49
+#: includes/gateways/class-cash-gateway.php:49
+msgid "Enable cash gateway"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:55
+#: includes/gateways/class-cash-gateway.php:55
+msgid "Title"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:57
+#: includes/gateways/class-cash-gateway.php:57
+msgid "Payment method description that the marchent see in pos checkout"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:62
+#: includes/gateways/class-cash-gateway.php:62
+msgid "Description"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:64
+#: includes/gateways/class-cash-gateway.php:64
+msgid "Payment method description that marchent see in pos checkout page"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:65
+#: includes/gateways/class-cash-gateway.php:65
+msgid "Pay with cash"
+msgstr ""
+
+#: build/wepos.1.0.0/includes/gateways/class-cash-gateway.php:100
+#: includes/gateways/class-cash-gateway.php:100
+msgid "Payment collected via cash"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://wedevs.com/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "WooCommerce POS integration"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "weDevs"
+msgstr ""

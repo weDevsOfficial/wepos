@@ -73,7 +73,7 @@ class Assets {
                 'deps'      => array()
             ),
             'wepos-tinymce-plugin' => array(
-                'src'     => WCPOS_ASSETS . '/src/vendors/tinymce/code/plugin.min.js',
+                'src'     => WCPOS_ASSETS . '/vendors/tinymce/code/plugin.min.js',
                 'deps'    => array('wepos-tinymce'),
                 'version' => time()
             ),

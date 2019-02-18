@@ -1,7 +1,7 @@
 <template>
     <div class="wepos-fee-keypad-wrap" :class="className" v-hotkey="hotkeys">
         <v-popover offset="5" popover-base-class="fee-keypad tooltip popover" placement="top" :open="viewFeeKeypad">
-            <a href="#" @click.prevent="showFeeKeypad()">{{ __( 'Add', 'wepos' ) }} {{ name }}</a>
+            <a href="#" @click="showFeeKeypad">{{ __( 'Add', 'wepos' ) }} {{ name }}</a>
             <template slot="popover">
                 <form>
                     <input type="text" v-model="displayValue" ref="feeinput" @keyup="inputChange">
@@ -106,6 +106,7 @@ export default {
             }
         },
         showFeeKeypad(e) {
+            e.preventDefault();
             this.viewFeeKeypad = true;
             setTimeout( () => {
                 jQuery( this.$refs.feeinput ).focus();

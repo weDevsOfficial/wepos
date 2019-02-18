@@ -2035,6 +2035,7 @@ if (false) {(function () {
             }
         },
         showFeeKeypad(e) {
+            e.preventDefault();
             this.viewFeeKeypad = true;
             setTimeout(() => {
                 jQuery(this.$refs.feeinput).focus();
@@ -4291,19 +4292,9 @@ var render = function() {
           }
         },
         [
-          _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.showFeeKeypad()
-                }
-              }
-            },
-            [_vm._v(_vm._s(_vm.__("Add", "wepos")) + " " + _vm._s(_vm.name))]
-          ),
+          _c("a", { attrs: { href: "#" }, on: { click: _vm.showFeeKeypad } }, [
+            _vm._v(_vm._s(_vm.__("Add", "wepos")) + " " + _vm._s(_vm.name))
+          ]),
           _vm._v(" "),
           _c(
             "template",

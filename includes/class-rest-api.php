@@ -82,7 +82,7 @@ class REST_API {
 
         $price_excl_tax     = wc_get_price_excluding_tax( $product );
         $price_incl_tax     = wc_get_price_including_tax( $product );
-        $tax_amount         = $price_incl_tax - $price_excl_tax;
+        $tax_amount         = (float)$price_incl_tax - (float)$price_excl_tax;
         $data['tax_amount'] = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
 
         if ( ! empty( $data['images'] ) ) {

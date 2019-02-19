@@ -85,8 +85,9 @@ class Products {
      * @return void
      */
     public function save_field( $post_id ) {
-        $product = wc_get_product( $post_id );
-        $barcode   = isset( $_POST['_wepos_barcode'] ) ? sanitize_text_field( $_POST['_wepos_barcode'] ) : '';
+        $product    = wc_get_product( $post_id );
+        $postdata   = wp_unslash( $_POST );
+        $barcode    = isset( $postdata['_wepos_barcode'] ) ? sanitize_text_field( $postdata['_wepos_barcode'] ) : '';
         if ( $product->is_type( 'simple' ) ) {
             $product->update_meta_data( '_wepos_barcode', $barcode );
         } else {
@@ -103,8 +104,9 @@ class Products {
      * @return void
      */
     public function save_variation_data( $variation_id, $i ) {
-        $product = wc_get_product( $variation_id );
-        $barcode   = isset( $_POST['_wepos_barcode'][$i] ) ?  sanitize_text_field( $_POST['_wepos_barcode'][$i] ) : '';
+        $product  = wc_get_product( $variation_id );
+        $postdata = wp_unslash( $_POST );
+        $barcode  = isset( $postdata['_wepos_barcode'][$i] ) ?  sanitize_text_field( $postdata['_wepos_barcode'][$i] ) : '';
         $product->update_meta_data( '_wepos_barcode', $barcode );
         $product->save();
     }

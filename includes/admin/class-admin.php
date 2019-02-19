@@ -40,7 +40,7 @@ class Admin {
     * @return array
     */
     public function payment_gateways( $gateways ) {
-        $available_gateway = \WC_POS::init()->available_gateway();
+        $available_gateway = \We_POS::init()->available_gateway();
         // else add default POS gateways
         return array_merge( $gateways, apply_filters( 'wepos_payment_gateway', array_keys( $available_gateway ) ) );
     }

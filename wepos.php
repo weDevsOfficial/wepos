@@ -42,11 +42,11 @@ Domain Path: /languages
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
- * WC_POS class
+ * We_POS class
  *
- * @class WC_POS The class that holds the entire WC_POS plugin
+ * @class We_POS The class that holds the entire We_POS plugin
  */
-final class WC_POS {
+final class We_POS {
 
     /**
      * Plugin version
@@ -63,7 +63,7 @@ final class WC_POS {
     private $container = [];
 
     /**
-     * Constructor for the WC_POS class
+     * Constructor for the We_POS class
      *
      * Sets up all the appropriate hooks and actions
      * within our plugin.
@@ -137,16 +137,16 @@ final class WC_POS {
     }
 
     /**
-     * Initializes the WC_POS() class
+     * Initializes the We_POS() class
      *
-     * Checks for an existing WC_POS() instance
+     * Checks for an existing We_POS() instance
      * and if it doesn't find one, creates it.
      */
     public static function init() {
         static $instance = false;
 
         if ( ! $instance ) {
-            $instance = new WC_POS();
+            $instance = new We_POS();
         }
 
         return $instance;
@@ -215,13 +215,13 @@ final class WC_POS {
             wp_die( '<div class="error"><p>' . sprintf( wp_kses_post( '<b>WePOS</b> requires <a href="%s">WooCommerce</a> to be installed & activated! Go back your <a href="%s">Plugin page</a>', 'wepos' ), 'https://wordpress.org/plugins/woocommerce/', esc_url( admin_url( 'plugins.php' ) ) ) . '</p></div>' );
         }
 
-        $installed = get_option( 'wc_pos_installed' );
+        $installed = get_option( 'we_pos_installed' );
 
         if ( ! $installed ) {
-            update_option( 'wc_pos_installed', time() );
+            update_option( 'we_pos_installed', time() );
         }
 
-        update_option( 'wc_pos_version', WCPOS_VERSION );
+        update_option( 'we_pos_version', WCPOS_VERSION );
         set_transient( 'wepos-flush-rewrites', 1 );
     }
 
@@ -319,6 +319,6 @@ final class WC_POS {
         }
     }
 
-} // WC_POS
+} // We_POS
 
-$wepos = WC_POS::init();
+$wepos = We_POS::init();

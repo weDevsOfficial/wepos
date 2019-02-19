@@ -10,7 +10,6 @@ class Frontend {
         add_action( 'wp_head', [ $this, 'reset_head_style' ], 7 );
         add_action( 'wp_head', [ $this, 'reset_head_scripts' ], 8 );
         add_action( 'wp_head', [ $this, 'enqueue_scripts' ], 999 );
-        add_action( 'wp_head', [ $this, 'print_styles' ], 1000 );
         add_action( 'template_redirect', [ $this, 'rewrite_templates' ], 1 );
         add_filter('show_admin_bar', [ $this, 'remove_admin_bar' ] );
         add_filter( 'document_title_parts', [ $this, 'render_page_title' ], 20 );
@@ -57,8 +56,7 @@ class Frontend {
     public function reset_head_style() {
         if ( 'true' == get_query_var( 'wepos' ) ) {
             $wp_styles = wp_styles();
-            $wp_styles->registered = [];
-            $wp_styles->reset();
+            $wp_styles->queue = [];
         }
     }
 
@@ -70,8 +68,7 @@ class Frontend {
     public function reset_head_scripts() {
         if ( 'true' == get_query_var( 'wepos' ) ) {
             $wp_scripts = wp_scripts();
-            $wp_scripts->registered = [];
-            $wp_scripts->reset();
+            $wp_scripts->queue = [];
         }
     }
 
@@ -83,17 +80,6 @@ class Frontend {
     public function enqueue_scripts() {
         if ( 'true' == get_query_var( 'wepos' ) ) {
             do_action( 'wepos_enqueue_scripts' );
-        }
-    }
-
-    /**
-     * Print registered scripts
-     *
-     * @return [type] [description]
-     */
-    public function print_styles() {
-        if ( 'true' == get_query_var( 'wepos' ) ) {
-            wp_print_styles();
         }
     }
 

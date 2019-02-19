@@ -229,3 +229,11 @@ function wepos_get_option( $option, $section, $default = '' ) {
     return $default;
 }
 
+/**
+ * Detects if current page is wePOS frontend page
+ *
+ * @return bool
+ */
+function wepos_is_frontend() {
+    return wp_validate_boolean( get_query_var( 'wepos' ) );
+}

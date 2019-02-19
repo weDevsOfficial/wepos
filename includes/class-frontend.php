@@ -21,7 +21,7 @@ class Frontend {
      * @return void
      */
     public function rewrite_templates() {
-        if ( 'true' == get_query_var( 'wepos' ) ) {
+        if ( wepos_is_frontend() ) {
             //check if user is logged in otherwise redirect to login page
             if ( ! is_user_logged_in() ) {
                 wp_redirect( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) );
@@ -41,7 +41,7 @@ class Frontend {
      * @return void
      */
     public function remove_admin_bar() {
-        if ( 'true' == get_query_var( 'wepos' ) ) {
+        if ( wepos_is_frontend() ) {
             return false;
         }
 
@@ -54,7 +54,7 @@ class Frontend {
      * @return void
      */
     public function reset_head_style() {
-        if ( 'true' == get_query_var( 'wepos' ) ) {
+        if ( wepos_is_frontend() ) {
             $wp_styles = wp_styles();
             $wp_styles->queue = [];
         }
@@ -66,7 +66,7 @@ class Frontend {
      * @return void
      */
     public function reset_head_scripts() {
-        if ( 'true' == get_query_var( 'wepos' ) ) {
+        if ( wepos_is_frontend() ) {
             $wp_scripts = wp_scripts();
             $wp_scripts->queue = [];
         }
@@ -78,7 +78,7 @@ class Frontend {
      * @return [type] [description]
      */
     public function enqueue_scripts() {
-        if ( 'true' == get_query_var( 'wepos' ) ) {
+        if ( wepos_is_frontend() ) {
             do_action( 'wepos_enqueue_scripts' );
         }
     }
@@ -91,7 +91,7 @@ class Frontend {
      * @return void
      */
     public function render_page_title( $title ) {
-        if ( 'true' == get_query_var( 'wepos' ) ) {
+        if ( wepos_is_frontend() ) {
             $title['title'] = apply_filters( 'wepos_page_document_title', __( 'Point of Sale', 'wepos' ) );
         }
 

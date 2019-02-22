@@ -122,19 +122,19 @@
                     new wp.media.controller.Library({
                         library: wp.media.query(),
                         multiple: false,
-                        title: this.__('Select an image', 'dokan-lite' ),
+                        title: this.__('Select an image', 'wepos' ),
                         priority: 20,
                         filterable: 'uploaded'
                     })
                 ];
 
                 vm.fileFrame = wp.media({
-                    title: this.__('Select an image', 'dokan-lite' ),
+                    title: this.__('Select an image', 'wepos' ),
                     library: {
                         type: ''
                     },
                     button: {
-                        text: this.__('Select an image', 'dokan-lite' )
+                        text: this.__('Select an image', 'wepos' )
                     },
                     multiple: false,
                     states: fileStates
@@ -177,7 +177,7 @@
                 if (!image.id || (image.type !== 'image')) {
                     this.alert({
                         type: 'error',
-                        text: this.__('Please select an image,', 'dokan-lite' )
+                        text: this.__('Please select an image,', 'wepos' )
                     });
 
                     return;

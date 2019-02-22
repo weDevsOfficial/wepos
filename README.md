@@ -3,9 +3,9 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 5.0.3
+**Tested up to:** 5.1
 **WC requires at least:** 3.0
-**WC tested up to:** 3.5.4
+**WC tested up to:** 3.5.5
 **Requires PHP:** 5.6
 **Stable tag:** trunk
 **License:** GPLv2 or later
@@ -43,9 +43,12 @@ No FAQ
 ## Screenshots ##
 1. Admin Dashboard Settings
 2. Product Search and Barcode Scan
-3. Add New Customer
-4. Payment Page
-5. Payment Receipt Page
+3. Product list view
+4. Customer Search
+5. Add New Customer
+6. Add discount and fees
+7. Payment Page
+8. Payment Receipt Page
 
 ## Changelog ##
 ### 1.0.0 ###

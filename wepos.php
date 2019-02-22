@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: WePOS
-Plugin URI: https://wedevs.com/
-Description: WooCommerce POS integration
+Plugin Name: WePOS - Point Of Sale(POS) for WooCommerce
+Plugin URI: https://wedevs.com/wepos
+Description: A beautiful and fast Point of Sale(POS) system for WooCommerce
 Version: 1.0.0
 Author: weDevs
 Author URI: https://wedevs.com/

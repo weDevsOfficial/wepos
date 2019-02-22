@@ -29,7 +29,7 @@
                         </template>
 
                         <template slot="noResult">
-                            <div class="no-data-found">Not found</div>
+                            <div class="no-data-found">{{ __( 'Not found', 'wepos' ) }}</div>
                         </template>
                     </multiselect>
                 </div>
@@ -86,7 +86,7 @@
                                 </div>
                                 <template slot="popover">
                                     <div class="variation-header">
-                                        Select Variations
+                                        {{ __( 'Select Variations', 'wepos' ) }}
                                     </div>
                                     <div class="variation-body">
                                         <template v-for="attribute in product.attributes">
@@ -106,7 +106,7 @@
                                         </template>
                                     </div>
                                     <div class="variation-footer">
-                                        <button :disabled="attributeDisabled" @click.prevent="addVariationProduct">Add Product</button>
+                                        <button :disabled="attributeDisabled" @click.prevent="addVariationProduct">{{ __( 'Add Product', 'wepos' ) }}</button>
                                     </div>
                                 </template>
                             </v-popover>
@@ -114,7 +114,7 @@
                     </div>
                     <div class="no-product-found" v-if="getFilteredProduct.length <= 0">
                         <img :src="wepos.assets_url+ '/images/no-product.png'" alt="" width="120px">
-                        <p>No Product Found</p>
+                        <p>{{ __( 'No Product Found', 'wepos' ) }}</p>
                     </div>
                 </template>
                 <div class="product-loading" v-if="productLoading">
@@ -132,10 +132,10 @@
                             <label>
                                 <input type="checkbox">
                                 <ul>
-                                    <li><a href="#" @click.prevent="emptyCart">Empty Cart</a></li>
-                                    <li><a href="#" @click.prevent="openHelp">Help</a></li>
+                                    <li><a href="#" @click.prevent="emptyCart">{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
+                                    <li><a href="#" @click.prevent="openHelp">{{ __( 'Help', 'wepos' ) }}</a></li>
                                     <li class="divider"></li>
-                                    <li><a :href="getLogoutUrl()">Logout</a></li>
+                                    <li><a :href="getLogoutUrl()">{{ __( 'Logout', 'wepos' ) }}</a></li>
                                 </ul>
                             </label>
                         </span>
@@ -147,9 +147,9 @@
                     <table class="cart-table">
                         <thead>
                             <tr>
-                                <th width="65%">Product</th>
-                                <th width="15%">Qty</th>
-                                <th width="30%">Price</th>
+                                <th width="65%">{{ __( 'Product', 'wepos' ) }}</th>
+                                <th width="15%">{{ __( 'Qty', 'wepos' ) }}</th>
+                                <th width="30%">{{ __( 'Price', 'wepos' ) }}</th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -185,7 +185,7 @@
                                     </tr>
                                     <tr v-if="item.editQuantity" class="update-quantity-wrap">
                                         <td colspan="5">
-                                            <span class="qty">Quantity</span>
+                                            <span class="qty">{{ __( 'Quantity', 'wepos' ) }}</span>
                                             <span class="qty-number"><input type="number" min="1" step="1" v-model="item.quantity"></span>
                                             <span class="qty-action">
                                                 <a href="#" class="add" @click.prevent="addQuantity(item)">&#43;</a>
@@ -199,7 +199,7 @@
                                 <tr class="no-item">
                                     <td colspan="5">
                                         <img :src="wepos.assets_url+ '/images/empty-cart.png'" alt="" width="120px">
-                                        <p>Empty Cart</p>
+                                        <p>{{ __( 'Empty Cart', 'wepos' ) }}</p>
                                     </td>
                                 </tr>
                             </template>
@@ -211,33 +211,33 @@
                         <table class="cart-total-table">
                             <tbody>
                                 <tr>
-                                    <td class="label">Subtotal</td>
+                                    <td class="label">{{ __( 'Subtotal', 'wepos' ) }}</td>
                                     <td class="price">{{ formatPrice( getSubtotal ) }}</td>
                                     <td class="action"></td>
                                 </tr>
                                 <template v-if="orderdata.fee_lines.length > 0">
                                     <tr class="cart-meta-data" v-for="(fee,key) in orderdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
-                                            <td class="label">Discount <span class="name">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                                            <td class="label">{{ __( 'Discount', 'wepos' ) }} <span class="name">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
                                             <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                             <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                         </template>
                                         <template v-else>
                                             <template v-if="fee.isEdit">
                                                 <td class="label" colspan="2">
-                                                    <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" placeholder="Fee Name" ref="fee_name">
+                                                    <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" :placeholder="__( 'Fee Name', 'wepos' )" ref="fee_name">
                                                     <template v-if="settings.wepos_general.enable_fee_tax == 'yes'">
                                                         <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="orderdata.fee_lines[key].tax_status" :true-value="'taxable'" :false-value="'none'"> Taxable</label>
                                                         <select class="fee-tax-class" v-model="orderdata.fee_lines[key].tax_class" v-if="orderdata.fee_lines[key].tax_status=='taxable'">
                                                             <option v-for="feeTax in availableTax" :value="feeTax.class == 'standard' ? '' : feeTax.class">{{ unSanitizeString( feeTax.class ) }} - {{ feeTax.percentage_rate }}</option>
                                                         </select>
                                                     </template>
-                                                    <button :disabled="orderdata.fee_lines[key].name == ''" @click="saveFee(key);">Apply</button>
+                                                    <button :disabled="orderdata.fee_lines[key].name == ''" @click="saveFee(key);">{{ __( 'Apply', 'wepos' ) }}</button>
                                                 </td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                             <template v-else>
-                                                <td class="label" @dblclick="orderdata.fee_lines[key].isEdit = true">Fee <span class="name">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                                                <td class="label" @dblclick="orderdata.fee_lines[key].isEdit = true">{{ __( 'Fee', 'wepos' ) }} <span class="name">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
                                                 <td class="price">{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
@@ -245,14 +245,14 @@
                                     </tr>
                                 </template>
                                 <tr class="tax" v-if="getTotalTax">
-                                    <td class="label">Tax</td>
+                                    <td class="label">{{ __( 'Tax', 'wepos' ) }}</td>
                                     <td class="price">{{ formatPrice( getTotalTax ) }}</td>
                                     <td class="action"></td>
                                 </tr>
                                 <tr class="cart-action">
                                     <td colspan="3">
-                                        <fee-keypad @inputfee="setDiscount" name="Discount" short-key="discount"></fee-keypad>
-                                        <fee-keypad @inputfee="setFee" name="Fee" short-key="fee"></fee-keypad>
+                                        <fee-keypad @inputfee="setDiscount" :name="__( 'Discount', 'wepos' )" short-key="discount"></fee-keypad>
+                                        <fee-keypad @inputfee="setFee" :name="__( 'Fee', 'wepos' )" short-key="fee"></fee-keypad>
                                         <customer-note @addnote="addCustomerNote" v-if="orderdata.customer_note == ''"></customer-note>
                                     </td>
                                 </tr>
@@ -263,7 +263,7 @@
                                     <td class="action"><span class="flaticon-cancel-music" @click.prevent="orderdata.customer_note = ''"></span></td>
                                 </tr>
                                 <tr class="pay-now" @click="initPayment()">
-                                    <td>Pay Now</td>
+                                    <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
                                     <td class="amount">{{ formatPrice( getTotal ) }}</td>
                                     <td class="icon"><span class="flaticon-right-arrow"></span></td>
                                 </tr>
@@ -279,14 +279,14 @@
                 <div class="wepos-payment-receipt">
                     <div class="sale-completed">
                         <img :src="wepos.assets_url+ '/images/sale-completed.png'" alt="" width="120px">
-                        <h2>Sale Completed</h2>
+                        <h2>{{ __( 'Sale Completed', 'wepos' ) }}</h2>
                     </div>
 
                     <div class="print-section">
                         <print-receipt></print-receipt>
                         <button class="new-sale-btn" @click.prevent="createNewSale()">
                             <span class="icon flaticon-add"></span>
-                            <span class="label">New Sale</span>
+                            <span class="label">{{ __( 'New Sale', 'wepos' ) }}</span>
                         </button>
                     </div>
                 </div>
@@ -296,67 +296,67 @@
         <modal v-if="showHelp" @close="closeHelp()" width="700px" height="500px">
             <template slot="body">
                 <div class="wepos-help-wrapper">
-                    <h2>Shortcut Keys</h2>
+                    <h2>{{ __( 'Shortcut Keys', 'wepos' ) }}</h2>
                     <ul>
                         <li>
                             <span class="code"><code>f1</code></span>
-                            <span class="title">Search Product</span>
+                            <span class="title">{{ __( 'Search Product', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f2</code></span>
-                            <span class="title">Scan Product</span>
+                            <span class="title">{{ __( 'Scan Product', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f3</code></span>
-                            <span class="title">Toggle Product View</span>
+                            <span class="title">{{ __( 'Toggle Product View', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f4</code></span>
-                            <span class="title">Add Fee in cart</span>
+                            <span class="title">{{ __( 'Add Fee in cart', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f5</code></span>
-                            <span class="title">Add Discount in cart</span>
+                            <span class="title">{{ __( 'Add Discount in cart', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f6</code></span>
-                            <span class="title">Add Customer note</span>
+                            <span class="title">{{ __( 'Add Customer note', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f7</code></span>
-                            <span class="title">Customer Search</span>
+                            <span class="title">{{ __( 'Customer Search', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>shift+f7</code></span>
-                            <span class="title">Add new Customer</span>
+                            <span class="title">{{ __( 'Add new Customer', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f8</code></span>
-                            <span class="title">Create New Sale</span>
+                            <span class="title">{{ __( 'Create New Sale', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>shift+f8</code></span>
-                            <span class="title">Empty your cart</span>
+                            <span class="title">{{ __( 'Empty your cart', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f9</code></span>
-                            <span class="title">Go to payment receipt</span>
+                            <span class="title">{{ __( 'Go to payment receipt', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>f10</code></span>
-                            <span class="title">Process Payment</span>
+                            <span class="title">{{ __( 'Process Payment', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>ctrl/cmd+p</code></span>
-                            <span class="title">Print Receipt</span>
+                            <span class="title">{{ __( 'Print Receipt', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>ctrl/cmd+?</code></span>
-                            <span class="title">Show/Close(Toggle) Help</span>
+                            <span class="title">{{ __( 'Show/Close(Toggle) Help', 'wepos' ) }}</span>
                         </li>
                         <li>
                             <span class="code"><code>esc</code></span>
-                            <span class="title">Close anything</span>
+                            <span class="title">{{ __( 'Close anything', 'wepos' ) }}</span>
                         </li>
                     </ul>
                 </div>
@@ -368,7 +368,7 @@
                 <div class="wepos-checkout-wrapper">
                     <div class="left-content">
                         <div class="header">
-                            Sale Summary
+                            {{ __( 'Sale Summary', 'wepos' ) }}
                         </div>
                         <div class="content" :style="{ height: modalLeftContentHeight }">
                             <table class="sale-summary-cart">
@@ -400,31 +400,31 @@
                         <div class="footer">
                             <ul>
                                 <li class="wepos-clearfix">
-                                    <span class="wepos-left">Subtotal</span>
+                                    <span class="wepos-left">{{ __( 'Subtotal', 'wepos' ) }}</span>
                                     <span class="wepos-right">{{ formatPrice( getSubtotal ) }}</span>
                                 </li>
                                 <template v-if="orderdata.fee_lines.length > 0">
                                     <li class="wepos-clearfix" v-for="(fee,key) in orderdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
-                                            <span class="wepos-left">Discount <span class="metadata">{{ fee.name }} {{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
+                                            <span class="wepos-left">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
                                             <span class="wepos-right">-{{ formatPrice( Math.abs( fee.total ) ) }}</span>
                                         </template>
                                         <template v-else>
-                                            <span class="wepos-left">Fee <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
+                                            <span class="wepos-left">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
                                             <span class="wepos-right">{{ formatPrice( fee.total ) }}</span>
                                         </template>
                                     </li>
                                 </template>
                                 <li class="wepos-clearfix" v-if="getTotalTax">
-                                    <span class="wepos-left">Tax</span>
+                                    <span class="wepos-left">{{ __( 'Tax', 'wepos' ) }}</span>
                                     <span class="wepos-right">{{ formatPrice( getTotalTax ) }}</span>
                                 </li>
                                 <li class="wepos-clearfix">
-                                    <span class="wepos-left">Order Total</span>
+                                    <span class="wepos-left">{{ __( 'Order Total', 'wepos' ) }}</span>
                                     <span class="wepos-right">{{ formatPrice( getTotal ) }}</span>
                                 </li>
                                 <li class="wepos-clearfix">
-                                    <span class="wepos-left">Pay</span>
+                                    <span class="wepos-left">{{ __( 'Pay', 'wepos' ) }}</span>
                                     <span class="wepos-right">{{ formatPrice( getTotal ) }}</span>
                                 </li>
                             </ul>
@@ -432,7 +432,7 @@
                     </div>
                     <div class="right-content">
                         <div class="header wepos-clearfix">
-                            <h2 class="wepos-left">Pay</h2>
+                            <h2 class="wepos-left">{{ __( 'Pay', 'wepos' ) }}</h2>
                             <span class="pay-amount wepos-right">{{ formatPrice( getTotal ) }}</span>
                         </div>
 
@@ -452,7 +452,7 @@
                                     </template>
                                 </template>
                                 <template v-else>
-                                    <p>No gateway found</p>
+                                    <p>{{ __( 'No gateway found', 'wepos' ) }}</p>
                                 </template>
                             </div>
                             <template v-if="orderdata.payment_method=='wepos_cash'">
@@ -460,15 +460,15 @@
                                     <div class="payment-amount">
                                         <div class="input-part">
                                             <div class="input-wrap">
-                                                <p>Cash</p>
+                                                <p>{{ __( 'Cash', 'wepos' ) }}</p>
                                                 <div class="input-addon">
-                                                    <span class="currency">$</span>
+                                                    <span class="currency">{{ wepos.currency_format_symbol }}</span>
                                                     <input type="text" v-model="cashAmount" ref="cashamount">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="change-money">
-                                            <p>Change money: {{ formatPrice( changeAmount  ) }}</p>
+                                            <p>{{ __( 'Change money', 'wepos' ) }}: {{ formatPrice( changeAmount ) }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -476,8 +476,8 @@
                         </div>
 
                         <div class="footer wepos-clearfix">
-                            <a href="#" class="back-btn wepos-left" @click.prevent="backToSale()">Back to Sale</a>
-                            <button class="process-checkout-btn wepos-right" @click.prevent="processPayment" :disabled="!ableToProcess()">Process Payment</button>
+                            <a href="#" class="back-btn wepos-left" @click.prevent="backToSale()">{{ __( 'Back to Sale', 'wepos' ) }}</a>
+                            <button class="process-checkout-btn wepos-right" @click.prevent="processPayment" :disabled="!ableToProcess()">{{ __( 'Process Payment', 'wepos' ) }}</button>
                         </div>
                     </div>
                 </div>
@@ -828,7 +828,7 @@ export default {
         },
         setDiscount( value, type ) {
             this.orderdata.fee_lines.push({
-                name: 'Discount',
+                name: this.__( 'Discount', 'wepos' ),
                 type: 'discount',
                 value: value.toString(),
                 isEdit: false,
@@ -848,7 +848,7 @@ export default {
         },
         setFee( value, type ) {
             this.orderdata.fee_lines.push({
-                name: 'Fee',
+                name: this.__( 'Fee', 'wepos' ),
                 type: 'fee',
                 value: value.toString(),
                 isEdit: false,

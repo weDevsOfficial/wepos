@@ -20,11 +20,11 @@ pluginWebpack([0],[
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(28);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_54348248_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_54348248_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(85);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(86)
+  __webpack_require__(84)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -99,16 +99,16 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(84);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(89);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(92);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(90);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Modal_vue__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceipt_vue__ = __webpack_require__(99);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__PrintReceiptHtml_vue__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CustomerNote_vue__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceipt_vue__ = __webpack_require__(97);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__PrintReceiptHtml_vue__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CustomerNote_vue__ = __webpack_require__(103);
 //
 //
 //
@@ -933,7 +933,7 @@ if (false) {(function () {
         },
         setDiscount(value, type) {
             this.orderdata.fee_lines.push({
-                name: 'Discount',
+                name: this.__('Discount', 'wepos'),
                 type: 'discount',
                 value: value.toString(),
                 isEdit: false,
@@ -953,7 +953,7 @@ if (false) {(function () {
         },
         setFee(value, type) {
             this.orderdata.fee_lines.push({
-                name: 'Fee',
+                name: this.__('Fee', 'wepos'),
                 type: 'fee',
                 value: value.toString(),
                 isEdit: false,
@@ -1334,7 +1334,7 @@ if (false) {(function () {
 
     computed: {
         placeholder() {
-            return this.mode == 'scan' ? 'Scan your product ( or Press ctrl+s or ctrl+p )' : 'Search product by typing ( or Press ctrl+s or ctrl+p )';
+            return this.mode == 'scan' ? this.__('Scan your product', 'wepos') : this.__('Search product by typing', 'wepos');
         },
 
         hotkeys() {
@@ -1915,7 +1915,7 @@ if (false) {(function () {
                     alert(response.responseJSON.message);
                 });
             } else {
-                alert('Please enter an email address for customer');
+                alert(this.__('Please enter an email address for customer', 'wepos'));
             }
         }
     }
@@ -1926,7 +1926,7 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(92);
 //
 //
 //
@@ -1989,7 +1989,6 @@ if (false) {(function () {
     },
     methods: {
         hideFeeKepad(e) {
-            e.preventDefault();
             this.viewFeeKeypad = false;
         },
         layout() {
@@ -2456,27 +2455,7 @@ let EventBus = wepos_get_lib('EventBus');
 });
 
 /***/ }),
-/* 38 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-    name: 'Profile',
-
-    data() {
-        return {};
-    }
-});
-
-/***/ }),
+/* 38 */,
 /* 39 */,
 /* 40 */,
 /* 41 */,
@@ -2509,19 +2488,17 @@ let EventBus = wepos_get_lib('EventBus');
 /* 68 */,
 /* 69 */,
 /* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(74);
+var _App = __webpack_require__(72);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(78);
+var _router = __webpack_require__(76);
 
 var _router2 = _interopRequireDefault(_router);
 
@@ -2542,18 +2519,18 @@ new Vue({
 });
 
 /***/ }),
-/* 74 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(24);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(75);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(75)
+  __webpack_require__(73)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2599,14 +2576,14 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 75 */
+/* 73 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 76 */,
-/* 77 */
+/* 74 */,
+/* 75 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2633,7 +2610,7 @@ if (false) {
 }
 
 /***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2643,13 +2620,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Home = __webpack_require__(79);
+var _Home = __webpack_require__(77);
 
 var _Home2 = _interopRequireDefault(_Home);
-
-var _Profile = __webpack_require__(109);
-
-var _Profile2 = _interopRequireDefault(_Profile);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2663,26 +2636,22 @@ exports.default = new Router({
         path: '/',
         name: 'Home',
         component: _Home2.default
-    }, {
-        path: '/profile',
-        name: 'Profile',
-        component: _Profile2.default
     }]
 });
 
 /***/ }),
-/* 79 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(25);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(108);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(106);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(80)
+  __webpack_require__(78)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2728,23 +2697,23 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 80 */
+/* 78 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 81 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(26);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(81);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(82)
+  __webpack_require__(80)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2790,13 +2759,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 82 */
+/* 80 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 83 */
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2818,17 +2787,17 @@ if (false) {
 }
 
 /***/ }),
-/* 84 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(27);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(86);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(85)
+  __webpack_require__(83)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2874,19 +2843,19 @@ if (false) {(function () {
 
 
 /***/ }),
+/* 83 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
 /* 85 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2954,7 +2923,7 @@ if (false) {
 }
 
 /***/ }),
-/* 88 */
+/* 86 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3061,7 +3030,7 @@ var render = function() {
                     }
                   }
                 },
-                [_vm._v("Product")]
+                [_vm._v(_vm._s(_vm.__("Product", "wepos")))]
               ),
               _vm._v(" "),
               _c(
@@ -3076,7 +3045,7 @@ var render = function() {
                     }
                   }
                 },
-                [_vm._v("Scan")]
+                [_vm._v(_vm._s(_vm.__("Scan", "wepos")))]
               )
             ]
           ),
@@ -3240,10 +3209,41 @@ var render = function() {
                     1
                   )
                 : _c("div", { staticClass: "no-data-found" }, [
-                    _vm._v("\n                No product found\n            ")
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(_vm.__("No product found", "wepos")) +
+                        "\n            "
+                    )
                   ]),
               _vm._v(" "),
-              _vm._m(0)
+              _c("div", { staticClass: "suggession" }, [
+                _c("span", { staticClass: "term" }, [
+                  _c("span", { staticClass: "flaticon-swap" }),
+                  _vm._v(
+                    " " +
+                      _vm._s(_vm.__("to navigate", "wepos")) +
+                      "\n                "
+                  )
+                ]),
+                _vm._v(" "),
+                _c("span", { staticClass: "term" }, [
+                  _c("span", { staticClass: "flaticon-enter-arrow" }),
+                  _vm._v(
+                    " " +
+                      _vm._s(_vm.__("to select", "wepos")) +
+                      "\n                "
+                  )
+                ]),
+                _vm._v(" "),
+                _c("span", { staticClass: "term" }, [
+                  _c("strong", [_vm._v("esc")]),
+                  _vm._v(
+                    " " +
+                      _vm._s(_vm.__("to dismiss", "wepos")) +
+                      "\n                "
+                  )
+                ])
+              ])
             ]
           )
         ]
@@ -3254,7 +3254,7 @@ var render = function() {
             "modal",
             {
               attrs: {
-                title: "Select Variations",
+                title: _vm.__("Select Variations", "wepos"),
                 width: "500px",
                 height: "auto",
                 footer: true,
@@ -3359,29 +3359,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "suggession" }, [
-      _c("span", { staticClass: "term" }, [
-        _c("span", { staticClass: "flaticon-swap" }),
-        _vm._v(" to navigate\n                ")
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "term" }, [
-        _c("span", { staticClass: "flaticon-enter-arrow" }),
-        _vm._v(" to select\n                ")
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "term" }, [
-        _c("strong", [_vm._v("esc")]),
-        _vm._v(" to dismiss\n                ")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -3393,17 +3371,17 @@ if (false) {
 }
 
 /***/ }),
-/* 89 */
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(31);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(89);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(90)
+  __webpack_require__(88)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -3449,13 +3427,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 90 */
+/* 88 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 91 */
+/* 89 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3644,7 +3622,7 @@ var render = function() {
             type: "text",
             name: "customer_search",
             id: "customer-search",
-            placeholder: "Search customer (or Press ctrl+c)"
+            placeholder: _vm.__("Search customer", "wepos")
           },
           domProps: { value: _vm.serachInput },
           on: {
@@ -3778,10 +3756,41 @@ var render = function() {
                   1
                 )
               : _c("div", { staticClass: "no-data-found" }, [
-                  _vm._v("\n                No customer found\n            ")
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(_vm.__("No customer found", "wepos")) +
+                      "\n            "
+                  )
                 ]),
             _vm._v(" "),
-            _vm._m(0)
+            _c("div", { staticClass: "suggession" }, [
+              _c("span", { staticClass: "term" }, [
+                _c("span", { staticClass: "flaticon-swap" }),
+                _vm._v(
+                  " " +
+                    _vm._s(_vm.__("to navigate", "wepos")) +
+                    "\n                "
+                )
+              ]),
+              _vm._v(" "),
+              _c("span", { staticClass: "term" }, [
+                _c("span", { staticClass: "flaticon-enter-arrow" }),
+                _vm._v(
+                  " " +
+                    _vm._s(_vm.__("to select", "wepos")) +
+                    "\n                "
+                )
+              ]),
+              _vm._v(" "),
+              _c("span", { staticClass: "term" }, [
+                _c("strong", [_vm._v("esc")]),
+                _vm._v(
+                  " " +
+                    _vm._s(_vm.__("to dismiss", "wepos")) +
+                    "\n                "
+                )
+              ])
+            ])
           ]
         )
       ]),
@@ -3791,7 +3800,7 @@ var render = function() {
             "modal",
             {
               attrs: {
-                title: "Add New Customer",
+                title: _vm.__("Add New Customer", "wepos"),
                 width: "700px",
                 height: "400px",
                 footer: true,
@@ -3820,7 +3829,10 @@ var render = function() {
                               expression: "customer.first_name"
                             }
                           ],
-                          attrs: { type: "text", placeholder: "First Name" },
+                          attrs: {
+                            type: "text",
+                            placeholder: _vm.__("First Name", "wepos")
+                          },
                           domProps: { value: _vm.customer.first_name },
                           on: {
                             input: function($event) {
@@ -3845,7 +3857,10 @@ var render = function() {
                               expression: "customer.last_name"
                             }
                           ],
-                          attrs: { type: "text", placeholder: "Last Name" },
+                          attrs: {
+                            type: "text",
+                            placeholder: _vm.__("Last Name", "wepos")
+                          },
                           domProps: { value: _vm.customer.last_name },
                           on: {
                             input: function($event) {
@@ -3872,7 +3887,10 @@ var render = function() {
                               expression: "customer.email"
                             }
                           ],
-                          attrs: { type: "email", placeholder: "Email" },
+                          attrs: {
+                            type: "email",
+                            placeholder: _vm.__("Email", "wepos")
+                          },
                           domProps: { value: _vm.customer.email },
                           on: {
                             input: function($event) {
@@ -3899,7 +3917,10 @@ var render = function() {
                               expression: "customer.address_1"
                             }
                           ],
-                          attrs: { type: "text", placeholder: "Address 1" },
+                          attrs: {
+                            type: "text",
+                            placeholder: _vm.__("Address 1", "wepos")
+                          },
                           domProps: { value: _vm.customer.address_1 },
                           on: {
                             input: function($event) {
@@ -3926,7 +3947,7 @@ var render = function() {
                           ],
                           attrs: {
                             type: "text",
-                            placeholder: "Address 2 (optional)"
+                            placeholder: _vm.__("Address 2 (optional)", "wepos")
                           },
                           domProps: { value: _vm.customer.address_2 },
                           on: {
@@ -3956,7 +3977,7 @@ var render = function() {
                           ],
                           attrs: {
                             type: "text",
-                            placeholder: "City (optional)"
+                            placeholder: _vm.__("City (optional)", "wepos")
                           },
                           domProps: { value: _vm.customer.city },
                           on: {
@@ -3984,7 +4005,7 @@ var render = function() {
                           ],
                           attrs: {
                             type: "text",
-                            placeholder: "Phone (optional)"
+                            placeholder: _vm.__("Phone (optional)", "wepos")
                           },
                           domProps: { value: _vm.customer.phone },
                           on: {
@@ -4033,29 +4054,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "suggession" }, [
-      _c("span", { staticClass: "term" }, [
-        _c("span", { staticClass: "flaticon-swap" }),
-        _vm._v(" to navigate\n                ")
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "term" }, [
-        _c("span", { staticClass: "flaticon-enter-arrow" }),
-        _vm._v(" to select\n                ")
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "term" }, [
-        _c("strong", [_vm._v("esc")]),
-        _vm._v(" to dismiss\n                ")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -4067,17 +4066,17 @@ if (false) {
 }
 
 /***/ }),
-/* 92 */
+/* 90 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(32);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(97);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(95);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(93)
+  __webpack_require__(91)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4123,23 +4122,23 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 93 */
+/* 91 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 94 */
+/* 92 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(33);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(94);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(95)
+  __webpack_require__(93)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4185,13 +4184,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 95 */
+/* 93 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 96 */
+/* 94 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4257,7 +4256,7 @@ if (false) {
 }
 
 /***/ }),
-/* 97 */
+/* 95 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4291,19 +4290,9 @@ var render = function() {
           }
         },
         [
-          _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.showFeeKeypad()
-                }
-              }
-            },
-            [_vm._v("Add " + _vm._s(_vm.name))]
-          ),
+          _c("a", { attrs: { href: "#" }, on: { click: _vm.showFeeKeypad } }, [
+            _vm._v(_vm._s(_vm.__("Add", "wepos")) + " " + _vm._s(_vm.name))
+          ]),
           _vm._v(" "),
           _c(
             "template",
@@ -4371,18 +4360,18 @@ if (false) {
 }
 
 /***/ }),
-/* 98 */,
-/* 99 */
+/* 96 */,
+/* 97 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(35);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(99);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(100)
+  __webpack_require__(98)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4428,13 +4417,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 100 */
+/* 98 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 101 */
+/* 99 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4457,7 +4446,9 @@ var render = function() {
       [
         _c("span", { staticClass: "icon flaticon-printer" }),
         _vm._v(" "),
-        _c("span", { staticClass: "label" }, [_vm._v("Print Receipt")])
+        _c("span", { staticClass: "label" }, [
+          _vm._v(_vm._s(_vm.__("Print Receipt", "wepos")))
+        ])
       ]
     )
   ])
@@ -4474,17 +4465,17 @@ if (false) {
 }
 
 /***/ }),
-/* 102 */
+/* 100 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(36);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(104);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(102);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(103)
+  __webpack_require__(101)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4530,13 +4521,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 103 */
+/* 101 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 104 */
+/* 102 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4552,13 +4543,21 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "order-info" }, [
       _c("span", { staticClass: "wepos-left" }, [
-        _c("strong", [_vm._v("Order ID: #" + _vm._s(_vm.printdata.order_id))])
+        _c("strong", [
+          _vm._v(
+            _vm._s(_vm.__("Order ID", "wepos")) +
+              ": #" +
+              _vm._s(_vm.printdata.order_id)
+          )
+        ])
       ]),
       _vm._v(" "),
       _c("span", { staticClass: "wepos-right" }, [
         _c("strong", [
           _vm._v(
-            "Order Date: " + _vm._s(_vm.formatDate(_vm.printdata.order_date))
+            _vm._s(_vm.__("Order Date", "wepos")) +
+              ": " +
+              _vm._s(_vm.formatDate(_vm.printdata.order_date))
           )
         ])
       ]),
@@ -4646,7 +4645,7 @@ var render = function() {
             _vm._v(" "),
             _c("tr", [
               _c("td", { staticClass: "name", attrs: { colspan: "2" } }, [
-                _vm._v("Subtotal")
+                _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
               ]),
               _vm._v(" "),
               _c("td", { staticClass: "price" }, [
@@ -4665,7 +4664,7 @@ var render = function() {
                           "td",
                           { staticClass: "name", attrs: { colspan: "2" } },
                           [
-                            _vm._v("Discount "),
+                            _vm._v(_vm._s(_vm.__("Discount", "wepos")) + " "),
                             _c("span", { staticClass: "metadata" }, [
                               _vm._v(
                                 _vm._s(
@@ -4689,7 +4688,7 @@ var render = function() {
                           "td",
                           { staticClass: "name", attrs: { colspan: "2" } },
                           [
-                            _vm._v("Fee "),
+                            _vm._v(_vm._s(_vm.__("Fee", "wepos")) + " "),
                             _c("span", { staticClass: "metadata" }, [
                               _vm._v(
                                 _vm._s(fee.name) +
@@ -4718,7 +4717,7 @@ var render = function() {
             _vm.printdata.taxtotal
               ? _c("tr", [
                   _c("td", { staticClass: "name", attrs: { colspan: "2" } }, [
-                    _vm._v("Tax")
+                    _vm._v(_vm._s(_vm.__("Tax", "wepos")))
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "price" }, [
@@ -4729,7 +4728,7 @@ var render = function() {
             _vm._v(" "),
             _c("tr", [
               _c("td", { staticClass: "name", attrs: { colspan: "2" } }, [
-                _vm._v("Order Total")
+                _vm._v(_vm._s(_vm.__("Order Total", "wepos")))
               ]),
               _vm._v(" "),
               _c("td", { staticClass: "price" }, [
@@ -4740,7 +4739,9 @@ var render = function() {
             _vm._m(0),
             _vm._v(" "),
             _c("tr", [
-              _c("td", { attrs: { colspan: "2" } }, [_vm._v("Payment method")]),
+              _c("td", { attrs: { colspan: "2" } }, [
+                _vm._v(_vm._s(_vm.__("Payment method", "wepos")))
+              ]),
               _vm._v(" "),
               _c("td", { staticClass: "price" }, [
                 _vm._v(_vm._s(_vm.printdata.gateway.title || ""))
@@ -4751,7 +4752,7 @@ var render = function() {
               ? [
                   _c("tr", [
                     _c("td", { attrs: { colspan: "2" } }, [
-                      _vm._v("Cash Given")
+                      _vm._v(_vm._s(_vm.__("Cash Given", "wepos")))
                     ]),
                     _vm._v(" "),
                     _c("td", { staticClass: "price" }, [
@@ -4761,7 +4762,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("tr", [
                     _c("td", { attrs: { colspan: "2" } }, [
-                      _vm._v("Change Money")
+                      _vm._v(_vm._s(_vm.__("Change Money", "wepos")))
                     ]),
                     _vm._v(" "),
                     _c("td", { staticClass: "price" }, [
@@ -4805,17 +4806,17 @@ if (false) {
 }
 
 /***/ }),
-/* 105 */
+/* 103 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(37);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(105);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(106)
+  __webpack_require__(104)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4861,13 +4862,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 106 */
+/* 104 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 107 */
+/* 105 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4911,7 +4912,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("Add Note")]
+            [_vm._v(_vm._s(_vm.__("Add Note", "wepos")))]
           ),
           _vm._v(" "),
           _c("template", { slot: "popover" }, [
@@ -4954,7 +4955,7 @@ var render = function() {
                     staticClass: "add-note-btn",
                     attrs: { type: "submit", disabled: _vm.customerNote == "" }
                   },
-                  [_vm._v("Add Note")]
+                  [_vm._v(_vm._s(_vm.__("Add Note", "wepos")))]
                 )
               ]
             )
@@ -4978,7 +4979,7 @@ if (false) {
 }
 
 /***/ }),
-/* 108 */
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5082,7 +5083,7 @@ var render = function() {
                 [
                   _c("template", { slot: "noResult" }, [
                     _c("div", { staticClass: "no-data-found" }, [
-                      _vm._v("Not found")
+                      _vm._v(_vm._s(_vm.__("Not found", "wepos")))
                     ])
                   ])
                 ],
@@ -5322,7 +5323,14 @@ var render = function() {
                                           { staticClass: "variation-header" },
                                           [
                                             _vm._v(
-                                              "\n                                    Select Variations\n                                "
+                                              "\n                                    " +
+                                                _vm._s(
+                                                  _vm.__(
+                                                    "Select Variations",
+                                                    "wepos"
+                                                  )
+                                                ) +
+                                                "\n                                "
                                             )
                                           ]
                                         ),
@@ -5452,7 +5460,16 @@ var render = function() {
                                                   }
                                                 }
                                               },
-                                              [_vm._v("Add Product")]
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.__(
+                                                      "Add Product",
+                                                      "wepos"
+                                                    )
+                                                  )
+                                                )
+                                              ]
                                             )
                                           ]
                                         )
@@ -5479,7 +5496,9 @@ var render = function() {
                           }
                         }),
                         _vm._v(" "),
-                        _c("p", [_vm._v("No Product Found")])
+                        _c("p", [
+                          _vm._v(_vm._s(_vm.__("No Product Found", "wepos")))
+                        ])
                       ])
                     : _vm._e()
                 ]
@@ -5525,7 +5544,7 @@ var render = function() {
                               }
                             }
                           },
-                          [_vm._v("Empty Cart")]
+                          [_vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))]
                         )
                       ]),
                       _vm._v(" "),
@@ -5541,7 +5560,7 @@ var render = function() {
                               }
                             }
                           },
-                          [_vm._v("Help")]
+                          [_vm._v(_vm._s(_vm.__("Help", "wepos")))]
                         )
                       ]),
                       _vm._v(" "),
@@ -5549,7 +5568,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("li", [
                         _c("a", { attrs: { href: _vm.getLogoutUrl() } }, [
-                          _vm._v("Logout")
+                          _vm._v(_vm._s(_vm.__("Logout", "wepos")))
                         ])
                       ])
                     ])
@@ -5564,7 +5583,25 @@ var render = function() {
         _c("div", { staticClass: "cart-panel" }, [
           _c("div", { staticClass: "cart-content" }, [
             _c("table", { staticClass: "cart-table" }, [
-              _vm._m(1),
+              _c("thead", [
+                _c("tr", [
+                  _c("th", { attrs: { width: "65%" } }, [
+                    _vm._v(_vm._s(_vm.__("Product", "wepos")))
+                  ]),
+                  _vm._v(" "),
+                  _c("th", { attrs: { width: "15%" } }, [
+                    _vm._v(_vm._s(_vm.__("Qty", "wepos")))
+                  ]),
+                  _vm._v(" "),
+                  _c("th", { attrs: { width: "30%" } }, [
+                    _vm._v(_vm._s(_vm.__("Price", "wepos")))
+                  ]),
+                  _vm._v(" "),
+                  _c("th"),
+                  _vm._v(" "),
+                  _c("th")
+                ])
+              ]),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -5736,7 +5773,9 @@ var render = function() {
                                   [
                                     _c("td", { attrs: { colspan: "5" } }, [
                                       _c("span", { staticClass: "qty" }, [
-                                        _vm._v("Quantity")
+                                        _vm._v(
+                                          _vm._s(_vm.__("Quantity", "wepos"))
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c(
@@ -5829,7 +5868,9 @@ var render = function() {
                               }
                             }),
                             _vm._v(" "),
-                            _c("p", [_vm._v("Empty Cart")])
+                            _c("p", [
+                              _vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))
+                            ])
                           ])
                         ])
                       ]
@@ -5846,7 +5887,9 @@ var render = function() {
                   "tbody",
                   [
                     _c("tr", [
-                      _c("td", { staticClass: "label" }, [_vm._v("Subtotal")]),
+                      _c("td", { staticClass: "label" }, [
+                        _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
+                      ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "price" }, [
                         _vm._v(_vm._s(_vm.formatPrice(_vm.getSubtotal)))
@@ -5864,7 +5907,10 @@ var render = function() {
                               fee.type == "discount"
                                 ? [
                                     _c("td", { staticClass: "label" }, [
-                                      _vm._v("Discount "),
+                                      _vm._v(
+                                        _vm._s(_vm.__("Discount", "wepos")) +
+                                          " "
+                                      ),
                                       _c("span", { staticClass: "name" }, [
                                         _vm._v(
                                           _vm._s(
@@ -5924,7 +5970,10 @@ var render = function() {
                                                 staticClass: "fee-name",
                                                 attrs: {
                                                   type: "text",
-                                                  placeholder: "Fee Name"
+                                                  placeholder: _vm.__(
+                                                    "Fee Name",
+                                                    "wepos"
+                                                  )
                                                 },
                                                 domProps: {
                                                   value:
@@ -6183,7 +6232,13 @@ var render = function() {
                                                     }
                                                   }
                                                 },
-                                                [_vm._v("Apply")]
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(
+                                                      _vm.__("Apply", "wepos")
+                                                    )
+                                                  )
+                                                ]
                                               )
                                             ],
                                             2
@@ -6215,7 +6270,10 @@ var render = function() {
                                               }
                                             },
                                             [
-                                              _vm._v("Fee "),
+                                              _vm._v(
+                                                _vm._s(_vm.__("Fee", "wepos")) +
+                                                  " "
+                                              ),
                                               _c(
                                                 "span",
                                                 { staticClass: "name" },
@@ -6268,7 +6326,9 @@ var render = function() {
                     _vm._v(" "),
                     _vm.getTotalTax
                       ? _c("tr", { staticClass: "tax" }, [
-                          _c("td", { staticClass: "label" }, [_vm._v("Tax")]),
+                          _c("td", { staticClass: "label" }, [
+                            _vm._v(_vm._s(_vm.__("Tax", "wepos")))
+                          ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "price" }, [
                             _vm._v(_vm._s(_vm.formatPrice(_vm.getTotalTax)))
@@ -6285,14 +6345,17 @@ var render = function() {
                         [
                           _c("fee-keypad", {
                             attrs: {
-                              name: "Discount",
+                              name: _vm.__("Discount", "wepos"),
                               "short-key": "discount"
                             },
                             on: { inputfee: _vm.setDiscount }
                           }),
                           _vm._v(" "),
                           _c("fee-keypad", {
-                            attrs: { name: "Fee", "short-key": "fee" },
+                            attrs: {
+                              name: _vm.__("Fee", "wepos"),
+                              "short-key": "fee"
+                            },
                             on: { inputfee: _vm.setFee }
                           }),
                           _vm._v(" "),
@@ -6348,13 +6411,13 @@ var render = function() {
                         }
                       },
                       [
-                        _c("td", [_vm._v("Pay Now")]),
+                        _c("td", [_vm._v(_vm._s(_vm.__("Pay Now", "wepos")))]),
                         _vm._v(" "),
                         _c("td", { staticClass: "amount" }, [
                           _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
                         ]),
                         _vm._v(" "),
-                        _vm._m(2)
+                        _vm._m(1)
                       ]
                     )
                   ],
@@ -6390,7 +6453,9 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    _c("h2", [_vm._v("Sale Completed")])
+                    _c("h2", [
+                      _vm._v(_vm._s(_vm.__("Sale Completed", "wepos")))
+                    ])
                   ]),
                   _vm._v(" "),
                   _c(
@@ -6414,7 +6479,7 @@ var render = function() {
                           _c("span", { staticClass: "icon flaticon-add" }),
                           _vm._v(" "),
                           _c("span", { staticClass: "label" }, [
-                            _vm._v("New Sale")
+                            _vm._v(_vm._s(_vm.__("New Sale", "wepos")))
                           ])
                         ]
                       )
@@ -6442,7 +6507,7 @@ var render = function() {
             [
               _c("template", { slot: "body" }, [
                 _c("div", { staticClass: "wepos-help-wrapper" }, [
-                  _c("h2", [_vm._v("Shortcut Keys")]),
+                  _c("h2", [_vm._v(_vm._s(_vm.__("Shortcut Keys", "wepos")))]),
                   _vm._v(" "),
                   _c("ul", [
                     _c("li", [
@@ -6451,7 +6516,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Search Product")
+                        _vm._v(_vm._s(_vm.__("Search Product", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6461,7 +6526,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Scan Product")
+                        _vm._v(_vm._s(_vm.__("Scan Product", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6471,7 +6536,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Toggle Product View")
+                        _vm._v(_vm._s(_vm.__("Toggle Product View", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6481,7 +6546,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Add Fee in cart")
+                        _vm._v(_vm._s(_vm.__("Add Fee in cart", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6491,7 +6556,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Add Discount in cart")
+                        _vm._v(_vm._s(_vm.__("Add Discount in cart", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6501,7 +6566,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Add Customer note")
+                        _vm._v(_vm._s(_vm.__("Add Customer note", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6511,7 +6576,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Customer Search")
+                        _vm._v(_vm._s(_vm.__("Customer Search", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6521,7 +6586,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Add new Customer")
+                        _vm._v(_vm._s(_vm.__("Add new Customer", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6531,7 +6596,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Create New Sale")
+                        _vm._v(_vm._s(_vm.__("Create New Sale", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6541,7 +6606,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Empty your cart")
+                        _vm._v(_vm._s(_vm.__("Empty your cart", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6551,7 +6616,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Go to payment receipt")
+                        _vm._v(_vm._s(_vm.__("Go to payment receipt", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6561,7 +6626,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Process Payment")
+                        _vm._v(_vm._s(_vm.__("Process Payment", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6571,7 +6636,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Print Receipt")
+                        _vm._v(_vm._s(_vm.__("Print Receipt", "wepos")))
                       ])
                     ]),
                     _vm._v(" "),
@@ -6581,7 +6646,9 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Show/Close(Toggle) Help")
+                        _vm._v(
+                          _vm._s(_vm.__("Show/Close(Toggle) Help", "wepos"))
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -6591,7 +6658,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "title" }, [
-                        _vm._v("Close anything")
+                        _vm._v(_vm._s(_vm.__("Close anything", "wepos")))
                       ])
                     ])
                   ])
@@ -6619,7 +6686,9 @@ var render = function() {
                   _c("div", { staticClass: "left-content" }, [
                     _c("div", { staticClass: "header" }, [
                       _vm._v(
-                        "\n                        Sale Summary\n                    "
+                        "\n                        " +
+                          _vm._s(_vm.__("Sale Summary", "wepos")) +
+                          "\n                    "
                       )
                     ]),
                     _vm._v(" "),
@@ -6749,7 +6818,7 @@ var render = function() {
                         [
                           _c("li", { staticClass: "wepos-clearfix" }, [
                             _c("span", { staticClass: "wepos-left" }, [
-                              _vm._v("Subtotal")
+                              _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
                             ]),
                             _vm._v(" "),
                             _c("span", { staticClass: "wepos-right" }, [
@@ -6772,7 +6841,11 @@ var render = function() {
                                             "span",
                                             { staticClass: "wepos-left" },
                                             [
-                                              _vm._v("Discount "),
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.__("Discount", "wepos")
+                                                ) + " "
+                                              ),
                                               _c(
                                                 "span",
                                                 { staticClass: "metadata" },
@@ -6814,7 +6887,10 @@ var render = function() {
                                             "span",
                                             { staticClass: "wepos-left" },
                                             [
-                                              _vm._v("Fee "),
+                                              _vm._v(
+                                                _vm._s(_vm.__("Fee", "wepos")) +
+                                                  " "
+                                              ),
                                               _c(
                                                 "span",
                                                 { staticClass: "metadata" },
@@ -6857,7 +6933,7 @@ var render = function() {
                           _vm.getTotalTax
                             ? _c("li", { staticClass: "wepos-clearfix" }, [
                                 _c("span", { staticClass: "wepos-left" }, [
-                                  _vm._v("Tax")
+                                  _vm._v(_vm._s(_vm.__("Tax", "wepos")))
                                 ]),
                                 _vm._v(" "),
                                 _c("span", { staticClass: "wepos-right" }, [
@@ -6870,7 +6946,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("li", { staticClass: "wepos-clearfix" }, [
                             _c("span", { staticClass: "wepos-left" }, [
-                              _vm._v("Order Total")
+                              _vm._v(_vm._s(_vm.__("Order Total", "wepos")))
                             ]),
                             _vm._v(" "),
                             _c("span", { staticClass: "wepos-right" }, [
@@ -6880,7 +6956,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("li", { staticClass: "wepos-clearfix" }, [
                             _c("span", { staticClass: "wepos-left" }, [
-                              _vm._v("Pay")
+                              _vm._v(_vm._s(_vm.__("Pay", "wepos")))
                             ]),
                             _vm._v(" "),
                             _c("span", { staticClass: "wepos-right" }, [
@@ -6895,7 +6971,9 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", { staticClass: "right-content" }, [
                     _c("div", { staticClass: "header wepos-clearfix" }, [
-                      _c("h2", { staticClass: "wepos-left" }, [_vm._v("Pay")]),
+                      _c("h2", { staticClass: "wepos-left" }, [
+                        _vm._v(_vm._s(_vm.__("Pay", "wepos")))
+                      ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "pay-amount wepos-right" }, [
                         _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
@@ -6969,7 +7047,15 @@ var render = function() {
                                       })
                                     : _vm._e()
                                 ]
-                              : [_c("p", [_vm._v("No gateway found")])]
+                              : [
+                                  _c("p", [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.__("No gateway found", "wepos")
+                                      )
+                                    )
+                                  ])
+                                ]
                           ],
                           2
                         ),
@@ -6980,7 +7066,9 @@ var render = function() {
                                 _c("div", { staticClass: "payment-amount" }, [
                                   _c("div", { staticClass: "input-part" }, [
                                     _c("div", { staticClass: "input-wrap" }, [
-                                      _c("p", [_vm._v("Cash")]),
+                                      _c("p", [
+                                        _vm._v(_vm._s(_vm.__("Cash", "wepos")))
+                                      ]),
                                       _vm._v(" "),
                                       _c(
                                         "div",
@@ -6989,7 +7077,14 @@ var render = function() {
                                           _c(
                                             "span",
                                             { staticClass: "currency" },
-                                            [_vm._v("$")]
+                                            [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.wepos
+                                                    .currency_format_symbol
+                                                )
+                                              )
+                                            ]
                                           ),
                                           _vm._v(" "),
                                           _c("input", {
@@ -7022,7 +7117,10 @@ var render = function() {
                                   _c("div", { staticClass: "change-money" }, [
                                     _c("p", [
                                       _vm._v(
-                                        "Change money: " +
+                                        _vm._s(
+                                          _vm.__("Change money", "wepos")
+                                        ) +
+                                          ": " +
                                           _vm._s(
                                             _vm.formatPrice(_vm.changeAmount)
                                           )
@@ -7050,7 +7148,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Back to Sale")]
+                        [_vm._v(_vm._s(_vm.__("Back to Sale", "wepos")))]
                       ),
                       _vm._v(" "),
                       _c(
@@ -7065,7 +7163,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Process Payment")]
+                        [_vm._v(_vm._s(_vm.__("Process Payment", "wepos")))]
                       )
                     ])
                   ])
@@ -7109,24 +7207,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { attrs: { width: "65%" } }, [_vm._v("Product")]),
-        _vm._v(" "),
-        _c("th", { attrs: { width: "15%" } }, [_vm._v("Qty")]),
-        _vm._v(" "),
-        _c("th", { attrs: { width: "30%" } }, [_vm._v("Price")]),
-        _vm._v(" "),
-        _c("th"),
-        _vm._v(" "),
-        _c("th")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("td", { staticClass: "icon" }, [
       _c("span", { staticClass: "flaticon-right-arrow" })
     ])
@@ -7142,92 +7222,5 @@ if (false) {
   }
 }
 
-/***/ }),
-/* 109 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Profile_vue__ = __webpack_require__(38);
-/* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35ef42f8_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Profile_vue__ = __webpack_require__(111);
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(110)
-}
-var normalizeComponent = __webpack_require__(0)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = "data-v-35ef42f8"
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Profile_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35ef42f8_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Profile_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "assets/src/frontend/components/Profile.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-35ef42f8", Component.options)
-  } else {
-    hotAPI.reload("data-v-35ef42f8", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-/* harmony default export */ __webpack_exports__["default"] = (Component.exports);
-
-
-/***/ }),
-/* 110 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 111 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "profile" }, [
-    _vm._v("\n    The Profile Page\n")
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-35ef42f8", esExports)
-  }
-}
-
 /***/ })
-],[73]);
+],[71]);

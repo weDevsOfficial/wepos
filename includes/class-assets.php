@@ -73,7 +73,7 @@ class Assets {
                 'deps'      => array()
             ),
             'wepos-tinymce-plugin' => array(
-                'src'     => WCPOS_ASSETS . '/src/vendors/tinymce/code/plugin.min.js',
+                'src'     => WCPOS_ASSETS . '/vendors/tinymce/code/plugin.min.js',
                 'deps'    => array('wepos-tinymce'),
                 'version' => time()
             ),
@@ -82,19 +82,14 @@ class Assets {
                 'version'   => filemtime( WCPOS_PATH . '/assets/js/jed.js' ),
                 'in_footer' => false
             ),
-            'wepos-jquery' => [
-                'src'       => WCPOS_ASSETS . '/js/jquery.min.js',
-                'version'   => filemtime( WCPOS_PATH . '/assets/js/jquery.min.js' ),
-                'in_footer' => true
-            ],
             'wepos-blockui' => [
                 'src'       => WC()->plugin_url() . '/assets/js/jquery-blockui/jquery.blockUI.min.js',
-                'deps'      => array( 'wepos-jquery' ),
+                'deps'      => array( 'jquery' ),
                 'in_footer' => true
             ],
             'wepos-accounting' => array(
                 'src'       => WC()->plugin_url() . '/assets/js/accounting/accounting.min.js',
-                'deps'      => array( 'wepos-jquery' )
+                'deps'      => array( 'jquery' )
             ),
             'wepos-vendor' => [
                 'src'       => WCPOS_ASSETS . '/js/vendor.js',
@@ -108,7 +103,7 @@ class Assets {
             ],
             'wepos-frontend' => [
                 'src'       => WCPOS_ASSETS . '/js/frontend.js',
-                'deps'      => [ 'wepos-jquery', 'wepos-i18n-jed', 'wepos-vendor', 'wepos-bootstrap' ],
+                'deps'      => [ 'jquery', 'wepos-i18n-jed', 'wepos-vendor', 'wepos-bootstrap' ],
                 'version'   => filemtime( WCPOS_PATH . '/assets/js/frontend.js' ),
                 'in_footer' => true
             ],

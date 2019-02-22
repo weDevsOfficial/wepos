@@ -6,7 +6,7 @@
             :style="{backgroundColor: value}"
             @click="toggleColorPicker"
         >
-            <span>{{ __( 'Select Color', 'dokan-lite' ) }}</span>
+            <span>{{ __( 'Select Color', 'wepos' ) }}</span>
         </button>
 
         <input
@@ -22,13 +22,13 @@
                 type="button"
                 class="button button-small"
                 @click="updateColor({})"
-            >{{ __( 'Clear', 'dokan-lite' ) }}</button>
+            >{{ __( 'Clear', 'wepos' ) }}</button>
 
             <button
                 type="button"
                 class="button button-small"
                 @click="toggleColorPicker"
-            >{{ __( 'Close', 'dokan-lite' ) }}</button>
+            >{{ __( 'Close', 'wepos' ) }}</button>
         </div>
 
         <sketch

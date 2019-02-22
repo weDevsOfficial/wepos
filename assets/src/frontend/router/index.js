@@ -1,5 +1,4 @@
 import Home from 'frontend/components/Home.vue'
-import Profile from 'frontend/components/Profile.vue'
 
 let Vue    = wepos_get_lib( 'Vue' )
 let Router = wepos_get_lib( 'Router' )
@@ -12,11 +11,6 @@ export default new Router({
             path: '/',
             name: 'Home',
             component: Home
-        },
-        {
-            path: '/profile',
-            name: 'Profile',
-            component: Profile
         },
     ]
 })

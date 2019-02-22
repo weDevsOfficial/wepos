@@ -1,11 +1,11 @@
 <template>
     <div class="wepos-custom-note-wrap" v-hotkey="hotkeys">
         <v-popover offset="5" popover-base-class="customer-note tooltip popover" placement="top" :open="viewNotePopover">
-            <a href="#" @click.prevent="openNote">Add Note</a>
+            <a href="#" @click.prevent="openNote">{{ __( 'Add Note', 'wepos' ) }}</a>
             <template slot="popover">
                 <form @submit.prevent="addCustomerNote">
                     <textarea id="" cols="30" rows="5" ref="customernote" v-model="customerNote"></textarea>
-                    <button type="submit" class="add-note-btn" :disabled="customerNote == ''">Add Note</button>
+                    <button type="submit" class="add-note-btn" :disabled="customerNote == ''">{{ __( 'Add Note', 'wepos' ) }}</button>
                 </form>
             </template>
         </v-popover>

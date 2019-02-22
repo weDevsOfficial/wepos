@@ -5,8 +5,8 @@
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
             <div class="search-type" v-hotkey="hotkeys">
-                <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">Product</a>
-                <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">Scan</a>
+                <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
+                <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
             </div>
             <div class="search-result" v-show="showResults && mode=='product'">
                 <div v-if="searchableProduct.length">
@@ -32,22 +32,22 @@
                     </keyboard-control>
                 </div>
                 <div v-else class="no-data-found">
-                    No product found
+                    {{ __( 'No product found', 'wepos' ) }}
                 </div>
                 <div class="suggession">
                     <span class="term">
-                        <span class="flaticon-swap"></span> to navigate
+                        <span class="flaticon-swap"></span> {{ __( 'to navigate', 'wepos' ) }}
                     </span>
                     <span class="term">
-                        <span class="flaticon-enter-arrow"></span> to select
+                        <span class="flaticon-enter-arrow"></span> {{ __( 'to select', 'wepos' ) }}
                     </span>
                     <span class="term">
-                        <strong>esc</strong> to dismiss
+                        <strong>esc</strong> {{ __( 'to dismiss', 'wepos' ) }}
                     </span>
                 </div>
             </div>
         </form>
-        <modal title="Select Variations" v-if="showVariationModal" @close="showVariationModal = false" width="500px" height="auto" :footer="true" :header="true">
+        <modal :title="__( 'Select Variations', 'wepos' )" v-if="showVariationModal" @close="showVariationModal = false" width="500px" height="auto" :footer="true" :header="true">
             <template slot="body">
                 <div class="variation-attribute-wrapper" v-for="attribute in selectedVariationProduct.attributes">
                     <div class="attribute">
@@ -115,7 +115,7 @@ export default {
 
     computed: {
         placeholder() {
-            return ( this.mode == 'scan' ) ? 'Scan your product ( or Press ctrl+s or ctrl+p )' : 'Search product by typing ( or Press ctrl+s or ctrl+p )';
+            return ( this.mode == 'scan' ) ? this.__( 'Scan your product', 'wepos' ) : this.__( 'Search product by typing', 'wepos' );
         },
 
         hotkeys() {

@@ -42,7 +42,7 @@
             </div>
 
             <div class="loading" v-if="showLoading">
-                <loading></loading>
+                <!-- <loading></loading> -->
             </div>
         </div>
     </div>
@@ -50,7 +50,6 @@
 </template>
 
 <script>
-    let Loading = wepos_get_lib('Loading');
     import Fields from "admin/components/Fields.vue"
 
     export default {
@@ -59,7 +58,6 @@
 
         components: {
             Fields,
-            Loading
         },
 
         data () {

@@ -4,7 +4,6 @@ import API_Helper from '@/utils/Api'
 import _ from '@/utils/lodash'
 import Mixin from './Mixin'
 import Popover  from 'vue-js-popover'
-import Loading from "admin/components/Loading.vue"
 import TextEditor from "admin/components/TextEditor.vue"
 import { VTooltip, VPopover, VClosePopover } from 'v-tooltip'
 import VueHotkey from 'v-hotkey'
@@ -61,6 +60,5 @@ window.wepos._ = _;
 window.wepos.api                = new API_Helper();
 window.wepos.libs['Vue']        = Vue;
 window.wepos.libs['Router']     = Router;
-window.wepos.libs['Loading']    = Loading;
 window.wepos.libs['TextEditor'] = TextEditor;
 window.wepos.libs['EventBus']   = EventBus;

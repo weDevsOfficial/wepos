@@ -995,7 +995,9 @@ if (false) {(function () {
             }
         },
         fetchProducts() {
-            this.productLoading = true;
+            if (this.page == 1) {
+                this.productLoading = true;
+            }
             if (this.totalPages >= this.page || this.totalPages === 0) {
                 wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products?per_page=30&page=' + this.page).done((response, status, xhr) => {
                     this.products = this.products.concat(response);

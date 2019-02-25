@@ -890,7 +890,9 @@ export default {
             }
         },
         fetchProducts() {
-            this.productLoading = true;
+            if ( this.page == 1 ) {
+                this.productLoading = true;
+            }
             if ( ( this.totalPages >= this.page ) || this.totalPages === 0 ) {
                 wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products?per_page=30&page=' + this.page )
                 .done( ( response, status, xhr ) => {

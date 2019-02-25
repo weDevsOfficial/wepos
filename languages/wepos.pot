@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WePOS - Point Of Sale(POS) for WooCommerce 1.0.0\n"
+"Project-Id-Version: wePOS - Point Of Sale(POS) for WooCommerce 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-02-22 04:47:45+00:00\n"
+"POT-Creation-Date: 2019-02-24 18:08:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -571,7 +571,7 @@ msgid "Payment collected via cash"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-msgid "WePOS - Point Of Sale(POS) for WooCommerce"
+msgid "wePOS - Point Of Sale(POS) for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

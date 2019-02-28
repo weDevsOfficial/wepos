@@ -18,6 +18,7 @@ var entryPoint = {
     admin: './assets/src/admin/main.js',
     vendor: vendorPackages,
     bootstrap: './assets/src/utils/Bootstrap.js',
+    wphook: './assets/vendors/wp-hook/index.js',
     style: './assets/less/style.less',
 };
 

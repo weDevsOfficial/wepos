@@ -65,7 +65,18 @@ class Assets {
      * @return array
      */
     public function get_scripts() {
+        global $wp_version;
+
         $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.min' : '';
+        $dependency = [ 'jquery', 'wepos-i18n-jed', 'wepos-vendor' ];
+
+        if ( version_compare( $wp_version, '5.0', '<' ) ) {
+            $dependency[] = 'wepos-wp-hook';
+        }
+
+        if ( !is_admin() ) {
+            $dependency[] = 'wepos-wp-hook';
+        }
 
         $scripts = [
             'wepos-tinymce' => array(
@@ -98,22 +109,27 @@ class Assets {
             ],
             'wepos-bootstrap' => [
                 'src'       => WCPOS_ASSETS . '/js/bootstrap.js',
+                'deps'      => $dependency,
                 'version'   => filemtime( WCPOS_PATH . '/assets/js/bootstrap.js' ),
                 'in_footer' => true
             ],
             'wepos-frontend' => [
                 'src'       => WCPOS_ASSETS . '/js/frontend.js',
-                'deps'      => [ 'jquery', 'wepos-i18n-jed', 'wepos-vendor', 'wepos-bootstrap' ],
+                'deps'      => ['wepos-bootstrap'],
                 'version'   => filemtime( WCPOS_PATH . '/assets/js/frontend.js' ),
                 'in_footer' => true
             ],
             'wepos-admin' => [
                 'src'       => WCPOS_ASSETS . '/js/admin.js',
-                'deps'      => [ 'jquery', 'wepos-i18n-jed', 'wepos-vendor', 'wepos-bootstrap' ],
+                'deps'      => ['wepos-bootstrap'],
                 'version'   => filemtime( WCPOS_PATH . '/assets/js/admin.js' ),
                 'in_footer' => true
             ],
-
+            'wepos-wp-hook' => array(
+                'src'       => WCPOS_ASSETS . '/js/wphook.js',
+                'deps'      => array( 'jquery' ),
+                'version'   => filemtime( WCPOS_PATH . '/assets/js/wphook.js' ),
+            )
         ];
 
         return $scripts;

@@ -12,6 +12,7 @@
     "zip": "npm run build && wpvuei18n makepot && node build/"
   },
   "dependencies": {
+    "@wordpress/hooks": "^2.0.5",
     "lodash": "^4.17.11",
     "v-hotkey": "^0.3.0",
     "v-tooltip": "^2.0.0-rc.33",

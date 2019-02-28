@@ -14,6 +14,7 @@ Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )
 Vue.component( 'v-popover', VPopover )
 Vue.component( 'multiselect', Multiselect )
+Vue.component( 'do-action', DoAction )
 
 Vue.directive('click-outside', {
     bind: function(el, binding, vNode) {
@@ -62,3 +63,12 @@ window.wepos.libs['Vue']        = Vue;
 window.wepos.libs['Router']     = Router;
 window.wepos.libs['TextEditor'] = TextEditor;
 window.wepos.libs['EventBus']   = EventBus;
+
+window.wepos.hooks = ( wp && wp.hooks ) ? wp.hooks : window.wepos.wpPackages.hooks;
+
+// window.wepos.addFilter = (hookName, namespace, component) => {
+//   wepos.hooks.addFilter(hookName, namespace, ( components ) => {
+//     components.push(component);
+//     return components;
+//   });
+// }

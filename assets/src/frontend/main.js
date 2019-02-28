@@ -10,5 +10,5 @@ Vue.config.productionTip = false
 new Vue({
     el: '#vue-frontend-app',
     router,
-    render: h => h(App)
+    render: h => h(App),
 })

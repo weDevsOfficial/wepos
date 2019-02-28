@@ -1536,7 +1536,6 @@ export default {
 
     .content-cart {
         flex: 1.3;
-        // background: #eee;
         height: 94.5vh;
 
         .top-panel {

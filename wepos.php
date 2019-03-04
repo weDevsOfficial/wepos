@@ -200,6 +200,8 @@ final class We_POS {
     public function init_plugin() {
         $this->includes();
         $this->init_hooks();
+
+        do_action( 'wepos_loaded' );
     }
 
     /**

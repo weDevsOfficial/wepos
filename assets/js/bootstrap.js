@@ -57,7 +57,6 @@ _vue2.default.directive('tooltip', _vTooltip.VTooltip);
 _vue2.default.directive('close-popover', _vTooltip.VClosePopover);
 _vue2.default.component('v-popover', _vTooltip.VPopover);
 _vue2.default.component('multiselect', _vueMultiselect2.default);
-_vue2.default.component('do-action', DoAction);
 
 _vue2.default.directive('click-outside', {
   bind: function bind(el, binding, vNode) {

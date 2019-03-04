@@ -201,6 +201,11 @@ export default {
                 alert( this.__( 'Please enter an email address for customer', 'wepos' ) );
             }
         }
+    },
+    mounted() {
+        this.eventBus.$on( 'emptycart', ( orderdata ) => {
+            this.serachInput = '';
+        } );
     }
 };
 

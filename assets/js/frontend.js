@@ -831,6 +831,7 @@ if (false) {(function () {
             this.orderdata = {
                 billing: {},
                 shipping: {},
+                customer_id: 0,
                 line_items: [],
                 fee_lines: [],
                 customer_note: ''
@@ -843,6 +844,7 @@ if (false) {(function () {
             };
             this.showPaymentReceipt = false;
             this.cashAmount = '';
+            this.eventBus.$emit('emptycart', this.orderdata);
         },
         toggleProductView(e) {
             e.preventDefault();
@@ -1930,6 +1932,11 @@ if (false) {(function () {
                 alert(this.__('Please enter an email address for customer', 'wepos'));
             }
         }
+    },
+    mounted() {
+        this.eventBus.$on('emptycart', orderdata => {
+            this.serachInput = '';
+        });
     }
 });
 
@@ -2265,8 +2272,6 @@ const Tokens = {
 //
 //
 
-
-let EventBus = wepos_get_lib('EventBus');
 
 /* harmony default export */ __webpack_exports__["a"] = ({
     name: 'ReceiptPrint',

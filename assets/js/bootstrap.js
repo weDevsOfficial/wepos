@@ -324,7 +324,10 @@ exports.default = {
             return wepos;
         }(function () {
             return wepos;
-        })
+        }),
+        eventBus: function eventBus() {
+            return wepos_get_lib('EventBus');
+        }
     }
 };
 

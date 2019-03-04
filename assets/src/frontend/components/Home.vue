@@ -711,6 +711,7 @@ export default {
             this.orderdata = {
                 billing: {},
                 shipping: {},
+                customer_id: 0,
                 line_items: [],
                 fee_lines: [],
                 customer_note: ''
@@ -723,6 +724,7 @@ export default {
             };
             this.showPaymentReceipt = false;
             this.cashAmount = '';
+            this.eventBus.$emit( 'emptycart', this.orderdata );
         },
         toggleProductView(e) {
             e.preventDefault();

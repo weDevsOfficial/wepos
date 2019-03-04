@@ -1,4 +1,4 @@
-=== wePOS - WooCommerce Point of Sale ===
+=== wePOS - Point Of Sale (POS) for WooCommerce ===
 Contributors: tareq1988, wedevs, sabbir1991, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
@@ -41,7 +41,7 @@ Extract the zip file and just drop the contents in the wp-content/plugins/ direc
 No FAQ
 
 == Screenshots ==
-1. Admin Dashboard Settings
+1. Overview
 2. Product Search and Barcode Scan
 3. Product list view
 4. Customer Search
@@ -49,9 +49,19 @@ No FAQ
 6. Add discount and fees
 7. Payment Page
 8. Payment Receipt Page
+9. Admin Dashboard Settings
 
 == Changelog ==
-= 1.0.0 =
+
+= v1.0.1 -> 4 Mar, 2019 =
+----------------------------
+-**Fix**    Product fetching issue when no products found
+-**Fix**    Customer data not reset during empty cart or new sales
+-**Fix**    Event bus not triggering properly
+-**Fix**    Render only publishable product in pos system
+-**Tweak**  Added wp hooks for load action and filters
+
+= v1.0.0 -> 22 Feb, 2019 =
 Initial version released
 
 == Upgrade Notice ==

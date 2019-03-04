@@ -62,3 +62,12 @@ window.wepos.libs['Vue']        = Vue;
 window.wepos.libs['Router']     = Router;
 window.wepos.libs['TextEditor'] = TextEditor;
 window.wepos.libs['EventBus']   = EventBus;
+
+window.wepos.hooks = ( wp && wp.hooks ) ? wp.hooks : window.wepos.wpPackages.hooks;
+
+// window.wepos.addFilter = (hookName, namespace, component) => {
+//   wepos.hooks.addFilter(hookName, namespace, ( components ) => {
+//     components.push(component);
+//     return components;
+//   });
+// }

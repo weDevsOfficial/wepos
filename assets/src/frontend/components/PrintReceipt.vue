@@ -9,8 +9,6 @@
 
 <script>
 
-let EventBus = wepos_get_lib( 'EventBus' );
-
 export default {
     name: 'ReceiptPrint',
 

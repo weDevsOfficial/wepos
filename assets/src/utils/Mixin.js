@@ -78,6 +78,10 @@ export default {
     computed: {
         wepos() {
             return wepos;
+        },
+
+        eventBus() {
+            return wepos_get_lib( 'EventBus' );
         }
     }
 }

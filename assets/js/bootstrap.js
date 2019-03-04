@@ -1,6 +1,6 @@
 pluginWebpack([2],{
 
-/***/ 149:
+/***/ 160:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11,45 +11,45 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EventBus = undefined;
 
-var _vue = __webpack_require__(17);
+var _vue = __webpack_require__(19);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueRouter = __webpack_require__(53);
+var _vueRouter = __webpack_require__(56);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _Api = __webpack_require__(150);
+var _Api = __webpack_require__(161);
 
 var _Api2 = _interopRequireDefault(_Api);
 
-var _lodash = __webpack_require__(151);
+var _lodash = __webpack_require__(162);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Mixin = __webpack_require__(240);
+var _Mixin = __webpack_require__(251);
 
 var _Mixin2 = _interopRequireDefault(_Mixin);
 
-var _vueJsPopover = __webpack_require__(51);
+var _vueJsPopover = __webpack_require__(54);
 
 var _vueJsPopover2 = _interopRequireDefault(_vueJsPopover);
 
-var _TextEditor = __webpack_require__(242);
+var _TextEditor = __webpack_require__(253);
 
 var _TextEditor2 = _interopRequireDefault(_TextEditor);
 
-var _vTooltip = __webpack_require__(50);
+var _vTooltip = __webpack_require__(53);
 
-var _vHotkey = __webpack_require__(16);
+var _vHotkey = __webpack_require__(17);
 
 var _vHotkey2 = _interopRequireDefault(_vHotkey);
 
-var _vueMultiselect = __webpack_require__(52);
+var _vueMultiselect = __webpack_require__(55);
 
 var _vueMultiselect2 = _interopRequireDefault(_vueMultiselect);
 
-__webpack_require__(244);
+__webpack_require__(255);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -108,9 +108,18 @@ window.wepos.libs['Router'] = _vueRouter2.default;
 window.wepos.libs['TextEditor'] = _TextEditor2.default;
 window.wepos.libs['EventBus'] = EventBus;
 
+window.wepos.hooks = wp && wp.hooks ? wp.hooks : window.wepos.wpPackages.hooks;
+
+// window.wepos.addFilter = (hookName, namespace, component) => {
+//   wepos.hooks.addFilter(hookName, namespace, ( components ) => {
+//     components.push(component);
+//     return components;
+//   });
+// }
+
 /***/ }),
 
-/***/ 150:
+/***/ 161:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -197,7 +206,7 @@ exports.default = WePos_API;
 
 /***/ }),
 
-/***/ 151:
+/***/ 162:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -207,11 +216,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _core = __webpack_require__(153);
+var _core = __webpack_require__(164);
 
 var _core2 = _interopRequireDefault(_core);
 
-var _findindex = __webpack_require__(154);
+var _findindex = __webpack_require__(165);
 
 var _findindex2 = _interopRequireDefault(_findindex);
 
@@ -221,18 +230,18 @@ _ = _core2.default.noConflict();
 _.findIndex = _findindex2.default;
 
 exports.default = _;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(152)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(163)))
 
 /***/ }),
 
-/***/ 152:
+/***/ 163:
 /***/ (function(module, exports) {
 
 module.exports = window.wepos._;
 
 /***/ }),
 
-/***/ 240:
+/***/ 251:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -242,7 +251,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _i18n = __webpack_require__(241);
+var _i18n = __webpack_require__(252);
 
 exports.default = {
     methods: {
@@ -315,13 +324,16 @@ exports.default = {
             return wepos;
         }(function () {
             return wepos;
-        })
+        }),
+        eventBus: function eventBus() {
+            return wepos_get_lib('EventBus');
+        }
     }
 };
 
 /***/ }),
 
-/***/ 241:
+/***/ 252:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -446,14 +458,14 @@ var sprintf = exports.sprintf = Jed.sprintf;
 
 /***/ }),
 
-/***/ 242:
+/***/ 253:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(73);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(254);
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -500,7 +512,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 243:
+/***/ 254:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -526,7 +538,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 70:
+/***/ 73:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -711,4 +723,4 @@ if (false) {
 
 /***/ })
 
-},[149]);
+},[160]);

@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: WePOS - Point Of Sale(POS) for WooCommerce
+Plugin Name: wePOS - Point Of Sale (POS) for WooCommerce
 Plugin URI: https://wedevs.com/wepos
-Description: A beautiful and fast Point of Sale(POS) system for WooCommerce
-Version: 1.0.0
+Description: A beautiful and fast Point of Sale (POS) system for WooCommerce
+Version: 1.0.1
 Author: weDevs
 Author URI: https://wedevs.com/
 License: GPL2
@@ -53,7 +53,7 @@ final class We_POS {
      *
      * @var string
      */
-    public $version = '1.0.0';
+    public $version = '1.0.1';
 
     /**
      * Holds various class instances
@@ -117,7 +117,7 @@ final class We_POS {
      */
     public function available_gateway() {
         return apply_filters( 'wepos_register_gateway', [
-            'WePOS\gateways\Cash' => WCPOS_INCLUDES . '/gateways/class-cash-gateway.php'
+            'WePOS\gateways\Cash' => WEPOS_INCLUDES . '/gateways/class-cash-gateway.php'
         ] );
     }
 
@@ -184,12 +184,12 @@ final class We_POS {
      * @return void
      */
     public function define_constants() {
-        define( 'WCPOS_VERSION', $this->version );
-        define( 'WCPOS_FILE', __FILE__ );
-        define( 'WCPOS_PATH', dirname( WCPOS_FILE ) );
-        define( 'WCPOS_INCLUDES', WCPOS_PATH . '/includes' );
-        define( 'WCPOS_URL', plugins_url( '', WCPOS_FILE ) );
-        define( 'WCPOS_ASSETS', WCPOS_URL . '/assets' );
+        define( 'WEPOS_VERSION', $this->version );
+        define( 'WEPOS_FILE', __FILE__ );
+        define( 'WEPOS_PATH', dirname( WEPOS_FILE ) );
+        define( 'WEPOS_INCLUDES', WEPOS_PATH . '/includes' );
+        define( 'WEPOS_URL', plugins_url( '', WEPOS_FILE ) );
+        define( 'WEPOS_ASSETS', WEPOS_URL . '/assets' );
     }
 
     /**
@@ -200,6 +200,8 @@ final class We_POS {
     public function init_plugin() {
         $this->includes();
         $this->init_hooks();
+
+        do_action( 'wepos_loaded' );
     }
 
     /**
@@ -221,7 +223,7 @@ final class We_POS {
             update_option( 'we_pos_installed', time() );
         }
 
-        update_option( 'we_pos_version', WCPOS_VERSION );
+        update_option( 'we_pos_version', WEPOS_VERSION );
         set_transient( 'wepos-flush-rewrites', 1 );
     }
 
@@ -240,20 +242,20 @@ final class We_POS {
      * @return void
      */
     public function includes() {
-        require_once WCPOS_INCLUDES . '/functions.php';
-        require_once WCPOS_INCLUDES . '/class-assets.php';
+        require_once WEPOS_INCLUDES . '/functions.php';
+        require_once WEPOS_INCLUDES . '/class-assets.php';
 
         if ( $this->is_request( 'admin' ) ) {
-            require_once WCPOS_INCLUDES . '/admin/class-admin.php';
-            require_once WCPOS_INCLUDES . '/admin/class-settings.php';
-            require_once WCPOS_INCLUDES . '/admin/class-products.php';
+            require_once WEPOS_INCLUDES . '/admin/class-admin.php';
+            require_once WEPOS_INCLUDES . '/admin/class-settings.php';
+            require_once WEPOS_INCLUDES . '/admin/class-products.php';
         }
 
         if ( $this->is_request( 'frontend' ) ) {
-            require_once WCPOS_INCLUDES . '/class-frontend.php';
+            require_once WEPOS_INCLUDES . '/class-frontend.php';
         }
 
-        require_once WCPOS_INCLUDES . '/class-rest-api.php';
+        require_once WEPOS_INCLUDES . '/class-rest-api.php';
     }
 
     /**

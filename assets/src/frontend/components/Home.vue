@@ -528,7 +528,7 @@ export default {
             showPaymentReceipt: false,
             products: [],
             filteredProducts: [],
-            totalPages: 0,
+            totalPages: 1,
             page: 1,
             showOverlay: false,
             selectedVariationProduct: {},
@@ -711,6 +711,7 @@ export default {
             this.orderdata = {
                 billing: {},
                 shipping: {},
+                customer_id: 0,
                 line_items: [],
                 fee_lines: [],
                 customer_note: ''
@@ -723,6 +724,7 @@ export default {
             };
             this.showPaymentReceipt = false;
             this.cashAmount = '';
+            this.eventBus.$emit( 'emptycart', this.orderdata );
         },
         toggleProductView(e) {
             e.preventDefault();
@@ -890,9 +892,12 @@ export default {
             }
         },
         fetchProducts() {
-            this.productLoading = true;
-            if ( ( this.totalPages >= this.page ) || this.totalPages === 0 ) {
-                wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products?per_page=30&page=' + this.page )
+            if ( this.page == 1 ) {
+                this.productLoading = true;
+            }
+
+            if ( ( this.totalPages >= this.page ) ) {
+                wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products?status=publish&per_page=30&page=' + this.page )
                 .done( ( response, status, xhr ) => {
                     this.products = this.products.concat( response );
                     this.page += 1;
@@ -1534,7 +1539,6 @@ export default {
 
     .content-cart {
         flex: 1.3;
-        // background: #eee;
         height: 94.5vh;
 
         .top-panel {

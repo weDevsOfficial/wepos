@@ -22,8 +22,8 @@ class REST_API {
      */
     public function __construct() {
         $this->class_map = apply_filters( 'dokan_rest_api_class_map', array(
-            WCPOS_INCLUDES . '/api/class-payment-controller.php' => 'WePOS\api\Payment',
-            WCPOS_INCLUDES . '/api/class-settings-controller.php' => 'WePOS\api\Settings',
+            WEPOS_INCLUDES . '/api/class-payment-controller.php' => 'WePOS\api\Payment',
+            WEPOS_INCLUDES . '/api/class-settings-controller.php' => 'WePOS\api\Settings',
         ) );
 
         // Init REST API routes.

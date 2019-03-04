@@ -7,7 +7,14 @@
 <script>
 
 export default {
-    name: 'App'
+    name: 'App',
+
+    created() {
+
+        // wepos.hooks.addAction( 'test_action', 'testAction', function() {
+        //     console.log( 'Loaded action' );
+        // } );
+    }
 };
 
 </script>

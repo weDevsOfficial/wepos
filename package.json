@@ -1,6 +1,6 @@
 {
   "name": "wepos",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Point of Sale plugin for WooCommerce",
   "author": "weDevs <info@wedevs.com>",
   "license": "GPLv2",
@@ -12,6 +12,7 @@
     "zip": "npm run build && wpvuei18n makepot && node build/"
   },
   "dependencies": {
+    "@wordpress/hooks": "^2.0.5",
     "lodash": "^4.17.11",
     "v-hotkey": "^0.3.0",
     "v-tooltip": "^2.0.0-rc.33",

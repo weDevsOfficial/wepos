@@ -28,7 +28,7 @@ class Frontend {
                 exit();
             }
 
-            include_once WCPOS_PATH . '/templates/wepos.php';
+            include_once WEPOS_PATH . '/templates/wepos.php';
             exit;
         }
     }

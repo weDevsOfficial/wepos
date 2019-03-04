@@ -11,7 +11,7 @@
 function wepos_get_translations_for_plugin_domain( $domain, $language_dir = null ) {
 
     if ( $language_dir == null ) {
-        $language_dir      = WCPOS_PATH . '/languages/';
+        $language_dir      = WEPOS_PATH . '/languages/';
     }
 
     $languages     = get_available_languages( $language_dir );

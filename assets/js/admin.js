@@ -34,7 +34,7 @@ new Vue({
 });
 
 // fix the admin menu for the slug "wepos-app"
-(0, _adminMenuFix2.default)('wepos-app');
+(0, _adminMenuFix2.default)('wepos');
 
 /***/ }),
 

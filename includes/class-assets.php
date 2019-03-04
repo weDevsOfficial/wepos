@@ -38,7 +38,7 @@ class Assets {
         foreach ( $scripts as $handle => $script ) {
             $deps      = isset( $script['deps'] ) ? $script['deps'] : false;
             $in_footer = isset( $script['in_footer'] ) ? $script['in_footer'] : false;
-            $version   = isset( $script['version'] ) ? $script['version'] : WCPOS_VERSION;
+            $version   = isset( $script['version'] ) ? $script['version'] : WEPOS_VERSION;
 
             wp_register_script( $handle, $script['src'], $deps, $version, $in_footer );
         }
@@ -55,7 +55,7 @@ class Assets {
         foreach ( $styles as $handle => $style ) {
             $deps = isset( $style['deps'] ) ? $style['deps'] : false;
 
-            wp_register_style( $handle, $style['src'], $deps, WCPOS_VERSION );
+            wp_register_style( $handle, $style['src'], $deps, WEPOS_VERSION );
         }
     }
 
@@ -84,13 +84,13 @@ class Assets {
                 'deps'      => array()
             ),
             'wepos-tinymce-plugin' => array(
-                'src'     => WCPOS_ASSETS . '/vendors/tinymce/code/plugin.min.js',
+                'src'     => WEPOS_ASSETS . '/vendors/tinymce/code/plugin.min.js',
                 'deps'    => array('wepos-tinymce'),
                 'version' => time()
             ),
             'wepos-i18n-jed' => array(
-                'src'       => WCPOS_ASSETS . '/js/jed.js',
-                'version'   => filemtime( WCPOS_PATH . '/assets/js/jed.js' ),
+                'src'       => WEPOS_ASSETS . '/js/jed.js',
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/jed.js' ),
                 'in_footer' => false
             ),
             'wepos-blockui' => [
@@ -103,32 +103,32 @@ class Assets {
                 'deps'      => array( 'jquery' )
             ),
             'wepos-vendor' => [
-                'src'       => WCPOS_ASSETS . '/js/vendor.js',
-                'version'   => filemtime( WCPOS_PATH . '/assets/js/vendor.js' ),
+                'src'       => WEPOS_ASSETS . '/js/vendor.js',
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/vendor.js' ),
                 'in_footer' => true
             ],
             'wepos-bootstrap' => [
-                'src'       => WCPOS_ASSETS . '/js/bootstrap.js',
+                'src'       => WEPOS_ASSETS . '/js/bootstrap.js',
                 'deps'      => $dependency,
-                'version'   => filemtime( WCPOS_PATH . '/assets/js/bootstrap.js' ),
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/bootstrap.js' ),
                 'in_footer' => true
             ],
             'wepos-frontend' => [
-                'src'       => WCPOS_ASSETS . '/js/frontend.js',
+                'src'       => WEPOS_ASSETS . '/js/frontend.js',
                 'deps'      => ['wepos-bootstrap'],
-                'version'   => filemtime( WCPOS_PATH . '/assets/js/frontend.js' ),
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/frontend.js' ),
                 'in_footer' => true
             ],
             'wepos-admin' => [
-                'src'       => WCPOS_ASSETS . '/js/admin.js',
+                'src'       => WEPOS_ASSETS . '/js/admin.js',
                 'deps'      => ['wepos-bootstrap'],
-                'version'   => filemtime( WCPOS_PATH . '/assets/js/admin.js' ),
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/admin.js' ),
                 'in_footer' => true
             ],
             'wepos-wp-hook' => array(
-                'src'       => WCPOS_ASSETS . '/js/wphook.js',
+                'src'       => WEPOS_ASSETS . '/js/wphook.js',
                 'deps'      => array( 'jquery' ),
-                'version'   => filemtime( WCPOS_PATH . '/assets/js/wphook.js' ),
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/wphook.js' ),
             )
         ];
 
@@ -144,19 +144,19 @@ class Assets {
 
         $styles = [
             'wepos-flaticon' => [
-                'src' =>  WCPOS_ASSETS . '/css/flaticon.css'
+                'src' =>  WEPOS_ASSETS . '/css/flaticon.css'
             ],
             'wepos-font' => [
-                'src' =>  WCPOS_ASSETS . '/css/fonts.css'
+                'src' =>  WEPOS_ASSETS . '/css/fonts.css'
             ],
             'wepos-style' => [
-                'src' =>  WCPOS_ASSETS . '/css/style.css'
+                'src' =>  WEPOS_ASSETS . '/css/style.css'
             ],
             'wepos-frontend' => [
-                'src' =>  WCPOS_ASSETS . '/css/frontend.css'
+                'src' =>  WEPOS_ASSETS . '/css/frontend.css'
             ],
             'wepos-admin' => [
-                'src' =>  WCPOS_ASSETS . '/css/admin.css'
+                'src' =>  WEPOS_ASSETS . '/css/admin.css'
             ],
             'wepos-tinymce' => [
                 'src'     => site_url( '/wp-includes/css/editor.css' ),
@@ -209,9 +209,9 @@ class Assets {
             'currency_format_thousand_sep' => esc_attr( wc_get_price_thousand_separator() ),
             'currency_format'              => esc_attr( str_replace( array( '%1$s', '%2$s' ), array( '%s', '%v' ), get_woocommerce_price_format() ) ), // For accounting JS
             'rounding_precision'           => wc_get_rounding_precision(),
-            'assets_url'                   => WCPOS_ASSETS,
+            'assets_url'                   => WEPOS_ASSETS,
             'placeholder_image'            => wc_placeholder_img_src(),
-            'ajax_loader'                  => WCPOS_ASSETS . '/images/spinner-2x.gif',
+            'ajax_loader'                  => WEPOS_ASSETS . '/images/spinner-2x.gif',
             'logout_url'                   => wp_logout_url( site_url() ),
             'categories'                   => wepos_get_product_category()
         ] );

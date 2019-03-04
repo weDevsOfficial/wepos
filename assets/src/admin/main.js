@@ -15,4 +15,4 @@ new Vue({
 
 
 // fix the admin menu for the slug "wepos-app"
-menuFix('wepos-app');
+menuFix('wepos');

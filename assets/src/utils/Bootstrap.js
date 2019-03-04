@@ -14,7 +14,6 @@ Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )
 Vue.component( 'v-popover', VPopover )
 Vue.component( 'multiselect', Multiselect )
-Vue.component( 'do-action', DoAction )
 
 Vue.directive('click-outside', {
     bind: function(el, binding, vNode) {

@@ -128,18 +128,17 @@
                 <customer-search @onCustomerSelected="selectCustomer"></customer-search>
                 <div class="action">
                     <div class="more-options">
-                        <span class="dropdown right-align">
-                            <button><span class="more-icon flaticon-more"></span></button>
-                            <label>
-                                <input type="checkbox">
+                        <v-popover offset="5" popover-base-class="wepos-dropdown-menu tooltip popover" placement="bottom-end" :open="showQucikMenu">
+                            <button class="wepos-button" @click.prevent="openQucikMenu()"><span class="more-icon flaticon-more"></span></button>
+                            <template slot="popover">
                                 <ul>
-                                    <li><a href="#" @click.prevent="emptyCart">{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
-                                    <li><a href="#" @click.prevent="openHelp">{{ __( 'Help', 'wepos' ) }}</a></li>
+                                    <li><a href="#" @click.prevent="emptyCart"><span class="flaticon-empty-cart quick-menu-icon"></span>{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
+                                    <li><a href="#" @click.prevent="openHelp"><span class="flaticon-information quick-menu-icon"></span>{{ __( 'Help', 'wepos' ) }}</a></li>
                                     <li class="divider"></li>
-                                    <li><a :href="getLogoutUrl()">{{ __( 'Logout', 'wepos' ) }}</a></li>
+                                    <li><a :href="getLogoutUrl()"><span class="flaticon-logout quick-menu-icon"></span>{{ __( 'Logout', 'wepos' ) }}</a></li>
                                 </ul>
-                            </label>
-                        </span>
+                            </template>
+                        </v-popover>
                     </div>
                 </div>
             </div>
@@ -522,6 +521,7 @@ export default {
     data () {
         return {
             showHelp: false,
+            showQucikMenu: false,
             productView: 'grid',
             productLoading: false,
             viewVariationPopover: false,
@@ -698,9 +698,13 @@ export default {
     },
 
     methods: {
+        openQucikMenu() {
+            this.showQucikMenu = true;
+        },
         openHelp(e) {
             e.preventDefault();
             this.showHelp = true;
+            this.showQucikMenu = false;
         },
         closeHelp() {
             this.showHelp = false;
@@ -732,6 +736,7 @@ export default {
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit( 'emptycart', this.orderdata );
+            this.showQucikMenu = false;
         },
         toggleProductView(e) {
             e.preventDefault();
@@ -1746,7 +1751,7 @@ export default {
 
                     span.more-icon {
                         &:before {
-                            font-size: 13px;
+                            font-size: 16px;
                             color: #BDC0C9;
                         }
                     }

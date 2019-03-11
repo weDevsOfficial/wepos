@@ -610,7 +610,6 @@ if (false) {(function () {
 //
 //
 //
-//
 
 
 
@@ -642,6 +641,7 @@ if (false) {(function () {
     data() {
         return {
             showHelp: false,
+            showQucikMenu: false,
             productView: 'grid',
             productLoading: false,
             viewVariationPopover: false,
@@ -818,9 +818,13 @@ if (false) {(function () {
     },
 
     methods: {
+        openQucikMenu() {
+            this.showQucikMenu = true;
+        },
         openHelp(e) {
             e.preventDefault();
             this.showHelp = true;
+            this.showQucikMenu = false;
         },
         closeHelp() {
             this.showHelp = false;
@@ -852,6 +856,7 @@ if (false) {(function () {
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit('emptycart', this.orderdata);
+            this.showQucikMenu = false;
         },
         toggleProductView(e) {
             e.preventDefault();
@@ -5571,57 +5576,100 @@ var render = function() {
             }),
             _vm._v(" "),
             _c("div", { staticClass: "action" }, [
-              _c("div", { staticClass: "more-options" }, [
-                _c("span", { staticClass: "dropdown right-align" }, [
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _c("label", [
-                    _c("input", { attrs: { type: "checkbox" } }),
-                    _vm._v(" "),
-                    _c("ul", [
-                      _c("li", [
-                        _c(
-                          "a",
-                          {
-                            attrs: { href: "#" },
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                _vm.emptyCart($event)
-                              }
+              _c(
+                "div",
+                { staticClass: "more-options" },
+                [
+                  _c(
+                    "v-popover",
+                    {
+                      attrs: {
+                        offset: "5",
+                        "popover-base-class":
+                          "wepos-dropdown-menu tooltip popover",
+                        placement: "bottom-end",
+                        open: _vm.showQucikMenu
+                      }
+                    },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "wepos-button",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.openQucikMenu()
                             }
-                          },
-                          [_vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))]
-                        )
-                      ]),
+                          }
+                        },
+                        [_c("span", { staticClass: "more-icon flaticon-more" })]
+                      ),
                       _vm._v(" "),
-                      _c("li", [
-                        _c(
-                          "a",
-                          {
-                            attrs: { href: "#" },
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                _vm.openHelp($event)
-                              }
-                            }
-                          },
-                          [_vm._v(_vm._s(_vm.__("Help", "wepos")))]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "divider" }),
-                      _vm._v(" "),
-                      _c("li", [
-                        _c("a", { attrs: { href: _vm.getLogoutUrl() } }, [
-                          _vm._v(_vm._s(_vm.__("Logout", "wepos")))
+                      _c("template", { slot: "popover" }, [
+                        _c("ul", [
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.emptyCart($event)
+                                  }
+                                }
+                              },
+                              [
+                                _c("span", {
+                                  staticClass:
+                                    "flaticon-empty-cart quick-menu-icon"
+                                }),
+                                _vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.openHelp($event)
+                                  }
+                                }
+                              },
+                              [
+                                _c("span", {
+                                  staticClass:
+                                    "flaticon-information quick-menu-icon"
+                                }),
+                                _vm._v(_vm._s(_vm.__("Help", "wepos")))
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", { staticClass: "divider" }),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c("a", { attrs: { href: _vm.getLogoutUrl() } }, [
+                              _c("span", {
+                                staticClass: "flaticon-logout quick-menu-icon"
+                              }),
+                              _vm._v(_vm._s(_vm.__("Logout", "wepos")))
+                            ])
+                          ])
                         ])
                       ])
-                    ])
-                  ])
-                ])
-              ])
+                    ],
+                    2
+                  )
+                ],
+                1
+              )
             ])
           ],
           1
@@ -6465,7 +6513,7 @@ var render = function() {
                           _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
                         ]),
                         _vm._v(" "),
-                        _vm._m(1)
+                        _vm._m(0)
                       ]
                     )
                   ],
@@ -7244,14 +7292,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", [
-      _c("span", { staticClass: "more-icon flaticon-more" })
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

@@ -160,7 +160,7 @@
                                     <tr>
                                         <td class="name" @click="toggleEditQuantity( item, key )">
                                             {{ item.name }}
-                                            <div class="attribute" v-if="item.attribute.length > 0">
+                                            <div class="attribute" v-if="item.attribute.length > 0 && item.type === 'variable'">
                                                 <ul>
                                                     <li v-for="attribute_item in item.attribute"><span class="attr_name">{{ attribute_item.name }}</span>: <span class="attr_value">{{ attribute_item.option }}</span></li>
                                                 </ul>
@@ -376,7 +376,7 @@
                                     <tr v-for="item in orderdata.line_items">
                                         <td class="name">
                                             {{ item.name }}
-                                            <div class="attribute" v-if="item.attribute.length > 0">
+                                            <div class="attribute" v-if="item.attribute.length > 0 && item.type === 'variable'">
                                                 <ul>
                                                     <li v-for="attribute_item in item.attribute"><span class="attr_name">{{ attribute_item.name }}</span>: <span class="attr_value">{{ attribute_item.option }}</span></li>
                                                 </ul>
@@ -931,6 +931,7 @@ export default {
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type      = this.selectedVariationProduct.type;
             variationProduct.name      = this.selectedVariationProduct.name;
+            variationProduct.type      = this.selectedVariationProduct.type;
             this.selectedAttribute     = {};
             this.attributeDisabled     = true;
             this.addToCart( variationProduct );
@@ -948,6 +949,7 @@ export default {
             cartObject.attribute     = product.attributes;
             cartObject.variation_id  = ( product.parent_id !== 0 ) ? product.id : 0;
             cartObject.editQuantity  = false;
+            cartObject.type          = product.type;
             cartObject.tax_amount    = product.tax_amount;
 
             var index = weLo_.findIndex( self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id} );

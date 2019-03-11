@@ -1044,6 +1044,7 @@ if (false) {(function () {
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type = this.selectedVariationProduct.type;
             variationProduct.name = this.selectedVariationProduct.name;
+            variationProduct.type = this.selectedVariationProduct.type;
             this.selectedAttribute = {};
             this.attributeDisabled = true;
             this.addToCart(variationProduct);
@@ -1061,6 +1062,7 @@ if (false) {(function () {
             cartObject.attribute = product.attributes;
             cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
             cartObject.editQuantity = false;
+            cartObject.type = product.type;
             cartObject.tax_amount = product.tax_amount;
 
             var index = weLo_.findIndex(self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
@@ -5645,7 +5647,8 @@ var render = function() {
                                       _vm._s(item.name) +
                                       "\n                                        "
                                   ),
-                                  item.attribute.length > 0
+                                  item.attribute.length > 0 &&
+                                  item.type === "variable"
                                     ? _c("div", { staticClass: "attribute" }, [
                                         _c(
                                           "ul",
@@ -6728,7 +6731,8 @@ var render = function() {
                                       _vm._s(item.name) +
                                       "\n                                        "
                                   ),
-                                  item.attribute.length > 0
+                                  item.attribute.length > 0 &&
+                                  item.type === "variable"
                                     ? _c("div", { staticClass: "attribute" }, [
                                         _c(
                                           "ul",

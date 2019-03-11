@@ -610,6 +610,7 @@ if (false) {(function () {
 //
 //
 //
+//
 
 
 
@@ -804,9 +805,15 @@ if (false) {(function () {
             };
         },
         '$route.query.category'() {
-            if (this.$route.query.category != 'undefined') {
-                this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
+            this.selectedCategory = {
+                id: -1,
+                level: 0,
+                name: this.__('All categories', 'wepos'),
+                parent_id: null
             };
+            if (this.$route.query.category !== undefined) {
+                this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
+            }
         }
     },
 
@@ -1138,10 +1145,20 @@ if (false) {(function () {
             });
         },
         handleCategorySelect(selectedOption, id) {
-            this.$router.push({ name: 'Home', query: { 'category': selectedOption.id } });
+            if (selectedOption.id == '-1') {
+                this.$router.push({ name: 'Home' });
+            } else {
+                this.$router.push({ name: 'Home', query: { 'category': selectedOption.id } });
+            }
         },
         handleCategoryRemove(selectedOption, id) {
             this.$router.push({ name: 'Home' });
+            this.selectedCategory = {
+                id: -1,
+                level: 0,
+                name: this.__('All categories', 'wepos'),
+                parent_id: null
+            };
         },
         fetchCategories() {
             wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id').then(response => {
@@ -1164,6 +1181,12 @@ if (false) {(function () {
                     return r;
                 }(response, null);
 
+                var selectedCat = {
+                    id: -1,
+                    level: 0,
+                    name: this.__('All categories', 'wepos'),
+                    parent_id: null
+                };
                 var sorted = tree.reduce(function traverse(level) {
                     return function (r, a) {
                         a.response.level = level;
@@ -1171,6 +1194,9 @@ if (false) {(function () {
                     };
                 }(0), []);
                 this.categories = sorted;
+
+                this.categories.unshift(selectedCat);
+                this.selectedCategory = selectedCat;
 
                 if (this.$route.query.category !== undefined) {
                     this.selectedCategory = weLo_.find(response, { id: parseInt(this.$route.query.category) });
@@ -5047,7 +5073,8 @@ var render = function() {
                     options: _vm.categories,
                     selectLabel: "",
                     deselectLabel: "",
-                    selectedLabel: ""
+                    selectedLabel: "",
+                    placeholder: _vm.__("Select a category", "wepos")
                   },
                   on: {
                     select: _vm.handleCategorySelect,

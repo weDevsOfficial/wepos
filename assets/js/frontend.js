@@ -1617,7 +1617,7 @@ if (false) {(function () {
         height: {
             type: String,
             required: false,
-            default: '300px'
+            default: 'auto'
         }
     },
 
@@ -1860,6 +1860,63 @@ if (false) {(function () {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1876,10 +1933,25 @@ if (false) {(function () {
         return {
             submitDisable: false,
             customers: [],
-            customer: {},
+            customer: {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: ''
+            },
             showCustomerResults: false,
             serachInput: '',
-            showNewCustomerModal: false
+            showNewCustomerModal: false,
+            stateList: [],
+            selectedState: null,
+            selectedCountry: null,
+            isDisabled: false
         };
     },
     computed: {
@@ -1889,6 +1961,14 @@ if (false) {(function () {
                 'shift+f7': this.addNewCustomer,
                 'esc': this.searchClose
             };
+        },
+        getCountryList() {
+            return Object.keys(wepos.countries).map(val => {
+                return {
+                    code: val,
+                    name: wepos.countries[val]
+                };
+            });
         }
     },
     methods: {
@@ -1949,20 +2029,60 @@ if (false) {(function () {
                         last_name: this.customer.last_name,
                         address_1: this.customer.address_1,
                         address_2: this.customer.address_2,
+                        country: this.selectedCountry !== null ? this.selectedCountry.code : '',
+                        state: this.selectedState !== null ? this.selectedState.code : this.customer.state,
+                        postcode: this.customer.postcode,
+                        city: this.customer.city,
                         phone: this.customer.phone,
                         email: this.customer.email
                     }
                 };
+                var $contentWrap = jQuery('.wepos-new-customer-form');
+                $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+                this.isDisabled = true;
+
                 wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/customers', customerData).done(response => {
                     this.serachInput = response.first_name + ' ' + response.last_name;
                     this.$emit('onCustomerSelected', response);
+                    this.isDisabled = true;
+                    $contentWrap.unblock();
                     this.showNewCustomerModal = false;
                     this.customer = {};
                 }).fail(response => {
+                    this.isDisabled = true;
+                    $contentWrap.unblock();
                     alert(response.responseJSON.message);
                 });
             } else {
                 alert(this.__('Please enter an email address for customer', 'wepos'));
+            }
+        },
+        removeCountrySelect(selectedOption, id) {
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.stateList = [];
+            this.customer.country = '';
+            this.customer.state = '';
+        },
+
+        removeStateSelect(selectedOption, id) {
+            this.selectedState = null;
+            this.customer.state = '';
+        },
+        handleCountrySelect(selectedOption, id) {
+            var state = wepos.states[selectedOption.code] !== undefined ? wepos.states[selectedOption.code] : [];
+            var stateKeys = Object.keys(state);
+
+            if (stateKeys.length > 0) {
+                this.stateList = stateKeys.map(val => {
+                    return {
+                        code: val,
+                        name: state[val]
+                    };
+                });
+            } else {
+                this.stateList = state;
+                this.selectedState = null;
             }
         }
     },
@@ -3853,7 +3973,6 @@ var render = function() {
               attrs: {
                 title: _vm.__("Add New Customer", "wepos"),
                 width: "700px",
-                height: "400px",
                 footer: true,
                 header: true
               },
@@ -3868,7 +3987,10 @@ var render = function() {
                 _c("div", { staticClass: "wepos-new-customer-form" }, [
                   _c(
                     "form",
-                    { staticClass: "wepos-form", attrs: { action: "" } },
+                    {
+                      staticClass: "wepos-form",
+                      attrs: { action: "", autocomplete: "off" }
+                    },
                     [
                       _c("div", { staticClass: "form-row col-2" }, [
                         _c("input", {
@@ -4016,6 +4138,196 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "form-row col-2" },
+                        [
+                          _c(
+                            "multiselect",
+                            {
+                              staticClass: "wepos-multiselect customer-country",
+                              staticStyle: {
+                                width: "48.5%",
+                                "margin-right": "20px"
+                              },
+                              attrs: {
+                                options: _vm.getCountryList,
+                                selectLabel: "",
+                                deselectLabel: "",
+                                selectedLabel: "",
+                                placeholder: _vm.__(
+                                  "Select a country",
+                                  "wepos"
+                                ),
+                                "track-by": "code",
+                                label: "name"
+                              },
+                              on: {
+                                select: _vm.handleCountrySelect,
+                                remove: _vm.removeCountrySelect
+                              },
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "singleLabel",
+                                  fn: function(props) {
+                                    return [
+                                      _c("span", {
+                                        domProps: {
+                                          innerHTML: _vm._s(props.option.name)
+                                        }
+                                      })
+                                    ]
+                                  }
+                                },
+                                {
+                                  key: "option",
+                                  fn: function(props) {
+                                    return [
+                                      _c("span", {
+                                        domProps: {
+                                          innerHTML: _vm._s(props.option.name)
+                                        }
+                                      })
+                                    ]
+                                  }
+                                }
+                              ]),
+                              model: {
+                                value: _vm.selectedCountry,
+                                callback: function($$v) {
+                                  _vm.selectedCountry = $$v
+                                },
+                                expression: "selectedCountry"
+                              }
+                            },
+                            [
+                              _c("template", { slot: "noResult" }, [
+                                _c("div", { staticClass: "no-data-found" }, [
+                                  _vm._v(
+                                    _vm._s(_vm.__("No country found", "wepos"))
+                                  )
+                                ])
+                              ])
+                            ],
+                            2
+                          ),
+                          _vm._v(" "),
+                          _vm.stateList.length > 0
+                            ? [
+                                _c(
+                                  "multiselect",
+                                  {
+                                    staticClass:
+                                      "wepos-multiselect customer-state",
+                                    staticStyle: { width: "48.5%" },
+                                    attrs: {
+                                      options: _vm.stateList,
+                                      selectLabel: "",
+                                      deselectLabel: "",
+                                      selectedLabel: "",
+                                      placeholder: _vm.__(
+                                        "Select a state",
+                                        "wepos"
+                                      ),
+                                      "track-by": "code",
+                                      label: "name"
+                                    },
+                                    on: { remove: _vm.removeStateSelect },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "singleLabel",
+                                        fn: function(props) {
+                                          return [
+                                            _c("span", {
+                                              domProps: {
+                                                innerHTML: _vm._s(
+                                                  props.option.name
+                                                )
+                                              }
+                                            })
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        key: "option",
+                                        fn: function(props) {
+                                          return [
+                                            _c("span", {
+                                              domProps: {
+                                                innerHTML: _vm._s(
+                                                  props.option.name
+                                                )
+                                              }
+                                            })
+                                          ]
+                                        }
+                                      }
+                                    ]),
+                                    model: {
+                                      value: _vm.selectedState,
+                                      callback: function($$v) {
+                                        _vm.selectedState = $$v
+                                      },
+                                      expression: "selectedState"
+                                    }
+                                  },
+                                  [
+                                    _c("template", { slot: "noResult" }, [
+                                      _c(
+                                        "div",
+                                        { staticClass: "no-data-found" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.__(
+                                                "No country found",
+                                                "wepos"
+                                              )
+                                            )
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ],
+                                  2
+                                )
+                              ]
+                            : [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.customer.state,
+                                      expression: "customer.state"
+                                    }
+                                  ],
+                                  attrs: {
+                                    type: "text",
+                                    placeholder: _vm.__(
+                                      "States (optional)",
+                                      "wepos"
+                                    )
+                                  },
+                                  domProps: { value: _vm.customer.state },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.customer,
+                                        "state",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
                       _c("div", { staticClass: "form-row col-2" }, [
                         _c("input", {
                           directives: [
@@ -4045,6 +4357,39 @@ var render = function() {
                           }
                         }),
                         _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.customer.postcode,
+                              expression: "customer.postcode"
+                            }
+                          ],
+                          attrs: {
+                            type: "text",
+                            placeholder: _vm.__(
+                              "Zip/Postal Code (optional)",
+                              "wepos"
+                            )
+                          },
+                          domProps: { value: _vm.customer.postcode },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.customer,
+                                "postcode",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-row" }, [
                         _c("input", {
                           directives: [
                             {
@@ -4082,11 +4427,12 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "add-variation-btn",
+                    staticClass: "add-new-customer-btn add-variation-btn",
                     attrs: {
                       disabled:
                         _vm.customer.email == undefined ||
-                        _vm.customer.email == ""
+                        _vm.customer.email == "" ||
+                        _vm.isDisabled
                     },
                     on: {
                       click: function($event) {

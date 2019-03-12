@@ -859,6 +859,7 @@ div:focus, span:focus, button:focus, input:focus {
         padding-left: 3px !important;
         line-height: 22px !important;
         margin-bottom: 0px !important;
+        border: none !important;
         &::placeholder {
             color: #999DAC;
             font-size: 13px;
@@ -888,7 +889,7 @@ div:focus, span:focus, button:focus, input:focus {
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         box-shadow: 0 30px 45px -10px rgba(0,0,0,.2);
-        z-index: 999;
+        z-index: 99999;
         border-bottom: none;
         ul {
             li.multiselect__element {
@@ -930,32 +931,3 @@ div:focus, span:focus, button:focus, input:focus {
         }
     }
 }
-
-.wepos-dropdown-menu {
-    ul {
-        list-style: none;
-        margin: 0px;
-        padding: 0px;
-        min-width: 180px;
-        li {
-            display: block;
-            a {
-                display: block;
-                padding: 10px 15px;
-                text-decoration: none;
-                color: #212121;
-
-                .quick-menu-icon {
-                    margin-right: 7px;
-                    &:before {
-                        font-size: 15px;
-                    }
-                }
-            }
-            &.divider {
-                border-bottom: 1px solid #E9EDF0;
-            }
-        }
-    }
-}
-

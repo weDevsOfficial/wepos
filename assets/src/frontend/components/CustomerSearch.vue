@@ -61,13 +61,12 @@
             v-if="showNewCustomerModal"
             @close="showNewCustomerModal = false"
             width="700px"
-            height="400px"
             :footer="true"
             :header="true"
         >
             <template slot="body">
                 <div class="wepos-new-customer-form">
-                    <form action="" class="wepos-form">
+                    <form action="" class="wepos-form" autocomplete="off">
                         <div class="form-row col-2">
                             <input type="text" :placeholder="__( 'First Name', 'wepos' )" v-model="customer.first_name">
                             <input type="text" :placeholder="__( 'Last Name', 'wepos' )" v-model="customer.last_name">
@@ -80,7 +79,65 @@
                             <input type="text" :placeholder="__( 'Address 2 (optional)', 'wepos' )" v-model="customer.address_2">
                         </div>
                         <div class="form-row col-2">
+                            <multiselect
+                                class="wepos-multiselect customer-country"
+                                v-model="selectedCountry"
+                                :options="getCountryList"
+                                selectLabel=""
+                                deselectLabel=""
+                                selectedLabel=""
+                                :placeholder="__( 'Select a country', 'wepos' )"
+                                @select="handleCountrySelect"
+                                @remove="removeCountrySelect"
+                                track-by="code"
+                                label="name"
+                                style="width:48.5%; margin-right:20px;"
+                            >
+                                <template slot="singleLabel" slot-scope="props">
+                                    <span v-html="props.option.name"></span>
+                                </template>
+                                <template slot="option" slot-scope="props">
+                                    <span v-html="props.option.name"></span>
+                                </template>
+                                <template slot="noResult">
+                                    <div class="no-data-found">{{ __( 'No country found', 'wepos' ) }}</div>
+                                </template>
+                            </multiselect>
+                            <!-- <input type="text" :placeholder="__( 'Country (optional)', 'wepos' )" v-model="customer.country"> -->
+                            <template v-if="stateList.length > 0">
+                                <multiselect
+                                    class="wepos-multiselect customer-state"
+                                    v-model="selectedState"
+                                    :options="stateList"
+                                    selectLabel=""
+                                    deselectLabel=""
+                                    selectedLabel=""
+                                    :placeholder="__( 'Select a state', 'wepos' )"
+                                    style="width:48.5%;"
+                                    track-by="code"
+                                    label="name"
+                                    @remove="removeStateSelect"
+                                >
+                                    <template slot="singleLabel" slot-scope="props">
+                                        <span v-html="props.option.name"></span>
+                                    </template>
+                                    <template slot="option" slot-scope="props">
+                                        <span v-html="props.option.name"></span>
+                                    </template>
+                                    <template slot="noResult">
+                                        <div class="no-data-found">{{ __( 'No country found', 'wepos' ) }}</div>
+                                    </template>
+                                </multiselect>
+                            </template>
+                            <template v-else>
+                                <input type="text" :placeholder="__( 'States (optional)', 'wepos' )" v-model="customer.state">
+                            </template>
+                        </div>
+                        <div class="form-row col-2">
                             <input type="text" :placeholder="__( 'City (optional)', 'wepos' )" v-model="customer.city">
+                            <input type="text" :placeholder="__( 'Zip/Postal Code (optional)', 'wepos' )" v-model="customer.postcode">
+                        </div>
+                        <div class="form-row">
                             <input type="text" :placeholder="__( 'Phone (optional)', 'wepos' )" v-model="customer.phone">
                         </div>
                     </form>
@@ -88,7 +145,7 @@
             </template>
 
             <template slot="footer">
-                <button class="add-variation-btn" :disabled="customer.email == undefined || customer.email == ''" @click="createCustomer()">{{ __( 'Add Customer', 'wepos' ) }}</button>
+                <button class="add-new-customer-btn add-variation-btn" :disabled="customer.email == undefined || customer.email == '' || isDisabled" @click="createCustomer()">{{ __( 'Add Customer', 'wepos' ) }}</button>
             </template>
         </modal>
     </div>
@@ -110,10 +167,25 @@ export default {
         return {
             submitDisable: false,
             customers: [],
-            customer: {},
+            customer: {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: '',
+            },
             showCustomerResults: false,
             serachInput: '',
-            showNewCustomerModal: false
+            showNewCustomerModal: false,
+            stateList: [],
+            selectedState: null,
+            selectedCountry: null,
+            isDisabled: false
         }
     },
     computed: {
@@ -123,7 +195,15 @@ export default {
                 'shift+f7': this.addNewCustomer,
                 'esc': this.searchClose,
             }
-        }
+        },
+        getCountryList() {
+            return Object.keys( wepos.countries ).map( ( val ) => {
+                return {
+                    code : val,
+                    name: wepos.countries[val]
+                };
+            } );
+        },
     },
     methods: {
         focusCustomerSearch(e) {
@@ -184,21 +264,61 @@ export default {
                         last_name: this.customer.last_name,
                         address_1: this.customer.address_1,
                         address_2: this.customer.address_2,
+                        country: this.selectedCountry !== null ? this.selectedCountry.code : '',
+                        state: this.selectedState !== null ? this.selectedState.code : this.customer.state,
+                        postcode: this.customer.postcode,
+                        city: this.customer.city,
                         phone: this.customer.phone,
                         email: this.customer.email,
                     }
                 }
+                var $contentWrap = jQuery('.wepos-new-customer-form');
+                $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+                this.isDisabled = true;
+
                 wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/customers', customerData )
                 .done(response => {
                     this.serachInput = response.first_name + ' ' + response.last_name;
                     this.$emit( 'onCustomerSelected', response );
+                    this.isDisabled = true;
+                    $contentWrap.unblock();
                     this.showNewCustomerModal = false;
                     this.customer = {};
                 }).fail( response => {
+                    this.isDisabled = true;
+                    $contentWrap.unblock();
                     alert( response.responseJSON.message );
                 } );
             } else {
                 alert( this.__( 'Please enter an email address for customer', 'wepos' ) );
+            }
+        },
+        removeCountrySelect( selectedOption, id ) {
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.stateList = [];
+            this.customer.country = '';
+            this.customer.state = '';
+        },
+
+        removeStateSelect( selectedOption, id ) {
+            this.selectedState = null;
+            this.customer.state = '';
+        },
+        handleCountrySelect( selectedOption, id ) {
+            var state = wepos.states[selectedOption.code] !== undefined ? wepos.states[selectedOption.code] : [];
+            var stateKeys = Object.keys( state );
+
+            if ( stateKeys.length > 0 ) {
+                this.stateList = stateKeys.map( (val) => {
+                    return {
+                        code: val,
+                        name: state[val]
+                    };
+                } );
+            } else {
+                this.stateList = state;
+                this.selectedState = null;
             }
         }
     },
@@ -214,6 +334,23 @@ export default {
 <style lang="less">
 .wepos-new-customer-form {
     padding: 20px;
+
+    .customer-country, .customer-state {
+        &.multiselect--active {
+            .multiselect__input {
+                padding: 0px 3px !important;
+            }
+        }
+    }
+
+    button.add-new-customer-btn {
+        &:disabled {
+            background: #76a2ed;
+            border: 1px solid #76a2ed;
+            cursor: no-drop !important;
+        }
+    }
 }
+
 
 </style>

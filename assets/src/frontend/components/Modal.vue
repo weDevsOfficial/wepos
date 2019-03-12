@@ -54,7 +54,7 @@ export default {
         height: {
             type: String,
             required: false,
-            default: '300px'
+            default: 'auto'
         },
     },
 

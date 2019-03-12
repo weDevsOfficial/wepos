@@ -213,7 +213,9 @@ class Assets {
             'placeholder_image'            => wc_placeholder_img_src(),
             'ajax_loader'                  => WEPOS_ASSETS . '/images/spinner-2x.gif',
             'logout_url'                   => wp_logout_url( site_url() ),
-            'categories'                   => wepos_get_product_category()
+            'categories'                   => wepos_get_product_category(),
+            'countries'                    => WC()->countries->get_countries(),
+            'states'                       => WC()->countries->get_states(),
         ] );
 
         wp_localize_script( 'wepos-vendor', 'wepos', $localize_data );

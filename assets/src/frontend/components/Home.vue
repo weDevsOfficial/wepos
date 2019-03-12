@@ -219,7 +219,7 @@
                                     <tr class="cart-meta-data" v-for="(fee,key) in orderdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
                                             <td class="label">{{ __( 'Discount', 'wepos' ) }} <span class="name">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
-                                            <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                                            <td class="price">&minus;{{ formatPrice( Math.abs( fee.value ) ) }}</td>
                                             <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                         </template>
                                         <template v-else>
@@ -238,7 +238,7 @@
                                             </template>
                                             <template v-else>
                                                 <td class="label" @dblclick="orderdata.fee_lines[key].isEdit = true">{{ __( 'Fee', 'wepos' ) }} <span class="name">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
-                                                <td class="price">{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                                                <td class="price">{{ formatPrice( Math.abs( fee.value ) ) }}</td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                         </template>
@@ -407,11 +407,11 @@
                                     <li class="wepos-clearfix" v-for="(fee,key) in orderdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
                                             <span class="wepos-left">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
-                                            <span class="wepos-right">-{{ formatPrice( Math.abs( fee.total ) ) }}</span>
+                                            <span class="wepos-right">-{{ formatPrice( Math.abs( fee.value ) ) }}</span>
                                         </template>
                                         <template v-else>
                                             <span class="wepos-left">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
-                                            <span class="wepos-right">{{ formatPrice( fee.total ) }}</span>
+                                            <span class="wepos-right">{{ formatPrice( fee.value ) }}</span>
                                         </template>
                                     </li>
                                 </template>
@@ -598,7 +598,7 @@ export default {
             var fee = 0;
             weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
                 if ( item.type == 'fee' ) {
-                    fee += Math.abs(item.total)
+                    fee += Math.abs( item.value )
                 }
             });
             return fee;
@@ -607,7 +607,7 @@ export default {
             var discount = 0;
             weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
                 if ( item.type == 'discount' ) {
-                    discount += Number( Math.abs( item.total ) );
+                    discount += Number( Math.abs( item.value ) );
                 }
             });
 
@@ -882,9 +882,9 @@ export default {
                 weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
                     if ( item.type == "discount" ) {
                         if ( item.discount_type == 'percent' ) {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber( ( this.getOrderTotal*Math.abs( item.value ) )/100 );
+                            this.orderdata.fee_lines[key].total = '-' + ( this.getOrderTotal*Math.abs( item.value ) )/100;
                         } else {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber( Math.abs( item.value ) );
+                            this.orderdata.fee_lines[key].total = '-' + Math.abs( item.value );
                         }
                     }
                 } );
@@ -895,9 +895,9 @@ export default {
                 weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
                     if ( item.type == 'fee' ) {
                         if ( item.fee_type == 'percent' ) {
-                            this.orderdata.fee_lines[key].total = this.formatNumber( ( this.getOrderTotal*Math.abs( item.value ) )/100 );
+                            this.orderdata.fee_lines[key].total = ( ( this.getOrderTotal*Math.abs( item.value ) )/100 ).toString();
                         } else {
-                            this.orderdata.fee_lines[key].total = this.formatNumber( Math.abs( item.value ) );
+                            this.orderdata.fee_lines[key].total = Math.abs( item.value ).toString();
                         }
                     }
                 } );

@@ -16,10 +16,10 @@ export default {
         printReceipt() {
             var self = this;
             var beforePrint = function() {
-                EventBus.$emit( 'openprinthtml', true );
+                this.eventBus.$emit( 'openprinthtml', true );
             };
             var afterPrint = function() {
-                EventBus.$emit( 'closeprinthtml', false );
+                this.eventBus.$emit( 'closeprinthtml', false );
             };
 
             if (window.matchMedia) {

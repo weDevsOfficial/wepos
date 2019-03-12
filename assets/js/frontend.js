@@ -718,7 +718,7 @@ if (false) {(function () {
             var fee = 0;
             weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
                 if (item.type == 'fee') {
-                    fee += Math.abs(item.total);
+                    fee += Math.abs(item.value);
                 }
             });
             return fee;
@@ -727,7 +727,7 @@ if (false) {(function () {
             var discount = 0;
             weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
                 if (item.type == 'discount') {
-                    discount += Number(Math.abs(item.total));
+                    discount += Number(Math.abs(item.value));
                 }
             });
 
@@ -996,9 +996,9 @@ if (false) {(function () {
                 weLo_.forEach(this.orderdata.fee_lines, (item, key) => {
                     if (item.type == "discount") {
                         if (item.discount_type == 'percent') {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber(this.getOrderTotal * Math.abs(item.value) / 100);
+                            this.orderdata.fee_lines[key].total = '-' + this.getOrderTotal * Math.abs(item.value) / 100;
                         } else {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber(Math.abs(item.value));
+                            this.orderdata.fee_lines[key].total = '-' + Math.abs(item.value);
                         }
                     }
                 });
@@ -1009,9 +1009,9 @@ if (false) {(function () {
                 weLo_.forEach(this.orderdata.fee_lines, (item, key) => {
                     if (item.type == 'fee') {
                         if (item.fee_type == 'percent') {
-                            this.orderdata.fee_lines[key].total = this.formatNumber(this.getOrderTotal * Math.abs(item.value) / 100);
+                            this.orderdata.fee_lines[key].total = (this.getOrderTotal * Math.abs(item.value) / 100).toString();
                         } else {
-                            this.orderdata.fee_lines[key].total = this.formatNumber(Math.abs(item.value));
+                            this.orderdata.fee_lines[key].total = Math.abs(item.value).toString();
                         }
                     }
                 });
@@ -2433,10 +2433,10 @@ const Tokens = {
         printReceipt() {
             var self = this;
             var beforePrint = function () {
-                EventBus.$emit('openprinthtml', true);
+                this.eventBus.$emit('openprinthtml', true);
             };
             var afterPrint = function () {
-                EventBus.$emit('closeprinthtml', false);
+                this.eventBus.$emit('closeprinthtml', false);
             };
 
             if (window.matchMedia) {
@@ -6366,9 +6366,9 @@ var render = function() {
                                     _vm._v(" "),
                                     _c("td", { staticClass: "price" }, [
                                       _vm._v(
-                                        "-" +
+                                        "−" +
                                           _vm._s(
-                                            _vm.formatPrice(Math.abs(fee.total))
+                                            _vm.formatPrice(Math.abs(fee.value))
                                           )
                                       )
                                     ]),
@@ -6741,7 +6741,7 @@ var render = function() {
                                             _vm._v(
                                               _vm._s(
                                                 _vm.formatPrice(
-                                                  Math.abs(fee.total)
+                                                  Math.abs(fee.value)
                                                 )
                                               )
                                             )
@@ -7318,7 +7318,7 @@ var render = function() {
                                                 "-" +
                                                   _vm._s(
                                                     _vm.formatPrice(
-                                                      Math.abs(fee.total)
+                                                      Math.abs(fee.value)
                                                     )
                                                   )
                                               )
@@ -7361,7 +7361,7 @@ var render = function() {
                                             [
                                               _vm._v(
                                                 _vm._s(
-                                                  _vm.formatPrice(fee.total)
+                                                  _vm.formatPrice(fee.value)
                                                 )
                                               )
                                             ]

@@ -68,7 +68,7 @@ class Assets {
         global $wp_version;
 
         $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.min' : '';
-        $dependency = [ 'jquery', 'wepos-i18n-jed', 'wepos-vendor' ];
+        $dependency = [ 'jquery', 'wepos-i18n-jed' ];
 
         if ( version_compare( $wp_version, '5.0', '<' ) ) {
             $dependency[] = 'wepos-wp-hook';
@@ -115,13 +115,11 @@ class Assets {
             ],
             'wepos-frontend' => [
                 'src'       => WEPOS_ASSETS . '/js/frontend.js',
-                'deps'      => ['wepos-bootstrap'],
                 'version'   => filemtime( WEPOS_PATH . '/assets/js/frontend.js' ),
                 'in_footer' => true
             ],
             'wepos-admin' => [
                 'src'       => WEPOS_ASSETS . '/js/admin.js',
-                'deps'      => ['wepos-bootstrap'],
                 'version'   => filemtime( WEPOS_PATH . '/assets/js/admin.js' ),
                 'in_footer' => true
             ],
@@ -179,6 +177,11 @@ class Assets {
             // Load scripts
             wp_enqueue_script( 'wepos-blockui' );
             wp_enqueue_script( 'wepos-accounting' );
+
+            do_action( 'wepos_load_forntend_scripts' );
+
+            wp_enqueue_script( 'wepos-vendor' );
+            wp_enqueue_script( 'wepos-bootstrap' );
             wp_enqueue_script( 'wepos-frontend' );
         }
     }
@@ -201,6 +204,8 @@ class Assets {
             'ajaxurl'                      => admin_url( 'admin-ajax.php' ),
             'nonce'                        => wp_create_nonce( 'wepos_nonce' ),
             'libs'                         => [],
+            'routeComponents'              => array( 'default' => null ),
+            'routes'                       => $this->get_vue_admin_routes(),
             'i18n'                         => array( 'wepos' => wepos_get_jed_locale_data( 'wepos' ) ),
             'mon_decimal_point'            => wc_get_price_decimal_separator(),
             'currency_format_num_decimals' => wc_get_price_decimals(),
@@ -221,4 +226,20 @@ class Assets {
         wp_localize_script( 'wepos-vendor', 'wepos', $localize_data );
     }
 
+     /**
+     * SPA Routes
+     *
+     * @return array
+     */
+    public function get_vue_admin_routes() {
+        $routes = array(
+            array(
+                'path'      => '/settings',
+                'name'      => 'Settings',
+                'component' => 'Settings'
+            ),
+        );
+
+        return apply_filters( 'wepos_admin_routes', $routes );
+    }
 }

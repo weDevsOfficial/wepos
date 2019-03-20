@@ -217,10 +217,15 @@ var _findindex = __webpack_require__(165);
 
 var _findindex2 = _interopRequireDefault(_findindex);
 
+var _truncate = __webpack_require__(286);
+
+var _truncate2 = _interopRequireDefault(_truncate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _ = _core2.default.noConflict();
 _.findIndex = _findindex2.default;
+_.truncate = _truncate2.default;
 
 exports.default = _;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(163)))

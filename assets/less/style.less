@@ -342,6 +342,34 @@ body {
     cursor: pointer;
 }
 
+.wepos-dropdown-menu {
+    ul {
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+        min-width: 180px;
+        li {
+            display: block;
+            a {
+                display: block;
+                padding: 10px 15px;
+                text-decoration: none;
+                color: #212121;
+
+                .quick-menu-icon {
+                    margin-right: 7px;
+                    &:before {
+                        font-size: 15px;
+                    }
+                }
+            }
+            &.divider {
+                border-bottom: 1px solid #E9EDF0;
+            }
+        }
+    }
+}
+
 .wepos-checkout-wrapper {
     display: flex;
 

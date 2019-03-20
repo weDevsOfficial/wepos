@@ -62,10 +62,22 @@
                                     <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                 </div>
                                 <div class="title" v-if="productView=='grid'">
-                                    {{ truncate( product.name, 20, '...' ) }}
+                                    {{ truncateTitle( product.name, 20 ) }}
+
                                 </div>
                                 <div class="title" v-else>
-                                    {{ product.name }}
+                                    <div class="product-name">{{ product.name }}</div>
+
+                                    <ul class="meta">
+                                        <li v-if="product.sku">
+                                            <span class="label">{{ __( 'Sku :', 'wepos' ) }}</span>
+                                            <span class="value">{{ product.sku }}</span>
+                                        </li>
+                                        <li>
+                                            <span class="label">{{ __( 'Price :', 'wepos' ) }}</span>
+                                            <span class="value" v-html="product.price_html"></span>
+                                        </li>
+                                    </ul>
                                 </div>
                                 <span class="add-product-icon flaticon-add" :class="productView"></span>
                             </div>
@@ -78,10 +90,17 @@
                                         <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                     </div>
                                     <div class="title" v-if="productView=='grid'">
-                                        {{ truncate( product.name, 20, '...' ) }}
+                                        {{ truncateTitle( product.name, 20 ) }}
                                     </div>
                                     <div class="title" v-else>
-                                        {{ product.name }}
+                                        <div class="product-name">{{ product.name }}</div>
+                                        <ul class="meta">
+                                            <li>
+                                                <span class="label">{{ __( 'Price :', 'wepos' ) }}</span>
+                                                <span class="value" v-html="product.price_html"></span>
+                                            </li>
+                                        </ul>
+
                                     </div>
                                     <span class="add-product-icon flaticon-add" :class="productView"></span>
                                 </div>
@@ -1009,22 +1028,8 @@ export default {
                 this.emptyGatewayDiv = 4-(this.availableGateways.length%4);
             });
         },
-        truncate( text, length, clamp ) {
-            text   = text || '';
-            clamp  = clamp || '...';
-            length = length || 30;
-
-            if (text.length <= length) return text;
-
-            var tcText = text.slice(0, length - clamp.length);
-            var last = tcText.length - 1;
-
-            while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
-
-            // Fix for case when text dont have any `space`
-            last = last || length - clamp.length;
-            tcText =  tcText.slice(0, last);
-            return tcText + clamp;
+        truncateTitle( text, length ) {
+            return weLo_.truncate( text, { 'length' : length });
         },
         unSanitizeString( str ) {
             return str.split('-').map(function capitalize(part) {
@@ -1521,7 +1526,7 @@ export default {
                         border-radius: 3px;
                         box-shadow: 0 3px 15px 0 rgba(0,0,0,.02);
                         .img {
-                            width: 100px;
+                            width: 80px;
                             height: 80px;
                             float: left;
                             margin-right: 20px;
@@ -1535,9 +1540,55 @@ export default {
                         .title {
                             float: left;
                             height: 100%;
-                            line-height: 80px;
                             font-size: 14px;
                             font-weight: bold;
+                            position: absolute;
+                            top: 40px;
+                            left: 100px;
+                            height: 44px;
+                            margin-top: -22px;
+                            max-width: 78%;
+
+                            .product-name {
+                                margin-bottom: 8px;
+                            }
+
+                            ul.meta {
+                                margin: 0;
+                                padding: 0;
+                                list-style: none;
+                                font-size: 13px;
+                                font-weight: normal;
+
+                                li {
+                                    display: inline-block;
+
+                                    .label {
+                                        color: #758598;
+                                        margin-right: 3px;
+                                    }
+
+                                    .value {
+                                        del {
+                                            color: #9095a5;
+                                            margin-right: 3px;
+                                        }
+                                    }
+
+                                    &:after {
+                                        content: "|";
+                                        color: #e9ebed;
+                                        display: inline-block;
+                                        margin: 0px 7px;
+                                    }
+
+                                    &:last-child {
+                                        &:after {
+                                            content: "";
+                                        }
+                                    }
+                                }
+                            }
                         }
                         .add-product-icon {
                             position: absolute;

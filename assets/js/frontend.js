@@ -611,6 +611,25 @@ if (false) {(function () {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1121,22 +1140,8 @@ if (false) {(function () {
                 this.emptyGatewayDiv = 4 - this.availableGateways.length % 4;
             });
         },
-        truncate(text, length, clamp) {
-            text = text || '';
-            clamp = clamp || '...';
-            length = length || 30;
-
-            if (text.length <= length) return text;
-
-            var tcText = text.slice(0, length - clamp.length);
-            var last = tcText.length - 1;
-
-            while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
-
-            // Fix for case when text dont have any `space`
-            last = last || length - clamp.length;
-            tcText = tcText.slice(0, last);
-            return tcText + clamp;
+        truncateTitle(text, length) {
+            return weLo_.truncate(text, { 'length': length });
         },
         unSanitizeString(str) {
             return str.split('-').map(function capitalize(part) {
@@ -5615,21 +5620,77 @@ var render = function() {
                                             _vm._v(
                                               "\n                                " +
                                                 _vm._s(
-                                                  _vm.truncate(
+                                                  _vm.truncateTitle(
                                                     product.name,
-                                                    20,
-                                                    "..."
+                                                    20
                                                   )
                                                 ) +
-                                                "\n                            "
+                                                "\n\n                            "
                                             )
                                           ])
                                         : _c("div", { staticClass: "title" }, [
-                                            _vm._v(
-                                              "\n                                " +
-                                                _vm._s(product.name) +
-                                                "\n                            "
-                                            )
+                                            _c(
+                                              "div",
+                                              { staticClass: "product-name" },
+                                              [_vm._v(_vm._s(product.name))]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("ul", { staticClass: "meta" }, [
+                                              product.sku
+                                                ? _c("li", [
+                                                    _c(
+                                                      "span",
+                                                      { staticClass: "label" },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            _vm.__(
+                                                              "Sku :",
+                                                              "wepos"
+                                                            )
+                                                          )
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "span",
+                                                      { staticClass: "value" },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(product.sku)
+                                                        )
+                                                      ]
+                                                    )
+                                                  ])
+                                                : _vm._e(),
+                                              _vm._v(" "),
+                                              _c("li", [
+                                                _c(
+                                                  "span",
+                                                  { staticClass: "label" },
+                                                  [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.__(
+                                                          "Price :",
+                                                          "wepos"
+                                                        )
+                                                      )
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c("span", {
+                                                  staticClass: "value",
+                                                  domProps: {
+                                                    innerHTML: _vm._s(
+                                                      product.price_html
+                                                    )
+                                                  }
+                                                })
+                                              ])
+                                            ])
                                           ]),
                                       _vm._v(" "),
                                       _c("span", {
@@ -5689,10 +5750,9 @@ var render = function() {
                                                   _vm._v(
                                                     "\n                                    " +
                                                       _vm._s(
-                                                        _vm.truncate(
+                                                        _vm.truncateTitle(
                                                           product.name,
-                                                          20,
-                                                          "..."
+                                                          20
                                                         )
                                                       ) +
                                                       "\n                                "
@@ -5703,10 +5763,51 @@ var render = function() {
                                                 "div",
                                                 { staticClass: "title" },
                                                 [
-                                                  _vm._v(
-                                                    "\n                                    " +
-                                                      _vm._s(product.name) +
-                                                      "\n                                "
+                                                  _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "product-name"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(product.name)
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "ul",
+                                                    { staticClass: "meta" },
+                                                    [
+                                                      _c("li", [
+                                                        _c(
+                                                          "span",
+                                                          {
+                                                            staticClass: "label"
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              _vm._s(
+                                                                _vm.__(
+                                                                  "Price :",
+                                                                  "wepos"
+                                                                )
+                                                              )
+                                                            )
+                                                          ]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c("span", {
+                                                          staticClass: "value",
+                                                          domProps: {
+                                                            innerHTML: _vm._s(
+                                                              product.price_html
+                                                            )
+                                                          }
+                                                        })
+                                                      ])
+                                                    ]
                                                   )
                                                 ]
                                               ),

@@ -85,6 +85,7 @@ class REST_API {
         $tax_amount         = (float)$price_incl_tax - (float)$price_excl_tax;
         $data['tax_amount'] = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
 
+        error_log( print_r( $_wp_additional_image_sizes, true ) );
         if ( ! empty( $data['images'] ) ) {
             foreach ( $data['images'] as $key => $image) {
                 $image_urls = [];

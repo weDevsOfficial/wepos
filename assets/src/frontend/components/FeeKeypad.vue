@@ -131,6 +131,10 @@ export default {
             padding: 13px;
             height: 25px;
         }
+
+        button[data-action="percent"],button[data-action="flat"] {
+            cursor: pointer;
+        }
     }
 }
 

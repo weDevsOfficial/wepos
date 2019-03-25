@@ -13,6 +13,7 @@
                         selectLabel=""
                         deselectLabel=""
                         selectedLabel=""
+                        :placeholder="__( 'Select a category', 'wepos' )"
                         @select="handleCategorySelect"
                         @remove="handleCategoryRemove"
                     >
@@ -61,10 +62,22 @@
                                     <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                 </div>
                                 <div class="title" v-if="productView=='grid'">
-                                    {{ truncate( product.name, 20, '...' ) }}
+                                    {{ truncateTitle( product.name, 20 ) }}
+
                                 </div>
                                 <div class="title" v-else>
-                                    {{ product.name }}
+                                    <div class="product-name">{{ product.name }}</div>
+
+                                    <ul class="meta">
+                                        <li v-if="product.sku">
+                                            <span class="label">{{ __( 'Sku :', 'wepos' ) }}</span>
+                                            <span class="value">{{ product.sku }}</span>
+                                        </li>
+                                        <li>
+                                            <span class="label">{{ __( 'Price :', 'wepos' ) }}</span>
+                                            <span class="value" v-html="product.price_html"></span>
+                                        </li>
+                                    </ul>
                                 </div>
                                 <span class="add-product-icon flaticon-add" :class="productView"></span>
                             </div>
@@ -77,10 +90,17 @@
                                         <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                     </div>
                                     <div class="title" v-if="productView=='grid'">
-                                        {{ truncate( product.name, 20, '...' ) }}
+                                        {{ truncateTitle( product.name, 20 ) }}
                                     </div>
                                     <div class="title" v-else>
-                                        {{ product.name }}
+                                        <div class="product-name">{{ product.name }}</div>
+                                        <ul class="meta">
+                                            <li>
+                                                <span class="label">{{ __( 'Price :', 'wepos' ) }}</span>
+                                                <span class="value" v-html="product.price_html"></span>
+                                            </li>
+                                        </ul>
+
                                     </div>
                                     <span class="add-product-icon flaticon-add" :class="productView"></span>
                                 </div>
@@ -127,22 +147,21 @@
                 <customer-search @onCustomerSelected="selectCustomer"></customer-search>
                 <div class="action">
                     <div class="more-options">
-                        <span class="dropdown right-align">
-                            <button><span class="more-icon flaticon-more"></span></button>
-                            <label>
-                                <input type="checkbox">
+                        <v-popover offset="5" popover-base-class="wepos-dropdown-menu tooltip popover" placement="bottom-end" :open="showQucikMenu">
+                            <button class="wepos-button" @click.prevent="openQucikMenu()"><span class="more-icon flaticon-more"></span></button>
+                            <template slot="popover">
                                 <ul>
-                                    <li><a href="#" @click.prevent="emptyCart">{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
-                                    <li><a href="#" @click.prevent="openHelp">{{ __( 'Help', 'wepos' ) }}</a></li>
+                                    <li><a href="#" @click.prevent="emptyCart"><span class="flaticon-empty-cart quick-menu-icon"></span>{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
+                                    <li><a href="#" @click.prevent="openHelp"><span class="flaticon-information quick-menu-icon"></span>{{ __( 'Help', 'wepos' ) }}</a></li>
                                     <li class="divider"></li>
-                                    <li><a :href="getLogoutUrl()">{{ __( 'Logout', 'wepos' ) }}</a></li>
+                                    <li><a :href="getLogoutUrl()"><span class="flaticon-logout quick-menu-icon"></span>{{ __( 'Logout', 'wepos' ) }}</a></li>
                                 </ul>
-                            </label>
-                        </span>
+                            </template>
+                        </v-popover>
                     </div>
                 </div>
             </div>
-            <div class="cart-panel">
+            <div class="cart-panel" v-if="settings.wepos_general">
                 <div class="cart-content">
                     <table class="cart-table">
                         <thead>
@@ -160,7 +179,7 @@
                                     <tr>
                                         <td class="name" @click="toggleEditQuantity( item, key )">
                                             {{ item.name }}
-                                            <div class="attribute" v-if="item.attribute.length > 0">
+                                            <div class="attribute" v-if="item.attribute.length > 0 && item.type === 'variable'">
                                                 <ul>
                                                     <li v-for="attribute_item in item.attribute"><span class="attr_name">{{ attribute_item.name }}</span>: <span class="attr_value">{{ attribute_item.option }}</span></li>
                                                 </ul>
@@ -219,13 +238,14 @@
                                     <tr class="cart-meta-data" v-for="(fee,key) in orderdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
                                             <td class="label">{{ __( 'Discount', 'wepos' ) }} <span class="name">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
-                                            <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                                            <td class="price">&minus;{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                             <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                         </template>
                                         <template v-else>
                                             <template v-if="fee.isEdit">
                                                 <td class="label" colspan="2">
                                                     <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" :placeholder="__( 'Fee Name', 'wepos' )" ref="fee_name">
+                                                    <input type="number" class="fee-amount" min="0" step="any" v-model="orderdata.fee_lines[key].total" :placeholder="__( 'Total', 'wepos' )" ref="fee_total">
                                                     <template v-if="settings.wepos_general.enable_fee_tax == 'yes'">
                                                         <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="orderdata.fee_lines[key].tax_status" :true-value="'taxable'" :false-value="'none'"> Taxable</label>
                                                         <select class="fee-tax-class" v-model="orderdata.fee_lines[key].tax_class" v-if="orderdata.fee_lines[key].tax_status=='taxable'">
@@ -376,7 +396,7 @@
                                     <tr v-for="item in orderdata.line_items">
                                         <td class="name">
                                             {{ item.name }}
-                                            <div class="attribute" v-if="item.attribute.length > 0">
+                                            <div class="attribute" v-if="item.attribute.length > 0 && item.type === 'variable'">
                                                 <ul>
                                                     <li v-for="attribute_item in item.attribute"><span class="attr_name">{{ attribute_item.name }}</span>: <span class="attr_value">{{ attribute_item.option }}</span></li>
                                                 </ul>
@@ -521,6 +541,7 @@ export default {
     data () {
         return {
             showHelp: false,
+            showQucikMenu: false,
             productView: 'grid',
             productLoading: false,
             viewVariationPopover: false,
@@ -597,7 +618,7 @@ export default {
             var fee = 0;
             weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
                 if ( item.type == 'fee' ) {
-                    fee += Math.abs(item.total)
+                    fee += Math.abs( item.total )
                 }
             });
             return fee;
@@ -623,8 +644,11 @@ export default {
             weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
                 if ( item.type == 'fee' ) {
                     if ( item.tax_status == 'taxable' ) {
-                        var taxClass = weLo_.find( self.availableTax, { 'class' : item.tax_class } );
-                        taxFeeTotal += ( Math.abs(item.total)*Math.abs( taxClass.rate ) )/100;
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find( self.availableTax, { 'class' : itemTaxClass.toString() } );
+                        if ( taxClass !== undefined ) {
+                            taxFeeTotal += ( Math.abs(item.total)*Math.abs( taxClass.rate ) )/100;
+                        }
                     }
                 }
             });
@@ -638,7 +662,7 @@ export default {
             return this.getOrderTotal-this.getTotalDiscount;
         },
         changeAmount() {
-            var returnMoney = this.cashAmount-this.getTotal;
+            var returnMoney = this.formatNumber( this.cashAmount-this.getTotal );
             return returnMoney > 0 ? returnMoney : 0;
         },
         getBreadCrums() {
@@ -684,16 +708,26 @@ export default {
             };
         },
         '$route.query.category'() {
-            if ( this.$route.query.category != 'undefined' ) {
-                this.selectedCategory = weLo_.find( this.categories, { id : parseInt( this.$route.query.category ) } )
+            this.selectedCategory = {
+                id : -1,
+                level: 0,
+                name: this.__( 'All categories', 'wepos' ),
+                parent_id: null
             };
+            if ( this.$route.query.category !== undefined ) {
+                this.selectedCategory = weLo_.find( this.categories, { id : parseInt( this.$route.query.category ) } )
+            }
         },
     },
 
     methods: {
+        openQucikMenu() {
+            this.showQucikMenu = true;
+        },
         openHelp(e) {
             e.preventDefault();
             this.showHelp = true;
+            this.showQucikMenu = false;
         },
         closeHelp() {
             this.showHelp = false;
@@ -725,6 +759,7 @@ export default {
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit( 'emptycart', this.orderdata );
+            this.showQucikMenu = false;
         },
         toggleProductView(e) {
             e.preventDefault();
@@ -814,7 +849,6 @@ export default {
             this.orderdata.payment_method = this.availableGateways[0].id;
         },
         backToSale() {
-            // e.preventDefault();
             this.showModal = false;
             this.showHelp = false;
             this.orderdata.payment_method = '';
@@ -823,7 +857,7 @@ export default {
             return !( this.orderdata.payment_method == undefined || this.orderdata.payment_method == '' );
         },
         getProductImage(product) {
-            return ( product.images.length > 0 ) ? product.images[0].shop_thumbnail : wepos.placeholder_image;
+            return ( product.images.length > 0 ) ? product.images[0].woocommerce_thumbnail : wepos.placeholder_image;
         },
         getProductImageName(product) {
             return ( product.images.length > 0 ) ? product.images[0].name : product.name;
@@ -870,9 +904,9 @@ export default {
                 weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
                     if ( item.type == "discount" ) {
                         if ( item.discount_type == 'percent' ) {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber( ( this.getOrderTotal*Math.abs( item.value ) )/100 );
+                            this.orderdata.fee_lines[key].total = '-' + ( this.getSubtotal*Math.abs( item.value ) )/100;
                         } else {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber( Math.abs( item.value ) );
+                            this.orderdata.fee_lines[key].total = '-' + Math.abs( item.value );
                         }
                     }
                 } );
@@ -883,9 +917,9 @@ export default {
                 weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
                     if ( item.type == 'fee' ) {
                         if ( item.fee_type == 'percent' ) {
-                            this.orderdata.fee_lines[key].total = this.formatNumber( ( this.getOrderTotal*Math.abs( item.value ) )/100 );
+                            this.orderdata.fee_lines[key].total = ( ( this.getSubtotal*Math.abs( item.value ) )/100 ).toString();
                         } else {
-                            this.orderdata.fee_lines[key].total = this.formatNumber( Math.abs( item.value ) );
+                            this.orderdata.fee_lines[key].total = Math.abs( item.value ).toString();
                         }
                     }
                 } );
@@ -931,6 +965,7 @@ export default {
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type      = this.selectedVariationProduct.type;
             variationProduct.name      = this.selectedVariationProduct.name;
+            variationProduct.type      = this.selectedVariationProduct.type;
             this.selectedAttribute     = {};
             this.attributeDisabled     = true;
             this.addToCart( variationProduct );
@@ -948,6 +983,7 @@ export default {
             cartObject.attribute     = product.attributes;
             cartObject.variation_id  = ( product.parent_id !== 0 ) ? product.id : 0;
             cartObject.editQuantity  = false;
+            cartObject.type          = product.type;
             cartObject.tax_amount    = product.tax_amount;
 
             var index = weLo_.findIndex( self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id} );
@@ -991,22 +1027,8 @@ export default {
                 this.emptyGatewayDiv = 4-(this.availableGateways.length%4);
             });
         },
-        truncate( text, length, clamp ) {
-            text   = text || '';
-            clamp  = clamp || '...';
-            length = length || 30;
-
-            if (text.length <= length) return text;
-
-            var tcText = text.slice(0, length - clamp.length);
-            var last = tcText.length - 1;
-
-            while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
-
-            // Fix for case when text dont have any `space`
-            last = last || length - clamp.length;
-            tcText =  tcText.slice(0, last);
-            return tcText + clamp;
+        truncateTitle( text, length ) {
+            return weLo_.truncate( text, { 'length' : length });
         },
         unSanitizeString( str ) {
             return str.split('-').map(function capitalize(part) {
@@ -1020,16 +1042,26 @@ export default {
             });
         },
         fetchTaxes() {
-            wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/taxes' )
+            wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/taxes' )
             .done( response => {
                 this.availableTax = response;
             });
         },
         handleCategorySelect( selectedOption, id ) {
-            this.$router.push( { name: 'Home', query: { 'category' : selectedOption.id } } );
+            if ( selectedOption.id == '-1' ) {
+                this.$router.push( { name: 'Home' } );
+            } else {
+                this.$router.push( { name: 'Home', query: { 'category' : selectedOption.id } } );
+            }
         },
         handleCategoryRemove( selectedOption, id ) {
             this.$router.push( { name: 'Home' } );
+            this.selectedCategory = {
+                id : -1,
+                level: 0,
+                name: this.__( 'All categories', 'wepos' ),
+                parent_id: null
+            };
         },
         fetchCategories() {
             wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id' )
@@ -1052,6 +1084,12 @@ export default {
                     return r;
                 }(response, null);
 
+                var selectedCat = {
+                    id : -1,
+                    level: 0,
+                    name: this.__( 'All categories', 'wepos' ),
+                    parent_id: null
+                };
                 var sorted = tree.reduce(function traverse(level) {
                     return function (r, a) {
                         a.response.level = level
@@ -1059,6 +1097,9 @@ export default {
                     };
                 }(0), []);
                 this.categories = sorted;
+
+                this.categories.unshift( selectedCat );
+                this.selectedCategory = selectedCat;
 
                 if ( this.$route.query.category !== undefined ) {
                     this.selectedCategory = weLo_.find( response, { id : parseInt( this.$route.query.category ) } );
@@ -1484,7 +1525,7 @@ export default {
                         border-radius: 3px;
                         box-shadow: 0 3px 15px 0 rgba(0,0,0,.02);
                         .img {
-                            width: 100px;
+                            width: 80px;
                             height: 80px;
                             float: left;
                             margin-right: 20px;
@@ -1498,9 +1539,55 @@ export default {
                         .title {
                             float: left;
                             height: 100%;
-                            line-height: 80px;
                             font-size: 14px;
                             font-weight: bold;
+                            position: absolute;
+                            top: 40px;
+                            left: 100px;
+                            height: 44px;
+                            margin-top: -22px;
+                            max-width: 78%;
+
+                            .product-name {
+                                margin-bottom: 8px;
+                            }
+
+                            ul.meta {
+                                margin: 0;
+                                padding: 0;
+                                list-style: none;
+                                font-size: 13px;
+                                font-weight: normal;
+
+                                li {
+                                    display: inline-block;
+
+                                    .label {
+                                        color: #758598;
+                                        margin-right: 3px;
+                                    }
+
+                                    .value {
+                                        del {
+                                            color: #9095a5;
+                                            margin-right: 3px;
+                                        }
+                                    }
+
+                                    &:after {
+                                        content: "|";
+                                        color: #e9ebed;
+                                        display: inline-block;
+                                        margin: 0px 7px;
+                                    }
+
+                                    &:last-child {
+                                        &:after {
+                                            content: "";
+                                        }
+                                    }
+                                }
+                            }
                         }
                         .add-product-icon {
                             position: absolute;
@@ -1718,7 +1805,7 @@ export default {
 
                     span.more-icon {
                         &:before {
-                            font-size: 13px;
+                            font-size: 16px;
                             color: #BDC0C9;
                         }
                     }
@@ -1835,10 +1922,10 @@ export default {
                                             margin-right: 5px;
                                         }
                                         .fee-name {
-                                            width: 20%;
+                                            width: 15%;
                                         }
                                         .fee-amount {
-                                            width: 10%;
+                                            width: 15%;
                                             margin-right: 5px;
                                         }
                                         select.fee-tax-class {

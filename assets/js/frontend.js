@@ -19,13 +19,13 @@ pluginWebpack([0],[
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(31);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_54348248_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_54348248_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(94);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(87)
+  __webpack_require__(93)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -80,7 +80,8 @@ if (false) {(function () {
 /* 23 */,
 /* 24 */,
 /* 25 */,
-/* 26 */
+/* 26 */,
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -104,20 +105,40 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(85);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(90);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(99);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Modal_vue__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_mugen_scroll__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceipt_vue__ = __webpack_require__(100);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__PrintReceiptHtml_vue__ = __webpack_require__(103);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CustomerNote_vue__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceipt_vue__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__PrintReceiptHtml_vue__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CustomerNote_vue__ = __webpack_require__(112);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -641,6 +662,7 @@ if (false) {(function () {
     data() {
         return {
             showHelp: false,
+            showQucikMenu: false,
             productView: 'grid',
             productLoading: false,
             viewVariationPopover: false,
@@ -743,8 +765,11 @@ if (false) {(function () {
             weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
                 if (item.type == 'fee') {
                     if (item.tax_status == 'taxable') {
-                        var taxClass = weLo_.find(self.availableTax, { 'class': item.tax_class });
-                        taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find(self.availableTax, { 'class': itemTaxClass.toString() });
+                        if (taxClass !== undefined) {
+                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        }
                     }
                 }
             });
@@ -758,7 +783,7 @@ if (false) {(function () {
             return this.getOrderTotal - this.getTotalDiscount;
         },
         changeAmount() {
-            var returnMoney = this.cashAmount - this.getTotal;
+            var returnMoney = this.formatNumber(this.cashAmount - this.getTotal);
             return returnMoney > 0 ? returnMoney : 0;
         },
         getBreadCrums() {
@@ -804,16 +829,26 @@ if (false) {(function () {
             };
         },
         '$route.query.category'() {
-            if (this.$route.query.category != 'undefined') {
-                this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
+            this.selectedCategory = {
+                id: -1,
+                level: 0,
+                name: this.__('All categories', 'wepos'),
+                parent_id: null
             };
+            if (this.$route.query.category !== undefined) {
+                this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
+            }
         }
     },
 
     methods: {
+        openQucikMenu() {
+            this.showQucikMenu = true;
+        },
         openHelp(e) {
             e.preventDefault();
             this.showHelp = true;
+            this.showQucikMenu = false;
         },
         closeHelp() {
             this.showHelp = false;
@@ -845,6 +880,7 @@ if (false) {(function () {
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit('emptycart', this.orderdata);
+            this.showQucikMenu = false;
         },
         toggleProductView(e) {
             e.preventDefault();
@@ -928,7 +964,6 @@ if (false) {(function () {
             this.orderdata.payment_method = this.availableGateways[0].id;
         },
         backToSale() {
-            // e.preventDefault();
             this.showModal = false;
             this.showHelp = false;
             this.orderdata.payment_method = '';
@@ -937,7 +972,7 @@ if (false) {(function () {
             return !(this.orderdata.payment_method == undefined || this.orderdata.payment_method == '');
         },
         getProductImage(product) {
-            return product.images.length > 0 ? product.images[0].shop_thumbnail : wepos.placeholder_image;
+            return product.images.length > 0 ? product.images[0].woocommerce_thumbnail : wepos.placeholder_image;
         },
         getProductImageName(product) {
             return product.images.length > 0 ? product.images[0].name : product.name;
@@ -984,9 +1019,9 @@ if (false) {(function () {
                 weLo_.forEach(this.orderdata.fee_lines, (item, key) => {
                     if (item.type == "discount") {
                         if (item.discount_type == 'percent') {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber(this.getOrderTotal * Math.abs(item.value) / 100);
+                            this.orderdata.fee_lines[key].total = '-' + this.getSubtotal * Math.abs(item.value) / 100;
                         } else {
-                            this.orderdata.fee_lines[key].total = '-' + this.formatNumber(Math.abs(item.value));
+                            this.orderdata.fee_lines[key].total = '-' + Math.abs(item.value);
                         }
                     }
                 });
@@ -997,9 +1032,9 @@ if (false) {(function () {
                 weLo_.forEach(this.orderdata.fee_lines, (item, key) => {
                     if (item.type == 'fee') {
                         if (item.fee_type == 'percent') {
-                            this.orderdata.fee_lines[key].total = this.formatNumber(this.getOrderTotal * Math.abs(item.value) / 100);
+                            this.orderdata.fee_lines[key].total = (this.getSubtotal * Math.abs(item.value) / 100).toString();
                         } else {
-                            this.orderdata.fee_lines[key].total = this.formatNumber(Math.abs(item.value));
+                            this.orderdata.fee_lines[key].total = Math.abs(item.value).toString();
                         }
                     }
                 });
@@ -1044,6 +1079,7 @@ if (false) {(function () {
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type = this.selectedVariationProduct.type;
             variationProduct.name = this.selectedVariationProduct.name;
+            variationProduct.type = this.selectedVariationProduct.type;
             this.selectedAttribute = {};
             this.attributeDisabled = true;
             this.addToCart(variationProduct);
@@ -1061,6 +1097,7 @@ if (false) {(function () {
             cartObject.attribute = product.attributes;
             cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
             cartObject.editQuantity = false;
+            cartObject.type = product.type;
             cartObject.tax_amount = product.tax_amount;
 
             var index = weLo_.findIndex(self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
@@ -1103,22 +1140,8 @@ if (false) {(function () {
                 this.emptyGatewayDiv = 4 - this.availableGateways.length % 4;
             });
         },
-        truncate(text, length, clamp) {
-            text = text || '';
-            clamp = clamp || '...';
-            length = length || 30;
-
-            if (text.length <= length) return text;
-
-            var tcText = text.slice(0, length - clamp.length);
-            var last = tcText.length - 1;
-
-            while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
-
-            // Fix for case when text dont have any `space`
-            last = last || length - clamp.length;
-            tcText = tcText.slice(0, last);
-            return tcText + clamp;
+        truncateTitle(text, length) {
+            return weLo_.truncate(text, { 'length': length });
         },
         unSanitizeString(str) {
             return str.split('-').map(function capitalize(part) {
@@ -1131,15 +1154,25 @@ if (false) {(function () {
             });
         },
         fetchTaxes() {
-            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/taxes').done(response => {
+            wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/taxes').done(response => {
                 this.availableTax = response;
             });
         },
         handleCategorySelect(selectedOption, id) {
-            this.$router.push({ name: 'Home', query: { 'category': selectedOption.id } });
+            if (selectedOption.id == '-1') {
+                this.$router.push({ name: 'Home' });
+            } else {
+                this.$router.push({ name: 'Home', query: { 'category': selectedOption.id } });
+            }
         },
         handleCategoryRemove(selectedOption, id) {
             this.$router.push({ name: 'Home' });
+            this.selectedCategory = {
+                id: -1,
+                level: 0,
+                name: this.__('All categories', 'wepos'),
+                parent_id: null
+            };
         },
         fetchCategories() {
             wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id').then(response => {
@@ -1162,6 +1195,12 @@ if (false) {(function () {
                     return r;
                 }(response, null);
 
+                var selectedCat = {
+                    id: -1,
+                    level: 0,
+                    name: this.__('All categories', 'wepos'),
+                    parent_id: null
+                };
                 var sorted = tree.reduce(function traverse(level) {
                     return function (r, a) {
                         a.response.level = level;
@@ -1169,6 +1208,9 @@ if (false) {(function () {
                     };
                 }(0), []);
                 this.categories = sorted;
+
+                this.categories.unshift(selectedCat);
+                this.selectedCategory = selectedCat;
 
                 if (this.$route.query.category !== undefined) {
                     this.selectedCategory = weLo_.find(response, { id: parseInt(this.$route.query.category) });
@@ -1203,7 +1245,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1223,12 +1265,12 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal_vue__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__KeyboardControl_vue__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__KeyboardControl_vue__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_v_hotkey__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_v_hotkey___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_v_hotkey__);
 //
@@ -1483,7 +1525,7 @@ if (false) {(function () {
                     this.searchableProduct = this.products.filter(product => {
                         if (product.id.toString().indexOf(this.serachInput) != -1) {
                             return true;
-                        } else if (product.name.toString().indexOf(this.serachInput) != -1) {
+                        } else if (product.name.toString().toLowerCase().indexOf(this.serachInput.toLowerCase()) != -1) {
                             return true;
                         } else if (product.sku.indexOf(this.serachInput) != -1) {
                             return true;
@@ -1524,7 +1566,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1584,7 +1626,7 @@ if (false) {(function () {
         height: {
             type: String,
             required: false,
-            default: '300px'
+            default: 'auto'
         }
     },
 
@@ -1594,11 +1636,11 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(33);
 /* unused harmony namespace reexport */
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
@@ -1645,7 +1687,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1725,12 +1767,69 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal_vue__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__KeyboardControl_vue__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__KeyboardControl_vue__ = __webpack_require__(32);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1843,10 +1942,25 @@ if (false) {(function () {
         return {
             submitDisable: false,
             customers: [],
-            customer: {},
+            customer: {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: ''
+            },
             showCustomerResults: false,
             serachInput: '',
-            showNewCustomerModal: false
+            showNewCustomerModal: false,
+            stateList: [],
+            selectedState: null,
+            selectedCountry: null,
+            isDisabled: false
         };
     },
     computed: {
@@ -1856,6 +1970,14 @@ if (false) {(function () {
                 'shift+f7': this.addNewCustomer,
                 'esc': this.searchClose
             };
+        },
+        getCountryList() {
+            return Object.keys(wepos.countries).map(val => {
+                return {
+                    code: val,
+                    name: wepos.countries[val]
+                };
+            });
         }
     },
     methods: {
@@ -1916,20 +2038,60 @@ if (false) {(function () {
                         last_name: this.customer.last_name,
                         address_1: this.customer.address_1,
                         address_2: this.customer.address_2,
+                        country: this.selectedCountry !== null ? this.selectedCountry.code : '',
+                        state: this.selectedState !== null ? this.selectedState.code : this.customer.state,
+                        postcode: this.customer.postcode,
+                        city: this.customer.city,
                         phone: this.customer.phone,
                         email: this.customer.email
                     }
                 };
+                var $contentWrap = jQuery('.wepos-new-customer-form');
+                $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+                this.isDisabled = true;
+
                 wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/customers', customerData).done(response => {
                     this.serachInput = response.first_name + ' ' + response.last_name;
                     this.$emit('onCustomerSelected', response);
+                    this.isDisabled = true;
+                    $contentWrap.unblock();
                     this.showNewCustomerModal = false;
                     this.customer = {};
                 }).fail(response => {
+                    this.isDisabled = true;
+                    $contentWrap.unblock();
                     alert(response.responseJSON.message);
                 });
             } else {
                 alert(this.__('Please enter an email address for customer', 'wepos'));
+            }
+        },
+        removeCountrySelect(selectedOption, id) {
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.stateList = [];
+            this.customer.country = '';
+            this.customer.state = '';
+        },
+
+        removeStateSelect(selectedOption, id) {
+            this.selectedState = null;
+            this.customer.state = '';
+        },
+        handleCountrySelect(selectedOption, id) {
+            var state = wepos.states[selectedOption.code] !== undefined ? wepos.states[selectedOption.code] : [];
+            var stateKeys = Object.keys(state);
+
+            if (stateKeys.length > 0) {
+                this.stateList = stateKeys.map(val => {
+                    return {
+                        code: val,
+                        name: state[val]
+                    };
+                });
+            } else {
+                this.stateList = state;
+                this.selectedState = null;
             }
         }
     },
@@ -1941,11 +2103,11 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(101);
 //
 //
 //
@@ -2064,7 +2226,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2257,8 +2419,8 @@ const Tokens = {
 });
 
 /***/ }),
-/* 36 */,
-/* 37 */
+/* 37 */,
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2280,10 +2442,10 @@ const Tokens = {
         printReceipt() {
             var self = this;
             var beforePrint = function () {
-                EventBus.$emit('openprinthtml', true);
+                this.eventBus.$emit('openprinthtml', true);
             };
             var afterPrint = function () {
-                EventBus.$emit('closeprinthtml', false);
+                this.eventBus.$emit('closeprinthtml', false);
             };
 
             if (window.matchMedia) {
@@ -2307,7 +2469,7 @@ const Tokens = {
 });
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2415,7 +2577,7 @@ const Tokens = {
 });
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2472,7 +2634,6 @@ const Tokens = {
 });
 
 /***/ }),
-/* 40 */,
 /* 41 */,
 /* 42 */,
 /* 43 */,
@@ -2506,17 +2667,23 @@ const Tokens = {
 /* 71 */,
 /* 72 */,
 /* 73 */,
-/* 74 */
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(75);
+var _App = __webpack_require__(81);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(79);
+var _router = __webpack_require__(85);
 
 var _router2 = _interopRequireDefault(_router);
 
@@ -2537,18 +2704,18 @@ new Vue({
 });
 
 /***/ }),
-/* 75 */
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(27);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(84);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(76)
+  __webpack_require__(82)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2594,14 +2761,14 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 76 */
+/* 82 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 77 */,
-/* 78 */
+/* 83 */,
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2628,7 +2795,7 @@ if (false) {
 }
 
 /***/ }),
-/* 79 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2638,7 +2805,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Home = __webpack_require__(80);
+var _Home = __webpack_require__(86);
 
 var _Home2 = _interopRequireDefault(_Home);
 
@@ -2658,18 +2825,18 @@ exports.default = new Router({
 });
 
 /***/ }),
-/* 80 */
+/* 86 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(28);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(115);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(81)
+  __webpack_require__(87)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2715,23 +2882,23 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 81 */
+/* 87 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 82 */
+/* 88 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(29);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(90);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(83)
+  __webpack_require__(89)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2777,13 +2944,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 83 */
+/* 89 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 84 */
+/* 90 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2805,17 +2972,17 @@ if (false) {
 }
 
 /***/ }),
-/* 85 */
+/* 91 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(30);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(95);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(86)
+  __webpack_require__(92)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2861,19 +3028,19 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 86 */
+/* 92 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 87 */
+/* 93 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 88 */
+/* 94 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2941,7 +3108,7 @@ if (false) {
 }
 
 /***/ }),
-/* 89 */
+/* 95 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3389,17 +3556,17 @@ if (false) {
 }
 
 /***/ }),
-/* 90 */
+/* 96 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(34);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(92);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(98);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(91)
+  __webpack_require__(97)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -3445,13 +3612,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 91 */
+/* 97 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 92 */
+/* 98 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3820,7 +3987,6 @@ var render = function() {
               attrs: {
                 title: _vm.__("Add New Customer", "wepos"),
                 width: "700px",
-                height: "400px",
                 footer: true,
                 header: true
               },
@@ -3835,7 +4001,10 @@ var render = function() {
                 _c("div", { staticClass: "wepos-new-customer-form" }, [
                   _c(
                     "form",
-                    { staticClass: "wepos-form", attrs: { action: "" } },
+                    {
+                      staticClass: "wepos-form",
+                      attrs: { action: "", autocomplete: "off" }
+                    },
                     [
                       _c("div", { staticClass: "form-row col-2" }, [
                         _c("input", {
@@ -3983,6 +4152,196 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "form-row col-2" },
+                        [
+                          _c(
+                            "multiselect",
+                            {
+                              staticClass: "wepos-multiselect customer-country",
+                              staticStyle: {
+                                width: "48.5%",
+                                "margin-right": "20px"
+                              },
+                              attrs: {
+                                options: _vm.getCountryList,
+                                selectLabel: "",
+                                deselectLabel: "",
+                                selectedLabel: "",
+                                placeholder: _vm.__(
+                                  "Select a country",
+                                  "wepos"
+                                ),
+                                "track-by": "code",
+                                label: "name"
+                              },
+                              on: {
+                                select: _vm.handleCountrySelect,
+                                remove: _vm.removeCountrySelect
+                              },
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "singleLabel",
+                                  fn: function(props) {
+                                    return [
+                                      _c("span", {
+                                        domProps: {
+                                          innerHTML: _vm._s(props.option.name)
+                                        }
+                                      })
+                                    ]
+                                  }
+                                },
+                                {
+                                  key: "option",
+                                  fn: function(props) {
+                                    return [
+                                      _c("span", {
+                                        domProps: {
+                                          innerHTML: _vm._s(props.option.name)
+                                        }
+                                      })
+                                    ]
+                                  }
+                                }
+                              ]),
+                              model: {
+                                value: _vm.selectedCountry,
+                                callback: function($$v) {
+                                  _vm.selectedCountry = $$v
+                                },
+                                expression: "selectedCountry"
+                              }
+                            },
+                            [
+                              _c("template", { slot: "noResult" }, [
+                                _c("div", { staticClass: "no-data-found" }, [
+                                  _vm._v(
+                                    _vm._s(_vm.__("No country found", "wepos"))
+                                  )
+                                ])
+                              ])
+                            ],
+                            2
+                          ),
+                          _vm._v(" "),
+                          _vm.stateList.length > 0
+                            ? [
+                                _c(
+                                  "multiselect",
+                                  {
+                                    staticClass:
+                                      "wepos-multiselect customer-state",
+                                    staticStyle: { width: "48.5%" },
+                                    attrs: {
+                                      options: _vm.stateList,
+                                      selectLabel: "",
+                                      deselectLabel: "",
+                                      selectedLabel: "",
+                                      placeholder: _vm.__(
+                                        "Select a state",
+                                        "wepos"
+                                      ),
+                                      "track-by": "code",
+                                      label: "name"
+                                    },
+                                    on: { remove: _vm.removeStateSelect },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "singleLabel",
+                                        fn: function(props) {
+                                          return [
+                                            _c("span", {
+                                              domProps: {
+                                                innerHTML: _vm._s(
+                                                  props.option.name
+                                                )
+                                              }
+                                            })
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        key: "option",
+                                        fn: function(props) {
+                                          return [
+                                            _c("span", {
+                                              domProps: {
+                                                innerHTML: _vm._s(
+                                                  props.option.name
+                                                )
+                                              }
+                                            })
+                                          ]
+                                        }
+                                      }
+                                    ]),
+                                    model: {
+                                      value: _vm.selectedState,
+                                      callback: function($$v) {
+                                        _vm.selectedState = $$v
+                                      },
+                                      expression: "selectedState"
+                                    }
+                                  },
+                                  [
+                                    _c("template", { slot: "noResult" }, [
+                                      _c(
+                                        "div",
+                                        { staticClass: "no-data-found" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.__(
+                                                "No country found",
+                                                "wepos"
+                                              )
+                                            )
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ],
+                                  2
+                                )
+                              ]
+                            : [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.customer.state,
+                                      expression: "customer.state"
+                                    }
+                                  ],
+                                  attrs: {
+                                    type: "text",
+                                    placeholder: _vm.__(
+                                      "States (optional)",
+                                      "wepos"
+                                    )
+                                  },
+                                  domProps: { value: _vm.customer.state },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.customer,
+                                        "state",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
                       _c("div", { staticClass: "form-row col-2" }, [
                         _c("input", {
                           directives: [
@@ -4012,6 +4371,39 @@ var render = function() {
                           }
                         }),
                         _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.customer.postcode,
+                              expression: "customer.postcode"
+                            }
+                          ],
+                          attrs: {
+                            type: "text",
+                            placeholder: _vm.__(
+                              "Zip/Postal Code (optional)",
+                              "wepos"
+                            )
+                          },
+                          domProps: { value: _vm.customer.postcode },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.customer,
+                                "postcode",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-row" }, [
                         _c("input", {
                           directives: [
                             {
@@ -4049,11 +4441,12 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "add-variation-btn",
+                    staticClass: "add-new-customer-btn add-variation-btn",
                     attrs: {
                       disabled:
                         _vm.customer.email == undefined ||
-                        _vm.customer.email == ""
+                        _vm.customer.email == "" ||
+                        _vm.isDisabled
                     },
                     on: {
                       click: function($event) {
@@ -4084,17 +4477,17 @@ if (false) {
 }
 
 /***/ }),
-/* 93 */
+/* 99 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(35);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(104);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(94)
+  __webpack_require__(100)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4140,23 +4533,23 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 94 */
+/* 100 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 95 */
+/* 101 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(36);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(97);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(103);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(96)
+  __webpack_require__(102)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4202,13 +4595,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 96 */
+/* 102 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 97 */
+/* 103 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4274,7 +4667,7 @@ if (false) {
 }
 
 /***/ }),
-/* 98 */
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4378,18 +4771,18 @@ if (false) {
 }
 
 /***/ }),
-/* 99 */,
-/* 100 */
+/* 105 */,
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(38);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(108);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(101)
+  __webpack_require__(107)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4435,13 +4828,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 101 */
+/* 107 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 102 */
+/* 108 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4483,17 +4876,17 @@ if (false) {
 }
 
 /***/ }),
-/* 103 */
+/* 109 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(39);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(111);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(104)
+  __webpack_require__(110)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4539,13 +4932,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 104 */
+/* 110 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 105 */
+/* 111 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4824,17 +5217,17 @@ if (false) {
 }
 
 /***/ }),
-/* 106 */
+/* 112 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(40);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(108);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(114);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(107)
+  __webpack_require__(113)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4880,13 +5273,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 107 */
+/* 113 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 108 */
+/* 114 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4997,7 +5390,7 @@ if (false) {
 }
 
 /***/ }),
-/* 109 */
+/* 115 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5045,7 +5438,8 @@ var render = function() {
                     options: _vm.categories,
                     selectLabel: "",
                     deselectLabel: "",
-                    selectedLabel: ""
+                    selectedLabel: "",
+                    placeholder: _vm.__("Select a category", "wepos")
                   },
                   on: {
                     select: _vm.handleCategorySelect,
@@ -5231,21 +5625,77 @@ var render = function() {
                                             _vm._v(
                                               "\n                                " +
                                                 _vm._s(
-                                                  _vm.truncate(
+                                                  _vm.truncateTitle(
                                                     product.name,
-                                                    20,
-                                                    "..."
+                                                    20
                                                   )
                                                 ) +
-                                                "\n                            "
+                                                "\n\n                            "
                                             )
                                           ])
                                         : _c("div", { staticClass: "title" }, [
-                                            _vm._v(
-                                              "\n                                " +
-                                                _vm._s(product.name) +
-                                                "\n                            "
-                                            )
+                                            _c(
+                                              "div",
+                                              { staticClass: "product-name" },
+                                              [_vm._v(_vm._s(product.name))]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("ul", { staticClass: "meta" }, [
+                                              product.sku
+                                                ? _c("li", [
+                                                    _c(
+                                                      "span",
+                                                      { staticClass: "label" },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            _vm.__(
+                                                              "Sku :",
+                                                              "wepos"
+                                                            )
+                                                          )
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "span",
+                                                      { staticClass: "value" },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(product.sku)
+                                                        )
+                                                      ]
+                                                    )
+                                                  ])
+                                                : _vm._e(),
+                                              _vm._v(" "),
+                                              _c("li", [
+                                                _c(
+                                                  "span",
+                                                  { staticClass: "label" },
+                                                  [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.__(
+                                                          "Price :",
+                                                          "wepos"
+                                                        )
+                                                      )
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c("span", {
+                                                  staticClass: "value",
+                                                  domProps: {
+                                                    innerHTML: _vm._s(
+                                                      product.price_html
+                                                    )
+                                                  }
+                                                })
+                                              ])
+                                            ])
                                           ]),
                                       _vm._v(" "),
                                       _c("span", {
@@ -5305,10 +5755,9 @@ var render = function() {
                                                   _vm._v(
                                                     "\n                                    " +
                                                       _vm._s(
-                                                        _vm.truncate(
+                                                        _vm.truncateTitle(
                                                           product.name,
-                                                          20,
-                                                          "..."
+                                                          20
                                                         )
                                                       ) +
                                                       "\n                                "
@@ -5319,10 +5768,51 @@ var render = function() {
                                                 "div",
                                                 { staticClass: "title" },
                                                 [
-                                                  _vm._v(
-                                                    "\n                                    " +
-                                                      _vm._s(product.name) +
-                                                      "\n                                "
+                                                  _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "product-name"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(product.name)
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "ul",
+                                                    { staticClass: "meta" },
+                                                    [
+                                                      _c("li", [
+                                                        _c(
+                                                          "span",
+                                                          {
+                                                            staticClass: "label"
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              _vm._s(
+                                                                _vm.__(
+                                                                  "Price :",
+                                                                  "wepos"
+                                                                )
+                                                              )
+                                                            )
+                                                          ]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c("span", {
+                                                          staticClass: "value",
+                                                          domProps: {
+                                                            innerHTML: _vm._s(
+                                                              product.price_html
+                                                            )
+                                                          }
+                                                        })
+                                                      ])
+                                                    ]
                                                   )
                                                 ]
                                               ),
@@ -5542,461 +6032,341 @@ var render = function() {
             }),
             _vm._v(" "),
             _c("div", { staticClass: "action" }, [
-              _c("div", { staticClass: "more-options" }, [
-                _c("span", { staticClass: "dropdown right-align" }, [
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _c("label", [
-                    _c("input", { attrs: { type: "checkbox" } }),
-                    _vm._v(" "),
-                    _c("ul", [
-                      _c("li", [
-                        _c(
-                          "a",
-                          {
-                            attrs: { href: "#" },
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                _vm.emptyCart($event)
-                              }
+              _c(
+                "div",
+                { staticClass: "more-options" },
+                [
+                  _c(
+                    "v-popover",
+                    {
+                      attrs: {
+                        offset: "5",
+                        "popover-base-class":
+                          "wepos-dropdown-menu tooltip popover",
+                        placement: "bottom-end",
+                        open: _vm.showQucikMenu
+                      }
+                    },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "wepos-button",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.openQucikMenu()
                             }
-                          },
-                          [_vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))]
-                        )
-                      ]),
+                          }
+                        },
+                        [_c("span", { staticClass: "more-icon flaticon-more" })]
+                      ),
                       _vm._v(" "),
-                      _c("li", [
-                        _c(
-                          "a",
-                          {
-                            attrs: { href: "#" },
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                _vm.openHelp($event)
-                              }
-                            }
-                          },
-                          [_vm._v(_vm._s(_vm.__("Help", "wepos")))]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "divider" }),
-                      _vm._v(" "),
-                      _c("li", [
-                        _c("a", { attrs: { href: _vm.getLogoutUrl() } }, [
-                          _vm._v(_vm._s(_vm.__("Logout", "wepos")))
+                      _c("template", { slot: "popover" }, [
+                        _c("ul", [
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.emptyCart($event)
+                                  }
+                                }
+                              },
+                              [
+                                _c("span", {
+                                  staticClass:
+                                    "flaticon-empty-cart quick-menu-icon"
+                                }),
+                                _vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.openHelp($event)
+                                  }
+                                }
+                              },
+                              [
+                                _c("span", {
+                                  staticClass:
+                                    "flaticon-information quick-menu-icon"
+                                }),
+                                _vm._v(_vm._s(_vm.__("Help", "wepos")))
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", { staticClass: "divider" }),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c("a", { attrs: { href: _vm.getLogoutUrl() } }, [
+                              _c("span", {
+                                staticClass: "flaticon-logout quick-menu-icon"
+                              }),
+                              _vm._v(_vm._s(_vm.__("Logout", "wepos")))
+                            ])
+                          ])
                         ])
                       ])
-                    ])
-                  ])
-                ])
-              ])
+                    ],
+                    2
+                  )
+                ],
+                1
+              )
             ])
           ],
           1
         ),
         _vm._v(" "),
-        _c("div", { staticClass: "cart-panel" }, [
-          _c("div", { staticClass: "cart-content" }, [
-            _c("table", { staticClass: "cart-table" }, [
-              _c("thead", [
-                _c("tr", [
-                  _c("th", { attrs: { width: "65%" } }, [
-                    _vm._v(_vm._s(_vm.__("Product", "wepos")))
+        _vm.settings.wepos_general
+          ? _c("div", { staticClass: "cart-panel" }, [
+              _c("div", { staticClass: "cart-content" }, [
+                _c("table", { staticClass: "cart-table" }, [
+                  _c("thead", [
+                    _c("tr", [
+                      _c("th", { attrs: { width: "65%" } }, [
+                        _vm._v(_vm._s(_vm.__("Product", "wepos")))
+                      ]),
+                      _vm._v(" "),
+                      _c("th", { attrs: { width: "15%" } }, [
+                        _vm._v(_vm._s(_vm.__("Qty", "wepos")))
+                      ]),
+                      _vm._v(" "),
+                      _c("th", { attrs: { width: "30%" } }, [
+                        _vm._v(_vm._s(_vm.__("Price", "wepos")))
+                      ]),
+                      _vm._v(" "),
+                      _c("th"),
+                      _vm._v(" "),
+                      _c("th")
+                    ])
                   ]),
                   _vm._v(" "),
-                  _c("th", { attrs: { width: "15%" } }, [
-                    _vm._v(_vm._s(_vm.__("Qty", "wepos")))
-                  ]),
-                  _vm._v(" "),
-                  _c("th", { attrs: { width: "30%" } }, [
-                    _vm._v(_vm._s(_vm.__("Price", "wepos")))
-                  ]),
-                  _vm._v(" "),
-                  _c("th"),
-                  _vm._v(" "),
-                  _c("th")
-                ])
-              ]),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                [
-                  _vm.orderdata.line_items.length > 0
-                    ? [
-                        _vm._l(_vm.orderdata.line_items, function(item, key) {
-                          return [
-                            _c("tr", [
-                              _c(
-                                "td",
-                                {
-                                  staticClass: "name",
-                                  on: {
-                                    click: function($event) {
-                                      _vm.toggleEditQuantity(item, key)
-                                    }
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                        " +
-                                      _vm._s(item.name) +
-                                      "\n                                        "
+                  _c(
+                    "tbody",
+                    [
+                      _vm.orderdata.line_items.length > 0
+                        ? [
+                            _vm._l(_vm.orderdata.line_items, function(
+                              item,
+                              key
+                            ) {
+                              return [
+                                _c("tr", [
+                                  _c(
+                                    "td",
+                                    {
+                                      staticClass: "name",
+                                      on: {
+                                        click: function($event) {
+                                          _vm.toggleEditQuantity(item, key)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                        " +
+                                          _vm._s(item.name) +
+                                          "\n                                        "
+                                      ),
+                                      item.attribute.length > 0 &&
+                                      item.type === "variable"
+                                        ? _c(
+                                            "div",
+                                            { staticClass: "attribute" },
+                                            [
+                                              _c(
+                                                "ul",
+                                                _vm._l(item.attribute, function(
+                                                  attribute_item
+                                                ) {
+                                                  return _c("li", [
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        staticClass: "attr_name"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            attribute_item.name
+                                                          )
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(": "),
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        staticClass:
+                                                          "attr_value"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            attribute_item.option
+                                                          )
+                                                        )
+                                                      ]
+                                                    )
+                                                  ])
+                                                })
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e()
+                                    ]
                                   ),
-                                  item.attribute.length > 0
-                                    ? _c("div", { staticClass: "attribute" }, [
-                                        _c(
-                                          "ul",
-                                          _vm._l(item.attribute, function(
-                                            attribute_item
-                                          ) {
-                                            return _c("li", [
-                                              _c(
-                                                "span",
-                                                { staticClass: "attr_name" },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(attribute_item.name)
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(": "),
-                                              _c(
-                                                "span",
-                                                { staticClass: "attr_value" },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(
-                                                      attribute_item.option
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    {
+                                      staticClass: "qty",
+                                      on: {
+                                        click: function($event) {
+                                          _vm.toggleEditQuantity(item, key)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v(_vm._s(item.quantity))]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    {
+                                      staticClass: "price",
+                                      on: {
+                                        click: function($event) {
+                                          _vm.toggleEditQuantity(item, key)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      item.on_sale
+                                        ? [
+                                            _c(
+                                              "span",
+                                              { staticClass: "sale-price" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.formatPrice(
+                                                      item.quantity *
+                                                        item.sale_price
                                                     )
                                                   )
-                                                ]
-                                              )
-                                            ])
-                                          })
-                                        )
-                                      ])
-                                    : _vm._e()
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "td",
-                                {
-                                  staticClass: "qty",
-                                  on: {
-                                    click: function($event) {
-                                      _vm.toggleEditQuantity(item, key)
-                                    }
-                                  }
-                                },
-                                [_vm._v(_vm._s(item.quantity))]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "td",
-                                {
-                                  staticClass: "price",
-                                  on: {
-                                    click: function($event) {
-                                      _vm.toggleEditQuantity(item, key)
-                                    }
-                                  }
-                                },
-                                [
-                                  item.on_sale
-                                    ? [
-                                        _c(
-                                          "span",
-                                          { staticClass: "sale-price" },
-                                          [
-                                            _vm._v(
-                                              _vm._s(
-                                                _vm.formatPrice(
-                                                  item.quantity *
-                                                    item.sale_price
                                                 )
-                                              )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "span",
+                                              { staticClass: "regular-price" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.formatPrice(
+                                                      item.quantity *
+                                                        item.regular_price
+                                                    )
+                                                  )
+                                                )
+                                              ]
                                             )
                                           ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "span",
-                                          { staticClass: "regular-price" },
-                                          [
-                                            _vm._v(
-                                              _vm._s(
-                                                _vm.formatPrice(
-                                                  item.quantity *
-                                                    item.regular_price
+                                        : [
+                                            _c(
+                                              "span",
+                                              { staticClass: "sale-price" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.formatPrice(
+                                                      item.quantity *
+                                                        item.regular_price
+                                                    )
+                                                  )
                                                 )
-                                              )
+                                              ]
                                             )
                                           ]
-                                        )
-                                      ]
-                                    : [
-                                        _c(
-                                          "span",
-                                          { staticClass: "sale-price" },
-                                          [
+                                    ],
+                                    2
+                                  ),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "action" }, [
+                                    _c("span", {
+                                      staticClass: "flaticon-right-arrow",
+                                      class: { open: item.editQuantity },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          _vm.toggleEditQuantity(item, key)
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "remove" }, [
+                                    _c("span", {
+                                      staticClass: "flaticon-cancel-music",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          _vm.removeItem(key)
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                item.editQuantity
+                                  ? _c(
+                                      "tr",
+                                      { staticClass: "update-quantity-wrap" },
+                                      [
+                                        _c("td", { attrs: { colspan: "5" } }, [
+                                          _c("span", { staticClass: "qty" }, [
                                             _vm._v(
                                               _vm._s(
-                                                _vm.formatPrice(
-                                                  item.quantity *
-                                                    item.regular_price
-                                                )
+                                                _vm.__("Quantity", "wepos")
                                               )
                                             )
-                                          ]
-                                        )
-                                      ]
-                                ],
-                                2
-                              ),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "action" }, [
-                                _c("span", {
-                                  staticClass: "flaticon-right-arrow",
-                                  class: { open: item.editQuantity },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      _vm.toggleEditQuantity(item, key)
-                                    }
-                                  }
-                                })
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "remove" }, [
-                                _c("span", {
-                                  staticClass: "flaticon-cancel-music",
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      _vm.removeItem(key)
-                                    }
-                                  }
-                                })
-                              ])
-                            ]),
-                            _vm._v(" "),
-                            item.editQuantity
-                              ? _c(
-                                  "tr",
-                                  { staticClass: "update-quantity-wrap" },
-                                  [
-                                    _c("td", { attrs: { colspan: "5" } }, [
-                                      _c("span", { staticClass: "qty" }, [
-                                        _vm._v(
-                                          _vm._s(_vm.__("Quantity", "wepos"))
-                                        )
-                                      ]),
-                                      _vm._v(" "),
-                                      _c(
-                                        "span",
-                                        { staticClass: "qty-number" },
-                                        [
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: item.quantity,
-                                                expression: "item.quantity"
-                                              }
-                                            ],
-                                            attrs: {
-                                              type: "number",
-                                              min: "1",
-                                              step: "1"
-                                            },
-                                            domProps: { value: item.quantity },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  item,
-                                                  "quantity",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "span",
-                                        { staticClass: "qty-action" },
-                                        [
-                                          _c(
-                                            "a",
-                                            {
-                                              staticClass: "add",
-                                              attrs: { href: "#" },
-                                              on: {
-                                                click: function($event) {
-                                                  $event.preventDefault()
-                                                  _vm.addQuantity(item)
-                                                }
-                                              }
-                                            },
-                                            [_vm._v("+")]
-                                          ),
+                                          ]),
                                           _vm._v(" "),
                                           _c(
-                                            "a",
-                                            {
-                                              staticClass: "minus",
-                                              attrs: { href: "#" },
-                                              on: {
-                                                click: function($event) {
-                                                  $event.preventDefault()
-                                                  _vm.removeQuantity(item)
-                                                }
-                                              }
-                                            },
-                                            [_vm._v("-")]
-                                          )
-                                        ]
-                                      )
-                                    ])
-                                  ]
-                                )
-                              : _vm._e()
-                          ]
-                        })
-                      ]
-                    : [
-                        _c("tr", { staticClass: "no-item" }, [
-                          _c("td", { attrs: { colspan: "5" } }, [
-                            _c("img", {
-                              attrs: {
-                                src:
-                                  _vm.wepos.assets_url +
-                                  "/images/empty-cart.png",
-                                alt: "",
-                                width: "120px"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("p", [
-                              _vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))
-                            ])
-                          ])
-                        ])
-                      ]
-                ],
-                2
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "cart-calculation" }, [
-            _c("form", { attrs: { autocomplete: "off" } }, [
-              _c("table", { staticClass: "cart-total-table" }, [
-                _c(
-                  "tbody",
-                  [
-                    _c("tr", [
-                      _c("td", { staticClass: "label" }, [
-                        _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "price" }, [
-                        _vm._v(_vm._s(_vm.formatPrice(_vm.getSubtotal)))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "action" })
-                    ]),
-                    _vm._v(" "),
-                    _vm.orderdata.fee_lines.length > 0
-                      ? _vm._l(_vm.orderdata.fee_lines, function(fee, key) {
-                          return _c(
-                            "tr",
-                            { staticClass: "cart-meta-data" },
-                            [
-                              fee.type == "discount"
-                                ? [
-                                    _c("td", { staticClass: "label" }, [
-                                      _vm._v(
-                                        _vm._s(_vm.__("Discount", "wepos")) +
-                                          " "
-                                      ),
-                                      _c("span", { staticClass: "name" }, [
-                                        _vm._v(
-                                          _vm._s(
-                                            fee.discount_type == "percent"
-                                              ? fee.value + "%"
-                                              : _vm.formatPrice(fee.value)
-                                          )
-                                        )
-                                      ])
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("td", { staticClass: "price" }, [
-                                      _vm._v(
-                                        "-" +
-                                          _vm._s(
-                                            _vm.formatPrice(Math.abs(fee.total))
-                                          )
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("td", { staticClass: "action" }, [
-                                      _c("span", {
-                                        staticClass: "flaticon-cancel-music",
-                                        on: {
-                                          click: function($event) {
-                                            _vm.removeFeeLine(key)
-                                          }
-                                        }
-                                      })
-                                    ])
-                                  ]
-                                : [
-                                    fee.isEdit
-                                      ? [
-                                          _c(
-                                            "td",
-                                            {
-                                              staticClass: "label",
-                                              attrs: { colspan: "2" }
-                                            },
+                                            "span",
+                                            { staticClass: "qty-number" },
                                             [
                                               _c("input", {
                                                 directives: [
                                                   {
                                                     name: "model",
                                                     rawName: "v-model",
-                                                    value:
-                                                      _vm.orderdata.fee_lines[
-                                                        key
-                                                      ].name,
-                                                    expression:
-                                                      "orderdata.fee_lines[key].name"
+                                                    value: item.quantity,
+                                                    expression: "item.quantity"
                                                   }
                                                 ],
-                                                ref: "fee_name",
-                                                refInFor: true,
-                                                staticClass: "fee-name",
                                                 attrs: {
-                                                  type: "text",
-                                                  placeholder: _vm.__(
-                                                    "Fee Name",
-                                                    "wepos"
-                                                  )
+                                                  type: "number",
+                                                  min: "1",
+                                                  step: "1"
                                                 },
                                                 domProps: {
-                                                  value:
-                                                    _vm.orderdata.fee_lines[key]
-                                                      .name
+                                                  value: item.quantity
                                                 },
                                                 on: {
                                                   input: function($event) {
@@ -6006,445 +6376,729 @@ var render = function() {
                                                       return
                                                     }
                                                     _vm.$set(
-                                                      _vm.orderdata.fee_lines[
-                                                        key
-                                                      ],
-                                                      "name",
+                                                      item,
+                                                      "quantity",
                                                       $event.target.value
                                                     )
                                                   }
                                                 }
-                                              }),
-                                              _vm._v(" "),
-                                              _vm.settings.wepos_general
-                                                .enable_fee_tax == "yes"
-                                                ? [
-                                                    _c(
-                                                      "label",
-                                                      {
-                                                        attrs: {
-                                                          for: "fee-tax-status"
-                                                        }
-                                                      },
-                                                      [
-                                                        _c("input", {
-                                                          directives: [
-                                                            {
-                                                              name: "model",
-                                                              rawName:
-                                                                "v-model",
-                                                              value:
-                                                                _vm.orderdata
-                                                                  .fee_lines[
-                                                                  key
-                                                                ].tax_status,
-                                                              expression:
-                                                                "orderdata.fee_lines[key].tax_status"
-                                                            }
-                                                          ],
-                                                          staticClass:
-                                                            "fee-tax-status",
-                                                          attrs: {
-                                                            type: "checkbox",
-                                                            id:
-                                                              "fee-tax-status",
-                                                            "true-value":
-                                                              "taxable",
-                                                            "false-value":
-                                                              "none"
-                                                          },
-                                                          domProps: {
-                                                            checked: Array.isArray(
-                                                              _vm.orderdata
-                                                                .fee_lines[key]
-                                                                .tax_status
-                                                            )
-                                                              ? _vm._i(
-                                                                  _vm.orderdata
-                                                                    .fee_lines[
-                                                                    key
-                                                                  ].tax_status,
-                                                                  null
-                                                                ) > -1
-                                                              : _vm._q(
-                                                                  _vm.orderdata
-                                                                    .fee_lines[
-                                                                    key
-                                                                  ].tax_status,
-                                                                  "taxable"
-                                                                )
-                                                          },
-                                                          on: {
-                                                            change: function(
-                                                              $event
-                                                            ) {
-                                                              var $$a =
-                                                                  _vm.orderdata
-                                                                    .fee_lines[
-                                                                    key
-                                                                  ].tax_status,
-                                                                $$el =
-                                                                  $event.target,
-                                                                $$c = $$el.checked
-                                                                  ? "taxable"
-                                                                  : "none"
-                                                              if (
-                                                                Array.isArray(
-                                                                  $$a
-                                                                )
-                                                              ) {
-                                                                var $$v = null,
-                                                                  $$i = _vm._i(
-                                                                    $$a,
-                                                                    $$v
-                                                                  )
-                                                                if (
-                                                                  $$el.checked
-                                                                ) {
-                                                                  $$i < 0 &&
-                                                                    (_vm.orderdata.fee_lines[
-                                                                      key
-                                                                    ].tax_status = $$a.concat(
-                                                                      [$$v]
-                                                                    ))
-                                                                } else {
-                                                                  $$i > -1 &&
-                                                                    (_vm.orderdata.fee_lines[
-                                                                      key
-                                                                    ].tax_status = $$a
-                                                                      .slice(
-                                                                        0,
-                                                                        $$i
-                                                                      )
-                                                                      .concat(
-                                                                        $$a.slice(
-                                                                          $$i +
-                                                                            1
-                                                                        )
-                                                                      ))
-                                                                }
-                                                              } else {
-                                                                _vm.$set(
-                                                                  _vm.orderdata
-                                                                    .fee_lines[
-                                                                    key
-                                                                  ],
-                                                                  "tax_status",
-                                                                  $$c
-                                                                )
-                                                              }
-                                                            }
-                                                          }
-                                                        }),
-                                                        _vm._v(" Taxable")
-                                                      ]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _vm.orderdata.fee_lines[key]
-                                                      .tax_status == "taxable"
-                                                      ? _c(
-                                                          "select",
-                                                          {
-                                                            directives: [
-                                                              {
-                                                                name: "model",
-                                                                rawName:
-                                                                  "v-model",
-                                                                value:
-                                                                  _vm.orderdata
-                                                                    .fee_lines[
-                                                                    key
-                                                                  ].tax_class,
-                                                                expression:
-                                                                  "orderdata.fee_lines[key].tax_class"
-                                                              }
-                                                            ],
-                                                            staticClass:
-                                                              "fee-tax-class",
-                                                            on: {
-                                                              change: function(
-                                                                $event
-                                                              ) {
-                                                                var $$selectedVal = Array.prototype.filter
-                                                                  .call(
-                                                                    $event
-                                                                      .target
-                                                                      .options,
-                                                                    function(
-                                                                      o
-                                                                    ) {
-                                                                      return o.selected
-                                                                    }
-                                                                  )
-                                                                  .map(function(
-                                                                    o
-                                                                  ) {
-                                                                    var val =
-                                                                      "_value" in
-                                                                      o
-                                                                        ? o._value
-                                                                        : o.value
-                                                                    return val
-                                                                  })
-                                                                _vm.$set(
-                                                                  _vm.orderdata
-                                                                    .fee_lines[
-                                                                    key
-                                                                  ],
-                                                                  "tax_class",
-                                                                  $event.target
-                                                                    .multiple
-                                                                    ? $$selectedVal
-                                                                    : $$selectedVal[0]
-                                                                )
-                                                              }
-                                                            }
-                                                          },
-                                                          _vm._l(
-                                                            _vm.availableTax,
-                                                            function(feeTax) {
-                                                              return _c(
-                                                                "option",
-                                                                {
-                                                                  domProps: {
-                                                                    value:
-                                                                      feeTax.class ==
-                                                                      "standard"
-                                                                        ? ""
-                                                                        : feeTax.class
-                                                                  }
-                                                                },
-                                                                [
-                                                                  _vm._v(
-                                                                    _vm._s(
-                                                                      _vm.unSanitizeString(
-                                                                        feeTax.class
-                                                                      )
-                                                                    ) +
-                                                                      " - " +
-                                                                      _vm._s(
-                                                                        feeTax.percentage_rate
-                                                                      )
-                                                                  )
-                                                                ]
-                                                              )
-                                                            }
-                                                          )
-                                                        )
-                                                      : _vm._e()
-                                                  ]
-                                                : _vm._e(),
-                                              _vm._v(" "),
+                                              })
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "span",
+                                            { staticClass: "qty-action" },
+                                            [
                                               _c(
-                                                "button",
+                                                "a",
                                                 {
-                                                  attrs: {
-                                                    disabled:
-                                                      _vm.orderdata.fee_lines[
-                                                        key
-                                                      ].name == ""
-                                                  },
+                                                  staticClass: "add",
+                                                  attrs: { href: "#" },
                                                   on: {
                                                     click: function($event) {
-                                                      _vm.saveFee(key)
+                                                      $event.preventDefault()
+                                                      _vm.addQuantity(item)
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v("+")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "a",
+                                                {
+                                                  staticClass: "minus",
+                                                  attrs: { href: "#" },
+                                                  on: {
+                                                    click: function($event) {
+                                                      $event.preventDefault()
+                                                      _vm.removeQuantity(item)
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v("-")]
+                                              )
+                                            ]
+                                          )
+                                        ])
+                                      ]
+                                    )
+                                  : _vm._e()
+                              ]
+                            })
+                          ]
+                        : [
+                            _c("tr", { staticClass: "no-item" }, [
+                              _c("td", { attrs: { colspan: "5" } }, [
+                                _c("img", {
+                                  attrs: {
+                                    src:
+                                      _vm.wepos.assets_url +
+                                      "/images/empty-cart.png",
+                                    alt: "",
+                                    width: "120px"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("p", [
+                                  _vm._v(_vm._s(_vm.__("Empty Cart", "wepos")))
+                                ])
+                              ])
+                            ])
+                          ]
+                    ],
+                    2
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "cart-calculation" }, [
+                _c("form", { attrs: { autocomplete: "off" } }, [
+                  _c("table", { staticClass: "cart-total-table" }, [
+                    _c(
+                      "tbody",
+                      [
+                        _c("tr", [
+                          _c("td", { staticClass: "label" }, [
+                            _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "price" }, [
+                            _vm._v(_vm._s(_vm.formatPrice(_vm.getSubtotal)))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "action" })
+                        ]),
+                        _vm._v(" "),
+                        _vm.orderdata.fee_lines.length > 0
+                          ? _vm._l(_vm.orderdata.fee_lines, function(fee, key) {
+                              return _c(
+                                "tr",
+                                { staticClass: "cart-meta-data" },
+                                [
+                                  fee.type == "discount"
+                                    ? [
+                                        _c("td", { staticClass: "label" }, [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.__("Discount", "wepos")
+                                            ) + " "
+                                          ),
+                                          _c("span", { staticClass: "name" }, [
+                                            _vm._v(
+                                              _vm._s(
+                                                fee.discount_type == "percent"
+                                                  ? fee.value + "%"
+                                                  : _vm.formatPrice(fee.value)
+                                              )
+                                            )
+                                          ])
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td", { staticClass: "price" }, [
+                                          _vm._v(
+                                            "−" +
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  Math.abs(fee.total)
+                                                )
+                                              )
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td", { staticClass: "action" }, [
+                                          _c("span", {
+                                            staticClass:
+                                              "flaticon-cancel-music",
+                                            on: {
+                                              click: function($event) {
+                                                _vm.removeFeeLine(key)
+                                              }
+                                            }
+                                          })
+                                        ])
+                                      ]
+                                    : [
+                                        fee.isEdit
+                                          ? [
+                                              _c(
+                                                "td",
+                                                {
+                                                  staticClass: "label",
+                                                  attrs: { colspan: "2" }
+                                                },
+                                                [
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.orderdata
+                                                            .fee_lines[key]
+                                                            .name,
+                                                        expression:
+                                                          "orderdata.fee_lines[key].name"
+                                                      }
+                                                    ],
+                                                    ref: "fee_name",
+                                                    refInFor: true,
+                                                    staticClass: "fee-name",
+                                                    attrs: {
+                                                      type: "text",
+                                                      placeholder: _vm.__(
+                                                        "Fee Name",
+                                                        "wepos"
+                                                      )
+                                                    },
+                                                    domProps: {
+                                                      value:
+                                                        _vm.orderdata.fee_lines[
+                                                          key
+                                                        ].name
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.orderdata
+                                                            .fee_lines[key],
+                                                          "name",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  }),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.orderdata
+                                                            .fee_lines[key]
+                                                            .total,
+                                                        expression:
+                                                          "orderdata.fee_lines[key].total"
+                                                      }
+                                                    ],
+                                                    ref: "fee_total",
+                                                    refInFor: true,
+                                                    staticClass: "fee-amount",
+                                                    attrs: {
+                                                      type: "number",
+                                                      min: "0",
+                                                      step: "any",
+                                                      placeholder: _vm.__(
+                                                        "Total",
+                                                        "wepos"
+                                                      )
+                                                    },
+                                                    domProps: {
+                                                      value:
+                                                        _vm.orderdata.fee_lines[
+                                                          key
+                                                        ].total
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.orderdata
+                                                            .fee_lines[key],
+                                                          "total",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  }),
+                                                  _vm._v(" "),
+                                                  _vm.settings.wepos_general
+                                                    .enable_fee_tax == "yes"
+                                                    ? [
+                                                        _c(
+                                                          "label",
+                                                          {
+                                                            attrs: {
+                                                              for:
+                                                                "fee-tax-status"
+                                                            }
+                                                          },
+                                                          [
+                                                            _c("input", {
+                                                              directives: [
+                                                                {
+                                                                  name: "model",
+                                                                  rawName:
+                                                                    "v-model",
+                                                                  value:
+                                                                    _vm
+                                                                      .orderdata
+                                                                      .fee_lines[
+                                                                      key
+                                                                    ]
+                                                                      .tax_status,
+                                                                  expression:
+                                                                    "orderdata.fee_lines[key].tax_status"
+                                                                }
+                                                              ],
+                                                              staticClass:
+                                                                "fee-tax-status",
+                                                              attrs: {
+                                                                type:
+                                                                  "checkbox",
+                                                                id:
+                                                                  "fee-tax-status",
+                                                                "true-value":
+                                                                  "taxable",
+                                                                "false-value":
+                                                                  "none"
+                                                              },
+                                                              domProps: {
+                                                                checked: Array.isArray(
+                                                                  _vm.orderdata
+                                                                    .fee_lines[
+                                                                    key
+                                                                  ].tax_status
+                                                                )
+                                                                  ? _vm._i(
+                                                                      _vm
+                                                                        .orderdata
+                                                                        .fee_lines[
+                                                                        key
+                                                                      ]
+                                                                        .tax_status,
+                                                                      null
+                                                                    ) > -1
+                                                                  : _vm._q(
+                                                                      _vm
+                                                                        .orderdata
+                                                                        .fee_lines[
+                                                                        key
+                                                                      ]
+                                                                        .tax_status,
+                                                                      "taxable"
+                                                                    )
+                                                              },
+                                                              on: {
+                                                                change: function(
+                                                                  $event
+                                                                ) {
+                                                                  var $$a =
+                                                                      _vm
+                                                                        .orderdata
+                                                                        .fee_lines[
+                                                                        key
+                                                                      ]
+                                                                        .tax_status,
+                                                                    $$el =
+                                                                      $event.target,
+                                                                    $$c = $$el.checked
+                                                                      ? "taxable"
+                                                                      : "none"
+                                                                  if (
+                                                                    Array.isArray(
+                                                                      $$a
+                                                                    )
+                                                                  ) {
+                                                                    var $$v = null,
+                                                                      $$i = _vm._i(
+                                                                        $$a,
+                                                                        $$v
+                                                                      )
+                                                                    if (
+                                                                      $$el.checked
+                                                                    ) {
+                                                                      $$i < 0 &&
+                                                                        (_vm.orderdata.fee_lines[
+                                                                          key
+                                                                        ].tax_status = $$a.concat(
+                                                                          [$$v]
+                                                                        ))
+                                                                    } else {
+                                                                      $$i >
+                                                                        -1 &&
+                                                                        (_vm.orderdata.fee_lines[
+                                                                          key
+                                                                        ].tax_status = $$a
+                                                                          .slice(
+                                                                            0,
+                                                                            $$i
+                                                                          )
+                                                                          .concat(
+                                                                            $$a.slice(
+                                                                              $$i +
+                                                                                1
+                                                                            )
+                                                                          ))
+                                                                    }
+                                                                  } else {
+                                                                    _vm.$set(
+                                                                      _vm
+                                                                        .orderdata
+                                                                        .fee_lines[
+                                                                        key
+                                                                      ],
+                                                                      "tax_status",
+                                                                      $$c
+                                                                    )
+                                                                  }
+                                                                }
+                                                              }
+                                                            }),
+                                                            _vm._v(" Taxable")
+                                                          ]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _vm.orderdata.fee_lines[
+                                                          key
+                                                        ].tax_status ==
+                                                        "taxable"
+                                                          ? _c(
+                                                              "select",
+                                                              {
+                                                                directives: [
+                                                                  {
+                                                                    name:
+                                                                      "model",
+                                                                    rawName:
+                                                                      "v-model",
+                                                                    value:
+                                                                      _vm
+                                                                        .orderdata
+                                                                        .fee_lines[
+                                                                        key
+                                                                      ]
+                                                                        .tax_class,
+                                                                    expression:
+                                                                      "orderdata.fee_lines[key].tax_class"
+                                                                  }
+                                                                ],
+                                                                staticClass:
+                                                                  "fee-tax-class",
+                                                                on: {
+                                                                  change: function(
+                                                                    $event
+                                                                  ) {
+                                                                    var $$selectedVal = Array.prototype.filter
+                                                                      .call(
+                                                                        $event
+                                                                          .target
+                                                                          .options,
+                                                                        function(
+                                                                          o
+                                                                        ) {
+                                                                          return o.selected
+                                                                        }
+                                                                      )
+                                                                      .map(
+                                                                        function(
+                                                                          o
+                                                                        ) {
+                                                                          var val =
+                                                                            "_value" in
+                                                                            o
+                                                                              ? o._value
+                                                                              : o.value
+                                                                          return val
+                                                                        }
+                                                                      )
+                                                                    _vm.$set(
+                                                                      _vm
+                                                                        .orderdata
+                                                                        .fee_lines[
+                                                                        key
+                                                                      ],
+                                                                      "tax_class",
+                                                                      $event
+                                                                        .target
+                                                                        .multiple
+                                                                        ? $$selectedVal
+                                                                        : $$selectedVal[0]
+                                                                    )
+                                                                  }
+                                                                }
+                                                              },
+                                                              _vm._l(
+                                                                _vm.availableTax,
+                                                                function(
+                                                                  feeTax
+                                                                ) {
+                                                                  return _c(
+                                                                    "option",
+                                                                    {
+                                                                      domProps: {
+                                                                        value:
+                                                                          feeTax.class ==
+                                                                          "standard"
+                                                                            ? ""
+                                                                            : feeTax.class
+                                                                      }
+                                                                    },
+                                                                    [
+                                                                      _vm._v(
+                                                                        _vm._s(
+                                                                          _vm.unSanitizeString(
+                                                                            feeTax.class
+                                                                          )
+                                                                        ) +
+                                                                          " - " +
+                                                                          _vm._s(
+                                                                            feeTax.percentage_rate
+                                                                          )
+                                                                      )
+                                                                    ]
+                                                                  )
+                                                                }
+                                                              )
+                                                            )
+                                                          : _vm._e()
+                                                      ]
+                                                    : _vm._e(),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "button",
+                                                    {
+                                                      attrs: {
+                                                        disabled:
+                                                          _vm.orderdata
+                                                            .fee_lines[key]
+                                                            .name == ""
+                                                      },
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          _vm.saveFee(key)
+                                                        }
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          _vm.__(
+                                                            "Apply",
+                                                            "wepos"
+                                                          )
+                                                        )
+                                                      )
+                                                    ]
+                                                  )
+                                                ],
+                                                2
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "td",
+                                                { staticClass: "action" },
+                                                [
+                                                  _c("span", {
+                                                    staticClass:
+                                                      "flaticon-cancel-music",
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.removeFeeLine(key)
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          : [
+                                              _c(
+                                                "td",
+                                                {
+                                                  staticClass: "label",
+                                                  on: {
+                                                    dblclick: function($event) {
+                                                      _vm.orderdata.fee_lines[
+                                                        key
+                                                      ].isEdit = true
                                                     }
                                                   }
                                                 },
                                                 [
                                                   _vm._v(
                                                     _vm._s(
-                                                      _vm.__("Apply", "wepos")
+                                                      _vm.__("Fee", "wepos")
+                                                    ) + " "
+                                                  ),
+                                                  _c(
+                                                    "span",
+                                                    { staticClass: "name" },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(fee.name) +
+                                                          " " +
+                                                          _vm._s(
+                                                            fee.fee_type ==
+                                                            "percent"
+                                                              ? fee.value + "%"
+                                                              : _vm.formatPrice(
+                                                                  fee.value
+                                                                )
+                                                          )
+                                                      )
+                                                    ]
+                                                  )
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "td",
+                                                { staticClass: "price" },
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(
+                                                      _vm.formatPrice(
+                                                        Math.abs(fee.total)
+                                                      )
                                                     )
                                                   )
                                                 ]
-                                              )
-                                            ],
-                                            2
-                                          ),
-                                          _vm._v(" "),
-                                          _c("td", { staticClass: "action" }, [
-                                            _c("span", {
-                                              staticClass:
-                                                "flaticon-cancel-music",
-                                              on: {
-                                                click: function($event) {
-                                                  _vm.removeFeeLine(key)
-                                                }
-                                              }
-                                            })
-                                          ])
-                                        ]
-                                      : [
-                                          _c(
-                                            "td",
-                                            {
-                                              staticClass: "label",
-                                              on: {
-                                                dblclick: function($event) {
-                                                  _vm.orderdata.fee_lines[
-                                                    key
-                                                  ].isEdit = true
-                                                }
-                                              }
-                                            },
-                                            [
-                                              _vm._v(
-                                                _vm._s(_vm.__("Fee", "wepos")) +
-                                                  " "
                                               ),
+                                              _vm._v(" "),
                                               _c(
-                                                "span",
-                                                { staticClass: "name" },
+                                                "td",
+                                                { staticClass: "action" },
                                                 [
-                                                  _vm._v(
-                                                    _vm._s(fee.name) +
-                                                      " " +
-                                                      _vm._s(
-                                                        fee.fee_type ==
-                                                        "percent"
-                                                          ? fee.value + "%"
-                                                          : _vm.formatPrice(
-                                                              fee.value
-                                                            )
-                                                      )
-                                                  )
+                                                  _c("span", {
+                                                    staticClass:
+                                                      "flaticon-cancel-music",
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.removeFeeLine(key)
+                                                      }
+                                                    }
+                                                  })
                                                 ]
                                               )
                                             ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("td", { staticClass: "price" }, [
-                                            _vm._v(
-                                              _vm._s(
-                                                _vm.formatPrice(
-                                                  Math.abs(fee.total)
-                                                )
-                                              )
-                                            )
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("td", { staticClass: "action" }, [
-                                            _c("span", {
-                                              staticClass:
-                                                "flaticon-cancel-music",
-                                              on: {
-                                                click: function($event) {
-                                                  _vm.removeFeeLine(key)
-                                                }
-                                              }
-                                            })
-                                          ])
-                                        ]
-                                  ]
-                            ],
-                            2
-                          )
-                        })
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.getTotalTax
-                      ? _c("tr", { staticClass: "tax" }, [
-                          _c("td", { staticClass: "label" }, [
-                            _vm._v(_vm._s(_vm.__("Tax", "wepos")))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "price" }, [
-                            _vm._v(_vm._s(_vm.formatPrice(_vm.getTotalTax)))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "action" })
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c("tr", { staticClass: "cart-action" }, [
-                      _c(
-                        "td",
-                        { attrs: { colspan: "3" } },
-                        [
-                          _c("fee-keypad", {
-                            attrs: {
-                              name: _vm.__("Discount", "wepos"),
-                              "short-key": "discount"
-                            },
-                            on: { inputfee: _vm.setDiscount }
-                          }),
-                          _vm._v(" "),
-                          _c("fee-keypad", {
-                            attrs: {
-                              name: _vm.__("Fee", "wepos"),
-                              "short-key": "fee"
-                            },
-                            on: { inputfee: _vm.setFee }
-                          }),
-                          _vm._v(" "),
-                          _vm.orderdata.customer_note == ""
-                            ? _c("customer-note", {
-                                on: { addnote: _vm.addCustomerNote }
-                              })
-                            : _vm._e()
-                        ],
-                        1
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _vm.orderdata.customer_note
-                      ? _c("tr", { staticClass: "note" }, [
+                                      ]
+                                ],
+                                2
+                              )
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.getTotalTax
+                          ? _c("tr", { staticClass: "tax" }, [
+                              _c("td", { staticClass: "label" }, [
+                                _vm._v(_vm._s(_vm.__("Tax", "wepos")))
+                              ]),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "price" }, [
+                                _vm._v(_vm._s(_vm.formatPrice(_vm.getTotalTax)))
+                              ]),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "action" })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("tr", { staticClass: "cart-action" }, [
                           _c(
                             "td",
-                            {
-                              staticClass: "note-text",
-                              attrs: { colspan: "2" }
-                            },
+                            { attrs: { colspan: "3" } },
                             [
-                              _vm._v(
-                                "\n                                    " +
-                                  _vm._s(_vm.orderdata.customer_note) +
-                                  "\n                                "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "action" }, [
-                            _c("span", {
-                              staticClass: "flaticon-cancel-music",
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  _vm.orderdata.customer_note = ""
-                                }
-                              }
-                            })
-                          ])
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c(
-                      "tr",
-                      {
-                        staticClass: "pay-now",
-                        on: {
-                          click: function($event) {
-                            _vm.initPayment()
-                          }
-                        }
-                      },
-                      [
-                        _c("td", [_vm._v(_vm._s(_vm.__("Pay Now", "wepos")))]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "amount" }, [
-                          _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
+                              _c("fee-keypad", {
+                                attrs: {
+                                  name: _vm.__("Discount", "wepos"),
+                                  "short-key": "discount"
+                                },
+                                on: { inputfee: _vm.setDiscount }
+                              }),
+                              _vm._v(" "),
+                              _c("fee-keypad", {
+                                attrs: {
+                                  name: _vm.__("Fee", "wepos"),
+                                  "short-key": "fee"
+                                },
+                                on: { inputfee: _vm.setFee }
+                              }),
+                              _vm._v(" "),
+                              _vm.orderdata.customer_note == ""
+                                ? _c("customer-note", {
+                                    on: { addnote: _vm.addCustomerNote }
+                                  })
+                                : _vm._e()
+                            ],
+                            1
+                          )
                         ]),
                         _vm._v(" "),
-                        _vm._m(1)
-                      ]
+                        _vm.orderdata.customer_note
+                          ? _c("tr", { staticClass: "note" }, [
+                              _c(
+                                "td",
+                                {
+                                  staticClass: "note-text",
+                                  attrs: { colspan: "2" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    " +
+                                      _vm._s(_vm.orderdata.customer_note) +
+                                      "\n                                "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "action" }, [
+                                _c("span", {
+                                  staticClass: "flaticon-cancel-music",
+                                  on: {
+                                    click: function($event) {
+                                      $event.preventDefault()
+                                      _vm.orderdata.customer_note = ""
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "tr",
+                          {
+                            staticClass: "pay-now",
+                            on: {
+                              click: function($event) {
+                                _vm.initPayment()
+                              }
+                            }
+                          },
+                          [
+                            _c("td", [
+                              _vm._v(_vm._s(_vm.__("Pay Now", "wepos")))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "amount" }, [
+                              _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
+                            ]),
+                            _vm._v(" "),
+                            _vm._m(0)
+                          ]
+                        )
+                      ],
+                      2
                     )
-                  ],
-                  2
-                )
+                  ])
+                ])
               ])
             ])
-          ])
-        ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _vm.showPaymentReceipt
@@ -6728,7 +7382,8 @@ var render = function() {
                                       _vm._s(item.name) +
                                       "\n                                        "
                                   ),
-                                  item.attribute.length > 0
+                                  item.attribute.length > 0 &&
+                                  item.type === "variable"
                                     ? _c("div", { staticClass: "attribute" }, [
                                         _c(
                                           "ul",
@@ -7217,14 +7872,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("button", [
-      _c("span", { staticClass: "more-icon flaticon-more" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("td", { staticClass: "icon" }, [
       _c("span", { staticClass: "flaticon-right-arrow" })
     ])
@@ -7241,4 +7888,4 @@ if (false) {
 }
 
 /***/ })
-],[74]);
+],[80]);

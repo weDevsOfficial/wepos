@@ -3,9 +3,9 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 5.1
+**Tested up to:** 5.1.1
 **WC requires at least:** 3.0
-**WC tested up to:** 3.5.5
+**WC tested up to:** 3.5.7
 **Requires PHP:** 5.6
 **Stable tag:** trunk
 **License:** GPLv2 or later
@@ -52,13 +52,27 @@ No FAQ
 9. Admin Dashboard Settings
 
 ## Changelog ##
-### v1.0.1 -> 4 Mar, 2019 ###
+### v1.0.2 -> 25 Mar, 2019 ###
+- **New**   Added billing address missing fields in customer create
+- **New**   Added all category selection in category filter
+- **New**   Add extra product info in product list view
+- **New**   Add Dokan plugin support
+- **Tweak** Change quick menu layout to popover
+- **Tweak** Change routing and menu rendring system for future extends
+- **Fix**   Case sensitive issue in product search
+- **Fix**   Remove attributes for simple product in cart and payment page
+- **Fix**   Cursor poiting issue in keypads and other buttons
+- **Fix**   Fee and discount calculation issue large amount(Price) of products
+- **Fix**   Tax and fee tax calculation problem for percentage fees
+- **Fix**   Product thumbnail resolution issue
+- **Fix**   Rounding problem in cash and change amount after payment
 
--**Fix**    Product fetching issue when no products found
--**Fix**    Customer data not reset during empty cart or new sales
--**Fix**    Event bus not triggering properly
--**Fix**    Render only publishable product in pos system
--**Tweak**  Added wp hooks for load action and filters
+### v1.0.1 -> 4 Mar, 2019 ###
+- **Fix**    Product fetching issue when no products found
+- **Fix**    Customer data not reset during empty cart or new sales
+- **Fix**    Event bus not triggering properly
+- **Fix**    Render only publishable product in pos system
+- **Tweak**  Added wp hooks for load action and filters
 
 
 ### 1.0.0 ###

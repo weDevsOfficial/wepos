@@ -1,12 +1,12 @@
 pluginWebpack([4],{
 
-/***/ 259:
+/***/ 267:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _hooks = __webpack_require__(7);
+var _hooks = __webpack_require__(8);
 
 window.wepos.wpPackages = {
     hooks: (0, _hooks.createHooks)()
@@ -14,4 +14,4 @@ window.wepos.wpPackages = {
 
 /***/ })
 
-},[259]);
+},[267]);

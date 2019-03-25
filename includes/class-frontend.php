@@ -11,7 +11,7 @@ class Frontend {
         add_action( 'wp_head', [ $this, 'reset_head_scripts' ], 8 );
         add_action( 'wp_head', [ $this, 'enqueue_scripts' ], 999 );
         add_action( 'template_redirect', [ $this, 'rewrite_templates' ], 1 );
-        add_filter('show_admin_bar', [ $this, 'remove_admin_bar' ] );
+        add_filter( 'show_admin_bar', [ $this, 'remove_admin_bar' ] );
         add_filter( 'document_title_parts', [ $this, 'render_page_title' ], 20 );
     }
 

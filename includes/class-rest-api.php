@@ -24,6 +24,7 @@ class REST_API {
         $this->class_map = apply_filters( 'dokan_rest_api_class_map', array(
             WEPOS_INCLUDES . '/api/class-payment-controller.php' => 'WePOS\api\Payment',
             WEPOS_INCLUDES . '/api/class-settings-controller.php' => 'WePOS\api\Settings',
+            WEPOS_INCLUDES . '/api/class-tax-controller.php' => 'WePOS\api\Tax',
         ) );
 
         // Init REST API routes.
@@ -85,7 +86,6 @@ class REST_API {
         $tax_amount         = (float)$price_incl_tax - (float)$price_excl_tax;
         $data['tax_amount'] = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
 
-        error_log( print_r( $_wp_additional_image_sizes, true ) );
         if ( ! empty( $data['images'] ) ) {
             foreach ( $data['images'] as $key => $image) {
                 $image_urls = [];

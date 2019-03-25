@@ -849,7 +849,6 @@ export default {
             this.orderdata.payment_method = this.availableGateways[0].id;
         },
         backToSale() {
-            // e.preventDefault();
             this.showModal = false;
             this.showHelp = false;
             this.orderdata.payment_method = '';
@@ -1043,7 +1042,7 @@ export default {
             });
         },
         fetchTaxes() {
-            wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/taxes' )
+            wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/taxes' )
             .done( response => {
                 this.availableTax = response;
             });

@@ -3,7 +3,7 @@
 Plugin Name: wePOS - Point Of Sale (POS) for WooCommerce
 Plugin URI: https://wedevs.com/wepos
 Description: A beautiful and fast Point of Sale (POS) system for WooCommerce
-Version: 1.0.1
+Version: 1.0.2
 Author: weDevs
 Author URI: https://wedevs.com/
 License: GPL2
@@ -53,7 +53,7 @@ final class We_POS {
      *
      * @var string
      */
-    public $version = '1.0.1';
+    public $version = '1.0.2';
 
     /**
      * Holds various class instances
@@ -223,6 +223,20 @@ final class We_POS {
             update_option( 'we_pos_installed', time() );
         }
 
+        if ( function_exists( 'dokan' ) ) {
+            $users_query = new WP_User_Query( array(
+                'role__in' => [ 'seller', 'vendor_staff' ]
+            ) );
+            $users = $users_query->get_results();
+
+            if ( count( $users ) > 0 ) {
+                foreach ( $users as $user ) {
+                    $user->add_cap( 'publish_shop_orders' );
+                    $user->add_cap( 'list_users' );
+                }
+            }
+        }
+
         update_option( 'we_pos_version', WEPOS_VERSION );
         set_transient( 'wepos-flush-rewrites', 1 );
     }
@@ -233,7 +247,17 @@ final class We_POS {
      * Nothing being called here yet.
      */
     public function deactivate() {
+        $users_query = new WP_User_Query( array(
+            'role__in' => [ 'seller', 'vendor_staff' ]
+        ) );
+        $users = $users_query->get_results();
 
+        if ( count( $users ) > 0 ) {
+            foreach ( $users as $user ) {
+                $user->remove_cap( 'publish_shop_orders' );
+                $user->remove_cap( 'list_users' );
+            }
+        }
     }
 
     /**
@@ -249,10 +273,15 @@ final class We_POS {
             require_once WEPOS_INCLUDES . '/admin/class-admin.php';
             require_once WEPOS_INCLUDES . '/admin/class-settings.php';
             require_once WEPOS_INCLUDES . '/admin/class-products.php';
+            require_once WEPOS_INCLUDES . '/admin/class-updates.php';
         }
 
         if ( $this->is_request( 'frontend' ) ) {
             require_once WEPOS_INCLUDES . '/class-frontend.php';
+        }
+
+        if ( class_exists( 'WeDevs_Dokan' ) ) {
+            require_once WEPOS_INCLUDES . '/class-dokan.php';
         }
 
         require_once WEPOS_INCLUDES . '/class-rest-api.php';
@@ -279,12 +308,14 @@ final class We_POS {
             $this->container['settings'] = new WePOS\Admin\Settings();
 
             new WePOS\Admin\Products();
+            new WePOS\Admin\Updates();
         }
 
         if ( $this->is_request( 'frontend' ) ) {
             $this->container['frontend'] = new WePOS\Frontend();
         }
 
+        $this->container['dokan'] = new WePOS\Dokan();
         $this->container['rest'] = new WePOS\REST_API();
         $this->container['assets'] = new WePOS\Assets();
     }

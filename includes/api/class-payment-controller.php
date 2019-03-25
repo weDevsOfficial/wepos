@@ -36,11 +36,33 @@ class Payment extends \WC_REST_Orders_Controller {
 
         register_rest_route( $this->namespace, '/' . $this->base . '/process', array(
             array(
-                'methods'  => \WP_REST_Server::CREATABLE,
-                'callback' => array( $this, 'process_payment' ),
-                'args'     => $this->get_collection_params()
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'process_payment' ),
+                'permission_callback' => array( $this, 'payment_permissions_check' ),
+                'args'                => $this->get_collection_params()
             ),
         ) );
+    }
+
+    /**
+     * Process payment permission callback
+     *
+     * @since 1.0.2
+     *
+     * @return void
+     */
+    public function payment_permissions_check() {
+        $hasPermission = true;
+
+        if ( ! current_user_can( 'publish_shop_orders' ) ) {
+            $hasPermission = false;
+        }
+
+        if ( ! apply_filters( "wepos_rest_{$this->base}_check_permissions", $hasPermission ) ) {
+            return new WP_Error( 'wepos_rest_cannot_create', __( 'Sorry, you cannot access this resources.', 'wepos' ), array( 'status' => rest_authorization_required_code() ) );
+        }
+
+        return true;
     }
 
     /**

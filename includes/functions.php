@@ -235,5 +235,13 @@ function wepos_get_option( $option, $section, $default = '' ) {
  * @return bool
  */
 function wepos_is_frontend() {
-    return wp_validate_boolean( get_query_var( 'wepos' ) );
+    $hasPermission = false;
+
+    if ( wp_validate_boolean( get_query_var( 'wepos' ) ) ) {
+        if ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_frontend_permissions', false ) ) {
+            $hasPermission = true;
+        }
+    }
+
+    return $hasPermission;
 }

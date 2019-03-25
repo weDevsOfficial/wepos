@@ -315,7 +315,10 @@ final class We_POS {
             $this->container['frontend'] = new WePOS\Frontend();
         }
 
-        $this->container['dokan'] = new WePOS\Dokan();
+        if ( class_exists( 'WeDevs_Dokan' ) ) {
+            $this->container['dokan'] = new WePOS\Dokan();
+        }
+
         $this->container['rest'] = new WePOS\REST_API();
         $this->container['assets'] = new WePOS\Assets();
     }

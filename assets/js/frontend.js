@@ -783,7 +783,7 @@ if (false) {(function () {
             return this.getOrderTotal - this.getTotalDiscount;
         },
         changeAmount() {
-            var returnMoney = this.cashAmount - this.getTotal;
+            var returnMoney = this.formatNumber(this.cashAmount - this.getTotal);
             return returnMoney > 0 ? returnMoney : 0;
         },
         getBreadCrums() {

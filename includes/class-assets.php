@@ -70,8 +70,6 @@ class Assets {
         $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
         $dependency = [ 'jquery', 'wepos-i18n-jed' ];
 
-        error_log( print_r( $prefix, true ) );
-
         if ( version_compare( $wp_version, '5.0', '<' ) ) {
             $dependency[] = 'wepos-wp-hook';
         }

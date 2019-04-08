@@ -201,7 +201,7 @@
 
         methods: {
             containCommonFields( type ) {
-                return window._.contains( [ undefined, 'text', 'email', 'url', 'phone' ], type );
+                return window.weLo_.includes( [ undefined, 'text', 'email', 'url', 'phone' ], type );
             },
 
             addItem( type, name ) {

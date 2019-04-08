@@ -85,7 +85,7 @@
             },
 
             showSectionTitle( index ) {
-                return window._.findIndex( this.settingSections, { id:index} ).title;
+                return window.weLo_.findIndex( this.settingSections, { id:index} ).title;
             },
 
             fetchSettingValues() {

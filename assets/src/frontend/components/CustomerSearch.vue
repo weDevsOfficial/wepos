@@ -152,8 +152,9 @@
 </template>
 
 <script>
-import Modal from './Modal.vue';
+// import Modal from './Modal.vue';
 import KeyboardControl from './KeyboardControl.vue';
+let Modal = wepos_get_lib( 'Modal' );
 
 export default {
     name: 'CustomerSearch',

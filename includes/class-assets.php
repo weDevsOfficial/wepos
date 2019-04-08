@@ -67,7 +67,7 @@ class Assets {
     public function get_scripts() {
         global $wp_version;
 
-        $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.min' : '';
+        $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
         $dependency = [ 'jquery', 'wepos-i18n-jed' ];
 
         if ( version_compare( $wp_version, '5.0', '<' ) ) {
@@ -103,30 +103,30 @@ class Assets {
                 'deps'      => array( 'jquery' )
             ),
             'wepos-vendor' => [
-                'src'       => WEPOS_ASSETS . '/js/vendor.js',
-                'version'   => filemtime( WEPOS_PATH . '/assets/js/vendor.js' ),
+                'src'       => WEPOS_ASSETS . '/js/vendor'. $prefix .'.js',
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/vendor'. $prefix .'.js' ),
                 'in_footer' => true
             ],
             'wepos-bootstrap' => [
-                'src'       => WEPOS_ASSETS . '/js/bootstrap.js',
+                'src'       => WEPOS_ASSETS . '/js/bootstrap'. $prefix .'.js',
                 'deps'      => $dependency,
-                'version'   => filemtime( WEPOS_PATH . '/assets/js/bootstrap.js' ),
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/bootstrap'. $prefix .'.js' ),
                 'in_footer' => true
             ],
             'wepos-frontend' => [
-                'src'       => WEPOS_ASSETS . '/js/frontend.js',
-                'version'   => filemtime( WEPOS_PATH . '/assets/js/frontend.js' ),
+                'src'       => WEPOS_ASSETS . '/js/frontend'. $prefix .'.js',
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/frontend'. $prefix .'.js' ),
                 'in_footer' => true
             ],
             'wepos-admin' => [
-                'src'       => WEPOS_ASSETS . '/js/admin.js',
-                'version'   => filemtime( WEPOS_PATH . '/assets/js/admin.js' ),
+                'src'       => WEPOS_ASSETS . '/js/admin'. $prefix .'.js',
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/admin'. $prefix .'.js' ),
                 'in_footer' => true
             ],
             'wepos-wp-hook' => array(
-                'src'       => WEPOS_ASSETS . '/js/wphook.js',
+                'src'       => WEPOS_ASSETS . '/js/wphook'. $prefix .'.js',
                 'deps'      => array( 'jquery' ),
-                'version'   => filemtime( WEPOS_PATH . '/assets/js/wphook.js' ),
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/wphook'. $prefix .'.js' ),
             )
         ];
 

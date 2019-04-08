@@ -74,9 +74,11 @@
 </template>
 
 <script>
-import Modal from './Modal.vue';
+// import Modal from './Modal.vue';
 import KeyboardControl from './KeyboardControl.vue';
 import VueHotkey from 'v-hotkey';
+
+let Modal = wepos_get_lib( 'Modal' );
 
 export default {
     name: 'ProductInlineSearch',

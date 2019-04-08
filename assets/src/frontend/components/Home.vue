@@ -516,11 +516,12 @@ import Overlay from './Overlay.vue';
 import ProductSearch from './ProductSearch.vue';
 import CustomerSearch from './CustomerSearch.vue';
 import FeeKeypad from './FeeKeypad.vue';
-import Modal from './Modal.vue';
 import MugenScroll from 'vue-mugen-scroll';
 import PrintReceipt from './PrintReceipt.vue';
 import PrintReceiptHtml from './PrintReceiptHtml.vue';
 import CustomerNote from './CustomerNote.vue';
+
+let Modal = wepos_get_lib( 'Modal' );
 
 export default {
 

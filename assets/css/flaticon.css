@@ -54,3 +54,7 @@ font-style: normal;
 .flaticon-backspace:before { content: "\f116"; }
 .flaticon-logout:before { content: "\f117"; }
 .flaticon-information:before { content: "\f118"; }
+.flaticon-location:before { content: "\f119"; }
+.flaticon-circle-edit:before { content: "\f11a"; }
+.flaticon-delete:before { content: "\f11b"; }
+.flaticon-counter-1:before { content: "\f11c"; }

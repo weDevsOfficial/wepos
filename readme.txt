@@ -53,6 +53,13 @@ No FAQ
 
 == Changelog ==
 
+= v1.0.3 -> 8 April, 2019 =
+----------------------------
+- **Fix**   Undefined issue in admin settings page
+- **Tweak** Remove some unwnated code
+- **Tweak** Modal component load globally and add more customizable options
+- **Tweak** Update some flaticons
+
 = v1.0.2 -> 25 Mar, 2019 =
 ----------------------------
 - **New**   Added billing address missing fields in customer create

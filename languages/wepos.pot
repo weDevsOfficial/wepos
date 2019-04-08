@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.2\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-03-25 05:17:47+00:00\n"
+"POT-Creation-Date: 2019-04-08 06:29:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,15 +14,15 @@ msgstr ""
 "X-Generator: wp-vue-i18n 1.1.3\n"
 
 #: assets/js/admin.js:114 assets/js/admin.js:361 assets/js/admin.js:453
-#: assets/js/admin.js:1421 assets/js/frontend.js:2779
-#: assets/js/frontend.js:2961 assets/js/frontend.js:3051
-#: assets/js/frontend.js:3119 assets/js/frontend.js:3629
-#: assets/js/frontend.js:4678 assets/js/frontend.js:4845
-#: assets/js/frontend.js:4949 assets/js/frontend.js:5290
-#: assets/js/frontend.js:5401 assets/js/vendor.js:24252
-#: assets/js/vendor.js:24828 assets/js/vendor.js:24938
-#: assets/js/vendor.js:25058 assets/js/vendor.js:25080
-#: assets/js/vendor.js:25137
+#: assets/js/admin.js:1421 assets/js/bootstrap.js:883
+#: assets/js/frontend.js:2651 assets/js/frontend.js:2833
+#: assets/js/frontend.js:2917 assets/js/frontend.js:3427
+#: assets/js/frontend.js:4476 assets/js/frontend.js:4643
+#: assets/js/frontend.js:4747 assets/js/frontend.js:5088
+#: assets/js/frontend.js:5199 assets/js/vendor.js:26103
+#: assets/js/vendor.js:26679 assets/js/vendor.js:26789
+#: assets/js/vendor.js:26909 assets/js/vendor.js:26931
+#: assets/js/vendor.js:26988
 msgid "div"
 msgstr ""
 
@@ -66,71 +66,71 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: assets/js/bootstrap.js:521
-msgid "textarea"
-msgstr ""
-
-#: assets/js/bootstrap.js:655 assets/js/bootstrap.js:661
-#: assets/js/bootstrap.js:666 assets/js/bootstrap.min.js:1
+#: assets/js/bootstrap.js:119 assets/js/bootstrap.js:125
+#: assets/js/bootstrap.js:130 assets/js/bootstrap.min.js:1
 #: assets/src/admin/components/TextEditor.vue:125
 #: assets/src/admin/components/TextEditor.vue:132
 #: assets/src/admin/components/TextEditor.vue:137
 msgid "Select an image"
 msgstr ""
 
-#: assets/js/bootstrap.js:709 assets/js/bootstrap.min.js:1
+#: assets/js/bootstrap.js:173 assets/js/bootstrap.min.js:1
 #: assets/src/admin/components/TextEditor.vue:180
 msgid "Please select an image,"
 msgstr ""
 
-#: assets/js/frontend.js:835 assets/js/frontend.js:1173
-#: assets/js/frontend.js:1201 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:714
-#: assets/src/frontend/components/Home.vue:1062
-#: assets/src/frontend/components/Home.vue:1090
+#: assets/js/bootstrap.js:792
+msgid "textarea"
+msgstr ""
+
+#: assets/js/frontend.js:753 assets/js/frontend.js:1091
+#: assets/js/frontend.js:1119 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/Home.vue:715
+#: assets/src/frontend/components/Home.vue:1063
+#: assets/src/frontend/components/Home.vue:1091
 msgid "All categories"
 msgstr ""
 
-#: assets/js/frontend.js:982 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:900 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:240
 #: assets/src/frontend/components/Home.vue:429
-#: assets/src/frontend/components/Home.vue:867
+#: assets/src/frontend/components/Home.vue:868
 #: assets/src/frontend/components/printReceiptHtml.vue:38
 msgid "Discount"
 msgstr ""
 
-#: assets/js/frontend.js:1002 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:920 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:260
 #: assets/src/frontend/components/Home.vue:433
-#: assets/src/frontend/components/Home.vue:887
+#: assets/src/frontend/components/Home.vue:888
 #: assets/src/frontend/components/printReceiptHtml.vue:42
 msgid "Fee"
 msgstr ""
 
-#: assets/js/frontend.js:1393 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/ProductSearch.vue:118
+#: assets/js/frontend.js:1312 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Scan your product"
 msgstr ""
 
-#: assets/js/frontend.js:1393 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/ProductSearch.vue:118
+#: assets/js/frontend.js:1312 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Search product by typing"
 msgstr ""
 
-#: assets/js/frontend.js:2066 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/CustomerSearch.vue:293
+#: assets/js/frontend.js:1915 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/CustomerSearch.vue:294
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4612
+#: assets/js/frontend.js:4410
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5204
+#: assets/js/frontend.js:5002
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:7875
+#: assets/js/frontend.js:7673
 msgid "td"
 msgstr ""
 

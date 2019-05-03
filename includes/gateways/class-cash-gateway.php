@@ -85,7 +85,6 @@ class Cash extends \WC_Payment_Gateway {
         return parent::is_available();
     }
 
-
     /**
      * Process the payment and return the result.
      *

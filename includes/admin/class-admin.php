@@ -9,6 +9,9 @@ class Admin {
     public function __construct() {
         add_action( 'admin_menu', [ $this, 'admin_menu' ] );
         add_action( 'woocommerce_payment_gateways', [ $this, 'payment_gateways' ] );
+        add_filter( 'manage_edit-shop_order_columns', [ $this, 'add_pos_order_column' ], 10 );
+        add_action( 'manage_shop_order_posts_custom_column', [ $this, 'render_is_pos_order_content' ], 10, 2);
+        add_action( 'admin_print_styles', [ $this, 'add_pos_column_style' ] );
     }
 
     /**
@@ -96,5 +99,50 @@ class Admin {
      */
     public function plugin_page() {
         echo '<div class="wrap"><div id="wepos-admin-app"></div></div>';
+    }
+
+    /**
+     * Add pos order column
+     *
+     * @since 1.0.4
+     *
+     * @param array $defaults
+     */
+    function add_pos_order_column($defaults) {
+        $defaults['is_pos_order'] = apply_filters( 'wepos_shop_order_pos_column_title', __( 'Is POS', 'wepos' ) );
+
+        return $defaults;
+    }
+
+    /**
+     * Render if is pos order content
+     *
+     * @since 1.0.4
+     *
+     * @param string $column_name
+     * @param integer $post_id
+     *
+     * @return string
+     */
+    function render_is_pos_order_content( $column_name, $post_id ) {
+        if ( $column_name === 'is_pos_order' ) {
+            $order = wc_get_order( $post_id );
+
+            if ( 'wepos' === $order->get_created_via() ) {
+                echo '<span class="dashicons dashicons-store"></span>';
+            } else {
+                echo '&ndash;';
+            }
+        }
+    }
+
+    /**
+     * Added column styles
+     *
+     * @since 1.0.4
+     */
+    function add_pos_column_style() {
+        $css = '.widefat .column-is_pos_order { width: 9% !important; text-align: center; } .widefat .column-is_pos_order span.dashicons-store{ font-size: 17px; margin-top: 3px; }';
+        wp_add_inline_style( 'woocommerce_admin_styles', $css );
     }
 }

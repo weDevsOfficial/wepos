@@ -101,7 +101,7 @@ class Cash extends \WC_Payment_Gateway {
 
         $order->add_order_note( sprintf( __( 'Cash tendered amount: %1$s, Change amount: %2$s', 'wepos' ), $order->get_meta( '_wepos_cash_tendered_amount', true ), $order->get_meta( '_wepos_cash_change_amount', true ) ) );
         // Remove cart.
-        WC()->cart->empty_cart();
+        // WC()->cart->empty_cart();
 
         // Return thankyou redirect.
         return array(

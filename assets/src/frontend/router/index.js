@@ -6,11 +6,11 @@ let Router = wepos_get_lib( 'Router' )
 Vue.use(Router)
 
 export default new Router({
-    routes: [
+    routes: wepos.hooks.applyFilters( 'wepos_frontend_routes', [
         {
             path: '/',
             name: 'Home',
-            component: Home
+            component: Home,
         },
-    ]
+    ] )
 })

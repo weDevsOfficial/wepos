@@ -587,6 +587,7 @@ body {
         width: 100%;
         margin-bottom: 10px;
         padding: 0 15px;
+        box-sizing: border-box;
 
         input, select {
             margin: inherit;
@@ -697,6 +698,49 @@ body {
 
 div:focus, span:focus, button:focus, input:focus {
     outline: none !important;
+}
+
+.wepos-btn {
+    font-size: 13px;
+    text-decoration: none;
+    padding: 0px 10px;
+    border-radius: 3px;
+    border: 1px solid #E2E2E2;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    cursor: pointer;
+
+
+    input&, button& {
+        height: 30px;
+    }
+
+    &.wepos-btn-default {
+        background: #fff;
+        color: #788383;
+
+        &:hover {
+            color: #5d5d5d;
+            background: #fafafa;
+        }
+    }
+
+    &.wepos-btn-primary {
+        background: #1A9ED4;
+        color: #fff;
+        border: none;
+        &:hover {
+            color: #fff;
+            background: #29ace2;
+            border: none;
+        }
+        &:disabled {
+            background: #33a9da;
+            color: #eee;
+            cursor: no-drop;
+        }
+    }
 }
 
 .v-popover {

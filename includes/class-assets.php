@@ -74,7 +74,7 @@ class Assets {
             $dependency[] = 'wepos-wp-hook';
         }
 
-        if ( !is_admin() ) {
+        if ( ! is_admin() ) {
             $dependency[] = 'wepos-wp-hook';
         }
 
@@ -221,6 +221,7 @@ class Assets {
             'categories'                   => wepos_get_product_category(),
             'countries'                    => WC()->countries->get_countries(),
             'states'                       => WC()->countries->get_states(),
+            'current_user_id'              => get_current_user_id()
         ] );
 
         wp_localize_script( 'wepos-vendor', 'wepos', $localize_data );

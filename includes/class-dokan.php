@@ -22,9 +22,25 @@ class Dokan {
         add_action( 'dokan_new_seller_created', [ $this, 'after_create_vendor' ], 15, 2 );
         add_filter( 'dokan_get_dashboard_nav', [ $this, 'show_pos_menu' ], 15 );
         add_filter( 'wepos_settings_fields', [ $this, 'add_dokan_settings' ], 11 );
+        add_filter( 'wepos_rest_manager_permissions', [ $this, 'manager_permission' ], 10 );
 
         // If vendor created via REST API
         add_action( 'dokan_new_vendor', [ $this, 'after_create_vendor_via_rest' ], 15 );
+    }
+
+    /**
+     * Manager permissions
+     *
+     * @since 1.0.4
+     *
+     * @return void
+     */
+    public function manager_permission( $valid ) {
+        if ( current_user_can( 'dokandar' ) ) {
+            return true;
+        }
+
+        return $valid;
     }
 
     /**

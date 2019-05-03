@@ -66,3 +66,10 @@ window.wepos.libs['EventBus']   = EventBus;
 window.wepos.libs['Modal']      = Modal;
 
 window.wepos.hooks = ( wp && wp.hooks ) ? wp.hooks : window.wepos.wpPackages.hooks;
+
+wepos.addFilter = ( hookName, namespace, component, priority = 10 ) => {
+    wepos.hooks.addFilter(hookName, namespace, (components) => {
+        components.push(component);
+        return components;
+    }, priority );
+};

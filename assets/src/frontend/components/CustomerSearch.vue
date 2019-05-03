@@ -260,6 +260,7 @@ export default {
                     email: this.customer.email,
                     first_name: this.customer.first_name,
                     last_name: this.customer.last_name,
+                    password: this.generatePassword(20),
                     billing: {
                         first_name: this.customer.first_name,
                         last_name: this.customer.last_name,
@@ -321,6 +322,14 @@ export default {
                 this.stateList = state;
                 this.selectedState = null;
             }
+        },
+        generatePassword( length ) {
+            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                retVal = "";
+            for (var i = 0, n = charset.length; i < length; ++i) {
+                retVal += charset.charAt(Math.floor(Math.random() * n));
+            }
+            return retVal;
         }
     },
     mounted() {
@@ -352,6 +361,5 @@ export default {
         }
     }
 }
-
 
 </style>

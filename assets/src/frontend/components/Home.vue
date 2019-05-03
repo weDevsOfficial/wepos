@@ -154,7 +154,12 @@
                                     <li><a href="#" @click.prevent="emptyCart"><span class="flaticon-empty-cart quick-menu-icon"></span>{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
                                     <li><a href="#" @click.prevent="openHelp"><span class="flaticon-information quick-menu-icon"></span>{{ __( 'Help', 'wepos' ) }}</a></li>
                                     <li class="divider"></li>
-                                    <li><a :href="getLogoutUrl()"><span class="flaticon-logout quick-menu-icon"></span>{{ __( 'Logout', 'wepos' ) }}</a></li>
+                                    <component
+                                        v-for="(component, index) in quickLinkList"
+                                        :key="index"
+                                        :is="component"
+                                    />
+                                    <li><a href="#" @click.prevent="logout"><span class="flaticon-logout quick-menu-icon"></span>{{ __( 'Logout', 'wepos' ) }}</a></li>
                                 </ul>
                             </template>
                         </v-popover>
@@ -578,6 +583,7 @@ export default {
             },
             selectedCategory: '',
             categories: [],
+            quickLinkList: wepos.hooks.applyFilters( 'wepos_quick_links', [] ),
         }
     },
     computed: {
@@ -739,8 +745,10 @@ export default {
         removeBreadcrums() {
             this.$router.push( { name: 'Home' } );
         },
-        getLogoutUrl() {
-            return wepos.logout_url.toString();
+
+        logout() {
+            wepos.hooks.doAction( 'wepos_before_logout' );
+            window.location.href = wepos.logout_url.toString();
         },
         emptyCart() {
             this.orderdata = {

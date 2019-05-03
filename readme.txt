@@ -5,7 +5,7 @@ Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of
 Requires at least: 4.4
 Tested up to: 5.1.1
 WC requires at least: 3.0
-WC tested up to: 3.5.7
+WC tested up to: 3.6.2
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -52,6 +52,15 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.0.4 -> 3 May, 2019 =
+----------------------------
+- **New**   Added extra column in order listing page for determining whether the order is POS order or not
+- **Fix**   Cash gateway payment processing issues
+- **Fix**   Customer not created if woocommerce default account creatation option is disabled
+- **Tweak** Added updater class for changing some meta's
+- **Tweak** Update some flaticons
+- **Tweak** Added some core filters in js end for extending components
 
 = v1.0.3 -> 8 April, 2019 =
 ----------------------------

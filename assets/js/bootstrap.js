@@ -1,6 +1,6 @@
 pluginWebpack([2],{
 
-/***/ 129:
+/***/ 131:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -185,7 +185,7 @@ pluginWebpack([2],{
 
 /***/ }),
 
-/***/ 130:
+/***/ 132:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -261,14 +261,14 @@ pluginWebpack([2],{
 
 /***/ }),
 
-/***/ 212:
+/***/ 214:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 exports.EventBus = undefined;
 
@@ -276,45 +276,45 @@ var _vue = __webpack_require__(28);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueRouter = __webpack_require__(84);
+var _vueRouter = __webpack_require__(85);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _Api = __webpack_require__(213);
+var _Api = __webpack_require__(215);
 
 var _Api2 = _interopRequireDefault(_Api);
 
-var _lodash = __webpack_require__(214);
+var _lodash = __webpack_require__(216);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Mixin = __webpack_require__(351);
+var _Mixin = __webpack_require__(354);
 
 var _Mixin2 = _interopRequireDefault(_Mixin);
 
-var _vueJsPopover = __webpack_require__(82);
+var _vueJsPopover = __webpack_require__(83);
 
 var _vueJsPopover2 = _interopRequireDefault(_vueJsPopover);
 
-var _TextEditor = __webpack_require__(353);
+var _TextEditor = __webpack_require__(356);
 
 var _TextEditor2 = _interopRequireDefault(_TextEditor);
 
-var _vTooltip = __webpack_require__(81);
+var _vTooltip = __webpack_require__(82);
 
 var _vHotkey = __webpack_require__(26);
 
 var _vHotkey2 = _interopRequireDefault(_vHotkey);
 
-var _vueMultiselect = __webpack_require__(83);
+var _vueMultiselect = __webpack_require__(84);
 
 var _vueMultiselect2 = _interopRequireDefault(_vueMultiselect);
 
-var _Modal = __webpack_require__(355);
+var _Modal = __webpack_require__(358);
 
 var _Modal2 = _interopRequireDefault(_Modal);
 
-__webpack_require__(358);
+__webpack_require__(361);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -324,35 +324,35 @@ _vue2.default.component('v-popover', _vTooltip.VPopover);
 _vue2.default.component('multiselect', _vueMultiselect2.default);
 
 _vue2.default.directive('click-outside', {
-  bind: function bind(el, binding, vNode) {
-    // Provided expression must evaluate to a function.
-    if (typeof binding.value !== 'function') {
-      var compName = vNode.context.name;
-      var warn = '[Vue-click-outside:] provided expression \'' + binding.expression + '\' is not a function, but has to be';
-      if (compName) {
-        warn += 'Found in component \'' + compName + '\'';
-      }
+    bind: function bind(el, binding, vNode) {
+        // Provided expression must evaluate to a function.
+        if (typeof binding.value !== 'function') {
+            var compName = vNode.context.name;
+            var warn = '[Vue-click-outside:] provided expression \'' + binding.expression + '\' is not a function, but has to be';
+            if (compName) {
+                warn += 'Found in component \'' + compName + '\'';
+            }
 
-      console.warn(warn);
+            console.warn(warn);
+        }
+        // Define Handler and cache it on the element
+        var bubble = binding.modifiers.bubble;
+        var handler = function handler(e) {
+            if (bubble || !el.contains(e.target) && el !== e.target) {
+                binding.value(e);
+            }
+        };
+        el.__vueClickOutside__ = handler;
+
+        // add Event Listeners
+        document.addEventListener('click', handler);
+    },
+
+    unbind: function unbind(el, binding) {
+        // Remove Event Listeners
+        document.removeEventListener('click', el.__vueClickOutside__);
+        el.__vueClickOutside__ = null;
     }
-    // Define Handler and cache it on the element
-    var bubble = binding.modifiers.bubble;
-    var handler = function handler(e) {
-      if (bubble || !el.contains(e.target) && el !== e.target) {
-        binding.value(e);
-      }
-    };
-    el.__vueClickOutside__ = handler;
-
-    // add Event Listeners
-    document.addEventListener('click', handler);
-  },
-
-  unbind: function unbind(el, binding) {
-    // Remove Event Listeners
-    document.removeEventListener('click', el.__vueClickOutside__);
-    el.__vueClickOutside__ = null;
-  }
 });
 
 _vue2.default.mixin(_Mixin2.default);
@@ -360,7 +360,7 @@ _vue2.default.use(_vueJsPopover2.default, { defaultBoundariesElement: document.b
 _vue2.default.use(_vHotkey2.default);
 
 window.wepos_get_lib = function (lib) {
-  return window.wepos.libs[lib];
+    return window.wepos.libs[lib];
 };
 
 var EventBus = exports.EventBus = new _vue2.default();
@@ -376,9 +376,18 @@ window.wepos.libs['Modal'] = _Modal2.default;
 
 window.wepos.hooks = wp && wp.hooks ? wp.hooks : window.wepos.wpPackages.hooks;
 
+wepos.addFilter = function (hookName, namespace, component) {
+    var priority = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 10;
+
+    wepos.hooks.addFilter(hookName, namespace, function (components) {
+        components.push(component);
+        return components;
+    }, priority);
+};
+
 /***/ }),
 
-/***/ 213:
+/***/ 215:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -465,7 +474,7 @@ exports.default = WePos_API;
 
 /***/ }),
 
-/***/ 214:
+/***/ 216:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -475,21 +484,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _core = __webpack_require__(216);
+var _core = __webpack_require__(218);
 
 var _core2 = _interopRequireDefault(_core);
 
-var _findindex = __webpack_require__(217);
+var _findindex = __webpack_require__(219);
 
 var _findindex2 = _interopRequireDefault(_findindex);
 
-var _truncate = __webpack_require__(279);
+var _truncate = __webpack_require__(280);
 
 var _truncate2 = _interopRequireDefault(_truncate);
 
-var _includes = __webpack_require__(290);
+var _includes = __webpack_require__(291);
 
 var _includes2 = _interopRequireDefault(_includes);
+
+var _debounce = __webpack_require__(351);
+
+var _debounce2 = _interopRequireDefault(_debounce);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -497,20 +510,21 @@ _ = _core2.default.noConflict();
 _.findIndex = _findindex2.default;
 _.truncate = _truncate2.default;
 _.includes = _includes2.default;
+_.debounce = _debounce2.default;
 
 exports.default = _;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(215)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(217)))
 
 /***/ }),
 
-/***/ 215:
+/***/ 217:
 /***/ (function(module, exports) {
 
 module.exports = window.wepos._;
 
 /***/ }),
 
-/***/ 351:
+/***/ 354:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -520,7 +534,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _i18n = __webpack_require__(352);
+var _i18n = __webpack_require__(355);
 
 exports.default = {
     methods: {
@@ -602,7 +616,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 352:
+/***/ 355:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -727,14 +741,14 @@ var sprintf = exports.sprintf = Jed.sprintf;
 
 /***/ }),
 
-/***/ 353:
+/***/ 356:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(131);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(354);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(357);
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -781,7 +795,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 354:
+/***/ 357:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -807,18 +821,18 @@ if (false) {
 
 /***/ }),
 
-/***/ 355:
+/***/ 358:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(130);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(132);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e7f44b2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(357);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e7f44b2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(360);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(356)
+  __webpack_require__(359)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -865,14 +879,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 356:
+/***/ 359:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 357:
+/***/ 360:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -946,4 +960,4 @@ if (false) {
 
 /***/ })
 
-},[212]);
+},[214]);

@@ -14,6 +14,7 @@ class Updates {
     /** @var array DB updates that need to be run */
     private static $updates = [
         '1.0.2'    => 'upgrade-1.0.2.php',
+        '1.0.4'    => 'upgrade-1.0.4.php',
     ];
 
     /**

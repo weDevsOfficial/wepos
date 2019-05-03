@@ -97,11 +97,12 @@ class Cash extends \WC_Payment_Gateway {
 
         // Mark as processing or on-hold (payment won't be taken until delivery).
         $order->payment_complete();
-        $order->update_status( 'completed', __( 'Payment collected via cash', 'wepos' ) );
 
+        $order->update_status( 'completed', __( 'Payment collected via cash', 'wepos' ) );
         $order->add_order_note( sprintf( __( 'Cash tendered amount: %1$s, Change amount: %2$s', 'wepos' ), $order->get_meta( '_wepos_cash_tendered_amount', true ), $order->get_meta( '_wepos_cash_change_amount', true ) ) );
-        // Remove cart.
-        // WC()->cart->empty_cart();
+
+        $order->set_created_via( 'wepos' );
+        $order->save();
 
         // Return thankyou redirect.
         return array(

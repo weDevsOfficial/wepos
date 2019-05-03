@@ -108,7 +108,7 @@ class Admin {
      *
      * @param array $defaults
      */
-    function add_pos_order_column($defaults) {
+    public function add_pos_order_column($defaults) {
         $defaults['is_pos_order'] = apply_filters( 'wepos_shop_order_pos_column_title', __( 'Is POS', 'wepos' ) );
 
         return $defaults;
@@ -124,7 +124,7 @@ class Admin {
      *
      * @return string
      */
-    function render_is_pos_order_content( $column_name, $post_id ) {
+    public function render_is_pos_order_content( $column_name, $post_id ) {
         if ( $column_name === 'is_pos_order' ) {
             $order = wc_get_order( $post_id );
 
@@ -141,7 +141,7 @@ class Admin {
      *
      * @since 1.0.4
      */
-    function add_pos_column_style() {
+    public function add_pos_column_style() {
         $css = '.widefat .column-is_pos_order { width: 9% !important; text-align: center; } .widefat .column-is_pos_order span.dashicons-store{ font-size: 17px; margin-top: 3px; }';
         wp_add_inline_style( 'woocommerce_admin_styles', $css );
     }

@@ -3,7 +3,7 @@
 Plugin Name: wePOS - Point Of Sale (POS) for WooCommerce
 Plugin URI: https://wedevs.com/wepos
 Description: A beautiful and fast Point of Sale (POS) system for WooCommerce
-Version: 1.0.3
+Version: 1.0.4
 Author: weDevs
 Author URI: https://wedevs.com/
 License: GPL2
@@ -53,7 +53,7 @@ final class We_POS {
      *
      * @var string
      */
-    public $version = '1.0.3';
+    public $version = '1.0.4';
 
     /**
      * Holds various class instances

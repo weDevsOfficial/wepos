@@ -12,14 +12,7 @@ pluginWebpack([0],Array(57).concat([
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'App',
-
-    created() {
-
-        // wepos.hooks.addAction( 'test_action', 'testAction', function() {
-        //     console.log( 'Loaded action' );
-        // } );
-    }
+    name: 'App'
 });
 
 /***/ }),
@@ -1817,7 +1810,7 @@ let Modal = wepos_get_lib('Modal');
             stateList: [],
             selectedState: null,
             selectedCountry: null,
-            isDisabled: false
+            isDisabled: true
         };
     },
     computed: {
@@ -1837,6 +1830,19 @@ let Modal = wepos_get_lib('Modal');
             });
         }
     },
+
+    watch: {
+        customer: {
+            handler(val) {
+                this.isDisabled = true;
+                if (val.first_name !== undefined && val.first_name.trim() != '' && val.last_name !== undefined && val.last_name.trim() != '' && val.email !== undefined && val.email.trim() != '') {
+                    this.isDisabled = false;
+                }
+            },
+            deep: true
+        }
+    },
+
     methods: {
         focusCustomerSearch(e) {
             e.preventDefault();
@@ -1870,6 +1876,23 @@ let Modal = wepos_get_lib('Modal');
             this.showCustomerResults = false;
             this.$emit('onblur');
         },
+        closeNewCustomerModal() {
+            this.customer = {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: ''
+            };
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.showNewCustomerModal = false;
+        },
         searchCustomer() {
             if (this.serachInput) {
                 wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/customers?search=' + this.serachInput).done(response => {
@@ -1890,6 +1913,7 @@ let Modal = wepos_get_lib('Modal');
                     email: this.customer.email,
                     first_name: this.customer.first_name,
                     last_name: this.customer.last_name,
+                    username: this.customer.email,
                     password: this.generatePassword(20),
                     billing: {
                         first_name: this.customer.first_name,
@@ -1906,17 +1930,16 @@ let Modal = wepos_get_lib('Modal');
                 };
                 var $contentWrap = jQuery('.wepos-new-customer-form');
                 $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-                this.isDisabled = true;
+                // this.isDisabled = true;
 
                 wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/customers', customerData).done(response => {
                     this.serachInput = response.first_name + ' ' + response.last_name;
                     this.$emit('onCustomerSelected', response);
-                    this.isDisabled = true;
+                    // this.isDisabled = true;
                     $contentWrap.unblock();
-                    this.showNewCustomerModal = false;
-                    this.customer = {};
+                    this.closeNewCustomerModal();
                 }).fail(response => {
-                    this.isDisabled = true;
+                    // this.isDisabled = true;
                     $contentWrap.unblock();
                     alert(response.responseJSON.message);
                 });
@@ -3806,11 +3829,7 @@ var render = function() {
                 footer: true,
                 header: true
               },
-              on: {
-                close: function($event) {
-                  _vm.showNewCustomerModal = false
-                }
-              }
+              on: { close: _vm.closeNewCustomerModal }
             },
             [
               _c("template", { slot: "body" }, [
@@ -4258,12 +4277,7 @@ var render = function() {
                   "button",
                   {
                     staticClass: "add-new-customer-btn add-variation-btn",
-                    attrs: {
-                      disabled:
-                        _vm.customer.email == undefined ||
-                        _vm.customer.email == "" ||
-                        _vm.isDisabled
-                    },
+                    attrs: { disabled: _vm.isDisabled },
                     on: {
                       click: function($event) {
                         _vm.createCustomer()

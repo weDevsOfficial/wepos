@@ -1895,7 +1895,7 @@ let Modal = wepos_get_lib('Modal');
         },
         searchCustomer() {
             if (this.serachInput) {
-                wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/customers?search=' + this.serachInput).done(response => {
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/customers?search=' + this.serachInput).done(response => {
                     this.customers = response;
                 });
             } else {
@@ -1930,16 +1930,13 @@ let Modal = wepos_get_lib('Modal');
                 };
                 var $contentWrap = jQuery('.wepos-new-customer-form');
                 $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-                // this.isDisabled = true;
 
-                wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/customers', customerData).done(response => {
+                wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/customers', customerData).done(response => {
                     this.serachInput = response.first_name + ' ' + response.last_name;
                     this.$emit('onCustomerSelected', response);
-                    // this.isDisabled = true;
                     $contentWrap.unblock();
                     this.closeNewCustomerModal();
                 }).fail(response => {
-                    // this.isDisabled = true;
                     $contentWrap.unblock();
                     alert(response.responseJSON.message);
                 });

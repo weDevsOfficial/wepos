@@ -22,9 +22,10 @@ class REST_API {
      */
     public function __construct() {
         $this->class_map = apply_filters( 'wepos_rest_api_class_map', array(
-            WEPOS_INCLUDES . '/api/class-payment-controller.php' => 'WePOS\api\Payment',
-            WEPOS_INCLUDES . '/api/class-settings-controller.php' => 'WePOS\api\Settings',
-            WEPOS_INCLUDES . '/api/class-tax-controller.php' => 'WePOS\api\Tax',
+            WEPOS_INCLUDES . '/api/class-payment-controller.php'   => 'WePOS\api\Payment',
+            WEPOS_INCLUDES . '/api/class-settings-controller.php'  => 'WePOS\api\Settings',
+            WEPOS_INCLUDES . '/api/class-tax-controller.php'       => 'WePOS\api\Tax',
+            WEPOS_INCLUDES . '/api/class-customers-controller.php' => 'WePOS\api\Customer',
         ) );
 
         // Init REST API routes.

@@ -58,7 +58,6 @@ class REST_API {
      */
     public function product_response( $response, $product, $request ) {
         global $_wp_additional_image_sizes;
-
         $data           = $response->get_data();
         $type           = isset( $data['type'] ) ? $data['type'] : '';
         $variation_data = [];
@@ -98,6 +97,7 @@ class REST_API {
         }
 
         $response->set_data( $data );
+
         return $response;
     }
 

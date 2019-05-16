@@ -34,6 +34,7 @@ class REST_API {
         add_filter( 'woocommerce_rest_prepare_product_variation_object', [ $this, 'product_response' ], 10, 3 );
         add_filter( 'woocommerce_rest_prepare_product_cat', [ $this, 'category_response' ], 10, 3 );
         add_filter( 'woocommerce_rest_prepare_tax', [ $this, 'tax_response' ], 10, 3 );
+        add_filter( 'woocommerce_rest_pre_insert_shop_order_object', [ $this, 'validate_item_stock_before_order' ], 10, 3 );
     }
 
     /**
@@ -127,5 +128,39 @@ class REST_API {
         $data['parent_id'] = $category->parent ? $category->parent : null;
         $response->set_data( $data );
         return $response;
+    }
+
+    /**
+     * Validate Stock in order item
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    public function validate_item_stock_before_order( $order, $request, $creating ) {
+        if ( ! $creating ) {
+            return $order;
+        }
+
+        $items = $order->get_items();
+
+        foreach ( $items as $item ) {
+            $product              = $item->get_product();
+            $is_manage_stock      = $product->get_manage_stock();
+            $is_backorder_allowed = $product->get_backorders();
+
+            if ( ! $is_manage_stock || 'no' !== $is_backorder_allowed ) {
+                return $order;
+            }
+
+            $stock_quantity = $product->get_stock_quantity();
+            $order_quantity = $item->get_quantity();
+
+            if ( $order_quantity > $stock_quantity ) {
+                throw new \WC_REST_Exception( 'woocommerce_rest_invalid_product_quantity', sprintf( __( 'The item %s already out of stock. Please remove this from cart', 'wepos' ), $product->get_name() ), 400 );
+            }
+        }
+
+        return $order;
     }
 }

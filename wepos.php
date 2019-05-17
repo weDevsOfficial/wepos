@@ -379,10 +379,6 @@ final class We_POS {
                     break;
                 }
             }
-
-            // if ( strpos( $_SERVER['REQUEST_URI'], '/wc/v3/orders' ) ) {
-            //     $this->include_wc_files();
-            // }
         }
     }
 

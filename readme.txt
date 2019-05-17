@@ -3,9 +3,9 @@ Contributors: tareq1988, wedevs, sabbir1991, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.1.1
+Tested up to: 5.2
 WC requires at least: 3.0
-WC tested up to: 3.6.2
+WC tested up to: 3.6.3
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -52,6 +52,15 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.0.5 -> 17 May, 2019 =
+----------------------------
+- **Fix**   Customer not created if WooCommerce default `Automatic username and passowrd create` options is changed
+- **Fix**   Customer creating and serching issue for Dokan vendors
+- **Fix**   Stock level manage during cart and checkout process
+- **Fix**   Tax not displaying when exclusive tax applied from WooCommerce settings
+- **Tweak** Move product api endpoints to wepos custom endpoint
+- **Tweak** Remove some unwanted code
 
 = v1.0.4 -> 3 May, 2019 =
 ----------------------------

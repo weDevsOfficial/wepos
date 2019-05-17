@@ -415,8 +415,9 @@ var WePos_API = function () {
         key: 'get',
         value: function get(path) {
             var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-            return this.ajax(path, 'GET', this.headers(), data);
+            return this.ajax(path, 'GET', headers, data);
         }
     }, {
         key: 'post',

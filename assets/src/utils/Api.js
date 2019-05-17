@@ -5,8 +5,8 @@ class WePos_API  {
         }
     }
 
-    get(path, data = {} ) {
-        return this.ajax(path, 'GET', this.headers(), data);
+    get( path, data = {}, headers = {} ) {
+        return this.ajax(path, 'GET', headers, data);
     }
 
     post(path, data = {} ) {

@@ -669,8 +669,8 @@ export default {
             return this.getOrderTotal-this.getTotalDiscount;
         },
         changeAmount() {
-            var returnMoney = this.formatNumber( this.cashAmount-this.getTotal );
-            return returnMoney > 0 ? returnMoney : 0;
+            var returnMoney = this.cashAmount-this.getTotal;
+            return returnMoney > 0 ? this.formatNumber( returnMoney ) : 0;
         },
         getBreadCrums() {
             if ( this.$route.query.category !== undefined ) {
@@ -940,7 +940,7 @@ export default {
             }
 
             if ( ( this.totalPages >= this.page ) ) {
-                wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products?status=publish&per_page=30&page=' + this.page )
+                wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page )
                 .done( ( response, status, xhr ) => {
                     this.products = this.products.concat( response );
                     this.page += 1;
@@ -983,24 +983,32 @@ export default {
             var self = this;
             var cartObject = {};
 
-            cartObject.product_id    = ( product.parent_id === 0 ) ? product.id : product.parent_id;
-            cartObject.name          = product.name;
-            cartObject.quantity      = 1;
-            cartObject.regular_price = product.regular_display_price;
-            cartObject.sale_price    = product.sales_display_price;
-            cartObject.on_sale       = product.on_sale;
-            cartObject.attribute     = product.attributes;
-            cartObject.variation_id  = ( product.parent_id !== 0 ) ? product.id : 0;
-            cartObject.editQuantity  = false;
-            cartObject.type          = product.type;
-            cartObject.tax_amount    = product.tax_amount;
+            cartObject.product_id         = ( product.parent_id === 0 ) ? product.id : product.parent_id;
+            cartObject.name               = product.name;
+            cartObject.quantity           = 1;
+            cartObject.regular_price      = product.regular_display_price;
+            cartObject.sale_price         = product.sales_display_price;
+            cartObject.on_sale            = product.on_sale;
+            cartObject.attribute          = product.attributes;
+            cartObject.variation_id       = ( product.parent_id !== 0 ) ? product.id : 0;
+            cartObject.editQuantity       = false;
+            cartObject.type               = product.type;
+            cartObject.tax_amount         = product.tax_amount;
+            cartObject.manage_stock       = product.manage_stock;
+            cartObject.stock_status       = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity     = product.stock_quantity;
 
             var index = weLo_.findIndex( self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id} );
 
             if ( index < 0 ) {
-                self.orderdata.line_items.push( cartObject );
+                if ( this.hasStock( product ) ) {
+                    self.orderdata.line_items.push( cartObject );
+                }
             } else {
-                self.orderdata.line_items[index].quantity += 1;
+                if ( this.hasStock( product, self.orderdata.line_items[index].quantity ) ) {
+                    self.orderdata.line_items[index].quantity += 1;
+                }
             }
 
             this.calculateDiscount();
@@ -1015,7 +1023,9 @@ export default {
             this.calculateFee();
         },
         addQuantity(item) {
-            item.quantity++;
+            if ( this.hasStock( item, item.quantity ) ) {
+                item.quantity++;
+            }
             this.calculateDiscount();
             this.calculateFee();
         },
@@ -1028,6 +1038,17 @@ export default {
             item.quantity--;
             this.calculateDiscount();
             this.calculateFee();
+        },
+        hasStock(product, productCartQty = 0 ) {
+            if ( ! product.manage_stock ) {
+                return ( 'outofstock' == product.stock_status ) ? false : true;
+            } else {
+                if ( product.backorders_allowed ) {
+                    return true;
+                } else {
+                    return product.stock_quantity > productCartQty;
+                }
+            }
         },
         fetchGateway() {
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/payment/gateways' )

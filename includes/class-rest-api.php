@@ -22,9 +22,11 @@ class REST_API {
      */
     public function __construct() {
         $this->class_map = apply_filters( 'wepos_rest_api_class_map', array(
-            WEPOS_INCLUDES . '/api/class-payment-controller.php' => 'WePOS\api\Payment',
-            WEPOS_INCLUDES . '/api/class-settings-controller.php' => 'WePOS\api\Settings',
-            WEPOS_INCLUDES . '/api/class-tax-controller.php' => 'WePOS\api\Tax',
+            WEPOS_INCLUDES . '/api/class-payment-controller.php'   => 'WePOS\api\Payment',
+            WEPOS_INCLUDES . '/api/class-settings-controller.php'  => 'WePOS\api\Settings',
+            WEPOS_INCLUDES . '/api/class-tax-controller.php'       => 'WePOS\api\Tax',
+            WEPOS_INCLUDES . '/api/class-customers-controller.php' => 'WePOS\api\Customer',
+            WEPOS_INCLUDES . '/api/class-products-controller.php' => 'WePOS\api\Products'
         ) );
 
         // Init REST API routes.
@@ -33,6 +35,7 @@ class REST_API {
         add_filter( 'woocommerce_rest_prepare_product_variation_object', [ $this, 'product_response' ], 10, 3 );
         add_filter( 'woocommerce_rest_prepare_product_cat', [ $this, 'category_response' ], 10, 3 );
         add_filter( 'woocommerce_rest_prepare_tax', [ $this, 'tax_response' ], 10, 3 );
+        add_filter( 'woocommerce_rest_pre_insert_shop_order_object', [ $this, 'validate_item_stock_before_order' ], 10, 3 );
     }
 
     /**
@@ -57,7 +60,6 @@ class REST_API {
      */
     public function product_response( $response, $product, $request ) {
         global $_wp_additional_image_sizes;
-
         $data           = $response->get_data();
         $type           = isset( $data['type'] ) ? $data['type'] : '';
         $variation_data = [];
@@ -74,17 +76,16 @@ class REST_API {
             }
         }
 
-        $data['variations']    = [];
-        $data['variations']    = $variation_data;
+        $price_excl_tax                = wc_get_price_excluding_tax( $product );
+        $price_incl_tax                = wc_get_price_including_tax( $product );
+        $tax_amount                    = (float)$price_incl_tax - (float)$price_excl_tax;
 
+        $data['variations']            = [];
+        $data['variations']            = $variation_data;
+        $data['tax_amount']            = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
         $data['regular_display_price'] = wc_format_decimal( wc_get_price_to_display( $product, [ 'price' => $product->get_regular_price() ] ), wc_get_price_decimals() );
         $data['sales_display_price']   = wc_format_decimal( wc_get_price_to_display( $product, ['price' => $product->get_sale_price() ] ), wc_get_price_decimals() );
         $data['barcode']               = $product->get_meta( '_wepos_barcode' );
-
-        $price_excl_tax     = wc_get_price_excluding_tax( $product );
-        $price_incl_tax     = wc_get_price_including_tax( $product );
-        $tax_amount         = (float)$price_incl_tax - (float)$price_excl_tax;
-        $data['tax_amount'] = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
 
         if ( ! empty( $data['images'] ) ) {
             foreach ( $data['images'] as $key => $image) {
@@ -97,6 +98,7 @@ class REST_API {
         }
 
         $response->set_data( $data );
+
         return $response;
     }
 
@@ -126,5 +128,39 @@ class REST_API {
         $data['parent_id'] = $category->parent ? $category->parent : null;
         $response->set_data( $data );
         return $response;
+    }
+
+    /**
+     * Validate Stock in order item
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    public function validate_item_stock_before_order( $order, $request, $creating ) {
+        if ( ! $creating ) {
+            return $order;
+        }
+
+        $items = $order->get_items();
+
+        foreach ( $items as $item ) {
+            $product              = $item->get_product();
+            $is_manage_stock      = $product->get_manage_stock();
+            $is_backorder_allowed = $product->get_backorders();
+
+            if ( ! $is_manage_stock || 'no' !== $is_backorder_allowed ) {
+                return $order;
+            }
+
+            $stock_quantity = $product->get_stock_quantity();
+            $order_quantity = $item->get_quantity();
+
+            if ( $order_quantity > $stock_quantity ) {
+                throw new \WC_REST_Exception( 'woocommerce_rest_invalid_product_quantity', sprintf( __( 'The item %s already out of stock. Please remove this from cart', 'wepos' ), $product->get_name() ), 400 );
+            }
+        }
+
+        return $order;
     }
 }

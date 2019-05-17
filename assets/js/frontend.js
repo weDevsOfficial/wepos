@@ -12,14 +12,7 @@ pluginWebpack([0],Array(57).concat([
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'App',
-
-    created() {
-
-        // wepos.hooks.addAction( 'test_action', 'testAction', function() {
-        //     console.log( 'Loaded action' );
-        // } );
-    }
+    name: 'App'
 });
 
 /***/ }),
@@ -707,8 +700,8 @@ let Modal = wepos_get_lib('Modal');
             return this.getOrderTotal - this.getTotalDiscount;
         },
         changeAmount() {
-            var returnMoney = this.formatNumber(this.cashAmount - this.getTotal);
-            return returnMoney > 0 ? returnMoney : 0;
+            var returnMoney = this.cashAmount - this.getTotal;
+            return returnMoney > 0 ? this.formatNumber(returnMoney) : 0;
         },
         getBreadCrums() {
             if (this.$route.query.category !== undefined) {
@@ -972,7 +965,7 @@ let Modal = wepos_get_lib('Modal');
             }
 
             if (this.totalPages >= this.page) {
-                wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products?status=publish&per_page=30&page=' + this.page).done((response, status, xhr) => {
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page).done((response, status, xhr) => {
                     this.products = this.products.concat(response);
                     this.page += 1;
                     this.totalPages = parseInt(xhr.getResponseHeader('X-WP-TotalPages'));
@@ -1025,13 +1018,21 @@ let Modal = wepos_get_lib('Modal');
             cartObject.editQuantity = false;
             cartObject.type = product.type;
             cartObject.tax_amount = product.tax_amount;
+            cartObject.manage_stock = product.manage_stock;
+            cartObject.stock_status = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity = product.stock_quantity;
 
             var index = weLo_.findIndex(self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
 
             if (index < 0) {
-                self.orderdata.line_items.push(cartObject);
+                if (this.hasStock(product)) {
+                    self.orderdata.line_items.push(cartObject);
+                }
             } else {
-                self.orderdata.line_items[index].quantity += 1;
+                if (this.hasStock(product, self.orderdata.line_items[index].quantity)) {
+                    self.orderdata.line_items[index].quantity += 1;
+                }
             }
 
             this.calculateDiscount();
@@ -1046,7 +1047,9 @@ let Modal = wepos_get_lib('Modal');
             this.calculateFee();
         },
         addQuantity(item) {
-            item.quantity++;
+            if (this.hasStock(item, item.quantity)) {
+                item.quantity++;
+            }
             this.calculateDiscount();
             this.calculateFee();
         },
@@ -1059,6 +1062,17 @@ let Modal = wepos_get_lib('Modal');
             item.quantity--;
             this.calculateDiscount();
             this.calculateFee();
+        },
+        hasStock(product, productCartQty = 0) {
+            if (!product.manage_stock) {
+                return 'outofstock' == product.stock_status ? false : true;
+            } else {
+                if (product.backorders_allowed) {
+                    return true;
+                } else {
+                    return product.stock_quantity > productCartQty;
+                }
+            }
         },
         fetchGateway() {
             wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/payment/gateways').done(response => {
@@ -1817,7 +1831,7 @@ let Modal = wepos_get_lib('Modal');
             stateList: [],
             selectedState: null,
             selectedCountry: null,
-            isDisabled: false
+            isDisabled: true
         };
     },
     computed: {
@@ -1837,6 +1851,19 @@ let Modal = wepos_get_lib('Modal');
             });
         }
     },
+
+    watch: {
+        customer: {
+            handler(val) {
+                this.isDisabled = true;
+                if (val.first_name !== undefined && val.first_name.trim() != '' && val.last_name !== undefined && val.last_name.trim() != '' && val.email !== undefined && val.email.trim() != '') {
+                    this.isDisabled = false;
+                }
+            },
+            deep: true
+        }
+    },
+
     methods: {
         focusCustomerSearch(e) {
             e.preventDefault();
@@ -1870,9 +1897,26 @@ let Modal = wepos_get_lib('Modal');
             this.showCustomerResults = false;
             this.$emit('onblur');
         },
+        closeNewCustomerModal() {
+            this.customer = {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: ''
+            };
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.showNewCustomerModal = false;
+        },
         searchCustomer() {
             if (this.serachInput) {
-                wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/customers?search=' + this.serachInput).done(response => {
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/customers?search=' + this.serachInput).done(response => {
                     this.customers = response;
                 });
             } else {
@@ -1890,6 +1934,7 @@ let Modal = wepos_get_lib('Modal');
                     email: this.customer.email,
                     first_name: this.customer.first_name,
                     last_name: this.customer.last_name,
+                    username: this.customer.email,
                     password: this.generatePassword(20),
                     billing: {
                         first_name: this.customer.first_name,
@@ -1906,17 +1951,13 @@ let Modal = wepos_get_lib('Modal');
                 };
                 var $contentWrap = jQuery('.wepos-new-customer-form');
                 $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-                this.isDisabled = true;
 
-                wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/customers', customerData).done(response => {
+                wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/customers', customerData).done(response => {
                     this.serachInput = response.first_name + ' ' + response.last_name;
                     this.$emit('onCustomerSelected', response);
-                    this.isDisabled = true;
                     $contentWrap.unblock();
-                    this.showNewCustomerModal = false;
-                    this.customer = {};
+                    this.closeNewCustomerModal();
                 }).fail(response => {
-                    this.isDisabled = true;
                     $contentWrap.unblock();
                     alert(response.responseJSON.message);
                 });
@@ -2307,29 +2348,10 @@ const Tokens = {
     methods: {
         printReceipt() {
             var self = this;
-            var beforePrint = function () {
-                this.eventBus.$emit('openprinthtml', true);
-            };
-            var afterPrint = function () {
-                this.eventBus.$emit('closeprinthtml', false);
-            };
 
-            if (window.matchMedia) {
-                var mediaQueryList = window.matchMedia('print');
-                mediaQueryList.addListener(function (mql) {
-                    if (mql.matches) {
-                        beforePrint();
-                    } else {
-                        afterPrint();
-                    }
-                });
-            }
-
-            window.onbeforeprint = beforePrint;
             setTimeout(() => {
                 window.print();
             }, 500);
-            window.onafterprint = afterPrint;
         }
     }
 });
@@ -3806,11 +3828,7 @@ var render = function() {
                 footer: true,
                 header: true
               },
-              on: {
-                close: function($event) {
-                  _vm.showNewCustomerModal = false
-                }
-              }
+              on: { close: _vm.closeNewCustomerModal }
             },
             [
               _c("template", { slot: "body" }, [
@@ -4258,12 +4276,7 @@ var render = function() {
                   "button",
                   {
                     staticClass: "add-new-customer-btn add-variation-btn",
-                    attrs: {
-                      disabled:
-                        _vm.customer.email == undefined ||
-                        _vm.customer.email == "" ||
-                        _vm.isDisabled
-                    },
+                    attrs: { disabled: _vm.isDisabled },
                     on: {
                       click: function($event) {
                         _vm.createCustomer()

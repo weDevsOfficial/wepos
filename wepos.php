@@ -3,13 +3,15 @@
 Plugin Name: wePOS - Point Of Sale (POS) for WooCommerce
 Plugin URI: https://wedevs.com/wepos
 Description: A beautiful and fast Point of Sale (POS) system for WooCommerce
-Version: 1.0.4
+Version: 1.0.5
 Author: weDevs
 Author URI: https://wedevs.com/
-License: GPL2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: wepos
 Domain Path: /languages
+WC requires at least: 3.0
+WC tested up to: 3.6.3
+License: GPL2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 /**
@@ -53,7 +55,7 @@ final class We_POS {
      *
      * @var string
      */
-    public $version = '1.0.4';
+    public $version = '1.0.5';
 
     /**
      * Holds various class instances
@@ -79,6 +81,7 @@ final class We_POS {
         add_action( 'plugins_loaded', [ $this, 'init_gateways' ], 11, 1 );
 
         add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
+        add_action( 'woocommerce_init', array( $this, 'on_wc_init' ) );
     }
 
     /**
@@ -352,6 +355,63 @@ final class We_POS {
 
             case 'frontend' :
                 return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
+        }
+    }
+
+    /**
+     * On WC init, include cart required files in REST request
+     *
+     * @since 1.0.5
+     *
+     * @return void
+     */
+    public function on_wc_init() {
+        if ( wc()->is_rest_api_request() ) {
+            $namespace = '/wepos/v1/';
+
+            $rest_bases = [
+                'products',
+            ];
+
+            foreach ( $rest_bases as $rest_base ) {
+                $endpoint = $namespace . $rest_base;
+
+                if ( strpos( $_SERVER['REQUEST_URI'], $endpoint ) ) {
+                    $this->include_wc_files();
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Include cart required files in REST request
+     *
+     * @since 1.0.5
+     *
+     * @return void
+     */
+    public function include_wc_files() {
+        if ( ! wc()->cart ) {
+            include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+            include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
+            include_once WC_ABSPATH . 'includes/class-wc-cart.php';
+            include_once WC_ABSPATH . 'includes/class-wc-tax.php';
+            include_once WC_ABSPATH . 'includes/class-wc-shipping-zones.php';
+            include_once WC_ABSPATH . 'includes/class-wc-customer.php';
+            include_once WC_ABSPATH . 'includes/class-wc-session-handler.php';
+
+            // Session class, handles session data for users - can be overwritten if custom handler is needed.
+            $session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
+            wc()->session = new $session_class();
+            wc()->session->init();
+
+            wc()->customer = new WC_Customer( get_current_user_id(), true );
+            // Cart needs the customer info.
+            wc()->cart = new WC_Cart();
+
+            // Customer should be saved during shutdown.
+            add_action( 'shutdown', array( wc()->customer, 'save' ), 10 );
         }
     }
 

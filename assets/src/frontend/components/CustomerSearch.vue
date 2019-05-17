@@ -59,7 +59,7 @@
         <modal
             :title="__( 'Add New Customer', 'wepos' )"
             v-if="showNewCustomerModal"
-            @close="showNewCustomerModal = false"
+            @close="closeNewCustomerModal"
             width="700px"
             :footer="true"
             :header="true"
@@ -145,7 +145,7 @@
             </template>
 
             <template slot="footer">
-                <button class="add-new-customer-btn add-variation-btn" :disabled="customer.email == undefined || customer.email == '' || isDisabled" @click="createCustomer()">{{ __( 'Add Customer', 'wepos' ) }}</button>
+                <button class="add-new-customer-btn add-variation-btn" :disabled="isDisabled" @click="createCustomer()">{{ __( 'Add Customer', 'wepos' ) }}</button>
             </template>
         </modal>
     </div>
@@ -186,7 +186,7 @@ export default {
             stateList: [],
             selectedState: null,
             selectedCountry: null,
-            isDisabled: false
+            isDisabled: true
         }
     },
     computed: {
@@ -206,6 +206,23 @@ export default {
             } );
         },
     },
+
+    watch: {
+        customer: {
+            handler(val) {
+                this.isDisabled = true;
+                if (
+                    val.first_name !== undefined && val.first_name.trim() != ''
+                    && val.last_name !== undefined && val.last_name.trim() != ''
+                    && val.email !== undefined && val.email.trim() != ''
+                ) {
+                    this.isDisabled = false;
+                }
+            },
+            deep: true
+        }
+    },
+
     methods: {
         focusCustomerSearch(e) {
             e.preventDefault();
@@ -239,9 +256,26 @@ export default {
             this.showCustomerResults = false;
             this.$emit( 'onblur' );
         },
+        closeNewCustomerModal() {
+            this.customer = {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: '',
+            };
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.showNewCustomerModal = false;
+        },
         searchCustomer() {
             if ( this.serachInput ) {
-                wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/customers?search=' + this.serachInput )
+                wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/customers?search=' + this.serachInput )
                 .done(response => {
                     this.customers = response;
                 });
@@ -260,6 +294,7 @@ export default {
                     email: this.customer.email,
                     first_name: this.customer.first_name,
                     last_name: this.customer.last_name,
+                    username: this.customer.email,
                     password: this.generatePassword(20),
                     billing: {
                         first_name: this.customer.first_name,
@@ -276,18 +311,14 @@ export default {
                 }
                 var $contentWrap = jQuery('.wepos-new-customer-form');
                 $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-                this.isDisabled = true;
 
-                wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/customers', customerData )
+                wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/customers', customerData )
                 .done(response => {
                     this.serachInput = response.first_name + ' ' + response.last_name;
                     this.$emit( 'onCustomerSelected', response );
-                    this.isDisabled = true;
                     $contentWrap.unblock();
-                    this.showNewCustomerModal = false;
-                    this.customer = {};
+                    this.closeNewCustomerModal();
                 }).fail( response => {
-                    this.isDisabled = true;
                     $contentWrap.unblock();
                     alert( response.responseJSON.message );
                 } );

@@ -700,8 +700,8 @@ let Modal = wepos_get_lib('Modal');
             return this.getOrderTotal - this.getTotalDiscount;
         },
         changeAmount() {
-            var returnMoney = this.formatNumber(this.cashAmount - this.getTotal);
-            return returnMoney > 0 ? returnMoney : 0;
+            var returnMoney = this.cashAmount - this.getTotal;
+            return returnMoney > 0 ? this.formatNumber(returnMoney) : 0;
         },
         getBreadCrums() {
             if (this.$route.query.category !== undefined) {
@@ -965,7 +965,7 @@ let Modal = wepos_get_lib('Modal');
             }
 
             if (this.totalPages >= this.page) {
-                wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products?status=publish&per_page=30&page=' + this.page).done((response, status, xhr) => {
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page).done((response, status, xhr) => {
                     this.products = this.products.concat(response);
                     this.page += 1;
                     this.totalPages = parseInt(xhr.getResponseHeader('X-WP-TotalPages'));

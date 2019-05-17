@@ -76,19 +76,13 @@ class REST_API {
             }
         }
 
-        $data['variations']    = [];
-        $data['variations']    = $variation_data;
+        $price_excl_tax                = wc_get_price_excluding_tax( $product );
+        $price_incl_tax                = wc_get_price_including_tax( $product );
+        $tax_amount                    = (float)$price_incl_tax - (float)$price_excl_tax;
 
-        $price_excl_tax     = wc_get_price_excluding_tax( $product );
-        $price_incl_tax     = wc_get_price_including_tax( $product );
-        // error_log( print_r( '----------------', true ) );
-        // error_log( print_r( $product->get_id(), true ) );
-        // error_log( print_r( $price_excl_tax, true ) );
-        // error_log( print_r( $price_incl_tax, true ) );
-        // error_log( print_r( '----------------', true ) );
-        $tax_amount         = (float)$price_incl_tax - (float)$price_excl_tax;
-        $data['tax_amount'] = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
-
+        $data['variations']            = [];
+        $data['variations']            = $variation_data;
+        $data['tax_amount']            = wc_format_decimal( $tax_amount, wc_get_price_decimals() );
         $data['regular_display_price'] = wc_format_decimal( wc_get_price_to_display( $product, [ 'price' => $product->get_regular_price() ] ), wc_get_price_decimals() );
         $data['sales_display_price']   = wc_format_decimal( wc_get_price_to_display( $product, ['price' => $product->get_sale_price() ] ), wc_get_price_decimals() );
         $data['barcode']               = $product->get_meta( '_wepos_barcode' );

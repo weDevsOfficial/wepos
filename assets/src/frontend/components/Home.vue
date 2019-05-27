@@ -151,6 +151,11 @@
                             <button class="wepos-button" @click.prevent="openQucikMenu()"><span class="more-icon flaticon-more"></span></button>
                             <template slot="popover">
                                 <ul>
+                                    <component
+                                        v-for="(quickLinkListStartComponent, key) in quickLinkListStart"
+                                        :key="key-`1`"
+                                        :is="quickLinkListStartComponent"
+                                    />
                                     <li><a href="#" @click.prevent="emptyCart"><span class="flaticon-empty-cart quick-menu-icon"></span>{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
                                     <li><a href="#" @click.prevent="openHelp"><span class="flaticon-information quick-menu-icon"></span>{{ __( 'Help', 'wepos' ) }}</a></li>
                                     <li class="divider"></li>
@@ -466,7 +471,7 @@
                                 <template v-if="availableGateways.length > 0">
                                     <label v-for="gateway in availableGateways">
                                         <input type="radio" name="gateway" checked v-model="orderdata.payment_method" :value="gateway.id">
-                                        <span class="gateway">
+                                        <span class="gateway" :class="`gateway-${gateway.id}`">
                                             {{ gateway.title }}
                                         </span>
                                     </label>
@@ -498,6 +503,14 @@
                                     </div>
                                 </div>
                             </template>
+
+                            <component
+                                v-for="(availableGatewayComponent, key ) in availableGatewayContent"
+                                :key="key"
+                                :is="availableGatewayComponent"
+                                :selectedgateway="orderdata.payment_method"
+                                :availablegateways="availableGateways"
+                            />
                         </div>
 
                         <div class="footer wepos-clearfix">
@@ -584,6 +597,8 @@ export default {
             selectedCategory: '',
             categories: [],
             quickLinkList: wepos.hooks.applyFilters( 'wepos_quick_links', [] ),
+            quickLinkListStart: wepos.hooks.applyFilters( 'wepos_quick_links_start', [] ),
+            availableGatewayContent: wepos.hooks.applyFilters( 'wepos_avaialable_gateway_content', [] ),
         }
     },
     computed: {
@@ -809,8 +824,9 @@ export default {
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+            var orderFromData = wepos.hooks.applyFilters( 'wepos_order_form_data', this.orderdata );
 
-            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', this.orderdata )
+            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', orderFromData )
             .done( response => {
                 wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/payment/process', response )
                 .done( data => {

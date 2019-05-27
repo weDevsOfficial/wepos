@@ -546,6 +546,19 @@ pluginWebpack([0],Array(57).concat([
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -614,7 +627,9 @@ let Modal = wepos_get_lib('Modal');
             },
             selectedCategory: '',
             categories: [],
-            quickLinkList: wepos.hooks.applyFilters('wepos_quick_links', [])
+            quickLinkList: wepos.hooks.applyFilters('wepos_quick_links', []),
+            quickLinkListStart: wepos.hooks.applyFilters('wepos_quick_links_start', []),
+            availableGatewayContent: wepos.hooks.applyFilters('wepos_avaialable_gateway_content', [])
         };
     },
     computed: {
@@ -836,8 +851,9 @@ let Modal = wepos_get_lib('Modal');
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+            var orderFromData = wepos.hooks.applyFilters('wepos_order_form_data', this.orderdata);
 
-            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', this.orderdata).done(response => {
+            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderFromData).done(response => {
                 wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/payment/process', response).done(data => {
                     if (data.result == 'success') {
                         this.$router.push({
@@ -2612,6 +2628,9 @@ new Vue({
     router: _router2.default,
     render: function render(h) {
         return h(_App2.default);
+    },
+    created: function created() {
+        this.setLocaleData(wepos.i18n['wepos']);
     }
 });
 
@@ -5895,6 +5914,16 @@ var render = function() {
                         _c(
                           "ul",
                           [
+                            _vm._l(_vm.quickLinkListStart, function(
+                              quickLinkListStartComponent,
+                              key
+                            ) {
+                              return _c(quickLinkListStartComponent, {
+                                key: key - "1",
+                                tag: "component"
+                              })
+                            }),
+                            _vm._v(" "),
                             _c("li", [
                               _c(
                                 "a",
@@ -7556,13 +7585,20 @@ var render = function() {
                                         }
                                       }),
                                       _vm._v(" "),
-                                      _c("span", { staticClass: "gateway" }, [
-                                        _vm._v(
-                                          "\n                                        " +
-                                            _vm._s(gateway.title) +
-                                            "\n                                    "
-                                        )
-                                      ])
+                                      _c(
+                                        "span",
+                                        {
+                                          staticClass: "gateway",
+                                          class: "gateway-" + gateway.id
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                        " +
+                                              _vm._s(gateway.title) +
+                                              "\n                                    "
+                                          )
+                                        ]
+                                      )
                                     ])
                                   }),
                                   _vm._v(" "),
@@ -7659,7 +7695,21 @@ var render = function() {
                                 ])
                               ])
                             ]
-                          : _vm._e()
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm._l(_vm.availableGatewayContent, function(
+                          availableGatewayComponent,
+                          key
+                        ) {
+                          return _c(availableGatewayComponent, {
+                            key: key,
+                            tag: "component",
+                            attrs: {
+                              selectedgateway: _vm.orderdata.payment_method,
+                              availablegateways: _vm.availableGateways
+                            }
+                          })
+                        })
                       ],
                       2
                     ),

@@ -177,11 +177,11 @@ class Assets {
             // Load scripts
             wp_enqueue_script( 'wepos-blockui' );
             wp_enqueue_script( 'wepos-accounting' );
+            wp_enqueue_script( 'wepos-vendor' );
+            wp_enqueue_script( 'wepos-bootstrap' );
 
             do_action( 'wepos_load_forntend_scripts' );
 
-            wp_enqueue_script( 'wepos-vendor' );
-            wp_enqueue_script( 'wepos-bootstrap' );
             wp_enqueue_script( 'wepos-frontend' );
         }
     }
@@ -221,7 +221,8 @@ class Assets {
             'categories'                   => wepos_get_product_category(),
             'countries'                    => WC()->countries->get_countries(),
             'states'                       => WC()->countries->get_states(),
-            'current_user_id'              => get_current_user_id()
+            'current_user_id'              => get_current_user_id(),
+            'home_url'                     => home_url()
         ] );
 
         wp_localize_script( 'wepos-vendor', 'wepos', $localize_data );

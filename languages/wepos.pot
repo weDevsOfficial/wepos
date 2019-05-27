@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-05-17 09:25:11+00:00\n"
+"POT-Creation-Date: 2019-05-21 05:41:48+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,11 +15,11 @@ msgstr ""
 
 #: assets/js/admin.js:114 assets/js/admin.js:361 assets/js/admin.js:453
 #: assets/js/admin.js:1421 assets/js/bootstrap.js:898
-#: assets/js/frontend.js:2691 assets/js/frontend.js:2873
-#: assets/js/frontend.js:2957 assets/js/frontend.js:3467
-#: assets/js/frontend.js:4507 assets/js/frontend.js:4674
-#: assets/js/frontend.js:4778 assets/js/frontend.js:5119
-#: assets/js/frontend.js:5230 assets/js/vendor.js:26199
+#: assets/js/frontend.js:2694 assets/js/frontend.js:2876
+#: assets/js/frontend.js:2960 assets/js/frontend.js:3470
+#: assets/js/frontend.js:4510 assets/js/frontend.js:4677
+#: assets/js/frontend.js:4781 assets/js/frontend.js:5122
+#: assets/js/frontend.js:5233 assets/js/vendor.js:26199
 #: assets/js/vendor.js:26775 assets/js/vendor.js:26885
 #: assets/js/vendor.js:27005 assets/js/vendor.js:27027
 #: assets/js/vendor.js:27084
@@ -122,15 +122,15 @@ msgstr ""
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4441
+#: assets/js/frontend.js:4444
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5033
+#: assets/js/frontend.js:5036
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:7731
+#: assets/js/frontend.js:7734
 msgid "td"
 msgstr ""
 

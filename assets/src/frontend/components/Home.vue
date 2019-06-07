@@ -969,6 +969,42 @@ export default {
                 this.productLoading = false;
             }
         },
+
+        maybeRemoveDeletedProduct( cartData ) {
+            return new Promise( ( resolve, reject ) => {
+                if ( ! cartData ) {
+                    return resolve( cartData );
+                }
+
+                if ( ! cartData.line_items || cartData.line_items.length < 1 ) {
+                    return resolve( cartData );
+                }
+
+                let productIds = cartData.line_items.map( (lineItem) => {
+                    return lineItem.product_id;
+                });
+
+                wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/products?include=' + productIds.toString() )
+                .then( ( response ) => {
+                    let foundProducts = response.map( ( product ) => {
+                        return product.id;
+                    });
+
+                    cartData.line_items.forEach( (product, key) => {
+                        if ( ! foundProducts.includes( product.product_id ) ) {
+                            cartData.line_items.splice( key, 1);
+                            localStorage.setItem( 'cartdata', JSON.stringify( cartData ) );
+                        }
+                    });
+
+                    return resolve( cartData );
+                })
+                .fail( () => {
+                    return reject( cartData );
+                });
+            });
+        },
+
         selectCustomer( customer ) {
             if ( Object.keys( customer ).length > 0 ) {
                 this.orderdata.billing = customer.billing;
@@ -1159,7 +1195,7 @@ export default {
         }
     },
 
-    created() {
+    async created() {
         this.fetchSettings();
         this.fetchTaxes();
         this.fetchProducts();
@@ -1168,7 +1204,8 @@ export default {
 
         if ( typeof(localStorage) != 'undefined' ) {
             var cartdata = JSON.parse( localStorage.getItem('cartdata') );
-            this.orderdata = cartdata ? cartdata : this.orderdata;
+            cartdata = await this.maybeRemoveDeletedProduct( cartdata );
+            this.orderdata = cartdata ? cartdata: this.orderdata;
         }
 
         window.addEventListener('beforeunload', () => {

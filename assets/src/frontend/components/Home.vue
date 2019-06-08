@@ -980,7 +980,7 @@ export default {
                     return resolve( cartData );
                 }
 
-                let productIds = cartData.line_items.map( (lineItem) => {
+                let productIds = cartData.line_items.map( ( lineItem ) => {
                     return lineItem.product_id;
                 });
 
@@ -990,9 +990,9 @@ export default {
                         return product.id;
                     });
 
-                    cartData.line_items.forEach( (product, key) => {
+                    cartData.line_items.forEach( ( product, key ) => {
                         if ( ! foundProducts.includes( product.product_id ) ) {
-                            cartData.line_items.splice( key, 1);
+                            cartData.line_items.splice( key, 1 );
                             localStorage.setItem( 'cartdata', JSON.stringify( cartData ) );
                         }
                     });
@@ -1203,9 +1203,13 @@ export default {
         this.fetchCategories();
 
         if ( typeof(localStorage) != 'undefined' ) {
-            var cartdata = JSON.parse( localStorage.getItem('cartdata') );
-            cartdata = await this.maybeRemoveDeletedProduct( cartdata );
-            this.orderdata = cartdata ? cartdata: this.orderdata;
+            try {
+                var cartdata = JSON.parse( localStorage.getItem( 'cartdata' ) );
+                cartdata = await this.maybeRemoveDeletedProduct( cartdata );
+                this.orderdata = cartdata ? cartdata : this.orderdata;
+            } catch( cartdata ) {
+                this.orderdata = cartdata ? cartdata : this.orderdata;
+            }
         }
 
         window.addEventListener('beforeunload', () => {

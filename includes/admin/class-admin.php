@@ -80,6 +80,7 @@ class Admin {
     public function enqueue_scripts() {
         wp_enqueue_style( 'wepos-flaticon' );
         wp_enqueue_style( 'wepos-tinymce' );
+        wp_enqueue_style( 'wepos-tinymce' );
         wp_enqueue_style( 'wepos-style' );
         wp_enqueue_style( 'wepos-admin' );
 

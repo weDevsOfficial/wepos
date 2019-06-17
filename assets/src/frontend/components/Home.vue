@@ -171,6 +171,13 @@
                     </div>
                 </div>
             </div>
+            <component
+                v-for="(beforCartPanel, key ) in beforCartPanels"
+                :key="key"
+                :is="beforCartPanel"
+                :orderdata="orderdata"
+                :cartTotal="getTotal"
+            />
             <div class="cart-panel" v-if="settings.wepos_general">
                 <div class="cart-content">
                     <table class="cart-table">
@@ -508,8 +515,8 @@
                                 v-for="(availableGatewayComponent, key ) in availableGatewayContent"
                                 :key="key"
                                 :is="availableGatewayComponent"
-                                :selectedgateway="orderdata.payment_method"
                                 :availablegateways="availableGateways"
+                                :orderdata="orderdata"
                             />
                         </div>
 
@@ -524,7 +531,15 @@
 
         <overlay :show="showOverlay"></overlay>
 
-        <print-receipt-html v-show="createprintreceipt" :printdata="printdata" :settings="settings.wepos_receipts"></print-receipt-html>
+        <print-receipt-html v-show="createprintreceipt" v-if="showReceiptHtml" :printdata="printdata" :settings="settings.wepos_receipts"></print-receipt-html>
+
+        <component
+            v-for="(afterMainContent, key ) in afterMainContents"
+            :key="key"
+            :is="afterMainContent"
+            :orderdata="orderdata"
+            :printdata="printdata"
+        />
     </div>
 </template>
 
@@ -580,25 +595,29 @@ export default {
             cashAmount: '',
             availableTax: [],
             settings: {},
-            printdata: {
+            printdata: wepos.hooks.applyFilters( 'wepos_initial_print_data', {
                 gateway: {
                     id: '',
                     title: ''
                 },
-            },
+            } ),
             createprintreceipt: false,
             orderdata: {
                 billing: {},
                 shipping: {},
                 line_items: [],
                 fee_lines: [],
+                customer_id: 0,
                 customer_note: '',
             },
             selectedCategory: '',
             categories: [],
+            showReceiptHtml: wepos.hooks.applyFilters( 'wepos_render_receipt_html', true ),
             quickLinkList: wepos.hooks.applyFilters( 'wepos_quick_links', [] ),
             quickLinkListStart: wepos.hooks.applyFilters( 'wepos_quick_links_start', [] ),
             availableGatewayContent: wepos.hooks.applyFilters( 'wepos_avaialable_gateway_content', [] ),
+            afterMainContents: wepos.hooks.applyFilters( 'wepos_after_main_content', [] ),
+            beforCartPanels: wepos.hooks.applyFilters( 'wepos_before_cart_panel', [] ),
         }
     },
     computed: {
@@ -774,12 +793,12 @@ export default {
                 fee_lines: [],
                 customer_note: ''
             };
-            this.printdata = {
+            this.printdata = wepos.hooks.applyFilters( 'wepos_initial_print_data', {
                 gateway: {
                     id: '',
                     title: ''
                 },
-            };
+            } );
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit( 'emptycart', this.orderdata );
@@ -838,7 +857,7 @@ export default {
                                 payment: 'success'
                             }
                         });
-                        this.printdata = {
+                        this.printdata = wepos.hooks.applyFilters( 'wepos_after_payment_print_data', {
                             line_items: this.orderdata.line_items,
                             fee_lines: this.orderdata.fee_lines,
                             subtotal: this.getSubtotal,
@@ -852,7 +871,7 @@ export default {
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString()
-                        }
+                        }, this.orderdata );
                     } else {
                         $contentWrap.unblock();
                     }
@@ -1676,6 +1695,7 @@ export default {
 
         .top-panel {
             display: flex;
+            margin-bottom: 20px;
 
             .customer-search-box {
                 flex: 7;
@@ -1861,7 +1881,6 @@ export default {
 
         .cart-panel {
             background: #fff;
-            margin-top: 20px;
             height: 90%;
             box-shadow: 0 3px 15px 0 rgba(0,0,0,.02);
             position: relative;

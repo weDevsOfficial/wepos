@@ -40,12 +40,12 @@ class Frontend {
      *
      * @return void
      */
-    public function remove_admin_bar() {
+    public function remove_admin_bar( $show ) {
         if ( wepos_is_frontend() ) {
             return false;
         }
 
-        return true;
+        return $show;
     }
 
     /**

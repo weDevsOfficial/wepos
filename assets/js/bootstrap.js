@@ -261,7 +261,48 @@ pluginWebpack([2],{
 
 /***/ }),
 
-/***/ 214:
+/***/ 133:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    name: 'Switches',
+
+    props: {
+        enabled: {
+            type: Boolean, // String, Number, Boolean, Function, Object, Array
+            required: true,
+            default: false
+        },
+        value: {
+            type: [String, Number]
+        }
+    },
+
+    data() {
+        return {};
+    },
+
+    methods: {
+
+        trigger(e) {
+            this.$emit('input', e.target.checked, e.target.value);
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 215:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -280,15 +321,15 @@ var _vueRouter = __webpack_require__(85);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _Api = __webpack_require__(215);
+var _Api = __webpack_require__(216);
 
 var _Api2 = _interopRequireDefault(_Api);
 
-var _lodash = __webpack_require__(216);
+var _lodash = __webpack_require__(217);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Mixin = __webpack_require__(354);
+var _Mixin = __webpack_require__(355);
 
 var _Mixin2 = _interopRequireDefault(_Mixin);
 
@@ -296,7 +337,7 @@ var _vueJsPopover = __webpack_require__(83);
 
 var _vueJsPopover2 = _interopRequireDefault(_vueJsPopover);
 
-var _TextEditor = __webpack_require__(356);
+var _TextEditor = __webpack_require__(357);
 
 var _TextEditor2 = _interopRequireDefault(_TextEditor);
 
@@ -310,11 +351,15 @@ var _vueMultiselect = __webpack_require__(84);
 
 var _vueMultiselect2 = _interopRequireDefault(_vueMultiselect);
 
-var _Modal = __webpack_require__(358);
+var _Modal = __webpack_require__(359);
 
 var _Modal2 = _interopRequireDefault(_Modal);
 
-__webpack_require__(361);
+var _Switches = __webpack_require__(362);
+
+var _Switches2 = _interopRequireDefault(_Switches);
+
+__webpack_require__(365);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -373,6 +418,7 @@ window.wepos.libs['Router'] = _vueRouter2.default;
 window.wepos.libs['TextEditor'] = _TextEditor2.default;
 window.wepos.libs['EventBus'] = EventBus;
 window.wepos.libs['Modal'] = _Modal2.default;
+window.wepos.libs['Switches'] = _Switches2.default;
 
 window.wepos.hooks = wp && wp.hooks ? wp.hooks : window.wepos.wpPackages.hooks;
 
@@ -387,7 +433,7 @@ wepos.addFilter = function (hookName, namespace, component) {
 
 /***/ }),
 
-/***/ 215:
+/***/ 216:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -475,7 +521,7 @@ exports.default = WePos_API;
 
 /***/ }),
 
-/***/ 216:
+/***/ 217:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -485,23 +531,23 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _core = __webpack_require__(218);
+var _core = __webpack_require__(219);
 
 var _core2 = _interopRequireDefault(_core);
 
-var _findindex = __webpack_require__(219);
+var _findindex = __webpack_require__(220);
 
 var _findindex2 = _interopRequireDefault(_findindex);
 
-var _truncate = __webpack_require__(280);
+var _truncate = __webpack_require__(281);
 
 var _truncate2 = _interopRequireDefault(_truncate);
 
-var _includes = __webpack_require__(291);
+var _includes = __webpack_require__(292);
 
 var _includes2 = _interopRequireDefault(_includes);
 
-var _debounce = __webpack_require__(351);
+var _debounce = __webpack_require__(352);
 
 var _debounce2 = _interopRequireDefault(_debounce);
 
@@ -514,18 +560,18 @@ _.includes = _includes2.default;
 _.debounce = _debounce2.default;
 
 exports.default = _;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(217)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(218)))
 
 /***/ }),
 
-/***/ 217:
+/***/ 218:
 /***/ (function(module, exports) {
 
 module.exports = window.wepos._;
 
 /***/ }),
 
-/***/ 354:
+/***/ 355:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -535,7 +581,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _i18n = __webpack_require__(355);
+var _i18n = __webpack_require__(356);
 
 exports.default = {
     methods: {
@@ -617,7 +663,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 355:
+/***/ 356:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -742,14 +788,14 @@ var sprintf = exports.sprintf = Jed.sprintf;
 
 /***/ }),
 
-/***/ 356:
+/***/ 357:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(131);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(357);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(358);
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -796,7 +842,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 357:
+/***/ 358:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -822,18 +868,18 @@ if (false) {
 
 /***/ }),
 
-/***/ 358:
+/***/ 359:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(132);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e7f44b2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(360);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e7f44b2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(361);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(359)
+  __webpack_require__(360)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -880,14 +926,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 359:
+/***/ 360:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 360:
+/***/ 361:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -959,6 +1005,103 @@ if (false) {
   }
 }
 
+/***/ }),
+
+/***/ 362:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Switches_vue__ = __webpack_require__(133);
+/* empty harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_71008314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Switches_vue__ = __webpack_require__(364);
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(363)
+}
+var normalizeComponent = __webpack_require__(0)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Switches_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_71008314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Switches_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "assets/src/utils/components/Switches.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-71008314", Component.options)
+  } else {
+    hotAPI.reload("data-v-71008314", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["default"] = (Component.exports);
+
+
+/***/ }),
+
+/***/ 363:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 364:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("label", { staticClass: "switch tips" }, [
+    _c("input", {
+      staticClass: "toogle-checkbox",
+      attrs: { type: "checkbox" },
+      domProps: { checked: _vm.enabled, value: _vm.value },
+      on: { change: _vm.trigger }
+    }),
+    _vm._v(" "),
+    _c("span", { staticClass: "slider round" })
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-71008314", esExports)
+  }
+}
+
 /***/ })
 
-},[214]);
+},[215]);

@@ -3,9 +3,9 @@ Contributors: tareq1988, wedevs, sabbir1991, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.2
+Tested up to: 5.2.1
 WC requires at least: 3.0
-WC tested up to: 3.6.3
+WC tested up to: 3.6.4
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -52,6 +52,13 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.0.6 -> 17 June, 2019 =
+----------------------------
+- **Fix**   Remove deleted product from saved cart items when product is already deleted
+- **Fix**   Admin bar conflicted with dokan plugin fixed
+- **Fix**   Translation issue fixed
+- **Tweak** Added some filter and hooks for extends future functionalites
 
 = v1.0.5 -> 17 May, 2019 =
 ----------------------------

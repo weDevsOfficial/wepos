@@ -9,6 +9,7 @@ import { VTooltip, VPopover, VClosePopover } from 'v-tooltip'
 import VueHotkey from 'v-hotkey'
 import Multiselect from 'vue-multiselect'
 import Modal from './components/Modal.vue'
+import Switches from './components/Switches.vue'
 import "vue-multiselect/dist/vue-multiselect.min.css"
 
 Vue.directive( 'tooltip', VTooltip )
@@ -47,7 +48,7 @@ Vue.directive('click-outside', {
 });
 
 Vue.mixin( Mixin );
-Vue.use(Popover, { defaultBoundariesElement: document.body } );
+Vue.use( Popover, { defaultBoundariesElement: document.body } );
 Vue.use(VueHotkey);
 
 window.wepos_get_lib = function( lib ) {
@@ -56,14 +57,15 @@ window.wepos_get_lib = function( lib ) {
 
 export const EventBus = new Vue();
 
-window.weLo_ = _;
-window.wepos._ = _;
+window.weLo_                    = _;
+window.wepos._                  = _;
 window.wepos.api                = new API_Helper();
 window.wepos.libs['Vue']        = Vue;
 window.wepos.libs['Router']     = Router;
 window.wepos.libs['TextEditor'] = TextEditor;
 window.wepos.libs['EventBus']   = EventBus;
 window.wepos.libs['Modal']      = Modal;
+window.wepos.libs['Switches']   = Switches;
 
 window.wepos.hooks = ( wp && wp.hooks ) ? wp.hooks : window.wepos.wpPackages.hooks;
 

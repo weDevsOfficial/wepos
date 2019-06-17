@@ -151,6 +151,11 @@
                             <button class="wepos-button" @click.prevent="openQucikMenu()"><span class="more-icon flaticon-more"></span></button>
                             <template slot="popover">
                                 <ul>
+                                    <component
+                                        v-for="(quickLinkListStartComponent, key) in quickLinkListStart"
+                                        :key="key-`1`"
+                                        :is="quickLinkListStartComponent"
+                                    />
                                     <li><a href="#" @click.prevent="emptyCart"><span class="flaticon-empty-cart quick-menu-icon"></span>{{ __( 'Empty Cart', 'wepos' ) }}</a></li>
                                     <li><a href="#" @click.prevent="openHelp"><span class="flaticon-information quick-menu-icon"></span>{{ __( 'Help', 'wepos' ) }}</a></li>
                                     <li class="divider"></li>
@@ -166,6 +171,13 @@
                     </div>
                 </div>
             </div>
+            <component
+                v-for="(beforCartPanel, key ) in beforCartPanels"
+                :key="key"
+                :is="beforCartPanel"
+                :orderdata="orderdata"
+                :cartTotal="getTotal"
+            />
             <div class="cart-panel" v-if="settings.wepos_general">
                 <div class="cart-content">
                     <table class="cart-table">
@@ -466,7 +478,7 @@
                                 <template v-if="availableGateways.length > 0">
                                     <label v-for="gateway in availableGateways">
                                         <input type="radio" name="gateway" checked v-model="orderdata.payment_method" :value="gateway.id">
-                                        <span class="gateway">
+                                        <span class="gateway" :class="`gateway-${gateway.id}`">
                                             {{ gateway.title }}
                                         </span>
                                     </label>
@@ -498,6 +510,14 @@
                                     </div>
                                 </div>
                             </template>
+
+                            <component
+                                v-for="(availableGatewayComponent, key ) in availableGatewayContent"
+                                :key="key"
+                                :is="availableGatewayComponent"
+                                :availablegateways="availableGateways"
+                                :orderdata="orderdata"
+                            />
                         </div>
 
                         <div class="footer wepos-clearfix">
@@ -511,7 +531,15 @@
 
         <overlay :show="showOverlay"></overlay>
 
-        <print-receipt-html v-show="createprintreceipt" :printdata="printdata" :settings="settings.wepos_receipts"></print-receipt-html>
+        <print-receipt-html v-show="createprintreceipt" v-if="showReceiptHtml" :printdata="printdata" :settings="settings.wepos_receipts"></print-receipt-html>
+
+        <component
+            v-for="(afterMainContent, key ) in afterMainContents"
+            :key="key"
+            :is="afterMainContent"
+            :orderdata="orderdata"
+            :printdata="printdata"
+        />
     </div>
 </template>
 
@@ -567,23 +595,29 @@ export default {
             cashAmount: '',
             availableTax: [],
             settings: {},
-            printdata: {
+            printdata: wepos.hooks.applyFilters( 'wepos_initial_print_data', {
                 gateway: {
                     id: '',
                     title: ''
                 },
-            },
+            } ),
             createprintreceipt: false,
             orderdata: {
                 billing: {},
                 shipping: {},
                 line_items: [],
                 fee_lines: [],
+                customer_id: 0,
                 customer_note: '',
             },
             selectedCategory: '',
             categories: [],
+            showReceiptHtml: wepos.hooks.applyFilters( 'wepos_render_receipt_html', true ),
             quickLinkList: wepos.hooks.applyFilters( 'wepos_quick_links', [] ),
+            quickLinkListStart: wepos.hooks.applyFilters( 'wepos_quick_links_start', [] ),
+            availableGatewayContent: wepos.hooks.applyFilters( 'wepos_avaialable_gateway_content', [] ),
+            afterMainContents: wepos.hooks.applyFilters( 'wepos_after_main_content', [] ),
+            beforCartPanels: wepos.hooks.applyFilters( 'wepos_before_cart_panel', [] ),
         }
     },
     computed: {
@@ -759,12 +793,12 @@ export default {
                 fee_lines: [],
                 customer_note: ''
             };
-            this.printdata = {
+            this.printdata = wepos.hooks.applyFilters( 'wepos_initial_print_data', {
                 gateway: {
                     id: '',
                     title: ''
                 },
-            };
+            } );
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit( 'emptycart', this.orderdata );
@@ -809,8 +843,9 @@ export default {
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+            var orderFromData = wepos.hooks.applyFilters( 'wepos_order_form_data', this.orderdata );
 
-            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', this.orderdata )
+            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', orderFromData )
             .done( response => {
                 wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/payment/process', response )
                 .done( data => {
@@ -822,7 +857,7 @@ export default {
                                 payment: 'success'
                             }
                         });
-                        this.printdata = {
+                        this.printdata = wepos.hooks.applyFilters( 'wepos_after_payment_print_data', {
                             line_items: this.orderdata.line_items,
                             fee_lines: this.orderdata.fee_lines,
                             subtotal: this.getSubtotal,
@@ -836,7 +871,7 @@ export default {
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString()
-                        }
+                        }, this.orderdata );
                     } else {
                         $contentWrap.unblock();
                     }
@@ -953,6 +988,42 @@ export default {
                 this.productLoading = false;
             }
         },
+
+        maybeRemoveDeletedProduct( cartData ) {
+            return new Promise( ( resolve, reject ) => {
+                if ( ! cartData ) {
+                    return resolve( cartData );
+                }
+
+                if ( ! cartData.line_items || cartData.line_items.length < 1 ) {
+                    return resolve( cartData );
+                }
+
+                let productIds = cartData.line_items.map( ( lineItem ) => {
+                    return lineItem.product_id;
+                });
+
+                wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/products?include=' + productIds.toString() )
+                .then( ( response ) => {
+                    let foundProducts = response.map( ( product ) => {
+                        return product.id;
+                    });
+
+                    cartData.line_items.forEach( ( product, key ) => {
+                        if ( ! foundProducts.includes( product.product_id ) ) {
+                            cartData.line_items.splice( key, 1 );
+                            localStorage.setItem( 'cartdata', JSON.stringify( cartData ) );
+                        }
+                    });
+
+                    return resolve( cartData );
+                })
+                .fail( () => {
+                    return reject( cartData );
+                });
+            });
+        },
+
         selectCustomer( customer ) {
             if ( Object.keys( customer ).length > 0 ) {
                 this.orderdata.billing = customer.billing;
@@ -1143,7 +1214,7 @@ export default {
         }
     },
 
-    created() {
+    async created() {
         this.fetchSettings();
         this.fetchTaxes();
         this.fetchProducts();
@@ -1151,8 +1222,13 @@ export default {
         this.fetchCategories();
 
         if ( typeof(localStorage) != 'undefined' ) {
-            var cartdata = JSON.parse( localStorage.getItem('cartdata') );
-            this.orderdata = cartdata ? cartdata : this.orderdata;
+            try {
+                var cartdata = JSON.parse( localStorage.getItem( 'cartdata' ) );
+                cartdata = await this.maybeRemoveDeletedProduct( cartdata );
+                this.orderdata = cartdata ? cartdata : this.orderdata;
+            } catch( cartdata ) {
+                this.orderdata = cartdata ? cartdata : this.orderdata;
+            }
         }
 
         window.addEventListener('beforeunload', () => {
@@ -1660,6 +1736,7 @@ export default {
 
         .top-panel {
             display: flex;
+            margin-bottom: 20px;
 
             .customer-search-box {
                 flex: 7;
@@ -1845,7 +1922,6 @@ export default {
 
         .cart-panel {
             background: #fff;
-            margin-top: 20px;
             height: 90%;
             box-shadow: 0 3px 15px 0 rgba(0,0,0,.02);
             position: relative;

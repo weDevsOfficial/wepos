@@ -10,7 +10,10 @@ Vue.config.productionTip = false
 new Vue({
     el: '#wepos-admin-app',
     router,
-    render: h => h(App)
+    render: h => h(App),
+    created() {
+        this.setLocaleData( wepos.i18n['wepos'] )
+    }
 });
 
 

@@ -11,4 +11,7 @@ new Vue({
     el: '#vue-frontend-app',
     router,
     render: h => h(App),
+    created() {
+        this.setLocaleData( wepos.i18n['wepos'] )
+    }
 })

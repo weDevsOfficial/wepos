@@ -1,20 +1,20 @@
 pluginWebpack([1],{
 
-/***/ 169:
+/***/ 170:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(170);
+var _App = __webpack_require__(171);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(173);
+var _router = __webpack_require__(174);
 
 var _router2 = _interopRequireDefault(_router);
 
-var _store = __webpack_require__(397);
+var _store = __webpack_require__(28);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -23,8 +23,6 @@ var _adminMenuFix = __webpack_require__(205);
 var _adminMenuFix2 = _interopRequireDefault(_adminMenuFix);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-console.log(stores);
 
 var Vue = wepos_get_lib('Vue');
 
@@ -48,18 +46,18 @@ new Vue({
 
 /***/ }),
 
-/***/ 170:
+/***/ 171:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(71);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(173);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(171)
+  __webpack_require__(172)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -106,14 +104,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 171:
+/***/ 172:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 172:
+/***/ 173:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -136,7 +134,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 173:
+/***/ 174:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -146,7 +144,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Settings = __webpack_require__(174);
+var _Settings = __webpack_require__(175);
 
 var _Settings2 = _interopRequireDefault(_Settings);
 
@@ -167,18 +165,18 @@ exports.default = new Router({
 
 /***/ }),
 
-/***/ 174:
+/***/ 175:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(72);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(204);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(175)
+  __webpack_require__(176)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -225,24 +223,24 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 175:
+/***/ 176:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 176:
+/***/ 177:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(73);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(203);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(177)
+  __webpack_require__(178)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -289,24 +287,24 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 177:
+/***/ 178:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 178:
+/***/ 179:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(74);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(202);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(179)
+  __webpack_require__(180)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -353,14 +351,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 179:
+/***/ 180:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 201:
+/***/ 202:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -452,7 +450,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 202:
+/***/ 203:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1420,7 +1418,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 203:
+/***/ 204:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1656,7 +1654,7 @@ exports.default = menuFix;
 
 /***/ }),
 
-/***/ 397:
+/***/ 28:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1665,26 +1663,319 @@ exports.default = menuFix;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _Cart = __webpack_require__(398);
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var Vue = wepos_get_lib('Vue');
 var Vuex = wepos_get_lib('Vuex');
 
 Vue.use(Vuex);
 
 exports.default = new Vuex.Store({
-    state: {
-        msg: 'This is a test'
-    },
-
-    getters: {},
-
-    mutations: {},
-
-    actions: {}
+    modules: {
+        Cart: _Cart2.default
+    }
 });
 
 /***/ }),
 
-/***/ 70:
+/***/ 398:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _helper = __webpack_require__(399);
+
+var _helper2 = _interopRequireDefault(_helper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    namespaced: true,
+    state: {
+        cartdata: {
+            billing: {},
+            shipping: {},
+            line_items: [],
+            fee_lines: [],
+            customer_id: 0,
+            customer_note: ''
+        }
+    },
+    getters: {
+        getSubtotal: function getSubtotal(state) {
+            var subtotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                if (item.on_sale) {
+                    subtotal += item.quantity * item.sale_price;
+                } else {
+                    subtotal += item.quantity * item.regular_price;
+                }
+            });
+
+            return subtotal;
+        },
+        getTotalFee: function getTotalFee(state) {
+            var fee = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    fee += Math.abs(item.total);
+                }
+            });
+            return fee;
+        },
+        getTotalDiscount: function getTotalDiscount(state) {
+            var discount = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'discount') {
+                    discount += Number(Math.abs(item.total));
+                }
+            });
+
+            return discount;
+        },
+        getTotalTax: function getTotalTax(state) {
+            var self = this,
+                taxLineTotal = 0,
+                taxFeeTotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    if (item.tax_status == 'taxable') {
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find(self.availableTax, { 'class': itemTaxClass.toString() });
+                        if (taxClass !== undefined) {
+                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        }
+                    }
+                }
+            });
+
+            return taxLineTotal + taxFeeTotal;
+        },
+        getOrderTotal: function getOrderTotal(state, getters) {
+            console.log(getters);
+            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
+        },
+        getTotal: function getTotal(state, getters) {
+            return getters.getOrderTotal - getters.getTotalDiscount;
+        }
+    },
+    mutations: {
+        setCustomer: function setCustomer(state, customer) {
+            if (Object.keys(customer).length > 0) {
+                state.cartdata.billing = customer.billing;
+                state.cartdata.shipping = customer.shipping;
+                state.cartdata.customer_id = customer.id;
+            } else {
+                state.cartdata.billing = {};
+                state.cartdata.shipping = {};
+                state.cartdata.customer_id = 0;
+            }
+        },
+        addToCartItem: function addToCartItem(state, product) {
+            var cartObject = {};
+            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
+            cartObject.name = product.name;
+            cartObject.quantity = 1;
+            cartObject.regular_price = product.regular_display_price;
+            cartObject.sale_price = product.sales_display_price;
+            cartObject.on_sale = product.on_sale;
+            cartObject.attribute = product.attributes;
+            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
+            cartObject.editQuantity = false;
+            cartObject.type = product.type;
+            cartObject.tax_amount = product.tax_amount;
+            cartObject.manage_stock = product.manage_stock;
+            cartObject.stock_status = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity = product.stock_quantity;
+
+            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
+
+            if (index < 0) {
+                if (_helper2.default.hasStock(product)) {
+                    state.cartdata.line_items.push(cartObject);
+                }
+            } else {
+                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
+                    state.cartdata.line_items[index].quantity += 1;
+                }
+            }
+        },
+        removeCartItem: function removeCartItem(state, itemKey) {
+            state.cartdata.line_items.splice(itemKey, 1);
+        },
+        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (_helper2.default.hasStock(item, item.quantity)) {
+                state.cartdata.line_items[itemKey].quantity++;
+            }
+        },
+        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (item.quantity <= 1) {
+                state.cartdata.line_items[itemKey].quantity = 1;
+            } else {
+                state.cartdata.line_items[itemKey].quantity--;
+            }
+        },
+        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
+            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
+        },
+        addDiscount: function addDiscount(state, discountData) {
+            state.cartdata.fee_lines.push({
+                name: discountData.title,
+                type: 'discount',
+                value: discountData.value.toString(),
+                isEdit: false,
+                discount_type: discountData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        addFee: function addFee(state, feeData) {
+            state.cartdata.fee_lines.push({
+                name: feeData.title,
+                type: 'fee',
+                value: feeData.value.toString(),
+                isEdit: false,
+                fee_type: feeData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        saveFeeValue: function saveFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = false;
+        },
+        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
+            state.cartdata.fee_lines.splice(itemKey, 1);
+        },
+        calculateDiscount: function calculateDiscount(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == "discount") {
+                        if (item.discount_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
+                        } else {
+                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
+                        }
+                    }
+                });
+            }
+        },
+        calculateFee: function calculateFee(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == 'fee') {
+                        if (item.fee_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
+                        } else {
+                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
+                        }
+                    }
+                });
+            }
+        }
+    },
+    actions: {
+        setCustomerAction: function setCustomerAction(context, customer) {
+            context.commit('setCustomer', customer);
+        },
+        addToCartAction: function addToCartAction(context, product) {
+            context.commit('addToCartItem', product);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeCartItemAction: function removeCartItemAction(context, itemKey) {
+            context.commit('removeCartItem', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
+            context.commit('addCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
+            context.commit('removeCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
+            context.commit('toggleEditQuantity', itemKey);
+        },
+        addDiscountAction: function addDiscountAction(context, discountData) {
+            context.commit('addDiscount', discountData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addFeeAction: function addFeeAction(context, feeData) {
+            context.commit('addFee', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
+            context.commit('removeFeeLineItems', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        saveFeeValueAction: function saveFeeValueAction(context, itemKey) {
+            context.commit('saveFeeValue', itemKey);
+        },
+        calculateDiscount: function calculateDiscount(context) {
+            context.commit('calculateDiscount', context.getters);
+        },
+        calculateFee: function calculateFee(context) {
+            context.commit('calculateFee', context.getters);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 399:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    hasStock: function hasStock(product) {
+        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        if (!product.manage_stock) {
+            return 'outofstock' == product.stock_status ? false : true;
+        } else {
+            if (product.backorders_allowed) {
+                return true;
+            } else {
+                return product.stock_quantity > productCartQty;
+            }
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 71:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1701,11 +1992,11 @@ exports.default = new Vuex.Store({
 
 /***/ }),
 
-/***/ 71:
+/***/ 72:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(176);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(177);
 //
 //
 //
@@ -1897,11 +2188,11 @@ exports.default = new Vuex.Store({
 
 /***/ }),
 
-/***/ 72:
+/***/ 73:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(178);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(179);
 //
 //
 //
@@ -2131,11 +2422,11 @@ let TextEditor = wepos_get_lib('TextEditor');
 
 /***/ }),
 
-/***/ 73:
+/***/ 74:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(180);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(181);
 //
 //
 //
@@ -2256,4 +2547,4 @@ let TextEditor = wepos_get_lib('TextEditor');
 
 /***/ })
 
-},[169]);
+},[170]);

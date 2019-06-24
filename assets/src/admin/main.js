@@ -3,8 +3,6 @@ import router from './router'
 import store from '@/utils/store/'
 import menuFix from './utils/admin-menu-fix'
 
-console.log( stores );
-
 let Vue = wepos_get_lib('Vue');
 
 Vue.config.productionTip = false

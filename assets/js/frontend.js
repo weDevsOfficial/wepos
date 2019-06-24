@@ -1,20 +1,20 @@
 pluginWebpack([0],{
 
-/***/ 135:
+/***/ 136:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(136);
+var _App = __webpack_require__(137);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(140);
+var _router = __webpack_require__(141);
 
 var _router2 = _interopRequireDefault(_router);
 
-var _store = __webpack_require__(397);
+var _store = __webpack_require__(28);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -40,18 +40,18 @@ new Vue({
 
 /***/ }),
 
-/***/ 136:
+/***/ 137:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(58);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(140);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(137)
+  __webpack_require__(138)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -98,14 +98,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 137:
+/***/ 138:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 139:
+/***/ 140:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -133,7 +133,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 140:
+/***/ 141:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -143,7 +143,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Home = __webpack_require__(141);
+var _Home = __webpack_require__(142);
 
 var _Home2 = _interopRequireDefault(_Home);
 
@@ -164,18 +164,18 @@ exports.default = new Router({
 
 /***/ }),
 
-/***/ 141:
+/***/ 142:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(59);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(169);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(142)
+  __webpack_require__(143)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -222,24 +222,24 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 142:
+/***/ 143:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 143:
+/***/ 144:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(60);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(145);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(146);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(144)
+  __webpack_require__(145)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -286,14 +286,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 144:
+/***/ 145:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 145:
+/***/ 146:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -316,17 +316,17 @@ if (false) {
 
 /***/ }),
 
-/***/ 146:
+/***/ 147:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(61);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(149);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(147)
+  __webpack_require__(148)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -373,14 +373,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 147:
+/***/ 148:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 148:
+/***/ 149:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -829,17 +829,17 @@ if (false) {
 
 /***/ }),
 
-/***/ 149:
+/***/ 150:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(64);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(151);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(152);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(150)
+  __webpack_require__(151)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -886,14 +886,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 150:
+/***/ 151:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 151:
+/***/ 152:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1744,17 +1744,17 @@ if (false) {
 
 /***/ }),
 
-/***/ 152:
+/***/ 153:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(65);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(158);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(153)
+  __webpack_require__(154)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -1801,24 +1801,24 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 153:
+/***/ 154:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 154:
+/***/ 155:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(66);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(157);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(155)
+  __webpack_require__(156)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -1865,14 +1865,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 155:
+/***/ 156:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 156:
+/***/ 157:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1939,7 +1939,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 157:
+/***/ 158:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2044,17 +2044,17 @@ if (false) {
 
 /***/ }),
 
-/***/ 159:
+/***/ 160:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(68);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(162);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(160)
+  __webpack_require__(161)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2101,14 +2101,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 160:
+/***/ 161:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 161:
+/***/ 162:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2151,17 +2151,17 @@ if (false) {
 
 /***/ }),
 
-/***/ 162:
+/***/ 163:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(69);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(165);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(163)
+  __webpack_require__(164)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2208,14 +2208,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 163:
+/***/ 164:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 164:
+/***/ 165:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2495,17 +2495,17 @@ if (false) {
 
 /***/ }),
 
-/***/ 165:
+/***/ 166:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(70);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(168);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(166)
+  __webpack_require__(167)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2552,14 +2552,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 166:
+/***/ 167:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 167:
+/***/ 168:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2671,7 +2671,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 168:
+/***/ 169:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3751,7 +3751,10 @@ var render = function() {
                                                           $event
                                                         ) {
                                                           $event.preventDefault()
-                                                          _vm.addQuantity(item)
+                                                          _vm.addQuantity(
+                                                            item,
+                                                            key
+                                                          )
                                                         }
                                                       }
                                                     },
@@ -3769,7 +3772,8 @@ var render = function() {
                                                         ) {
                                                           $event.preventDefault()
                                                           _vm.removeQuantity(
-                                                            item
+                                                            item,
+                                                            key
                                                           )
                                                         }
                                                       }
@@ -5309,7 +5313,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 397:
+/***/ 28:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5318,26 +5322,319 @@ if (false) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _Cart = __webpack_require__(398);
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var Vue = wepos_get_lib('Vue');
 var Vuex = wepos_get_lib('Vuex');
 
 Vue.use(Vuex);
 
 exports.default = new Vuex.Store({
-    state: {
-        msg: 'This is a test'
-    },
-
-    getters: {},
-
-    mutations: {},
-
-    actions: {}
+    modules: {
+        Cart: _Cart2.default
+    }
 });
 
 /***/ }),
 
-/***/ 57:
+/***/ 398:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _helper = __webpack_require__(399);
+
+var _helper2 = _interopRequireDefault(_helper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    namespaced: true,
+    state: {
+        cartdata: {
+            billing: {},
+            shipping: {},
+            line_items: [],
+            fee_lines: [],
+            customer_id: 0,
+            customer_note: ''
+        }
+    },
+    getters: {
+        getSubtotal: function getSubtotal(state) {
+            var subtotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                if (item.on_sale) {
+                    subtotal += item.quantity * item.sale_price;
+                } else {
+                    subtotal += item.quantity * item.regular_price;
+                }
+            });
+
+            return subtotal;
+        },
+        getTotalFee: function getTotalFee(state) {
+            var fee = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    fee += Math.abs(item.total);
+                }
+            });
+            return fee;
+        },
+        getTotalDiscount: function getTotalDiscount(state) {
+            var discount = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'discount') {
+                    discount += Number(Math.abs(item.total));
+                }
+            });
+
+            return discount;
+        },
+        getTotalTax: function getTotalTax(state) {
+            var self = this,
+                taxLineTotal = 0,
+                taxFeeTotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    if (item.tax_status == 'taxable') {
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find(self.availableTax, { 'class': itemTaxClass.toString() });
+                        if (taxClass !== undefined) {
+                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        }
+                    }
+                }
+            });
+
+            return taxLineTotal + taxFeeTotal;
+        },
+        getOrderTotal: function getOrderTotal(state, getters) {
+            console.log(getters);
+            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
+        },
+        getTotal: function getTotal(state, getters) {
+            return getters.getOrderTotal - getters.getTotalDiscount;
+        }
+    },
+    mutations: {
+        setCustomer: function setCustomer(state, customer) {
+            if (Object.keys(customer).length > 0) {
+                state.cartdata.billing = customer.billing;
+                state.cartdata.shipping = customer.shipping;
+                state.cartdata.customer_id = customer.id;
+            } else {
+                state.cartdata.billing = {};
+                state.cartdata.shipping = {};
+                state.cartdata.customer_id = 0;
+            }
+        },
+        addToCartItem: function addToCartItem(state, product) {
+            var cartObject = {};
+            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
+            cartObject.name = product.name;
+            cartObject.quantity = 1;
+            cartObject.regular_price = product.regular_display_price;
+            cartObject.sale_price = product.sales_display_price;
+            cartObject.on_sale = product.on_sale;
+            cartObject.attribute = product.attributes;
+            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
+            cartObject.editQuantity = false;
+            cartObject.type = product.type;
+            cartObject.tax_amount = product.tax_amount;
+            cartObject.manage_stock = product.manage_stock;
+            cartObject.stock_status = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity = product.stock_quantity;
+
+            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
+
+            if (index < 0) {
+                if (_helper2.default.hasStock(product)) {
+                    state.cartdata.line_items.push(cartObject);
+                }
+            } else {
+                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
+                    state.cartdata.line_items[index].quantity += 1;
+                }
+            }
+        },
+        removeCartItem: function removeCartItem(state, itemKey) {
+            state.cartdata.line_items.splice(itemKey, 1);
+        },
+        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (_helper2.default.hasStock(item, item.quantity)) {
+                state.cartdata.line_items[itemKey].quantity++;
+            }
+        },
+        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (item.quantity <= 1) {
+                state.cartdata.line_items[itemKey].quantity = 1;
+            } else {
+                state.cartdata.line_items[itemKey].quantity--;
+            }
+        },
+        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
+            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
+        },
+        addDiscount: function addDiscount(state, discountData) {
+            state.cartdata.fee_lines.push({
+                name: discountData.title,
+                type: 'discount',
+                value: discountData.value.toString(),
+                isEdit: false,
+                discount_type: discountData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        addFee: function addFee(state, feeData) {
+            state.cartdata.fee_lines.push({
+                name: feeData.title,
+                type: 'fee',
+                value: feeData.value.toString(),
+                isEdit: false,
+                fee_type: feeData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        saveFeeValue: function saveFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = false;
+        },
+        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
+            state.cartdata.fee_lines.splice(itemKey, 1);
+        },
+        calculateDiscount: function calculateDiscount(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == "discount") {
+                        if (item.discount_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
+                        } else {
+                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
+                        }
+                    }
+                });
+            }
+        },
+        calculateFee: function calculateFee(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == 'fee') {
+                        if (item.fee_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
+                        } else {
+                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
+                        }
+                    }
+                });
+            }
+        }
+    },
+    actions: {
+        setCustomerAction: function setCustomerAction(context, customer) {
+            context.commit('setCustomer', customer);
+        },
+        addToCartAction: function addToCartAction(context, product) {
+            context.commit('addToCartItem', product);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeCartItemAction: function removeCartItemAction(context, itemKey) {
+            context.commit('removeCartItem', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
+            context.commit('addCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
+            context.commit('removeCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
+            context.commit('toggleEditQuantity', itemKey);
+        },
+        addDiscountAction: function addDiscountAction(context, discountData) {
+            context.commit('addDiscount', discountData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addFeeAction: function addFeeAction(context, feeData) {
+            context.commit('addFee', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
+            context.commit('removeFeeLineItems', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        saveFeeValueAction: function saveFeeValueAction(context, itemKey) {
+            context.commit('saveFeeValue', itemKey);
+        },
+        calculateDiscount: function calculateDiscount(context) {
+            context.commit('calculateDiscount', context.getters);
+        },
+        calculateFee: function calculateFee(context) {
+            context.commit('calculateFee', context.getters);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 399:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    hasStock: function hasStock(product) {
+        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        if (!product.manage_stock) {
+            return 'outofstock' == product.stock_status ? false : true;
+        } else {
+            if (product.backorders_allowed) {
+                return true;
+            } else {
+                return product.stock_quantity > productCartQty;
+            }
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 58:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5355,19 +5652,20 @@ exports.default = new Vuex.Store({
 
 /***/ }),
 
-/***/ 58:
+/***/ 59:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(143);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(146);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(152);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(150);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(159);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(162);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(166);
+//
 //
 //
 //
@@ -6281,11 +6579,14 @@ let Modal = wepos_get_lib('Modal');
                 tax_class: '',
                 total: 0
             });
+
             this.calculateDiscount();
             this.calculateFee();
+            this.$store.dispatch('Cart/addDiscountAction', { title: this.__('Discount', 'wepos'), value: value, type: type });
         },
         saveFee(key) {
             this.orderdata.fee_lines[key].isEdit = false;
+            this.$store.dispatch('Cart/saveFeeValueAction', key);
             this.$nextTick(() => {
                 jQuery(this.$refs.fee_name).focus();
             });
@@ -6303,9 +6604,11 @@ let Modal = wepos_get_lib('Modal');
             });
             this.calculateFee();
             this.calculateDiscount();
+            this.$store.dispatch('Cart/addFeeAction', { title: this.__('Fee', 'wepos'), value: value, type: type });
         },
         removeFeeLine(key) {
             this.orderdata.fee_lines.splice(key, 1);
+            this.$store.dispatch('Cart/removeFeeLineItemsAction', key);
         },
         calculateDiscount() {
             if (this.orderdata.fee_lines.length > 0) {
@@ -6386,6 +6689,7 @@ let Modal = wepos_get_lib('Modal');
         },
 
         selectCustomer(customer) {
+            this.$store.dispatch('Cart/setCustomerAction', customer);
             if (Object.keys(customer).length > 0) {
                 this.orderdata.billing = customer.billing;
                 this.orderdata.shipping = customer.shipping;
@@ -6410,6 +6714,7 @@ let Modal = wepos_get_lib('Modal');
             this.selectedAttribute = {};
             this.attributeDisabled = true;
             this.addToCart(variationProduct);
+            this.$store.dispatch('Cart/addToCartAction', variationProduct);
         },
         addToCart(product) {
             var self = this;
@@ -6443,25 +6748,32 @@ let Modal = wepos_get_lib('Modal');
                 }
             }
 
+            this.$store.dispatch('Cart/addToCartAction', product);
+
             this.calculateDiscount();
             this.calculateFee();
         },
-        toggleEditQuantity(product, index) {
-            this.orderdata.line_items[index].editQuantity = !this.orderdata.line_items[index].editQuantity;
+        toggleEditQuantity(product, key) {
+            this.orderdata.line_items[key].editQuantity = !this.orderdata.line_items[key].editQuantity;
+            this.$store.dispatch('Cart/toggleEditQuantityAction', key);
         },
         removeItem(key) {
+            this.$store.dispatch('Cart/removeCartItemAction', key);
+
             this.orderdata.line_items.splice(key, 1);
             this.calculateDiscount();
             this.calculateFee();
         },
-        addQuantity(item) {
+        addQuantity(item, key) {
             if (this.hasStock(item, item.quantity)) {
                 item.quantity++;
             }
             this.calculateDiscount();
             this.calculateFee();
+            this.$store.dispatch('Cart/addItemQuantityAction', key);
         },
-        removeQuantity(item) {
+        removeQuantity(item, key) {
+            this.$store.dispatch('Cart/removeItemQuantityAction', key);
             if (item.quantity <= 1) {
                 this.calculateDiscount();
                 this.calculateFee();
@@ -6599,7 +6911,7 @@ let Modal = wepos_get_lib('Modal');
 
 /***/ }),
 
-/***/ 59:
+/***/ 60:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6620,11 +6932,11 @@ let Modal = wepos_get_lib('Modal');
 
 /***/ }),
 
-/***/ 60:
+/***/ 61:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_v_hotkey__);
 //
@@ -6923,11 +7235,11 @@ let Modal = wepos_get_lib('Modal');
 
 /***/ }),
 
-/***/ 61:
+/***/ 62:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(63);
 /* unused harmony namespace reexport */
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
@@ -6975,7 +7287,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 62:
+/***/ 63:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7056,11 +7368,11 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 63:
+/***/ 64:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(62);
 //
 //
 //
@@ -7429,11 +7741,11 @@ let Modal = wepos_get_lib('Modal');
 
 /***/ }),
 
-/***/ 64:
+/***/ 65:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(154);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(155);
 //
 //
 //
@@ -7553,7 +7865,7 @@ let Modal = wepos_get_lib('Modal');
 
 /***/ }),
 
-/***/ 65:
+/***/ 66:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7747,7 +8059,7 @@ const Tokens = {
 
 /***/ }),
 
-/***/ 67:
+/***/ 68:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7778,7 +8090,7 @@ const Tokens = {
 
 /***/ }),
 
-/***/ 68:
+/***/ 69:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7887,7 +8199,7 @@ const Tokens = {
 
 /***/ }),
 
-/***/ 69:
+/***/ 70:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7945,4 +8257,4 @@ const Tokens = {
 
 /***/ })
 
-},[135]);
+},[136]);

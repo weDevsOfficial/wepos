@@ -1,6 +1,6 @@
 pluginWebpack([2],{
 
-/***/ 132:
+/***/ 133:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -185,7 +185,7 @@ pluginWebpack([2],{
 
 /***/ }),
 
-/***/ 133:
+/***/ 134:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -261,7 +261,7 @@ pluginWebpack([2],{
 
 /***/ }),
 
-/***/ 134:
+/***/ 135:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -313,15 +313,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EventBus = undefined;
 
-var _vue = __webpack_require__(29);
+var _vue = __webpack_require__(30);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueRouter = __webpack_require__(85);
+var _vueRouter = __webpack_require__(86);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _vuex = __webpack_require__(86);
+var _vuex = __webpack_require__(87);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
@@ -337,7 +337,7 @@ var _Mixin = __webpack_require__(357);
 
 var _Mixin2 = _interopRequireDefault(_Mixin);
 
-var _vueJsPopover = __webpack_require__(83);
+var _vueJsPopover = __webpack_require__(84);
 
 var _vueJsPopover2 = _interopRequireDefault(_vueJsPopover);
 
@@ -345,13 +345,13 @@ var _TextEditor = __webpack_require__(359);
 
 var _TextEditor2 = _interopRequireDefault(_TextEditor);
 
-var _vTooltip = __webpack_require__(82);
+var _vTooltip = __webpack_require__(83);
 
 var _vHotkey = __webpack_require__(27);
 
 var _vHotkey2 = _interopRequireDefault(_vHotkey);
 
-var _vueMultiselect = __webpack_require__(84);
+var _vueMultiselect = __webpack_require__(85);
 
 var _vueMultiselect2 = _interopRequireDefault(_vueMultiselect);
 
@@ -798,7 +798,7 @@ var sprintf = exports.sprintf = Jed.sprintf;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(132);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(133);
 /* empty harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(360);
 var disposed = false
@@ -878,7 +878,7 @@ if (false) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(134);
 /* empty harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e7f44b2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(363);
 var disposed = false
@@ -1017,7 +1017,7 @@ if (false) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Switches_vue__ = __webpack_require__(134);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Switches_vue__ = __webpack_require__(135);
 /* empty harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_71008314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Switches_vue__ = __webpack_require__(366);
 var disposed = false

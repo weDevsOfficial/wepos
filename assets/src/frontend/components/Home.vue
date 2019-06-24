@@ -42,6 +42,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="breadcrumb" v-if="getBreadCrums.length > 0">
                 <ul>
                     <template v-for="breadcrumb in getBreadCrums">
@@ -224,8 +225,8 @@
                                             <span class="qty">{{ __( 'Quantity', 'wepos' ) }}</span>
                                             <span class="qty-number"><input type="number" min="1" step="1" v-model="item.quantity"></span>
                                             <span class="qty-action">
-                                                <a href="#" class="add" @click.prevent="addQuantity(item)">&#43;</a>
-                                                <a href="#" class="minus" @click.prevent="removeQuantity(item)">&#45;</a>
+                                                <a href="#" class="add" @click.prevent="addQuantity( item, key )">&#43;</a>
+                                                <a href="#" class="minus" @click.prevent="removeQuantity( item, key )">&#45;</a>
                                             </span>
                                         </td>
                                     </tr>
@@ -917,11 +918,14 @@ export default {
                 tax_class: '',
                 total: 0
             });
+
             this.calculateDiscount();
             this.calculateFee();
+            this.$store.dispatch( 'Cart/addDiscountAction', { title: this.__( 'Discount', 'wepos' ), value: value, type: type } );
         },
         saveFee( key ) {
             this.orderdata.fee_lines[key].isEdit = false;
+            this.$store.dispatch( 'Cart/saveFeeValueAction', key );
             this.$nextTick(() => {
                 jQuery( this.$refs.fee_name ).focus();
             })
@@ -939,9 +943,11 @@ export default {
             });
             this.calculateFee();
             this.calculateDiscount();
+            this.$store.dispatch( 'Cart/addFeeAction', { title: this.__( 'Fee', 'wepos' ), value: value, type: type } );
         },
         removeFeeLine( key ) {
             this.orderdata.fee_lines.splice( key, 1 );
+            this.$store.dispatch( 'Cart/removeFeeLineItemsAction', key );
         },
         calculateDiscount() {
             if ( this.orderdata.fee_lines.length > 0 ) {
@@ -1025,6 +1031,7 @@ export default {
         },
 
         selectCustomer( customer ) {
+            this.$store.dispatch( 'Cart/setCustomerAction', customer );
             if ( Object.keys( customer ).length > 0 ) {
                 this.orderdata.billing = customer.billing;
                 this.orderdata.shipping = customer.shipping;
@@ -1049,6 +1056,7 @@ export default {
             this.selectedAttribute     = {};
             this.attributeDisabled     = true;
             this.addToCart( variationProduct );
+            this.$store.dispatch( 'Cart/addToCartAction', variationProduct );
         },
         addToCart( product ) {
             var self = this;
@@ -1082,25 +1090,32 @@ export default {
                 }
             }
 
+            this.$store.dispatch( 'Cart/addToCartAction', product );
+
             this.calculateDiscount();
             this.calculateFee();
         },
-        toggleEditQuantity( product, index ) {
-            this.orderdata.line_items[index].editQuantity = ! this.orderdata.line_items[index].editQuantity;
+        toggleEditQuantity( product, key ) {
+            this.orderdata.line_items[key].editQuantity = ! this.orderdata.line_items[key].editQuantity;
+            this.$store.dispatch( 'Cart/toggleEditQuantityAction', key );
         },
         removeItem( key ) {
+            this.$store.dispatch( 'Cart/removeCartItemAction', key );
+
             this.orderdata.line_items.splice( key, 1 );
             this.calculateDiscount();
             this.calculateFee();
         },
-        addQuantity(item) {
+        addQuantity( item, key ) {
             if ( this.hasStock( item, item.quantity ) ) {
                 item.quantity++;
             }
             this.calculateDiscount();
             this.calculateFee();
+            this.$store.dispatch( 'Cart/addItemQuantityAction', key );
         },
-        removeQuantity(item) {
+        removeQuantity( item, key ) {
+            this.$store.dispatch( 'Cart/removeItemQuantityAction', key );
             if ( item.quantity <= 1 ) {
                 this.calculateDiscount();
                 this.calculateFee();
@@ -1110,7 +1125,7 @@ export default {
             this.calculateDiscount();
             this.calculateFee();
         },
-        hasStock(product, productCartQty = 0 ) {
+        hasStock( product, productCartQty = 0 ) {
             if ( ! product.manage_stock ) {
                 return ( 'outofstock' == product.stock_status ) ? false : true;
             } else {

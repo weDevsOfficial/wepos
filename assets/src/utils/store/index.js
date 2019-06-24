@@ -3,20 +3,10 @@ let Vuex = wepos_get_lib('Vuex');
 
 Vue.use(Vuex);
 
+import Cart from './modules/Cart.module';
+
 export default new Vuex.Store({
-    state: {
-        msg: 'This is a test'
-    },
-
-    getters: {
-
-    },
-
-    mutations: {
-
-    },
-
-    actions: {
-
+    modules: {
+        Cart
     }
 });

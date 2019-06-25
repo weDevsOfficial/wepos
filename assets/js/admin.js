@@ -1865,6 +1865,22 @@ exports.default = {
         removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
             state.cartdata.fee_lines.splice(itemKey, 1);
         },
+        emptyCart: function emptyCart(state) {
+            state.cartdata = {
+                billing: {},
+                shipping: {},
+                customer_id: 0,
+                line_items: [],
+                fee_lines: [],
+                customer_note: ''
+            };
+        },
+        setCustomerNote: function setCustomerNote(state, note) {
+            state.cartdata.customer_note = note.trim();
+        },
+        removeCustomerNote: function removeCustomerNote(state) {
+            state.cartdata.customer_note = '';
+        },
         calculateDiscount: function calculateDiscount(state, payload) {
             if (state.cartdata.fee_lines.length > 0) {
                 weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
@@ -1936,6 +1952,15 @@ exports.default = {
         },
         saveFeeValueAction: function saveFeeValueAction(context, itemKey) {
             context.commit('saveFeeValue', itemKey);
+        },
+        emptyCartAction: function emptyCartAction(context) {
+            context.commit('emptyCart');
+        },
+        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
+            context.commit('setCustomerNote', note);
+        },
+        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
+            context.commit('removeCustomerNote');
         },
         calculateDiscount: function calculateDiscount(context) {
             context.commit('calculateDiscount', context.getters);

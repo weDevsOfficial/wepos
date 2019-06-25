@@ -298,7 +298,7 @@
                                     <td colspan="2" class="note-text">
                                         {{ orderdata.customer_note }}
                                     </td>
-                                    <td class="action"><span class="flaticon-cancel-music" @click.prevent="orderdata.customer_note = ''"></span></td>
+                                    <td class="action"><span class="flaticon-cancel-music" @click.prevent="removeCustomerNote"></span></td>
                                 </tr>
                                 <tr class="pay-now" @click="initPayment()">
                                     <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
@@ -776,7 +776,13 @@ export default {
         },
         addCustomerNote( note ) {
             this.orderdata.customer_note = note.trim();
+            this.$store.dispatch( 'Cart/setCustomerNoteAction', note );
         },
+        removeCustomerNote() {
+            this.orderdata.customer_note = ''
+            this.$store.dispatch( 'Cart/removeCustomerNoteAction' );
+        },
+
         removeBreadcrums() {
             this.$router.push( { name: 'Home' } );
         },
@@ -794,12 +800,16 @@ export default {
                 fee_lines: [],
                 customer_note: ''
             };
+
+            this.$store.dispatch( 'Cart/emptyCartAction' );
+
             this.printdata = wepos.hooks.applyFilters( 'wepos_initial_print_data', {
                 gateway: {
                     id: '',
                     title: ''
                 },
             } );
+
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit( 'emptycart', this.orderdata );

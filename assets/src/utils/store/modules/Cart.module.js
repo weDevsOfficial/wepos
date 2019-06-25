@@ -176,6 +176,25 @@ export default {
             state.cartdata.fee_lines.splice( itemKey, 1 );
         },
 
+        emptyCart( state ) {
+            state.cartdata =  {
+                billing: {},
+                shipping: {},
+                customer_id: 0,
+                line_items: [],
+                fee_lines: [],
+                customer_note: ''
+            };
+        },
+
+        setCustomerNote( state, note ) {
+            state.cartdata.customer_note = note.trim();
+        },
+
+        removeCustomerNote( state ) {
+            state.cartdata.customer_note = '';
+        },
+
         calculateDiscount( state, payload ) {
             if ( state.cartdata.fee_lines.length > 0 ) {
                 weLo_.forEach( state.cartdata.fee_lines, ( item, key ) => {
@@ -258,10 +277,21 @@ export default {
             context.commit( 'saveFeeValue', itemKey );
         },
 
+        emptyCartAction( context ) {
+            context.commit( 'emptyCart' );
+        },
+
+        setCustomerNoteAction( context, note ) {
+            context.commit( 'setCustomerNote', note );
+        },
+
+        removeCustomerNoteAction( context ) {
+            context.commit( 'removeCustomerNote' );
+        },
+
         calculateDiscount( context ) {
             context.commit( 'calculateDiscount', context.getters );
         },
-
 
         calculateFee( context ) {
             context.commit( 'calculateFee', context.getters );

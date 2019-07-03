@@ -4,12 +4,8 @@ export default {
     namespaced: true,
     state: {
         cartdata :  {
-            billing: {},
-            shipping: {},
             line_items: [],
             fee_lines: [],
-            customer_id: 0,
-            customer_note: '',
         }
     },
     getters: {
@@ -67,7 +63,6 @@ export default {
             return taxLineTotal + taxFeeTotal;
         },
         getOrderTotal( state, getters ) {
-            console.log( getters );
             return (getters.getSubtotal + getters.getTotalFee + getters.getTotalTax );
         },
         getTotal( state, getters ) {
@@ -75,15 +70,14 @@ export default {
         },
     },
     mutations: {
-        setCustomer( state, customer ) {
-            if ( Object.keys( customer ).length > 0 ) {
-                state.cartdata.billing     = customer.billing;
-                state.cartdata.shipping    = customer.shipping;
-                state.cartdata.customer_id = customer.id;
+        setCartData( state, cartdata ) {
+            if ( weLo_.isEmpty( cartdata ) ) {
+                state.cartdata = {
+                    line_items: [],
+                    fee_lines: [],
+                }
             } else {
-                state.cartdata.billing     = {};
-                state.cartdata.shipping    = {};
-                state.cartdata.customer_id = 0;
+                state.cartdata = Object.assign( {}, cartdata );
             }
         },
 
@@ -139,7 +133,7 @@ export default {
         },
 
         toggleEditQuantity( state, itemKey ) {
-            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
+            state.cartdata.line_items[itemKey].editQuantity = !  state.cartdata.line_items[itemKey].editQuantity;
         },
 
         addDiscount( state, discountData ) {
@@ -168,7 +162,16 @@ export default {
             });
         },
 
-        saveFeeValue( state, itemKey ) {
+        saveFeeValue( state, item ) {
+            state.cartdata.fee_lines.splice( item.key, 1, item.feeData );
+            state.cartdata.fee_lines[item.key].isEdit = false;
+        },
+
+        editFeeValue( state, itemKey ) {
+            state.cartdata.fee_lines[itemKey].isEdit = true;
+        },
+
+        cancelSaveFeeValue( state, itemKey ) {
             state.cartdata.fee_lines[itemKey].isEdit = false;
         },
 
@@ -178,23 +181,10 @@ export default {
 
         emptyCart( state ) {
             state.cartdata =  {
-                billing: {},
-                shipping: {},
-                customer_id: 0,
                 line_items: [],
                 fee_lines: [],
-                customer_note: ''
             };
         },
-
-        setCustomerNote( state, note ) {
-            state.cartdata.customer_note = note.trim();
-        },
-
-        removeCustomerNote( state ) {
-            state.cartdata.customer_note = '';
-        },
-
         calculateDiscount( state, payload ) {
             if ( state.cartdata.fee_lines.length > 0 ) {
                 weLo_.forEach( state.cartdata.fee_lines, ( item, key ) => {
@@ -223,8 +213,10 @@ export default {
         },
     },
     actions: {
-        setCustomerAction( context, customer ) {
-            context.commit( 'setCustomer', customer );
+        setCartDataAction( context, cartdata ) {
+            context.commit( 'setCartData', cartdata );
+            // context.commit( 'calculateDiscount', context.getters );
+            // context.commit( 'calculateFee', context.getters );
         },
 
         addToCartAction( context, product ) {
@@ -273,20 +265,22 @@ export default {
             context.commit( 'calculateFee', context.getters );
         },
 
-        saveFeeValueAction( context, itemKey ) {
-            context.commit( 'saveFeeValue', itemKey );
+        saveFeeValueAction( context, feeData ) {
+            context.commit( 'saveFeeValue', feeData );
+            context.commit( 'calculateDiscount', context.getters );
+            context.commit( 'calculateFee', context.getters );
+        },
+
+        editFeeValueAction( context, itemKey ) {
+            context.commit( 'editFeeValue', itemKey );
+        },
+
+        cancelSaveFeeValueAction( context, itemKey ) {
+            context.commit( 'cancelSaveFeeValue', itemKey );
         },
 
         emptyCartAction( context ) {
             context.commit( 'emptyCart' );
-        },
-
-        setCustomerNoteAction( context, note ) {
-            context.commit( 'setCustomerNote', note );
-        },
-
-        removeCustomerNoteAction( context ) {
-            context.commit( 'removeCustomerNote' );
         },
 
         calculateDiscount( context ) {

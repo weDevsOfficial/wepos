@@ -192,8 +192,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <template v-if="orderdata.line_items.length > 0">
-                                <template v-for="(item,key) in orderdata.line_items">
+                            <template v-if="cartdata.line_items.length > 0">
+                                <template v-for="(item,key) in cartdata.line_items">
                                     <tr>
                                         <td class="name" @click="toggleEditQuantity( item, key )">
                                             {{ item.name }}
@@ -249,42 +249,43 @@
                             <tbody>
                                 <tr>
                                     <td class="label">{{ __( 'Subtotal', 'wepos' ) }}</td>
-                                    <td class="price">{{ formatPrice( getSubtotal ) }}</td>
+                                    <td class="price">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</td>
                                     <td class="action"></td>
                                 </tr>
-                                <template v-if="orderdata.fee_lines.length > 0">
-                                    <tr class="cart-meta-data" v-for="(fee,key) in orderdata.fee_lines">
+                                <template v-if="cartdata.fee_lines.length > 0">
+                                    <tr class="cart-meta-data" v-for="(fee,key) in cartdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
                                             <td class="label">{{ __( 'Discount', 'wepos' ) }} <span class="name">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
                                             <td class="price">&minus;{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                             <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                         </template>
                                         <template v-else>
-                                            <template v-if="fee.isEdit">
+                                            <template v-if="cartdata.fee_lines[key].isEdit">
                                                 <td class="label" colspan="2">
-                                                    <input type="text" class="fee-name" v-model="orderdata.fee_lines[key].name" :placeholder="__( 'Fee Name', 'wepos' )" ref="fee_name">
-                                                    <input type="number" class="fee-amount" min="0" step="any" v-model="orderdata.fee_lines[key].total" :placeholder="__( 'Total', 'wepos' )" ref="fee_total">
+                                                    <input type="text" class="fee-name" v-model="feeData.name" :placeholder="__( 'Fee Name', 'wepos' )" ref="fee_name">
+                                                    <input type="number" class="fee-amount" min="0" step="any" v-model="feeData.value" :placeholder="__( 'Total', 'wepos' )" ref="fee_total">
                                                     <template v-if="settings.wepos_general.enable_fee_tax == 'yes'">
-                                                        <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="orderdata.fee_lines[key].tax_status" :true-value="'taxable'" :false-value="'none'"> Taxable</label>
-                                                        <select class="fee-tax-class" v-model="orderdata.fee_lines[key].tax_class" v-if="orderdata.fee_lines[key].tax_status=='taxable'">
+                                                        <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="feeData.tax_status" :true-value="'taxable'" :false-value="'none'"> {{ __( 'Taxable', 'wepos' ) }}</label>
+                                                        <select class="fee-tax-class" v-model="feeData.tax_class" v-if="feeData.tax_status=='taxable'">
                                                             <option v-for="feeTax in availableTax" :value="feeTax.class == 'standard' ? '' : feeTax.class">{{ unSanitizeString( feeTax.class ) }} - {{ feeTax.percentage_rate }}</option>
                                                         </select>
                                                     </template>
-                                                    <button :disabled="orderdata.fee_lines[key].name == ''" @click="saveFee(key);">{{ __( 'Apply', 'wepos' ) }}</button>
+                                                    <button :disabled="feeData.name == ''" @click="saveFee(key)">{{ __( 'Apply', 'wepos' ) }}</button>
+                                                    <button class="cancel" @click.prevent="cancelEditFee(key)">{{ __( 'Cancel', 'wepos' ) }}</button>
                                                 </td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                             <template v-else>
-                                                <td class="label" @dblclick="orderdata.fee_lines[key].isEdit = true">{{ __( 'Fee', 'wepos' ) }} <span class="name">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                                                <td class="label" @dblclick.prevent="editFeeData(key)">{{ __( 'Fee', 'wepos' ) }} <span class="name">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
                                                 <td class="price">{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                         </template>
                                     </tr>
                                 </template>
-                                <tr class="tax" v-if="getTotalTax">
+                                <tr class="tax" v-if="$store.getters['Cart/getTotalTax']">
                                     <td class="label">{{ __( 'Tax', 'wepos' ) }}</td>
-                                    <td class="price">{{ formatPrice( getTotalTax ) }}</td>
+                                    <td class="price">{{ formatPrice( $store.getters['Cart/getTotalTax'] ) }}</td>
                                     <td class="action"></td>
                                 </tr>
                                 <tr class="cart-action">
@@ -302,7 +303,7 @@
                                 </tr>
                                 <tr class="pay-now" @click="initPayment()">
                                     <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
-                                    <td class="amount">{{ formatPrice( getTotal ) }}</td>
+                                    <td class="amount">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</td>
                                     <td class="icon"><span class="flaticon-right-arrow"></span></td>
                                 </tr>
                             </tbody>
@@ -411,7 +412,7 @@
                         <div class="content" :style="{ height: modalLeftContentHeight }">
                             <table class="sale-summary-cart">
                                 <tbody>
-                                    <tr v-for="item in orderdata.line_items">
+                                    <tr v-for="item in cartdata.line_items">
                                         <td class="name">
                                             {{ item.name }}
                                             <div class="attribute" v-if="item.attribute.length > 0 && item.type === 'variable'">
@@ -439,10 +440,10 @@
                             <ul>
                                 <li class="wepos-clearfix">
                                     <span class="wepos-left">{{ __( 'Subtotal', 'wepos' ) }}</span>
-                                    <span class="wepos-right">{{ formatPrice( getSubtotal ) }}</span>
+                                    <span class="wepos-right">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</span>
                                 </li>
-                                <template v-if="orderdata.fee_lines.length > 0">
-                                    <li class="wepos-clearfix" v-for="(fee,key) in orderdata.fee_lines">
+                                <template v-if="cartdata.fee_lines.length > 0">
+                                    <li class="wepos-clearfix" v-for="(fee,key) in cartdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
                                             <span class="wepos-left">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
                                             <span class="wepos-right">-{{ formatPrice( Math.abs( fee.total ) ) }}</span>
@@ -453,17 +454,17 @@
                                         </template>
                                     </li>
                                 </template>
-                                <li class="wepos-clearfix" v-if="getTotalTax">
+                                <li class="wepos-clearfix" v-if="$store.getters['Cart/getTotalTax']">
                                     <span class="wepos-left">{{ __( 'Tax', 'wepos' ) }}</span>
-                                    <span class="wepos-right">{{ formatPrice( getTotalTax ) }}</span>
+                                    <span class="wepos-right">{{ formatPrice( $store.getters['Cart/getTotalTax'] ) }}</span>
                                 </li>
                                 <li class="wepos-clearfix">
                                     <span class="wepos-left">{{ __( 'Order Total', 'wepos' ) }}</span>
-                                    <span class="wepos-right">{{ formatPrice( getTotal ) }}</span>
+                                    <span class="wepos-right">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</span>
                                 </li>
                                 <li class="wepos-clearfix">
                                     <span class="wepos-left">{{ __( 'Pay', 'wepos' ) }}</span>
-                                    <span class="wepos-right">{{ formatPrice( getTotal ) }}</span>
+                                    <span class="wepos-right">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -471,14 +472,14 @@
                     <div class="right-content">
                         <div class="header wepos-clearfix">
                             <h2 class="wepos-left">{{ __( 'Pay', 'wepos' ) }}</h2>
-                            <span class="pay-amount wepos-right">{{ formatPrice( getTotal ) }}</span>
+                            <span class="pay-amount wepos-right">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</span>
                         </div>
 
                         <div class="content">
                             <div class="payment-gateway">
                                 <template v-if="availableGateways.length > 0">
                                     <label v-for="gateway in availableGateways">
-                                        <input type="radio" name="gateway" checked v-model="orderdata.payment_method" :value="gateway.id">
+                                        <input type="radio" name="gateway" checked :value="gateway.id">  <!-- v-model="orderdata.payment_method" -->
                                         <span class="gateway" :class="`gateway-${gateway.id}`">
                                             {{ gateway.title }}
                                         </span>
@@ -602,15 +603,16 @@ export default {
                     title: ''
                 },
             } ),
+            feeData: {},
             createprintreceipt: false,
-            orderdata: {
-                billing: {},
-                shipping: {},
-                line_items: [],
-                fee_lines: [],
-                customer_id: 0,
-                customer_note: '',
-            },
+            // orderdata: {
+            //     billing: {},
+            //     shipping: {},
+            //     line_items: [],
+            //     fee_lines: [],
+            //     customer_id: 0,
+            //     customer_note: '',
+            // },
             selectedCategory: '',
             categories: [],
             showReceiptHtml: wepos.hooks.applyFilters( 'wepos_render_receipt_html', true ),
@@ -622,6 +624,12 @@ export default {
         }
     },
     computed: {
+        cartdata() {
+            return this.$store.state.Cart.cartdata;
+        },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
+        },
         hotkeys() {
             return {
                 'f3': this.toggleProductView,
@@ -644,67 +652,8 @@ export default {
                 return this.products;
             }
         },
-        getSubtotal() {
-            var subtotal = 0;
-            weLo_.forEach( this.orderdata.line_items, function( item, key ) {
-                if ( item.on_sale ) {
-                    subtotal += (item.quantity*item.sale_price)
-                } else {
-                    subtotal += (item.quantity*item.regular_price)
-                }
-            });
-
-            return subtotal;
-        },
-        getTotalFee() {
-            var fee = 0;
-            weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
-                if ( item.type == 'fee' ) {
-                    fee += Math.abs( item.total )
-                }
-            });
-            return fee;
-        },
-        getTotalDiscount() {
-            var discount = 0;
-            weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
-                if ( item.type == 'discount' ) {
-                    discount += Number( Math.abs( item.total ) );
-                }
-            });
-
-            return discount;
-        },
-        getTotalTax() {
-            var self = this,
-                taxLineTotal = 0,
-                taxFeeTotal = 0;
-            weLo_.forEach( this.orderdata.line_items, function( item, key ) {
-                taxLineTotal += Math.abs( item.tax_amount * item.quantity );
-            });
-
-            weLo_.forEach( this.orderdata.fee_lines, function( item, key ) {
-                if ( item.type == 'fee' ) {
-                    if ( item.tax_status == 'taxable' ) {
-                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find( self.availableTax, { 'class' : itemTaxClass.toString() } );
-                        if ( taxClass !== undefined ) {
-                            taxFeeTotal += ( Math.abs(item.total)*Math.abs( taxClass.rate ) )/100;
-                        }
-                    }
-                }
-            });
-
-            return taxLineTotal + taxFeeTotal;
-        },
-        getOrderTotal() {
-            return (this.getSubtotal + this.getTotalFee + this.getTotalTax );
-        },
-        getTotal() {
-            return this.getOrderTotal-this.getTotalDiscount;
-        },
         changeAmount() {
-            var returnMoney = this.cashAmount-this.getTotal;
+            var returnMoney = this.cashAmount-this.$store.getters['Cart/getTotal'];
             return returnMoney > 0 ? this.formatNumber( returnMoney ) : 0;
         },
         getBreadCrums() {
@@ -775,33 +724,21 @@ export default {
             this.showHelp = false;
         },
         addCustomerNote( note ) {
-            this.orderdata.customer_note = note.trim();
-            this.$store.dispatch( 'Cart/setCustomerNoteAction', note );
+            this.$store.dispatch( 'Order/setCustomerNoteAction', note );
         },
         removeCustomerNote() {
-            this.orderdata.customer_note = ''
-            this.$store.dispatch( 'Cart/removeCustomerNoteAction' );
+            this.$store.dispatch( 'Order/removeCustomerNoteAction' );
         },
-
         removeBreadcrums() {
             this.$router.push( { name: 'Home' } );
         },
-
         logout() {
             wepos.hooks.doAction( 'wepos_before_logout' );
             window.location.href = wepos.logout_url.toString();
         },
         emptyCart() {
-            this.orderdata = {
-                billing: {},
-                shipping: {},
-                customer_id: 0,
-                line_items: [],
-                fee_lines: [],
-                customer_note: ''
-            };
-
             this.$store.dispatch( 'Cart/emptyCartAction' );
+            this.$store.dispatch( 'Order/emptyOrderdataAction' );
 
             this.printdata = wepos.hooks.applyFilters( 'wepos_initial_print_data', {
                 gateway: {
@@ -826,7 +763,7 @@ export default {
             this.emptyCart();
         },
         ableToProcess() {
-            return this.orderdata.line_items.length > 0 && this.isSelectGateway();
+            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
         },
         processPayment(e) {
             e.preventDefault();
@@ -834,29 +771,36 @@ export default {
                 return;
             }
             var self = this,
-                gateway = weLo_.find( this.availableGateways, { 'id' : this.orderdata.payment_method } );
-
-            self.orderdata.payment_method_title = gateway.title;
-            self.orderdata.meta_data = [
-                {
-                    key: '_wepos_is_pos_order',
-                    value: true
-                },
-                {
-                    key: '_wepos_cash_tendered_amount',
-                    value: self.cashAmount.toString()
-                },
-                {
-                    key: '_wepos_cash_change_amount',
-                    value: self.changeAmount.toString()
-                }
-            ];
+                gateway = weLo_.find( this.availableGateways, { 'id' : this.orderdata.payment_method } ),
+                orderdata = wepos.hooks.applyFilters( 'wepos_order_form_data', {
+                    billing: this.orderdata.billing,
+                    shipping: this.orderdata.shipping,
+                    line_items: this.cartdata.line_items,
+                    fee_lines: this.cartdata.fee_lines,
+                    customer_id: this.orderdata.customer_id,
+                    customer_note: this.orderdata.customer_note,
+                    payment_method: this.orderdata.payment_method,
+                    payment_method_title: this.orderdata.payment_method_title,
+                    meta_data: [
+                        {
+                            key: '_wepos_is_pos_order',
+                            value: true
+                        },
+                        {
+                            key: '_wepos_cash_tendered_amount',
+                            value: self.cashAmount.toString()
+                        },
+                        {
+                            key: '_wepos_cash_change_amount',
+                            value: self.changeAmount.toString()
+                        }
+                    ]
+                } );
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-            var orderFromData = wepos.hooks.applyFilters( 'wepos_order_form_data', this.orderdata );
 
-            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', orderFromData )
+            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata )
             .done( response => {
                 wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/payment/process', response )
                 .done( data => {
@@ -869,11 +813,11 @@ export default {
                             }
                         });
                         this.printdata = wepos.hooks.applyFilters( 'wepos_after_payment_print_data', {
-                            line_items: this.orderdata.line_items,
-                            fee_lines: this.orderdata.fee_lines,
-                            subtotal: this.getSubtotal,
-                            taxtotal: this.getTotalTax,
-                            ordertotal: this.getTotal,
+                            line_items: this.cartdata.line_items,
+                            fee_lines: this.cartdata.fee_lines,
+                            subtotal: this.$store.getters['Cart/getSubtotal'],
+                            taxtotal: this.$store.getters['Cart/getTotalTax'],
+                            ordertotal: this.$store.getters['Cart/getTotal'],
                             gateway: {
                                 id: response.payment_method,
                                 title: response.payment_method_title
@@ -882,7 +826,7 @@ export default {
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString()
-                        }, this.orderdata );
+                        }, orderdata );
                     } else {
                         $contentWrap.unblock();
                     }
@@ -895,18 +839,16 @@ export default {
                 alert( response.responseJSON.message );
             } );
         },
-        backGatewaySelection() {
-            this.orderdata.payment_method = '';
-            this.orderdata.payment_method_title = '';
-        },
+
         initPayment() {
             this.showModal = true;
-            this.orderdata.payment_method = this.availableGateways[0].id;
+            this.$store.dispatch( 'Order/setGatewayAction', this.availableGateways[0] );
         },
+
         backToSale() {
             this.showModal = false;
             this.showHelp = false;
-            this.orderdata.payment_method = '';
+            // Remove gateway selections
         },
         isSelectGateway() {
             return !( this.orderdata.payment_method == undefined || this.orderdata.payment_method == '' );
@@ -918,72 +860,28 @@ export default {
             return ( product.images.length > 0 ) ? product.images[0].name : product.name;
         },
         setDiscount( value, type ) {
-            this.orderdata.fee_lines.push({
-                name: this.__( 'Discount', 'wepos' ),
-                type: 'discount',
-                value: value.toString(),
-                isEdit: false,
-                discount_type: type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-
-            this.calculateDiscount();
-            this.calculateFee();
             this.$store.dispatch( 'Cart/addDiscountAction', { title: this.__( 'Discount', 'wepos' ), value: value, type: type } );
         },
         saveFee( key ) {
-            this.orderdata.fee_lines[key].isEdit = false;
-            this.$store.dispatch( 'Cart/saveFeeValueAction', key );
+            this.$store.dispatch( 'Cart/saveFeeValueAction', { key: key, feeData: this.feeData } );
+            this.feeData = {};
+        },
+        cancelEditFee( key ) {
+            this.$store.dispatch( 'Cart/cancelSaveFeeValueAction', key );
+            this.feeData = {};
+        },
+        editFeeData(key) {
+            this.$store.dispatch( 'Cart/editFeeValueAction', key );
+            this.feeData = Object.assign( {}, this.cartdata.fee_lines[key] );
             this.$nextTick(() => {
                 jQuery( this.$refs.fee_name ).focus();
             })
         },
         setFee( value, type ) {
-            this.orderdata.fee_lines.push({
-                name: this.__( 'Fee', 'wepos' ),
-                type: 'fee',
-                value: value.toString(),
-                isEdit: false,
-                fee_type: type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-            this.calculateFee();
-            this.calculateDiscount();
             this.$store.dispatch( 'Cart/addFeeAction', { title: this.__( 'Fee', 'wepos' ), value: value, type: type } );
         },
         removeFeeLine( key ) {
-            this.orderdata.fee_lines.splice( key, 1 );
             this.$store.dispatch( 'Cart/removeFeeLineItemsAction', key );
-        },
-        calculateDiscount() {
-            if ( this.orderdata.fee_lines.length > 0 ) {
-                weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
-                    if ( item.type == "discount" ) {
-                        if ( item.discount_type == 'percent' ) {
-                            this.orderdata.fee_lines[key].total = '-' + ( this.getSubtotal*Math.abs( item.value ) )/100;
-                        } else {
-                            this.orderdata.fee_lines[key].total = '-' + Math.abs( item.value );
-                        }
-                    }
-                } );
-            }
-        },
-        calculateFee() {
-            if ( this.orderdata.fee_lines.length > 0 ) {
-                weLo_.forEach( this.orderdata.fee_lines, ( item,key ) => {
-                    if ( item.type == 'fee' ) {
-                        if ( item.fee_type == 'percent' ) {
-                            this.orderdata.fee_lines[key].total = ( ( this.getSubtotal*Math.abs( item.value ) )/100 ).toString();
-                        } else {
-                            this.orderdata.fee_lines[key].total = Math.abs( item.value ).toString();
-                        }
-                    }
-                } );
-            }
         },
         fetchProducts() {
             if ( this.page == 1 ) {
@@ -1041,16 +939,7 @@ export default {
         },
 
         selectCustomer( customer ) {
-            this.$store.dispatch( 'Cart/setCustomerAction', customer );
-            if ( Object.keys( customer ).length > 0 ) {
-                this.orderdata.billing = customer.billing;
-                this.orderdata.shipping = customer.shipping;
-                this.orderdata.customer_id = customer.id;
-            } else {
-                this.orderdata.billing = {};
-                this.orderdata.shipping = {};
-                this.orderdata.customer_id = 0;
-            }
+            this.$store.dispatch( 'Order/setCustomerAction', customer );
         },
         selectVariationProduct( product ) {
             this.viewVariationPopover = true;
@@ -1065,86 +954,22 @@ export default {
             variationProduct.type      = this.selectedVariationProduct.type;
             this.selectedAttribute     = {};
             this.attributeDisabled     = true;
-            this.addToCart( variationProduct );
             this.$store.dispatch( 'Cart/addToCartAction', variationProduct );
         },
         addToCart( product ) {
-            var self = this;
-            var cartObject = {};
-
-            cartObject.product_id         = ( product.parent_id === 0 ) ? product.id : product.parent_id;
-            cartObject.name               = product.name;
-            cartObject.quantity           = 1;
-            cartObject.regular_price      = product.regular_display_price;
-            cartObject.sale_price         = product.sales_display_price;
-            cartObject.on_sale            = product.on_sale;
-            cartObject.attribute          = product.attributes;
-            cartObject.variation_id       = ( product.parent_id !== 0 ) ? product.id : 0;
-            cartObject.editQuantity       = false;
-            cartObject.type               = product.type;
-            cartObject.tax_amount         = product.tax_amount;
-            cartObject.manage_stock       = product.manage_stock;
-            cartObject.stock_status       = product.stock_status;
-            cartObject.backorders_allowed = product.backorders_allowed;
-            cartObject.stock_quantity     = product.stock_quantity;
-
-            var index = weLo_.findIndex( self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id} );
-
-            if ( index < 0 ) {
-                if ( this.hasStock( product ) ) {
-                    self.orderdata.line_items.push( cartObject );
-                }
-            } else {
-                if ( this.hasStock( product, self.orderdata.line_items[index].quantity ) ) {
-                    self.orderdata.line_items[index].quantity += 1;
-                }
-            }
-
             this.$store.dispatch( 'Cart/addToCartAction', product );
-
-            this.calculateDiscount();
-            this.calculateFee();
         },
         toggleEditQuantity( product, key ) {
-            this.orderdata.line_items[key].editQuantity = ! this.orderdata.line_items[key].editQuantity;
             this.$store.dispatch( 'Cart/toggleEditQuantityAction', key );
         },
         removeItem( key ) {
             this.$store.dispatch( 'Cart/removeCartItemAction', key );
-
-            this.orderdata.line_items.splice( key, 1 );
-            this.calculateDiscount();
-            this.calculateFee();
         },
         addQuantity( item, key ) {
-            if ( this.hasStock( item, item.quantity ) ) {
-                item.quantity++;
-            }
-            this.calculateDiscount();
-            this.calculateFee();
             this.$store.dispatch( 'Cart/addItemQuantityAction', key );
         },
         removeQuantity( item, key ) {
             this.$store.dispatch( 'Cart/removeItemQuantityAction', key );
-            if ( item.quantity <= 1 ) {
-                this.calculateDiscount();
-                this.calculateFee();
-                return 1;
-            }
-            item.quantity--;
-            this.calculateDiscount();
-            this.calculateFee();
-        },
-        hasStock( product, productCartQty = 0 ) {
-            if ( ! product.manage_stock ) {
-                return ( 'outofstock' == product.stock_status ) ? false : true;
-            } else {
-                if ( product.backorders_allowed ) {
-                    return true;
-                } else {
-                    return product.stock_quantity > productCartQty;
-                }
-            }
         },
         fetchGateway() {
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/payment/gateways' )
@@ -1249,16 +1074,21 @@ export default {
         if ( typeof(localStorage) != 'undefined' ) {
             try {
                 var cartdata = JSON.parse( localStorage.getItem( 'cartdata' ) );
+                var orderdata = JSON.parse( localStorage.getItem( 'orderdata' ) );
                 cartdata = await this.maybeRemoveDeletedProduct( cartdata );
-                this.orderdata = cartdata ? cartdata : this.orderdata;
+                this.$store.dispatch( 'Cart/setCartDataAction', cartdata );
+                this.$store.dispatch( 'Order/setOrderDataAction', orderdata );
             } catch( cartdata ) {
-                this.orderdata = cartdata ? cartdata : this.orderdata;
+                var orderdata = JSON.parse( localStorage.getItem( 'orderdata' ) );
+                this.$store.dispatch( 'Cart/setCartDataAction', cartdata );
+                this.$store.dispatch( 'Order/setOrderDataAction', orderdata );
             }
         }
 
         window.addEventListener('beforeunload', () => {
             if ( typeof( localStorage ) != 'undefined' ) {
-                localStorage.setItem('cartdata', JSON.stringify( this.orderdata ) );
+                localStorage.setItem( 'cartdata', JSON.stringify( this.cartdata ) );
+                localStorage.setItem( 'orderdata', JSON.stringify( this.orderdata ) );
             }
         }, false)
     }
@@ -2107,6 +1937,12 @@ export default {
                                         border-radius: 3px;
                                         cursor: pointer;
                                         margin-left: 5px;
+
+                                        &.cancel {
+                                            border: 1px solid #afafaf;
+                                            background: #ffff;
+                                            color: #222;
+                                        }
 
                                         &:disabled {
                                             background: #76A2ED;

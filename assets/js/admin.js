@@ -1,16 +1,16 @@
 pluginWebpack([1],{
 
-/***/ 170:
+/***/ 173:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(171);
+var _App = __webpack_require__(174);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(174);
+var _router = __webpack_require__(177);
 
 var _router2 = _interopRequireDefault(_router);
 
@@ -18,7 +18,7 @@ var _store = __webpack_require__(28);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _adminMenuFix = __webpack_require__(205);
+var _adminMenuFix = __webpack_require__(208);
 
 var _adminMenuFix2 = _interopRequireDefault(_adminMenuFix);
 
@@ -46,18 +46,18 @@ new Vue({
 
 /***/ }),
 
-/***/ 171:
+/***/ 174:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(74);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(176);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(172)
+  __webpack_require__(175)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -104,14 +104,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 172:
+/***/ 175:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 173:
+/***/ 176:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -134,7 +134,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 174:
+/***/ 177:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -144,7 +144,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Settings = __webpack_require__(175);
+var _Settings = __webpack_require__(178);
 
 var _Settings2 = _interopRequireDefault(_Settings);
 
@@ -165,18 +165,18 @@ exports.default = new Router({
 
 /***/ }),
 
-/***/ 175:
+/***/ 178:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(75);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(207);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(176)
+  __webpack_require__(179)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -223,24 +223,24 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 176:
+/***/ 179:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 177:
+/***/ 180:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(76);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(206);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(178)
+  __webpack_require__(181)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -287,24 +287,24 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 178:
+/***/ 181:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 179:
+/***/ 182:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(77);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(205);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(180)
+  __webpack_require__(183)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -351,14 +351,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 180:
+/***/ 183:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 202:
+/***/ 205:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -450,7 +450,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 203:
+/***/ 206:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1418,7 +1418,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 204:
+/***/ 207:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1608,7 +1608,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 205:
+/***/ 208:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1664,9 +1664,13 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Cart = __webpack_require__(398);
+var _Cart = __webpack_require__(29);
 
 var _Cart2 = _interopRequireDefault(_Cart);
+
+var _Order = __webpack_require__(31);
+
+var _Order2 = _interopRequireDefault(_Order);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1677,13 +1681,14 @@ Vue.use(Vuex);
 
 exports.default = new Vuex.Store({
     modules: {
-        Cart: _Cart2.default
+        Cart: _Cart2.default,
+        Order: _Order2.default
     }
 });
 
 /***/ }),
 
-/***/ 398:
+/***/ 29:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1693,7 +1698,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _helper = __webpack_require__(399);
+var _helper = __webpack_require__(30);
 
 var _helper2 = _interopRequireDefault(_helper);
 
@@ -1703,12 +1708,8 @@ exports.default = {
     namespaced: true,
     state: {
         cartdata: {
-            billing: {},
-            shipping: {},
             line_items: [],
-            fee_lines: [],
-            customer_id: 0,
-            customer_note: ''
+            fee_lines: []
         }
     },
     getters: {
@@ -1766,7 +1767,6 @@ exports.default = {
             return taxLineTotal + taxFeeTotal;
         },
         getOrderTotal: function getOrderTotal(state, getters) {
-            console.log(getters);
             return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
         },
         getTotal: function getTotal(state, getters) {
@@ -1774,15 +1774,14 @@ exports.default = {
         }
     },
     mutations: {
-        setCustomer: function setCustomer(state, customer) {
-            if (Object.keys(customer).length > 0) {
-                state.cartdata.billing = customer.billing;
-                state.cartdata.shipping = customer.shipping;
-                state.cartdata.customer_id = customer.id;
+        setCartData: function setCartData(state, cartdata) {
+            if (weLo_.isEmpty(cartdata)) {
+                state.cartdata = {
+                    line_items: [],
+                    fee_lines: []
+                };
             } else {
-                state.cartdata.billing = {};
-                state.cartdata.shipping = {};
-                state.cartdata.customer_id = 0;
+                state.cartdata = Object.assign({}, cartdata);
             }
         },
         addToCartItem: function addToCartItem(state, product) {
@@ -1859,7 +1858,14 @@ exports.default = {
                 total: 0
             });
         },
-        saveFeeValue: function saveFeeValue(state, itemKey) {
+        saveFeeValue: function saveFeeValue(state, item) {
+            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
+            state.cartdata.fee_lines[item.key].isEdit = false;
+        },
+        editFeeValue: function editFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = true;
+        },
+        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
             state.cartdata.fee_lines[itemKey].isEdit = false;
         },
         removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
@@ -1867,19 +1873,9 @@ exports.default = {
         },
         emptyCart: function emptyCart(state) {
             state.cartdata = {
-                billing: {},
-                shipping: {},
-                customer_id: 0,
                 line_items: [],
-                fee_lines: [],
-                customer_note: ''
+                fee_lines: []
             };
-        },
-        setCustomerNote: function setCustomerNote(state, note) {
-            state.cartdata.customer_note = note.trim();
-        },
-        removeCustomerNote: function removeCustomerNote(state) {
-            state.cartdata.customer_note = '';
         },
         calculateDiscount: function calculateDiscount(state, payload) {
             if (state.cartdata.fee_lines.length > 0) {
@@ -1909,8 +1905,10 @@ exports.default = {
         }
     },
     actions: {
-        setCustomerAction: function setCustomerAction(context, customer) {
-            context.commit('setCustomer', customer);
+        setCartDataAction: function setCartDataAction(context, cartdata) {
+            context.commit('setCartData', cartdata);
+            // context.commit( 'calculateDiscount', context.getters );
+            // context.commit( 'calculateFee', context.getters );
         },
         addToCartAction: function addToCartAction(context, product) {
             context.commit('addToCartItem', product);
@@ -1950,17 +1948,19 @@ exports.default = {
             context.commit('calculateDiscount', context.getters);
             context.commit('calculateFee', context.getters);
         },
-        saveFeeValueAction: function saveFeeValueAction(context, itemKey) {
-            context.commit('saveFeeValue', itemKey);
+        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
+            context.commit('saveFeeValue', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        editFeeValueAction: function editFeeValueAction(context, itemKey) {
+            context.commit('editFeeValue', itemKey);
+        },
+        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
+            context.commit('cancelSaveFeeValue', itemKey);
         },
         emptyCartAction: function emptyCartAction(context) {
             context.commit('emptyCart');
-        },
-        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
-            context.commit('setCustomerNote', note);
-        },
-        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
-            context.commit('removeCustomerNote');
         },
         calculateDiscount: function calculateDiscount(context) {
             context.commit('calculateDiscount', context.getters);
@@ -1973,7 +1973,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 399:
+/***/ 30:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2000,7 +2000,87 @@ exports.default = {
 
 /***/ }),
 
-/***/ 71:
+/***/ 31:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    namespaced: true,
+    state: {
+        orderdata: {
+            billing: {},
+            shipping: {},
+            customer_id: 0,
+            customer_note: ''
+        }
+    },
+    getters: {},
+    mutations: {
+        setOrderData: function setOrderData(state, orderdata) {
+            state.orderdata = Object.assign({}, orderdata);
+        },
+        setCustomer: function setCustomer(state, customer) {
+            if (Object.keys(customer).length > 0) {
+                state.orderdata.billing = customer.billing;
+                state.orderdata.shipping = customer.shipping;
+                state.orderdata.customer_id = customer.id;
+            } else {
+                state.orderdata.billing = {};
+                state.orderdata.shipping = {};
+                state.orderdata.customer_id = 0;
+            }
+        },
+        emptyOrderdata: function emptyOrderdata(state) {
+            state.orderdata = {
+                billing: {},
+                shipping: {},
+                customer_id: 0,
+                customer_note: '',
+                payment_method: '',
+                payment_method_title: ''
+            };
+        },
+        setCustomerNote: function setCustomerNote(state, note) {
+            state.orderdata.customer_note = note.trim();
+        },
+        removeCustomerNote: function removeCustomerNote(state) {
+            state.orderdata.customer_note = '';
+        },
+        setGateway: function setGateway(state, gateway) {
+            state.orderdata.payment_method = gateway.id;
+            state.orderdata.payment_method_title = gateway.title;
+        }
+    },
+    actions: {
+        setOrderDataAction: function setOrderDataAction(context, orderdata) {
+            context.commit('setOrderData', orderdata);
+        },
+        setCustomerAction: function setCustomerAction(context, customer) {
+            context.commit('setCustomer', customer);
+        },
+        emptyOrderdataAction: function emptyOrderdataAction(context) {
+            context.commit('emptyOrderdata');
+        },
+        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
+            context.commit('setCustomerNote', note);
+        },
+        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
+            context.commit('removeCustomerNote');
+        },
+        setGatewayAction: function setGatewayAction(context, gateway) {
+            context.commit('setGateway', gateway);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 74:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2017,11 +2097,11 @@ exports.default = {
 
 /***/ }),
 
-/***/ 72:
+/***/ 75:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(177);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(180);
 //
 //
 //
@@ -2213,11 +2293,11 @@ exports.default = {
 
 /***/ }),
 
-/***/ 73:
+/***/ 76:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(182);
 //
 //
 //
@@ -2447,11 +2527,11 @@ let TextEditor = wepos_get_lib('TextEditor');
 
 /***/ }),
 
-/***/ 74:
+/***/ 77:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(181);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(184);
 //
 //
 //
@@ -2572,4 +2652,4 @@ let TextEditor = wepos_get_lib('TextEditor');
 
 /***/ })
 
-},[170]);
+},[173]);

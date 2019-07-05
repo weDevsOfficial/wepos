@@ -176,8 +176,6 @@
                 v-for="(beforCartPanel, key ) in beforCartPanels"
                 :key="key"
                 :is="beforCartPanel"
-                :orderdata="orderdata"
-                :cartTotal="getTotal"
             />
             <div class="cart-panel" v-if="settings.wepos_general">
                 <div class="cart-content">
@@ -409,7 +407,7 @@
                         <div class="header">
                             {{ __( 'Sale Summary', 'wepos' ) }}
                         </div>
-                        <div class="content" :style="{ height: modalLeftContentHeight }">
+                        <div class="content">
                             <table class="sale-summary-cart">
                                 <tbody>
                                     <tr v-for="item in cartdata.line_items">
@@ -479,7 +477,7 @@
                             <div class="payment-gateway">
                                 <template v-if="availableGateways.length > 0">
                                     <label v-for="gateway in availableGateways">
-                                        <input type="radio" name="gateway" checked :value="gateway.id">  <!-- v-model="orderdata.payment_method" -->
+                                        <input type="radio" name="gateway" checked :value="gateway.id" v-model="selectedGateway">  <!-- v-model="orderdata.payment_method" -->
                                         <span class="gateway" :class="`gateway-${gateway.id}`">
                                             {{ gateway.title }}
                                         </span>
@@ -518,7 +516,6 @@
                                 :key="key"
                                 :is="availableGatewayComponent"
                                 :availablegateways="availableGateways"
-                                :orderdata="orderdata"
                             />
                         </div>
 
@@ -592,7 +589,6 @@ export default {
             attributeDisabled: true,
             selectedAttribute: {},
             availableGateways: [],
-            modalLeftContentHeight: '',
             emptyGatewayDiv: 0,
             cashAmount: '',
             availableTax: [],
@@ -605,15 +601,8 @@ export default {
             } ),
             feeData: {},
             createprintreceipt: false,
-            // orderdata: {
-            //     billing: {},
-            //     shipping: {},
-            //     line_items: [],
-            //     fee_lines: [],
-            //     customer_id: 0,
-            //     customer_note: '',
-            // },
             selectedCategory: '',
+            selectedGateway: '',
             categories: [],
             showReceiptHtml: wepos.hooks.applyFilters( 'wepos_render_receipt_html', true ),
             quickLinkList: wepos.hooks.applyFilters( 'wepos_quick_links', [] ),
@@ -709,6 +698,10 @@ export default {
                 this.selectedCategory = weLo_.find( this.categories, { id : parseInt( this.$route.query.category ) } )
             }
         },
+        'selectedGateway'( newdata, olddata ) {
+            var gateway = weLo_.find( this.availableGateways, { 'id' : newdata } );
+            this.$store.dispatch( 'Order/setGatewayAction', gateway );
+        }
     },
 
     methods: {
@@ -795,7 +788,7 @@ export default {
                             value: self.changeAmount.toString()
                         }
                     ]
-                } );
+                }, this.orderdata, this.cartdata );
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
@@ -843,6 +836,7 @@ export default {
         initPayment() {
             this.showModal = true;
             this.$store.dispatch( 'Order/setGatewayAction', this.availableGateways[0] );
+            this.selectedGateway = this.availableGateways[0].id;
         },
 
         backToSale() {
@@ -1087,8 +1081,8 @@ export default {
 
         window.addEventListener('beforeunload', () => {
             if ( typeof( localStorage ) != 'undefined' ) {
-                localStorage.setItem( 'cartdata', JSON.stringify( this.cartdata ) );
-                localStorage.setItem( 'orderdata', JSON.stringify( this.orderdata ) );
+                localStorage.setItem( 'cartdata', JSON.stringify( this.$store.state.Cart.cartdata ) );
+                localStorage.setItem( 'orderdata', JSON.stringify( this.$store.state.Order.orderdata ) );
             }
         }, false)
     }

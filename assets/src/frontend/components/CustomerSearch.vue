@@ -205,6 +205,9 @@ export default {
                 };
             } );
         },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
+        }
     },
 
     watch: {
@@ -220,7 +223,12 @@ export default {
                 }
             },
             deep: true
+        },
+
+        'orderdata.customer_id'(newVal) {
+            this.serachInput = newVal ? this.orderdata.billing.first_name + ' ' + this.orderdata.billing.last_name : '';
         }
+
     },
 
     methods: {

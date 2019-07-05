@@ -215,8 +215,8 @@ export default {
     actions: {
         setCartDataAction( context, cartdata ) {
             context.commit( 'setCartData', cartdata );
-            // context.commit( 'calculateDiscount', context.getters );
-            // context.commit( 'calculateFee', context.getters );
+            context.commit( 'calculateDiscount', context.getters );
+            context.commit( 'calculateFee', context.getters );
         },
 
         addToCartAction( context, product ) {

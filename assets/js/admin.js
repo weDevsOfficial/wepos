@@ -1907,8 +1907,8 @@ exports.default = {
     actions: {
         setCartDataAction: function setCartDataAction(context, cartdata) {
             context.commit('setCartData', cartdata);
-            // context.commit( 'calculateDiscount', context.getters );
-            // context.commit( 'calculateFee', context.getters );
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
         },
         addToCartAction: function addToCartAction(context, product) {
             context.commit('addToCartItem', product);
@@ -2016,13 +2016,26 @@ exports.default = {
             billing: {},
             shipping: {},
             customer_id: 0,
-            customer_note: ''
+            customer_note: '',
+            payment_method: '',
+            payment_method_title: ''
         }
     },
     getters: {},
     mutations: {
         setOrderData: function setOrderData(state, orderdata) {
-            state.orderdata = Object.assign({}, orderdata);
+            if (weLo_.isEmpty(orderdata)) {
+                state.orderdata = {
+                    billing: {},
+                    shipping: {},
+                    customer_id: 0,
+                    customer_note: '',
+                    payment_method: '',
+                    payment_method_title: ''
+                };
+            } else {
+                state.orderdata = orderdata;
+            }
         },
         setCustomer: function setCustomer(state, customer) {
             if (Object.keys(customer).length > 0) {

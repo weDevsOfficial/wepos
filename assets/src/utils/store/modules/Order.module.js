@@ -6,12 +6,25 @@ export default {
             shipping: {},
             customer_id: 0,
             customer_note: '',
+            payment_method: '',
+            payment_method_title: '',
         }
     },
     getters: {},
     mutations: {
         setOrderData( state, orderdata ) {
-            state.orderdata = Object.assign( {}, orderdata );
+            if ( weLo_.isEmpty( orderdata ) ) {
+                state.orderdata = {
+                    billing: {},
+                    shipping: {},
+                    customer_id: 0,
+                    customer_note: '',
+                    payment_method: '',
+                    payment_method_title: '',
+                }
+            } else {
+                state.orderdata = orderdata;
+            }
         },
 
         setCustomer( state, customer ) {

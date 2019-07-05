@@ -251,8 +251,8 @@ exports.default = {
     actions: {
         setCartDataAction: function setCartDataAction(context, cartdata) {
             context.commit('setCartData', cartdata);
-            // context.commit( 'calculateDiscount', context.getters );
-            // context.commit( 'calculateFee', context.getters );
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
         },
         addToCartAction: function addToCartAction(context, product) {
             context.commit('addToCartItem', product);
@@ -358,13 +358,26 @@ exports.default = {
             billing: {},
             shipping: {},
             customer_id: 0,
-            customer_note: ''
+            customer_note: '',
+            payment_method: '',
+            payment_method_title: ''
         }
     },
     getters: {},
     mutations: {
         setOrderData: function setOrderData(state, orderdata) {
-            state.orderdata = Object.assign({}, orderdata);
+            if (weLo_.isEmpty(orderdata)) {
+                state.orderdata = {
+                    billing: {},
+                    shipping: {},
+                    customer_id: 0,
+                    customer_note: '',
+                    payment_method: '',
+                    payment_method_title: ''
+                };
+            } else {
+                state.orderdata = orderdata;
+            }
         },
         setCustomer: function setCustomer(state, customer) {
             if (Object.keys(customer).length > 0) {
@@ -1024,9 +1037,6 @@ exports.default = {
 //
 //
 //
-//
-//
-//
 
 
 
@@ -1074,7 +1084,6 @@ let Modal = wepos_get_lib('Modal');
             attributeDisabled: true,
             selectedAttribute: {},
             availableGateways: [],
-            modalLeftContentHeight: '',
             emptyGatewayDiv: 0,
             cashAmount: '',
             availableTax: [],
@@ -1087,15 +1096,8 @@ let Modal = wepos_get_lib('Modal');
             }),
             feeData: {},
             createprintreceipt: false,
-            // orderdata: {
-            //     billing: {},
-            //     shipping: {},
-            //     line_items: [],
-            //     fee_lines: [],
-            //     customer_id: 0,
-            //     customer_note: '',
-            // },
             selectedCategory: '',
+            selectedGateway: '',
             categories: [],
             showReceiptHtml: wepos.hooks.applyFilters('wepos_render_receipt_html', true),
             quickLinkList: wepos.hooks.applyFilters('wepos_quick_links', []),
@@ -1190,6 +1192,10 @@ let Modal = wepos_get_lib('Modal');
             if (this.$route.query.category !== undefined) {
                 this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
             }
+        },
+        'selectedGateway'(newdata, olddata) {
+            var gateway = weLo_.find(this.availableGateways, { 'id': newdata });
+            this.$store.dispatch('Order/setGatewayAction', gateway);
         }
     },
 
@@ -1273,7 +1279,7 @@ let Modal = wepos_get_lib('Modal');
                     key: '_wepos_cash_change_amount',
                     value: self.changeAmount.toString()
                 }]
-            });
+            }, this.orderdata, this.cartdata);
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
@@ -1319,6 +1325,7 @@ let Modal = wepos_get_lib('Modal');
         initPayment() {
             this.showModal = true;
             this.$store.dispatch('Order/setGatewayAction', this.availableGateways[0]);
+            this.selectedGateway = this.availableGateways[0].id;
         },
 
         backToSale() {
@@ -1557,8 +1564,8 @@ let Modal = wepos_get_lib('Modal');
 
         window.addEventListener('beforeunload', () => {
             if (typeof localStorage != 'undefined') {
-                localStorage.setItem('cartdata', JSON.stringify(this.cartdata));
-                localStorage.setItem('orderdata', JSON.stringify(this.orderdata));
+                localStorage.setItem('cartdata', JSON.stringify(this.$store.state.Cart.cartdata));
+                localStorage.setItem('orderdata', JSON.stringify(this.$store.state.Order.orderdata));
             }
         }, false);
     }
@@ -2229,6 +2236,9 @@ let Modal = wepos_get_lib('Modal');
                     name: wepos.countries[val]
                 };
             });
+        },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
         }
     },
 
@@ -2241,7 +2251,12 @@ let Modal = wepos_get_lib('Modal');
                 }
             },
             deep: true
+        },
+
+        'orderdata.customer_id'(newVal) {
+            this.serachInput = newVal ? this.orderdata.billing.first_name + ' ' + this.orderdata.billing.last_name : '';
         }
+
     },
 
     methods: {
@@ -6403,11 +6418,7 @@ var render = function() {
           ),
           _vm._v(" "),
           _vm._l(_vm.beforCartPanels, function(beforCartPanel, key) {
-            return _c(beforCartPanel, {
-              key: key,
-              tag: "component",
-              attrs: { orderdata: _vm.orderdata, cartTotal: _vm.getTotal }
-            })
+            return _c(beforCartPanel, { key: key, tag: "component" })
           }),
           _vm._v(" "),
           _vm.settings.wepos_general
@@ -7708,126 +7719,117 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass: "content",
-                        style: { height: _vm.modalLeftContentHeight }
-                      },
-                      [
-                        _c("table", { staticClass: "sale-summary-cart" }, [
-                          _c(
-                            "tbody",
-                            _vm._l(_vm.cartdata.line_items, function(item) {
-                              return _c("tr", [
-                                _c("td", { staticClass: "name" }, [
-                                  _vm._v(
-                                    "\n                                        " +
-                                      _vm._s(item.name) +
-                                      "\n                                        "
-                                  ),
-                                  item.attribute.length > 0 &&
-                                  item.type === "variable"
-                                    ? _c("div", { staticClass: "attribute" }, [
+                    _c("div", { staticClass: "content" }, [
+                      _c("table", { staticClass: "sale-summary-cart" }, [
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.cartdata.line_items, function(item) {
+                            return _c("tr", [
+                              _c("td", { staticClass: "name" }, [
+                                _vm._v(
+                                  "\n                                        " +
+                                    _vm._s(item.name) +
+                                    "\n                                        "
+                                ),
+                                item.attribute.length > 0 &&
+                                item.type === "variable"
+                                  ? _c("div", { staticClass: "attribute" }, [
+                                      _c(
+                                        "ul",
+                                        _vm._l(item.attribute, function(
+                                          attribute_item
+                                        ) {
+                                          return _c("li", [
+                                            _c(
+                                              "span",
+                                              { staticClass: "attr_name" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(attribute_item.name)
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(": "),
+                                            _c(
+                                              "span",
+                                              { staticClass: "attr_value" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(attribute_item.option)
+                                                )
+                                              ]
+                                            )
+                                          ])
+                                        })
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ]),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "quantity" }, [
+                                _vm._v(_vm._s(item.quantity))
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "td",
+                                { staticClass: "price" },
+                                [
+                                  item.on_sale
+                                    ? [
                                         _c(
-                                          "ul",
-                                          _vm._l(item.attribute, function(
-                                            attribute_item
-                                          ) {
-                                            return _c("li", [
-                                              _c(
-                                                "span",
-                                                { staticClass: "attr_name" },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(attribute_item.name)
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(": "),
-                                              _c(
-                                                "span",
-                                                { staticClass: "attr_value" },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(
-                                                      attribute_item.option
-                                                    )
-                                                  )
-                                                ]
+                                          "span",
+                                          { staticClass: "sale-price" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  item.quantity *
+                                                    item.sale_price
+                                                )
                                               )
-                                            ])
-                                          })
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "span",
+                                          { staticClass: "regular-price" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  item.quantity *
+                                                    item.regular_price
+                                                )
+                                              )
+                                            )
+                                          ]
                                         )
-                                      ])
-                                    : _vm._e()
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "quantity" }, [
-                                  _vm._v(_vm._s(item.quantity))
-                                ]),
-                                _vm._v(" "),
-                                _c(
-                                  "td",
-                                  { staticClass: "price" },
-                                  [
-                                    item.on_sale
-                                      ? [
-                                          _c(
-                                            "span",
-                                            { staticClass: "sale-price" },
-                                            [
-                                              _vm._v(
-                                                _vm._s(
-                                                  _vm.formatPrice(
-                                                    item.quantity *
-                                                      item.sale_price
-                                                  )
+                                      ]
+                                    : [
+                                        _c(
+                                          "span",
+                                          { staticClass: "sale-price" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  item.quantity *
+                                                    item.regular_price
                                                 )
                                               )
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "span",
-                                            { staticClass: "regular-price" },
-                                            [
-                                              _vm._v(
-                                                _vm._s(
-                                                  _vm.formatPrice(
-                                                    item.quantity *
-                                                      item.regular_price
-                                                  )
-                                                )
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      : [
-                                          _c(
-                                            "span",
-                                            { staticClass: "sale-price" },
-                                            [
-                                              _vm._v(
-                                                _vm._s(
-                                                  _vm.formatPrice(
-                                                    item.quantity *
-                                                      item.regular_price
-                                                  )
-                                                )
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                  ],
-                                  2
-                                )
-                              ])
-                            })
-                          )
-                        ])
-                      ]
-                    ),
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                ],
+                                2
+                              )
+                            ])
+                          })
+                        )
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "footer" }, [
                       _c(
@@ -8038,12 +8040,31 @@ var render = function() {
                                   ) {
                                     return _c("label", [
                                       _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.selectedGateway,
+                                            expression: "selectedGateway"
+                                          }
+                                        ],
                                         attrs: {
                                           type: "radio",
                                           name: "gateway",
                                           checked: ""
                                         },
-                                        domProps: { value: gateway.id }
+                                        domProps: {
+                                          value: gateway.id,
+                                          checked: _vm._q(
+                                            _vm.selectedGateway,
+                                            gateway.id
+                                          )
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            _vm.selectedGateway = gateway.id
+                                          }
+                                        }
                                       }),
                                       _vm._v(" "),
                                       _c(
@@ -8165,10 +8186,7 @@ var render = function() {
                           return _c(availableGatewayComponent, {
                             key: key,
                             tag: "component",
-                            attrs: {
-                              availablegateways: _vm.availableGateways,
-                              orderdata: _vm.orderdata
-                            }
+                            attrs: { availablegateways: _vm.availableGateways }
                           })
                         })
                       ],

@@ -643,7 +643,7 @@ export default {
         },
         changeAmount() {
             var returnMoney = this.cashAmount-this.$store.getters['Cart/getTotal'];
-            return returnMoney > 0 ? this.formatNumber( returnMoney ) : 0;
+            return returnMoney > 0 ? returnMoney: 0;
         },
         getBreadCrums() {
             if ( this.$route.query.category !== undefined ) {

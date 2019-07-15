@@ -82,6 +82,9 @@ final class We_POS {
 
         add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
         add_action( 'woocommerce_init', array( $this, 'on_wc_init' ) );
+
+        // Handle appseror tracker
+        $this->appsero_init_tracker_wepos();
     }
 
     /**
@@ -382,6 +385,33 @@ final class We_POS {
                 }
             }
         }
+    }
+
+    /**
+     * Initialize the plugin tracker
+     *
+     * @return void
+     */
+    function appsero_init_tracker_wepos() {
+
+        if ( ! class_exists( 'Appsero\Client' ) ) {
+          require_once WEPOS_PATH . '/libs/appsero/src/Client.php';
+        }
+
+        $client = new Appsero\Client( '48fa1273-3e91-4cd6-9c07-d18ad6bc2f54', 'wePos', __FILE__ );
+
+        // Active insights
+        $client->insights()
+                ->add_extra( function() {
+                    $products = wc_get_products( [ 'fields' => 'ids', 'paginate' => true ] );
+                    $orders   = wc_get_orders( [ 'fields' => 'ids', 'paginate' => true ] );
+
+                    return [
+                        'products' => $products->total,
+                        'orders'   => $orders->total
+                    ];
+                } )
+                ->init();
     }
 
     /**

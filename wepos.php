@@ -395,7 +395,7 @@ final class We_POS {
     function appsero_init_tracker_wepos() {
 
         if ( ! class_exists( 'Appsero\Client' ) ) {
-            require_once WEPOS_PATH . '/libs/appsero/src/Client.php';
+            require_once WEPOS_PATH . '/lib/appsero/src/Client.php';
         }
 
 

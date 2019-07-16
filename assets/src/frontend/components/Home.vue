@@ -268,7 +268,7 @@
                                                             <option v-for="feeTax in availableTax" :value="feeTax.class == 'standard' ? '' : feeTax.class">{{ unSanitizeString( feeTax.class ) }} - {{ feeTax.percentage_rate }}</option>
                                                         </select>
                                                     </template>
-                                                    <button :disabled="feeData.name == ''" @click="saveFee(key)">{{ __( 'Apply', 'wepos' ) }}</button>
+                                                    <button :disabled="feeData.name == ''" @click.prevent="saveFee(key)">{{ __( 'Apply', 'wepos' ) }}</button>
                                                     <button class="cancel" @click.prevent="cancelEditFee(key)">{{ __( 'Cancel', 'wepos' ) }}</button>
                                                 </td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
@@ -1009,7 +1009,7 @@ export default {
             };
         },
         fetchCategories() {
-            wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id' )
+            wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id&per_page=100' )
             .then( response => {
                 response.sort(function (a, b) {
                     return a.name.localeCompare(b.name);

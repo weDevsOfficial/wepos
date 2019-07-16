@@ -1492,7 +1492,7 @@ let Modal = wepos_get_lib('Modal');
             };
         },
         fetchCategories() {
-            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id').then(response => {
+            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id&per_page=100').then(response => {
                 response.sort(function (a, b) {
                     return a.name.localeCompare(b.name);
                 });
@@ -7189,6 +7189,7 @@ var render = function() {
                                                           click: function(
                                                             $event
                                                           ) {
+                                                            $event.preventDefault()
                                                             _vm.saveFee(key)
                                                           }
                                                         }

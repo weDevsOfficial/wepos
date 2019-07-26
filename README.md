@@ -3,9 +3,9 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 5.2.1
+**Tested up to:** 5.2.2
 **WC requires at least:** 3.0
-**WC tested up to:** 3.6.4
+**WC tested up to:** 3.6.5
 **Requires PHP:** 5.6
 **Stable tag:** trunk
 **License:** GPLv2 or later
@@ -52,6 +52,11 @@ No FAQ
 9. Admin Dashboard Settings
 
 ## Changelog ##
+
+### v1.0.7 -> 26 July, 2019 ###
+- **Fix**   Category rendering issue fixed
+- **Fix**   Thausand and decimal separetor issue fixed
+- **Tweak** Add vuex support for better performance
 
 ### v1.0.6 -> 17 June, 2019 ###
 - **Fix**   Remove deleted product from saved cart items when product is already deleted
@@ -102,7 +107,6 @@ No FAQ
 - **Fix**    Event bus not triggering properly
 - **Fix**    Render only publishable product in pos system
 - **Tweak**  Added wp hooks for load action and filters
-
 
 ### 1.0.0 ###
 Initial version released

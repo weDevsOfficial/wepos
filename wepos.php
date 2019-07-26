@@ -3,13 +3,13 @@
 Plugin Name: wePOS - Point Of Sale (POS) for WooCommerce
 Plugin URI: https://wedevs.com/wepos
 Description: A beautiful and fast Point of Sale (POS) system for WooCommerce
-Version: 1.0.6
+Version: 1.0.7
 Author: weDevs
 Author URI: https://wedevs.com/
 Text Domain: wepos
 Domain Path: /languages
 WC requires at least: 3.0
-WC tested up to: 3.6.4
+WC tested up to: 3.6.5
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
@@ -55,7 +55,7 @@ final class We_POS {
      *
      * @var string
      */
-    public $version = '1.0.6';
+    public $version = '1.0.7';
 
     /**
      * Holds various class instances
@@ -82,6 +82,9 @@ final class We_POS {
 
         add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
         add_action( 'woocommerce_init', array( $this, 'on_wc_init' ) );
+
+        // Handle appseror tracker
+        $this->appsero_init_tracker_wepos();
     }
 
     /**
@@ -382,6 +385,34 @@ final class We_POS {
                 }
             }
         }
+    }
+
+    /**
+     * Initialize the plugin tracker
+     *
+     * @return void
+     */
+    function appsero_init_tracker_wepos() {
+
+        if ( ! class_exists( 'Appsero\Client' ) ) {
+            require_once WEPOS_PATH . '/lib/appsero/src/Client.php';
+        }
+
+
+        $client = new Appsero\Client( '48fa1273-3e91-4cd6-9c07-d18ad6bc2f54', 'wePos', __FILE__ );
+
+        // Active insights
+        $client->insights()
+                ->add_extra( function() {
+                    $products = wc_get_products( [ 'fields' => 'ids', 'paginate' => true ] );
+                    $orders   = wc_get_orders( [ 'fields' => 'ids', 'paginate' => true ] );
+
+                    return [
+                        'products' => $products->total,
+                        'orders'   => $orders->total
+                    ];
+                } )
+                ->init();
     }
 
     /**

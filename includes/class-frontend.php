@@ -9,10 +9,22 @@ class Frontend {
     public function __construct() {
         add_action( 'wp_head', [ $this, 'reset_head_style' ], 7 );
         add_action( 'wp_head', [ $this, 'reset_head_scripts' ], 8 );
+        add_action( 'wepos_footer', [ $this, 'wp_print_footer_scripts' ], 20 );
         add_action( 'wp_head', [ $this, 'enqueue_scripts' ], 999 );
         add_action( 'template_redirect', [ $this, 'rewrite_templates' ], 1 );
         add_filter( 'show_admin_bar', [ $this, 'remove_admin_bar' ] );
         add_filter( 'document_title_parts', [ $this, 'render_page_title' ], 20 );
+    }
+
+    /**
+     * Render footer content its own style
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    public function wp_print_footer_scripts() {
+        do_action( 'wp_print_footer_scripts' );
     }
 
     /**

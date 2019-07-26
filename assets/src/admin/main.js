@@ -1,5 +1,6 @@
 import App from './App.vue'
 import router from './router'
+import store from '@/utils/store/'
 import menuFix from './utils/admin-menu-fix'
 
 let Vue = wepos_get_lib('Vue');
@@ -10,6 +11,7 @@ Vue.config.productionTip = false
 new Vue({
     el: '#wepos-admin-app',
     router,
+    store,
     render: h => h(App),
     created() {
         this.setLocaleData( wepos.i18n['wepos'] )

@@ -1,5 +1,469 @@
-pluginWebpack([0],Array(57).concat([
-/* 57 */
+pluginWebpack([0],Array(28).concat([
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Cart = __webpack_require__(29);
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+var _Order = __webpack_require__(31);
+
+var _Order2 = _interopRequireDefault(_Order);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Vue = wepos_get_lib('Vue');
+var Vuex = wepos_get_lib('Vuex');
+
+Vue.use(Vuex);
+
+exports.default = new Vuex.Store({
+    modules: {
+        Cart: _Cart2.default,
+        Order: _Order2.default
+    }
+});
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _helper = __webpack_require__(30);
+
+var _helper2 = _interopRequireDefault(_helper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    namespaced: true,
+    state: {
+        cartdata: {
+            line_items: [],
+            fee_lines: []
+        }
+    },
+    getters: {
+        getSubtotal: function getSubtotal(state) {
+            var subtotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                if (item.on_sale) {
+                    subtotal += item.quantity * item.sale_price;
+                } else {
+                    subtotal += item.quantity * item.regular_price;
+                }
+            });
+
+            return subtotal;
+        },
+        getTotalFee: function getTotalFee(state) {
+            var fee = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    fee += Math.abs(item.total);
+                }
+            });
+            return fee;
+        },
+        getTotalDiscount: function getTotalDiscount(state) {
+            var discount = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'discount') {
+                    discount += Number(Math.abs(item.total));
+                }
+            });
+
+            return discount;
+        },
+        getTotalTax: function getTotalTax(state) {
+            var self = this,
+                taxLineTotal = 0,
+                taxFeeTotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    if (item.tax_status == 'taxable') {
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find(self.availableTax, { 'class': itemTaxClass.toString() });
+                        if (taxClass !== undefined) {
+                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        }
+                    }
+                }
+            });
+
+            return taxLineTotal + taxFeeTotal;
+        },
+        getOrderTotal: function getOrderTotal(state, getters) {
+            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
+        },
+        getTotal: function getTotal(state, getters) {
+            return getters.getOrderTotal - getters.getTotalDiscount;
+        }
+    },
+    mutations: {
+        setCartData: function setCartData(state, cartdata) {
+            if (weLo_.isEmpty(cartdata)) {
+                state.cartdata = {
+                    line_items: [],
+                    fee_lines: []
+                };
+            } else {
+                state.cartdata = Object.assign({}, cartdata);
+            }
+        },
+        addToCartItem: function addToCartItem(state, product) {
+            var cartObject = {};
+            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
+            cartObject.name = product.name;
+            cartObject.quantity = 1;
+            cartObject.regular_price = product.regular_display_price;
+            cartObject.sale_price = product.sales_display_price;
+            cartObject.on_sale = product.on_sale;
+            cartObject.attribute = product.attributes;
+            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
+            cartObject.editQuantity = false;
+            cartObject.type = product.type;
+            cartObject.tax_amount = product.tax_amount;
+            cartObject.manage_stock = product.manage_stock;
+            cartObject.stock_status = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity = product.stock_quantity;
+
+            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
+
+            if (index < 0) {
+                if (_helper2.default.hasStock(product)) {
+                    state.cartdata.line_items.push(cartObject);
+                }
+            } else {
+                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
+                    state.cartdata.line_items[index].quantity += 1;
+                }
+            }
+        },
+        removeCartItem: function removeCartItem(state, itemKey) {
+            state.cartdata.line_items.splice(itemKey, 1);
+        },
+        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (_helper2.default.hasStock(item, item.quantity)) {
+                state.cartdata.line_items[itemKey].quantity++;
+            }
+        },
+        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (item.quantity <= 1) {
+                state.cartdata.line_items[itemKey].quantity = 1;
+            } else {
+                state.cartdata.line_items[itemKey].quantity--;
+            }
+        },
+        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
+            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
+        },
+        addDiscount: function addDiscount(state, discountData) {
+            state.cartdata.fee_lines.push({
+                name: discountData.title,
+                type: 'discount',
+                value: discountData.value.toString(),
+                isEdit: false,
+                discount_type: discountData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        addFee: function addFee(state, feeData) {
+            state.cartdata.fee_lines.push({
+                name: feeData.title,
+                type: 'fee',
+                value: feeData.value.toString(),
+                isEdit: false,
+                fee_type: feeData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        saveFeeValue: function saveFeeValue(state, item) {
+            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
+            state.cartdata.fee_lines[item.key].isEdit = false;
+        },
+        editFeeValue: function editFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = true;
+        },
+        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = false;
+        },
+        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
+            state.cartdata.fee_lines.splice(itemKey, 1);
+        },
+        emptyCart: function emptyCart(state) {
+            state.cartdata = {
+                line_items: [],
+                fee_lines: []
+            };
+        },
+        calculateDiscount: function calculateDiscount(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == "discount") {
+                        if (item.discount_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
+                        } else {
+                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
+                        }
+                    }
+                });
+            }
+        },
+        calculateFee: function calculateFee(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == 'fee') {
+                        if (item.fee_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
+                        } else {
+                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
+                        }
+                    }
+                });
+            }
+        }
+    },
+    actions: {
+        setCartDataAction: function setCartDataAction(context, cartdata) {
+            context.commit('setCartData', cartdata);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addToCartAction: function addToCartAction(context, product) {
+            context.commit('addToCartItem', product);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeCartItemAction: function removeCartItemAction(context, itemKey) {
+            context.commit('removeCartItem', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
+            context.commit('addCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
+            context.commit('removeCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
+            context.commit('toggleEditQuantity', itemKey);
+        },
+        addDiscountAction: function addDiscountAction(context, discountData) {
+            context.commit('addDiscount', discountData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addFeeAction: function addFeeAction(context, feeData) {
+            context.commit('addFee', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
+            context.commit('removeFeeLineItems', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
+            context.commit('saveFeeValue', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        editFeeValueAction: function editFeeValueAction(context, itemKey) {
+            context.commit('editFeeValue', itemKey);
+        },
+        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
+            context.commit('cancelSaveFeeValue', itemKey);
+        },
+        emptyCartAction: function emptyCartAction(context) {
+            context.commit('emptyCart');
+        },
+        calculateDiscount: function calculateDiscount(context) {
+            context.commit('calculateDiscount', context.getters);
+        },
+        calculateFee: function calculateFee(context) {
+            context.commit('calculateFee', context.getters);
+        }
+    }
+};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    hasStock: function hasStock(product) {
+        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        if (!product.manage_stock) {
+            return 'outofstock' == product.stock_status ? false : true;
+        } else {
+            if (product.backorders_allowed) {
+                return true;
+            } else {
+                return product.stock_quantity > productCartQty;
+            }
+        }
+    }
+};
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    namespaced: true,
+    state: {
+        orderdata: {
+            billing: {},
+            shipping: {},
+            customer_id: 0,
+            customer_note: '',
+            payment_method: '',
+            payment_method_title: ''
+        }
+    },
+    getters: {},
+    mutations: {
+        setOrderData: function setOrderData(state, orderdata) {
+            if (weLo_.isEmpty(orderdata)) {
+                state.orderdata = {
+                    billing: {},
+                    shipping: {},
+                    customer_id: 0,
+                    customer_note: '',
+                    payment_method: '',
+                    payment_method_title: ''
+                };
+            } else {
+                state.orderdata = orderdata;
+            }
+        },
+        setCustomer: function setCustomer(state, customer) {
+            if (Object.keys(customer).length > 0) {
+                state.orderdata.billing = customer.billing;
+                state.orderdata.shipping = customer.shipping;
+                state.orderdata.customer_id = customer.id;
+            } else {
+                state.orderdata.billing = {};
+                state.orderdata.shipping = {};
+                state.orderdata.customer_id = 0;
+            }
+        },
+        emptyOrderdata: function emptyOrderdata(state) {
+            state.orderdata = {
+                billing: {},
+                shipping: {},
+                customer_id: 0,
+                customer_note: '',
+                payment_method: '',
+                payment_method_title: ''
+            };
+        },
+        setCustomerNote: function setCustomerNote(state, note) {
+            state.orderdata.customer_note = note.trim();
+        },
+        removeCustomerNote: function removeCustomerNote(state) {
+            state.orderdata.customer_note = '';
+        },
+        setGateway: function setGateway(state, gateway) {
+            state.orderdata.payment_method = gateway.id;
+            state.orderdata.payment_method_title = gateway.title;
+        }
+    },
+    actions: {
+        setOrderDataAction: function setOrderDataAction(context, orderdata) {
+            context.commit('setOrderData', orderdata);
+        },
+        setCustomerAction: function setCustomerAction(context, customer) {
+            context.commit('setCustomer', customer);
+        },
+        emptyOrderdataAction: function emptyOrderdataAction(context) {
+            context.commit('emptyOrderdata');
+        },
+        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
+            context.commit('setCustomerNote', note);
+        },
+        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
+            context.commit('removeCustomerNote');
+        },
+        setGatewayAction: function setGatewayAction(context, gateway) {
+            context.commit('setGateway', gateway);
+        }
+    }
+};
+
+/***/ }),
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16,20 +480,19 @@ pluginWebpack([0],Array(57).concat([
 });
 
 /***/ }),
-/* 58 */
+/* 62 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(142);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(145);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(148);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(151);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(150);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(70);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(161);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(164);
-//
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(169);
 //
 //
 //
@@ -621,7 +1084,6 @@ let Modal = wepos_get_lib('Modal');
             attributeDisabled: true,
             selectedAttribute: {},
             availableGateways: [],
-            modalLeftContentHeight: '',
             emptyGatewayDiv: 0,
             cashAmount: '',
             availableTax: [],
@@ -632,16 +1094,10 @@ let Modal = wepos_get_lib('Modal');
                     title: ''
                 }
             }),
+            feeData: {},
             createprintreceipt: false,
-            orderdata: {
-                billing: {},
-                shipping: {},
-                line_items: [],
-                fee_lines: [],
-                customer_id: 0,
-                customer_note: ''
-            },
             selectedCategory: '',
+            selectedGateway: '',
             categories: [],
             showReceiptHtml: wepos.hooks.applyFilters('wepos_render_receipt_html', true),
             quickLinkList: wepos.hooks.applyFilters('wepos_quick_links', []),
@@ -652,6 +1108,12 @@ let Modal = wepos_get_lib('Modal');
         };
     },
     computed: {
+        cartdata() {
+            return this.$store.state.Cart.cartdata;
+        },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
+        },
         hotkeys() {
             return {
                 'f3': this.toggleProductView,
@@ -674,68 +1136,9 @@ let Modal = wepos_get_lib('Modal');
                 return this.products;
             }
         },
-        getSubtotal() {
-            var subtotal = 0;
-            weLo_.forEach(this.orderdata.line_items, function (item, key) {
-                if (item.on_sale) {
-                    subtotal += item.quantity * item.sale_price;
-                } else {
-                    subtotal += item.quantity * item.regular_price;
-                }
-            });
-
-            return subtotal;
-        },
-        getTotalFee() {
-            var fee = 0;
-            weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    fee += Math.abs(item.total);
-                }
-            });
-            return fee;
-        },
-        getTotalDiscount() {
-            var discount = 0;
-            weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
-                if (item.type == 'discount') {
-                    discount += Number(Math.abs(item.total));
-                }
-            });
-
-            return discount;
-        },
-        getTotalTax() {
-            var self = this,
-                taxLineTotal = 0,
-                taxFeeTotal = 0;
-            weLo_.forEach(this.orderdata.line_items, function (item, key) {
-                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
-            });
-
-            weLo_.forEach(this.orderdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    if (item.tax_status == 'taxable') {
-                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find(self.availableTax, { 'class': itemTaxClass.toString() });
-                        if (taxClass !== undefined) {
-                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
-                        }
-                    }
-                }
-            });
-
-            return taxLineTotal + taxFeeTotal;
-        },
-        getOrderTotal() {
-            return this.getSubtotal + this.getTotalFee + this.getTotalTax;
-        },
-        getTotal() {
-            return this.getOrderTotal - this.getTotalDiscount;
-        },
         changeAmount() {
-            var returnMoney = this.cashAmount - this.getTotal;
-            return returnMoney > 0 ? this.formatNumber(returnMoney) : 0;
+            var returnMoney = this.cashAmount - this.$store.getters['Cart/getTotal'];
+            return returnMoney > 0 ? returnMoney : 0;
         },
         getBreadCrums() {
             if (this.$route.query.category !== undefined) {
@@ -789,6 +1192,10 @@ let Modal = wepos_get_lib('Modal');
             if (this.$route.query.category !== undefined) {
                 this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
             }
+        },
+        'selectedGateway'(newdata, olddata) {
+            var gateway = weLo_.find(this.availableGateways, { 'id': newdata });
+            this.$store.dispatch('Order/setGatewayAction', gateway);
         }
     },
 
@@ -805,31 +1212,29 @@ let Modal = wepos_get_lib('Modal');
             this.showHelp = false;
         },
         addCustomerNote(note) {
-            this.orderdata.customer_note = note.trim();
+            this.$store.dispatch('Order/setCustomerNoteAction', note);
+        },
+        removeCustomerNote() {
+            this.$store.dispatch('Order/removeCustomerNoteAction');
         },
         removeBreadcrums() {
             this.$router.push({ name: 'Home' });
         },
-
         logout() {
             wepos.hooks.doAction('wepos_before_logout');
             window.location.href = wepos.logout_url.toString();
         },
         emptyCart() {
-            this.orderdata = {
-                billing: {},
-                shipping: {},
-                customer_id: 0,
-                line_items: [],
-                fee_lines: [],
-                customer_note: ''
-            };
+            this.$store.dispatch('Cart/emptyCartAction');
+            this.$store.dispatch('Order/emptyOrderdataAction');
+
             this.printdata = wepos.hooks.applyFilters('wepos_initial_print_data', {
                 gateway: {
                     id: '',
                     title: ''
                 }
             });
+
             this.showPaymentReceipt = false;
             this.cashAmount = '';
             this.eventBus.$emit('emptycart', this.orderdata);
@@ -846,7 +1251,7 @@ let Modal = wepos_get_lib('Modal');
             this.emptyCart();
         },
         ableToProcess() {
-            return this.orderdata.line_items.length > 0 && this.isSelectGateway();
+            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
         },
         processPayment(e) {
             e.preventDefault();
@@ -854,25 +1259,32 @@ let Modal = wepos_get_lib('Modal');
                 return;
             }
             var self = this,
-                gateway = weLo_.find(this.availableGateways, { 'id': this.orderdata.payment_method });
-
-            self.orderdata.payment_method_title = gateway.title;
-            self.orderdata.meta_data = [{
-                key: '_wepos_is_pos_order',
-                value: true
-            }, {
-                key: '_wepos_cash_tendered_amount',
-                value: self.cashAmount.toString()
-            }, {
-                key: '_wepos_cash_change_amount',
-                value: self.changeAmount.toString()
-            }];
+                gateway = weLo_.find(this.availableGateways, { 'id': this.orderdata.payment_method }),
+                orderdata = wepos.hooks.applyFilters('wepos_order_form_data', {
+                billing: this.orderdata.billing,
+                shipping: this.orderdata.shipping,
+                line_items: this.cartdata.line_items,
+                fee_lines: this.cartdata.fee_lines,
+                customer_id: this.orderdata.customer_id,
+                customer_note: this.orderdata.customer_note,
+                payment_method: this.orderdata.payment_method,
+                payment_method_title: this.orderdata.payment_method_title,
+                meta_data: [{
+                    key: '_wepos_is_pos_order',
+                    value: true
+                }, {
+                    key: '_wepos_cash_tendered_amount',
+                    value: self.cashAmount.toString()
+                }, {
+                    key: '_wepos_cash_change_amount',
+                    value: self.changeAmount.toString()
+                }]
+            }, this.orderdata, this.cartdata);
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-            var orderFromData = wepos.hooks.applyFilters('wepos_order_form_data', this.orderdata);
 
-            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderFromData).done(response => {
+            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata).done(response => {
                 wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/payment/process', response).done(data => {
                     if (data.result == 'success') {
                         this.$router.push({
@@ -883,11 +1295,11 @@ let Modal = wepos_get_lib('Modal');
                             }
                         });
                         this.printdata = wepos.hooks.applyFilters('wepos_after_payment_print_data', {
-                            line_items: this.orderdata.line_items,
-                            fee_lines: this.orderdata.fee_lines,
-                            subtotal: this.getSubtotal,
-                            taxtotal: this.getTotalTax,
-                            ordertotal: this.getTotal,
+                            line_items: this.cartdata.line_items,
+                            fee_lines: this.cartdata.fee_lines,
+                            subtotal: this.$store.getters['Cart/getSubtotal'],
+                            taxtotal: this.$store.getters['Cart/getTotalTax'],
+                            ordertotal: this.$store.getters['Cart/getTotal'],
                             gateway: {
                                 id: response.payment_method,
                                 title: response.payment_method_title
@@ -896,7 +1308,7 @@ let Modal = wepos_get_lib('Modal');
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString()
-                        }, this.orderdata);
+                        }, orderdata);
                     } else {
                         $contentWrap.unblock();
                     }
@@ -909,18 +1321,17 @@ let Modal = wepos_get_lib('Modal');
                 alert(response.responseJSON.message);
             });
         },
-        backGatewaySelection() {
-            this.orderdata.payment_method = '';
-            this.orderdata.payment_method_title = '';
-        },
+
         initPayment() {
             this.showModal = true;
-            this.orderdata.payment_method = this.availableGateways[0].id;
+            this.$store.dispatch('Order/setGatewayAction', this.availableGateways[0]);
+            this.selectedGateway = this.availableGateways[0].id;
         },
+
         backToSale() {
             this.showModal = false;
             this.showHelp = false;
-            this.orderdata.payment_method = '';
+            // Remove gateway selections
         },
         isSelectGateway() {
             return !(this.orderdata.payment_method == undefined || this.orderdata.payment_method == '');
@@ -932,67 +1343,28 @@ let Modal = wepos_get_lib('Modal');
             return product.images.length > 0 ? product.images[0].name : product.name;
         },
         setDiscount(value, type) {
-            this.orderdata.fee_lines.push({
-                name: this.__('Discount', 'wepos'),
-                type: 'discount',
-                value: value.toString(),
-                isEdit: false,
-                discount_type: type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-            this.calculateDiscount();
-            this.calculateFee();
+            this.$store.dispatch('Cart/addDiscountAction', { title: this.__('Discount', 'wepos'), value: value, type: type });
         },
         saveFee(key) {
-            this.orderdata.fee_lines[key].isEdit = false;
+            this.$store.dispatch('Cart/saveFeeValueAction', { key: key, feeData: this.feeData });
+            this.feeData = {};
+        },
+        cancelEditFee(key) {
+            this.$store.dispatch('Cart/cancelSaveFeeValueAction', key);
+            this.feeData = {};
+        },
+        editFeeData(key) {
+            this.$store.dispatch('Cart/editFeeValueAction', key);
+            this.feeData = Object.assign({}, this.cartdata.fee_lines[key]);
             this.$nextTick(() => {
                 jQuery(this.$refs.fee_name).focus();
             });
         },
         setFee(value, type) {
-            this.orderdata.fee_lines.push({
-                name: this.__('Fee', 'wepos'),
-                type: 'fee',
-                value: value.toString(),
-                isEdit: false,
-                fee_type: type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-            this.calculateFee();
-            this.calculateDiscount();
+            this.$store.dispatch('Cart/addFeeAction', { title: this.__('Fee', 'wepos'), value: value, type: type });
         },
         removeFeeLine(key) {
-            this.orderdata.fee_lines.splice(key, 1);
-        },
-        calculateDiscount() {
-            if (this.orderdata.fee_lines.length > 0) {
-                weLo_.forEach(this.orderdata.fee_lines, (item, key) => {
-                    if (item.type == "discount") {
-                        if (item.discount_type == 'percent') {
-                            this.orderdata.fee_lines[key].total = '-' + this.getSubtotal * Math.abs(item.value) / 100;
-                        } else {
-                            this.orderdata.fee_lines[key].total = '-' + Math.abs(item.value);
-                        }
-                    }
-                });
-            }
-        },
-        calculateFee() {
-            if (this.orderdata.fee_lines.length > 0) {
-                weLo_.forEach(this.orderdata.fee_lines, (item, key) => {
-                    if (item.type == 'fee') {
-                        if (item.fee_type == 'percent') {
-                            this.orderdata.fee_lines[key].total = (this.getSubtotal * Math.abs(item.value) / 100).toString();
-                        } else {
-                            this.orderdata.fee_lines[key].total = Math.abs(item.value).toString();
-                        }
-                    }
-                });
-            }
+            this.$store.dispatch('Cart/removeFeeLineItemsAction', key);
         },
         fetchProducts() {
             if (this.page == 1) {
@@ -1047,15 +1419,7 @@ let Modal = wepos_get_lib('Modal');
         },
 
         selectCustomer(customer) {
-            if (Object.keys(customer).length > 0) {
-                this.orderdata.billing = customer.billing;
-                this.orderdata.shipping = customer.shipping;
-                this.orderdata.customer_id = customer.id;
-            } else {
-                this.orderdata.billing = {};
-                this.orderdata.shipping = {};
-                this.orderdata.customer_id = 0;
-            }
+            this.$store.dispatch('Order/setCustomerAction', customer);
         },
         selectVariationProduct(product) {
             this.viewVariationPopover = true;
@@ -1070,78 +1434,22 @@ let Modal = wepos_get_lib('Modal');
             variationProduct.type = this.selectedVariationProduct.type;
             this.selectedAttribute = {};
             this.attributeDisabled = true;
-            this.addToCart(variationProduct);
+            this.$store.dispatch('Cart/addToCartAction', variationProduct);
         },
         addToCart(product) {
-            var self = this;
-            var cartObject = {};
-
-            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
-            cartObject.name = product.name;
-            cartObject.quantity = 1;
-            cartObject.regular_price = product.regular_display_price;
-            cartObject.sale_price = product.sales_display_price;
-            cartObject.on_sale = product.on_sale;
-            cartObject.attribute = product.attributes;
-            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
-            cartObject.editQuantity = false;
-            cartObject.type = product.type;
-            cartObject.tax_amount = product.tax_amount;
-            cartObject.manage_stock = product.manage_stock;
-            cartObject.stock_status = product.stock_status;
-            cartObject.backorders_allowed = product.backorders_allowed;
-            cartObject.stock_quantity = product.stock_quantity;
-
-            var index = weLo_.findIndex(self.orderdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
-
-            if (index < 0) {
-                if (this.hasStock(product)) {
-                    self.orderdata.line_items.push(cartObject);
-                }
-            } else {
-                if (this.hasStock(product, self.orderdata.line_items[index].quantity)) {
-                    self.orderdata.line_items[index].quantity += 1;
-                }
-            }
-
-            this.calculateDiscount();
-            this.calculateFee();
+            this.$store.dispatch('Cart/addToCartAction', product);
         },
-        toggleEditQuantity(product, index) {
-            this.orderdata.line_items[index].editQuantity = !this.orderdata.line_items[index].editQuantity;
+        toggleEditQuantity(product, key) {
+            this.$store.dispatch('Cart/toggleEditQuantityAction', key);
         },
         removeItem(key) {
-            this.orderdata.line_items.splice(key, 1);
-            this.calculateDiscount();
-            this.calculateFee();
+            this.$store.dispatch('Cart/removeCartItemAction', key);
         },
-        addQuantity(item) {
-            if (this.hasStock(item, item.quantity)) {
-                item.quantity++;
-            }
-            this.calculateDiscount();
-            this.calculateFee();
+        addQuantity(item, key) {
+            this.$store.dispatch('Cart/addItemQuantityAction', key);
         },
-        removeQuantity(item) {
-            if (item.quantity <= 1) {
-                this.calculateDiscount();
-                this.calculateFee();
-                return 1;
-            }
-            item.quantity--;
-            this.calculateDiscount();
-            this.calculateFee();
-        },
-        hasStock(product, productCartQty = 0) {
-            if (!product.manage_stock) {
-                return 'outofstock' == product.stock_status ? false : true;
-            } else {
-                if (product.backorders_allowed) {
-                    return true;
-                } else {
-                    return product.stock_quantity > productCartQty;
-                }
-            }
+        removeQuantity(item, key) {
+            this.$store.dispatch('Cart/removeItemQuantityAction', key);
         },
         fetchGateway() {
             wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/payment/gateways').done(response => {
@@ -1184,7 +1492,7 @@ let Modal = wepos_get_lib('Modal');
             };
         },
         fetchCategories() {
-            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id').then(response => {
+            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id&per_page=100').then(response => {
                 response.sort(function (a, b) {
                     return a.name.localeCompare(b.name);
                 });
@@ -1243,23 +1551,28 @@ let Modal = wepos_get_lib('Modal');
         if (typeof localStorage != 'undefined') {
             try {
                 var cartdata = JSON.parse(localStorage.getItem('cartdata'));
+                var orderdata = JSON.parse(localStorage.getItem('orderdata'));
                 cartdata = await this.maybeRemoveDeletedProduct(cartdata);
-                this.orderdata = cartdata ? cartdata : this.orderdata;
+                this.$store.dispatch('Cart/setCartDataAction', cartdata);
+                this.$store.dispatch('Order/setOrderDataAction', orderdata);
             } catch (cartdata) {
-                this.orderdata = cartdata ? cartdata : this.orderdata;
+                var orderdata = JSON.parse(localStorage.getItem('orderdata'));
+                this.$store.dispatch('Cart/setCartDataAction', cartdata);
+                this.$store.dispatch('Order/setOrderDataAction', orderdata);
             }
         }
 
         window.addEventListener('beforeunload', () => {
             if (typeof localStorage != 'undefined') {
-                localStorage.setItem('cartdata', JSON.stringify(this.orderdata));
+                localStorage.setItem('cartdata', JSON.stringify(this.$store.state.Cart.cartdata));
+                localStorage.setItem('orderdata', JSON.stringify(this.$store.state.Order.orderdata));
             }
         }, false);
     }
 });
 
 /***/ }),
-/* 59 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1279,12 +1592,12 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 60 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_v_hotkey__);
 //
 //
@@ -1581,11 +1894,11 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 61 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(66);
 /* unused harmony namespace reexport */
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
@@ -1632,7 +1945,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 62 */
+/* 66 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1712,11 +2025,11 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 63 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(65);
 //
 //
 //
@@ -1923,6 +2236,9 @@ let Modal = wepos_get_lib('Modal');
                     name: wepos.countries[val]
                 };
             });
+        },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
         }
     },
 
@@ -1935,7 +2251,12 @@ let Modal = wepos_get_lib('Modal');
                 }
             },
             deep: true
+        },
+
+        'orderdata.customer_id'(newVal) {
+            this.serachInput = newVal ? this.orderdata.billing.first_name + ' ' + this.orderdata.billing.last_name : '';
         }
+
     },
 
     methods: {
@@ -2076,19 +2397,25 @@ let Modal = wepos_get_lib('Modal');
             return retVal;
         }
     },
-    mounted() {
+    created() {
         this.eventBus.$on('emptycart', orderdata => {
             this.serachInput = '';
         });
+
+        var orderdata = JSON.parse(localStorage.getItem('orderdata'));
+
+        if (orderdata.customer_id != undefined && orderdata.customer_id != 0) {
+            this.serachInput = orderdata.billing.first_name + ' ' + orderdata.billing.last_name;
+        }
     }
 });
 
 /***/ }),
-/* 64 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(158);
 //
 //
 //
@@ -2207,7 +2534,7 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 65 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2400,8 +2727,8 @@ const Tokens = {
 });
 
 /***/ }),
-/* 66 */,
-/* 67 */
+/* 70 */,
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2431,7 +2758,7 @@ const Tokens = {
 });
 
 /***/ }),
-/* 68 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2539,7 +2866,7 @@ const Tokens = {
 });
 
 /***/ }),
-/* 69 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2596,10 +2923,6 @@ const Tokens = {
 });
 
 /***/ }),
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
 /* 74 */,
 /* 75 */,
 /* 76 */,
@@ -2660,24 +2983,33 @@ const Tokens = {
 /* 131 */,
 /* 132 */,
 /* 133 */,
-/* 134 */
+/* 134 */,
+/* 135 */,
+/* 136 */,
+/* 137 */,
+/* 138 */,
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(135);
+var _App = __webpack_require__(140);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(139);
+var _router = __webpack_require__(144);
 
 var _router2 = _interopRequireDefault(_router);
 
+var _store = __webpack_require__(28);
+
+var _store2 = _interopRequireDefault(_store);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import Vue from 'vue'
-var Vue = wepos_get_lib('Vue');
+var Vue = wepos_get_lib('Vue'); // import Vue from 'vue'
+
 
 Vue.config.productionTip = false;
 
@@ -2685,6 +3017,7 @@ Vue.config.productionTip = false;
 new Vue({
     el: '#vue-frontend-app',
     router: _router2.default,
+    store: _store2.default,
     render: function render(h) {
         return h(_App2.default);
     },
@@ -2694,18 +3027,18 @@ new Vue({
 });
 
 /***/ }),
-/* 135 */
+/* 140 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(61);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(143);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(136)
+  __webpack_require__(141)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2751,14 +3084,14 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 136 */
+/* 141 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 137 */,
-/* 138 */
+/* 142 */,
+/* 143 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2785,7 +3118,7 @@ if (false) {
 }
 
 /***/ }),
-/* 139 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2795,7 +3128,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Home = __webpack_require__(140);
+var _Home = __webpack_require__(145);
 
 var _Home2 = _interopRequireDefault(_Home);
 
@@ -2815,18 +3148,18 @@ exports.default = new Router({
 });
 
 /***/ }),
-/* 140 */
+/* 145 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(62);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(172);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(141)
+  __webpack_require__(146)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2872,23 +3205,23 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 141 */
+/* 146 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 142 */
+/* 147 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(63);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(149);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(143)
+  __webpack_require__(148)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -2934,13 +3267,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 143 */
+/* 148 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 144 */
+/* 149 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2962,17 +3295,17 @@ if (false) {
 }
 
 /***/ }),
-/* 145 */
+/* 150 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(64);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(152);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(146)
+  __webpack_require__(151)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -3018,13 +3351,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 146 */
+/* 151 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 147 */
+/* 152 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3472,17 +3805,17 @@ if (false) {
 }
 
 /***/ }),
-/* 148 */
+/* 153 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(67);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(150);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(155);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(149)
+  __webpack_require__(154)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -3528,13 +3861,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 149 */
+/* 154 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 150 */
+/* 155 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4384,17 +4717,17 @@ if (false) {
 }
 
 /***/ }),
-/* 151 */
+/* 156 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(68);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(161);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(152)
+  __webpack_require__(157)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4440,23 +4773,23 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 152 */
+/* 157 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 153 */
+/* 158 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(69);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(160);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(154)
+  __webpack_require__(159)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4502,13 +4835,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 154 */
+/* 159 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 155 */
+/* 160 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4574,7 +4907,7 @@ if (false) {
 }
 
 /***/ }),
-/* 156 */
+/* 161 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4678,18 +5011,18 @@ if (false) {
 }
 
 /***/ }),
-/* 157 */,
-/* 158 */
+/* 162 */,
+/* 163 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(71);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(165);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(159)
+  __webpack_require__(164)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4735,13 +5068,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 159 */
+/* 164 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 160 */
+/* 165 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4783,17 +5116,17 @@ if (false) {
 }
 
 /***/ }),
-/* 161 */
+/* 166 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(72);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(168);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(162)
+  __webpack_require__(167)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -4839,13 +5172,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 162 */
+/* 167 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 163 */
+/* 168 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5124,17 +5457,17 @@ if (false) {
 }
 
 /***/ }),
-/* 164 */
+/* 169 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(73);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(171);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(165)
+  __webpack_require__(170)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -5180,13 +5513,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 165 */
+/* 170 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 166 */
+/* 171 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5297,7 +5630,7 @@ if (false) {
 }
 
 /***/ }),
-/* 167 */
+/* 172 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6085,11 +6418,7 @@ var render = function() {
           ),
           _vm._v(" "),
           _vm._l(_vm.beforCartPanels, function(beforCartPanel, key) {
-            return _c(beforCartPanel, {
-              key: key,
-              tag: "component",
-              attrs: { orderdata: _vm.orderdata, cartTotal: _vm.getTotal }
-            })
+            return _c(beforCartPanel, { key: key, tag: "component" })
           }),
           _vm._v(" "),
           _vm.settings.wepos_general
@@ -6119,9 +6448,9 @@ var render = function() {
                     _c(
                       "tbody",
                       [
-                        _vm.orderdata.line_items.length > 0
+                        _vm.cartdata.line_items.length > 0
                           ? [
-                              _vm._l(_vm.orderdata.line_items, function(
+                              _vm._l(_vm.cartdata.line_items, function(
                                 item,
                                 key
                               ) {
@@ -6377,7 +6706,10 @@ var render = function() {
                                                           $event
                                                         ) {
                                                           $event.preventDefault()
-                                                          _vm.addQuantity(item)
+                                                          _vm.addQuantity(
+                                                            item,
+                                                            key
+                                                          )
                                                         }
                                                       }
                                                     },
@@ -6395,7 +6727,8 @@ var render = function() {
                                                         ) {
                                                           $event.preventDefault()
                                                           _vm.removeQuantity(
-                                                            item
+                                                            item,
+                                                            key
                                                           )
                                                         }
                                                       }
@@ -6451,14 +6784,20 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "price" }, [
-                              _vm._v(_vm._s(_vm.formatPrice(_vm.getSubtotal)))
+                              _vm._v(
+                                _vm._s(
+                                  _vm.formatPrice(
+                                    _vm.$store.getters["Cart/getSubtotal"]
+                                  )
+                                )
+                              )
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "action" })
                           ]),
                           _vm._v(" "),
-                          _vm.orderdata.fee_lines.length > 0
-                            ? _vm._l(_vm.orderdata.fee_lines, function(
+                          _vm.cartdata.fee_lines.length > 0
+                            ? _vm._l(_vm.cartdata.fee_lines, function(
                                 fee,
                                 key
                               ) {
@@ -6516,7 +6855,7 @@ var render = function() {
                                           ])
                                         ]
                                       : [
-                                          fee.isEdit
+                                          _vm.cartdata.fee_lines[key].isEdit
                                             ? [
                                                 _c(
                                                   "td",
@@ -6531,11 +6870,9 @@ var render = function() {
                                                           name: "model",
                                                           rawName: "v-model",
                                                           value:
-                                                            _vm.orderdata
-                                                              .fee_lines[key]
-                                                              .name,
+                                                            _vm.feeData.name,
                                                           expression:
-                                                            "orderdata.fee_lines[key].name"
+                                                            "feeData.name"
                                                         }
                                                       ],
                                                       ref: "fee_name",
@@ -6549,9 +6886,7 @@ var render = function() {
                                                         )
                                                       },
                                                       domProps: {
-                                                        value:
-                                                          _vm.orderdata
-                                                            .fee_lines[key].name
+                                                        value: _vm.feeData.name
                                                       },
                                                       on: {
                                                         input: function(
@@ -6564,8 +6899,7 @@ var render = function() {
                                                             return
                                                           }
                                                           _vm.$set(
-                                                            _vm.orderdata
-                                                              .fee_lines[key],
+                                                            _vm.feeData,
                                                             "name",
                                                             $event.target.value
                                                           )
@@ -6579,11 +6913,9 @@ var render = function() {
                                                           name: "model",
                                                           rawName: "v-model",
                                                           value:
-                                                            _vm.orderdata
-                                                              .fee_lines[key]
-                                                              .total,
+                                                            _vm.feeData.value,
                                                           expression:
-                                                            "orderdata.fee_lines[key].total"
+                                                            "feeData.value"
                                                         }
                                                       ],
                                                       ref: "fee_total",
@@ -6599,10 +6931,7 @@ var render = function() {
                                                         )
                                                       },
                                                       domProps: {
-                                                        value:
-                                                          _vm.orderdata
-                                                            .fee_lines[key]
-                                                            .total
+                                                        value: _vm.feeData.value
                                                       },
                                                       on: {
                                                         input: function(
@@ -6615,9 +6944,8 @@ var render = function() {
                                                             return
                                                           }
                                                           _vm.$set(
-                                                            _vm.orderdata
-                                                              .fee_lines[key],
-                                                            "total",
+                                                            _vm.feeData,
+                                                            "value",
                                                             $event.target.value
                                                           )
                                                         }
@@ -6645,13 +6973,10 @@ var render = function() {
                                                                       "v-model",
                                                                     value:
                                                                       _vm
-                                                                        .orderdata
-                                                                        .fee_lines[
-                                                                        key
-                                                                      ]
+                                                                        .feeData
                                                                         .tax_status,
                                                                     expression:
-                                                                      "orderdata.fee_lines[key].tax_status"
+                                                                      "feeData.tax_status"
                                                                   }
                                                                 ],
                                                                 staticClass:
@@ -6668,27 +6993,18 @@ var render = function() {
                                                                 },
                                                                 domProps: {
                                                                   checked: Array.isArray(
-                                                                    _vm
-                                                                      .orderdata
-                                                                      .fee_lines[
-                                                                      key
-                                                                    ].tax_status
+                                                                    _vm.feeData
+                                                                      .tax_status
                                                                   )
                                                                     ? _vm._i(
                                                                         _vm
-                                                                          .orderdata
-                                                                          .fee_lines[
-                                                                          key
-                                                                        ]
+                                                                          .feeData
                                                                           .tax_status,
                                                                         null
                                                                       ) > -1
                                                                     : _vm._q(
                                                                         _vm
-                                                                          .orderdata
-                                                                          .fee_lines[
-                                                                          key
-                                                                        ]
+                                                                          .feeData
                                                                           .tax_status,
                                                                         "taxable"
                                                                       )
@@ -6699,10 +7015,7 @@ var render = function() {
                                                                   ) {
                                                                     var $$a =
                                                                         _vm
-                                                                          .orderdata
-                                                                          .fee_lines[
-                                                                          key
-                                                                        ]
+                                                                          .feeData
                                                                           .tax_status,
                                                                       $$el =
                                                                         $event.target,
@@ -6724,9 +7037,7 @@ var render = function() {
                                                                       ) {
                                                                         $$i <
                                                                           0 &&
-                                                                          (_vm.orderdata.fee_lines[
-                                                                            key
-                                                                          ].tax_status = $$a.concat(
+                                                                          (_vm.feeData.tax_status = $$a.concat(
                                                                             [
                                                                               $$v
                                                                             ]
@@ -6734,9 +7045,7 @@ var render = function() {
                                                                       } else {
                                                                         $$i >
                                                                           -1 &&
-                                                                          (_vm.orderdata.fee_lines[
-                                                                            key
-                                                                          ].tax_status = $$a
+                                                                          (_vm.feeData.tax_status = $$a
                                                                             .slice(
                                                                               0,
                                                                               $$i
@@ -6750,11 +7059,7 @@ var render = function() {
                                                                       }
                                                                     } else {
                                                                       _vm.$set(
-                                                                        _vm
-                                                                          .orderdata
-                                                                          .fee_lines[
-                                                                          key
-                                                                        ],
+                                                                        _vm.feeData,
                                                                         "tax_status",
                                                                         $$c
                                                                       )
@@ -6762,12 +7067,19 @@ var render = function() {
                                                                   }
                                                                 }
                                                               }),
-                                                              _vm._v(" Taxable")
+                                                              _vm._v(
+                                                                " " +
+                                                                  _vm._s(
+                                                                    _vm.__(
+                                                                      "Taxable",
+                                                                      "wepos"
+                                                                    )
+                                                                  )
+                                                              )
                                                             ]
                                                           ),
                                                           _vm._v(" "),
-                                                          _vm.orderdata
-                                                            .fee_lines[key]
+                                                          _vm.feeData
                                                             .tax_status ==
                                                           "taxable"
                                                             ? _c(
@@ -6781,13 +7093,10 @@ var render = function() {
                                                                         "v-model",
                                                                       value:
                                                                         _vm
-                                                                          .orderdata
-                                                                          .fee_lines[
-                                                                          key
-                                                                        ]
+                                                                          .feeData
                                                                           .tax_class,
                                                                       expression:
-                                                                        "orderdata.fee_lines[key].tax_class"
+                                                                        "feeData.tax_class"
                                                                     }
                                                                   ],
                                                                   staticClass:
@@ -6820,11 +7129,7 @@ var render = function() {
                                                                           }
                                                                         )
                                                                       _vm.$set(
-                                                                        _vm
-                                                                          .orderdata
-                                                                          .fee_lines[
-                                                                          key
-                                                                        ],
+                                                                        _vm.feeData,
                                                                         "tax_class",
                                                                         $event
                                                                           .target
@@ -6877,14 +7182,14 @@ var render = function() {
                                                       {
                                                         attrs: {
                                                           disabled:
-                                                            _vm.orderdata
-                                                              .fee_lines[key]
-                                                              .name == ""
+                                                            _vm.feeData.name ==
+                                                            ""
                                                         },
                                                         on: {
                                                           click: function(
                                                             $event
                                                           ) {
+                                                            $event.preventDefault()
                                                             _vm.saveFee(key)
                                                           }
                                                         }
@@ -6894,6 +7199,33 @@ var render = function() {
                                                           _vm._s(
                                                             _vm.__(
                                                               "Apply",
+                                                              "wepos"
+                                                            )
+                                                          )
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "button",
+                                                      {
+                                                        staticClass: "cancel",
+                                                        on: {
+                                                          click: function(
+                                                            $event
+                                                          ) {
+                                                            $event.preventDefault()
+                                                            _vm.cancelEditFee(
+                                                              key
+                                                            )
+                                                          }
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            _vm.__(
+                                                              "Cancel",
                                                               "wepos"
                                                             )
                                                           )
@@ -6931,9 +7263,8 @@ var render = function() {
                                                       dblclick: function(
                                                         $event
                                                       ) {
-                                                        _vm.orderdata.fee_lines[
-                                                          key
-                                                        ].isEdit = true
+                                                        $event.preventDefault()
+                                                        _vm.editFeeData(key)
                                                       }
                                                     }
                                                   },
@@ -7004,7 +7335,7 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
-                          _vm.getTotalTax
+                          _vm.$store.getters["Cart/getTotalTax"]
                             ? _c("tr", { staticClass: "tax" }, [
                                 _c("td", { staticClass: "label" }, [
                                   _vm._v(_vm._s(_vm.__("Tax", "wepos")))
@@ -7012,7 +7343,11 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("td", { staticClass: "price" }, [
                                   _vm._v(
-                                    _vm._s(_vm.formatPrice(_vm.getTotalTax))
+                                    _vm._s(
+                                      _vm.formatPrice(
+                                        _vm.$store.getters["Cart/getTotalTax"]
+                                      )
+                                    )
                                   )
                                 ]),
                                 _vm._v(" "),
@@ -7074,7 +7409,7 @@ var render = function() {
                                     on: {
                                       click: function($event) {
                                         $event.preventDefault()
-                                        _vm.orderdata.customer_note = ""
+                                        _vm.removeCustomerNote($event)
                                       }
                                     }
                                   })
@@ -7098,7 +7433,13 @@ var render = function() {
                               ]),
                               _vm._v(" "),
                               _c("td", { staticClass: "amount" }, [
-                                _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.formatPrice(
+                                      _vm.$store.getters["Cart/getTotal"]
+                                    )
+                                  )
+                                )
                               ]),
                               _vm._v(" "),
                               _vm._m(0)
@@ -7379,126 +7720,117 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass: "content",
-                        style: { height: _vm.modalLeftContentHeight }
-                      },
-                      [
-                        _c("table", { staticClass: "sale-summary-cart" }, [
-                          _c(
-                            "tbody",
-                            _vm._l(_vm.orderdata.line_items, function(item) {
-                              return _c("tr", [
-                                _c("td", { staticClass: "name" }, [
-                                  _vm._v(
-                                    "\n                                        " +
-                                      _vm._s(item.name) +
-                                      "\n                                        "
-                                  ),
-                                  item.attribute.length > 0 &&
-                                  item.type === "variable"
-                                    ? _c("div", { staticClass: "attribute" }, [
+                    _c("div", { staticClass: "content" }, [
+                      _c("table", { staticClass: "sale-summary-cart" }, [
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.cartdata.line_items, function(item) {
+                            return _c("tr", [
+                              _c("td", { staticClass: "name" }, [
+                                _vm._v(
+                                  "\n                                        " +
+                                    _vm._s(item.name) +
+                                    "\n                                        "
+                                ),
+                                item.attribute.length > 0 &&
+                                item.type === "variable"
+                                  ? _c("div", { staticClass: "attribute" }, [
+                                      _c(
+                                        "ul",
+                                        _vm._l(item.attribute, function(
+                                          attribute_item
+                                        ) {
+                                          return _c("li", [
+                                            _c(
+                                              "span",
+                                              { staticClass: "attr_name" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(attribute_item.name)
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(": "),
+                                            _c(
+                                              "span",
+                                              { staticClass: "attr_value" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(attribute_item.option)
+                                                )
+                                              ]
+                                            )
+                                          ])
+                                        })
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ]),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "quantity" }, [
+                                _vm._v(_vm._s(item.quantity))
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "td",
+                                { staticClass: "price" },
+                                [
+                                  item.on_sale
+                                    ? [
                                         _c(
-                                          "ul",
-                                          _vm._l(item.attribute, function(
-                                            attribute_item
-                                          ) {
-                                            return _c("li", [
-                                              _c(
-                                                "span",
-                                                { staticClass: "attr_name" },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(attribute_item.name)
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(": "),
-                                              _c(
-                                                "span",
-                                                { staticClass: "attr_value" },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(
-                                                      attribute_item.option
-                                                    )
-                                                  )
-                                                ]
+                                          "span",
+                                          { staticClass: "sale-price" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  item.quantity *
+                                                    item.sale_price
+                                                )
                                               )
-                                            ])
-                                          })
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "span",
+                                          { staticClass: "regular-price" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  item.quantity *
+                                                    item.regular_price
+                                                )
+                                              )
+                                            )
+                                          ]
                                         )
-                                      ])
-                                    : _vm._e()
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "quantity" }, [
-                                  _vm._v(_vm._s(item.quantity))
-                                ]),
-                                _vm._v(" "),
-                                _c(
-                                  "td",
-                                  { staticClass: "price" },
-                                  [
-                                    item.on_sale
-                                      ? [
-                                          _c(
-                                            "span",
-                                            { staticClass: "sale-price" },
-                                            [
-                                              _vm._v(
-                                                _vm._s(
-                                                  _vm.formatPrice(
-                                                    item.quantity *
-                                                      item.sale_price
-                                                  )
+                                      ]
+                                    : [
+                                        _c(
+                                          "span",
+                                          { staticClass: "sale-price" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.formatPrice(
+                                                  item.quantity *
+                                                    item.regular_price
                                                 )
                                               )
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "span",
-                                            { staticClass: "regular-price" },
-                                            [
-                                              _vm._v(
-                                                _vm._s(
-                                                  _vm.formatPrice(
-                                                    item.quantity *
-                                                      item.regular_price
-                                                  )
-                                                )
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      : [
-                                          _c(
-                                            "span",
-                                            { staticClass: "sale-price" },
-                                            [
-                                              _vm._v(
-                                                _vm._s(
-                                                  _vm.formatPrice(
-                                                    item.quantity *
-                                                      item.regular_price
-                                                  )
-                                                )
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                  ],
-                                  2
-                                )
-                              ])
-                            })
-                          )
-                        ])
-                      ]
-                    ),
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                ],
+                                2
+                              )
+                            ])
+                          })
+                        )
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "footer" }, [
                       _c(
@@ -7510,12 +7842,18 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("span", { staticClass: "wepos-right" }, [
-                              _vm._v(_vm._s(_vm.formatPrice(_vm.getSubtotal)))
+                              _vm._v(
+                                _vm._s(
+                                  _vm.formatPrice(
+                                    _vm.$store.getters["Cart/getSubtotal"]
+                                  )
+                                )
+                              )
                             ])
                           ]),
                           _vm._v(" "),
-                          _vm.orderdata.fee_lines.length > 0
-                            ? _vm._l(_vm.orderdata.fee_lines, function(
+                          _vm.cartdata.fee_lines.length > 0
+                            ? _vm._l(_vm.cartdata.fee_lines, function(
                                 fee,
                                 key
                               ) {
@@ -7618,7 +7956,7 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
-                          _vm.getTotalTax
+                          _vm.$store.getters["Cart/getTotalTax"]
                             ? _c("li", { staticClass: "wepos-clearfix" }, [
                                 _c("span", { staticClass: "wepos-left" }, [
                                   _vm._v(_vm._s(_vm.__("Tax", "wepos")))
@@ -7626,7 +7964,11 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("span", { staticClass: "wepos-right" }, [
                                   _vm._v(
-                                    _vm._s(_vm.formatPrice(_vm.getTotalTax))
+                                    _vm._s(
+                                      _vm.formatPrice(
+                                        _vm.$store.getters["Cart/getTotalTax"]
+                                      )
+                                    )
                                   )
                                 ])
                               ])
@@ -7638,7 +7980,13 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("span", { staticClass: "wepos-right" }, [
-                              _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
+                              _vm._v(
+                                _vm._s(
+                                  _vm.formatPrice(
+                                    _vm.$store.getters["Cart/getTotal"]
+                                  )
+                                )
+                              )
                             ])
                           ]),
                           _vm._v(" "),
@@ -7648,7 +7996,13 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("span", { staticClass: "wepos-right" }, [
-                              _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
+                              _vm._v(
+                                _vm._s(
+                                  _vm.formatPrice(
+                                    _vm.$store.getters["Cart/getTotal"]
+                                  )
+                                )
+                              )
                             ])
                           ])
                         ],
@@ -7664,7 +8018,11 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "pay-amount wepos-right" }, [
-                        _vm._v(_vm._s(_vm.formatPrice(_vm.getTotal)))
+                        _vm._v(
+                          _vm._s(
+                            _vm.formatPrice(_vm.$store.getters["Cart/getTotal"])
+                          )
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -7687,9 +8045,8 @@ var render = function() {
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.orderdata.payment_method,
-                                            expression:
-                                              "orderdata.payment_method"
+                                            value: _vm.selectedGateway,
+                                            expression: "selectedGateway"
                                           }
                                         ],
                                         attrs: {
@@ -7700,17 +8057,13 @@ var render = function() {
                                         domProps: {
                                           value: gateway.id,
                                           checked: _vm._q(
-                                            _vm.orderdata.payment_method,
+                                            _vm.selectedGateway,
                                             gateway.id
                                           )
                                         },
                                         on: {
                                           change: function($event) {
-                                            _vm.$set(
-                                              _vm.orderdata,
-                                              "payment_method",
-                                              gateway.id
-                                            )
+                                            _vm.selectedGateway = gateway.id
                                           }
                                         }
                                       }),
@@ -7834,10 +8187,7 @@ var render = function() {
                           return _c(availableGatewayComponent, {
                             key: key,
                             tag: "component",
-                            attrs: {
-                              availablegateways: _vm.availableGateways,
-                              orderdata: _vm.orderdata
-                            }
+                            attrs: { availablegateways: _vm.availableGateways }
                           })
                         })
                       ],
@@ -7934,4 +8284,4 @@ if (false) {
 }
 
 /***/ })
-]),[134]);
+]),[139]);

@@ -1,6 +1,17 @@
 <?php
 
 /**
+ * WePOS Footer
+ *
+ * @since 1.0.0
+ *
+ * @return void
+ */
+function wepos_footer() {
+    do_action( 'wepos_footer' );
+}
+
+/**
  * Get translactions for WePos plugin
  *
  * @param string $domain

@@ -9,6 +9,6 @@
 <body>
     <div id="vue-frontend-app"></div>
 
-    <?php wp_footer(); ?>
+    <?php wepos_footer(); ?>
 </body>
 </html>

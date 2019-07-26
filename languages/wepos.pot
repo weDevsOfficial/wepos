@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.6\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-06-17 10:40:44+00:00\n"
+"POT-Creation-Date: 2019-07-26 05:36:21+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,25 +13,25 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: wp-vue-i18n 1.1.3\n"
 
-#: assets/js/admin.js:117 assets/js/admin.js:364 assets/js/admin.js:456
-#: assets/js/admin.js:1424 assets/js/bootstrap.js:944
-#: assets/js/frontend.js:2769 assets/js/frontend.js:2951
-#: assets/js/frontend.js:3035 assets/js/frontend.js:3545
-#: assets/js/frontend.js:4585 assets/js/frontend.js:4752
-#: assets/js/frontend.js:4856 assets/js/frontend.js:5197
-#: assets/js/frontend.js:5308 assets/js/vendor.js:26200
-#: assets/js/vendor.js:26776 assets/js/vendor.js:26886
-#: assets/js/vendor.js:27006 assets/js/vendor.js:27028
-#: assets/js/vendor.js:27085
+#: assets/js/admin.js:122 assets/js/admin.js:369 assets/js/admin.js:461
+#: assets/js/admin.js:1429 assets/js/bootstrap.js:949
+#: assets/js/frontend.js:3102 assets/js/frontend.js:3284
+#: assets/js/frontend.js:3368 assets/js/frontend.js:3878
+#: assets/js/frontend.js:4918 assets/js/frontend.js:5085
+#: assets/js/frontend.js:5189 assets/js/frontend.js:5530
+#: assets/js/frontend.js:5641 assets/js/vendor.js:27230
+#: assets/js/vendor.js:27806 assets/js/vendor.js:27916
+#: assets/js/vendor.js:28036 assets/js/vendor.js:28058
+#: assets/js/vendor.js:28115
 msgid "div"
 msgstr ""
 
-#: assets/js/admin.js:1807 assets/js/admin.min.js:1
+#: assets/js/admin.js:2251 assets/js/admin.min.js:1
 #: assets/src/admin/components/Settings.vue:134
 msgid "Choose your file"
 msgstr ""
 
-#: assets/js/admin.js:1809 assets/js/admin.min.js:1
+#: assets/js/admin.js:2253 assets/js/admin.min.js:1
 #: assets/src/admin/components/Fields.vue:171
 #: assets/src/admin/components/Settings.vue:136
 msgid "Select"
@@ -79,66 +79,66 @@ msgstr ""
 msgid "Please select an image,"
 msgstr ""
 
-#: assets/js/bootstrap.js:853
+#: assets/js/bootstrap.js:858
 msgid "textarea"
 msgstr ""
 
-#: assets/js/bootstrap.js:1083
+#: assets/js/bootstrap.js:1088
 msgid "label"
 msgstr ""
 
-#: assets/js/frontend.js:786 assets/js/frontend.js:1182
-#: assets/js/frontend.js:1210 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:755
-#: assets/src/frontend/components/Home.vue:1163
-#: assets/src/frontend/components/Home.vue:1191
+#: assets/js/frontend.js:1189 assets/js/frontend.js:1490
+#: assets/js/frontend.js:1518 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/Home.vue:694
+#: assets/src/frontend/components/Home.vue:1007
+#: assets/src/frontend/components/Home.vue:1035
 msgid "All categories"
 msgstr ""
 
-#: assets/js/frontend.js:936 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:257
+#: assets/js/frontend.js:1346 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/Home.vue:256
 #: assets/src/frontend/components/Home.vue:446
-#: assets/src/frontend/components/Home.vue:911
+#: assets/src/frontend/components/Home.vue:857
 #: assets/src/frontend/components/printReceiptHtml.vue:38
 msgid "Discount"
 msgstr ""
 
-#: assets/js/frontend.js:956 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1364 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:277
 #: assets/src/frontend/components/Home.vue:450
-#: assets/src/frontend/components/Home.vue:931
+#: assets/src/frontend/components/Home.vue:875
 #: assets/src/frontend/components/printReceiptHtml.vue:42
 msgid "Fee"
 msgstr ""
 
-#: assets/js/frontend.js:1408 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1721 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Scan your product"
 msgstr ""
 
-#: assets/js/frontend.js:1408 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1721 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Search product by typing"
 msgstr ""
 
-#: assets/js/frontend.js:2039 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/CustomerSearch.vue:326
+#: assets/js/frontend.js:2360 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/CustomerSearch.vue:334
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4519
+#: assets/js/frontend.js:4852
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5111
+#: assets/js/frontend.js:5444
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:7921
+#: assets/js/frontend.js:8271
 msgid "td"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:186
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:185
 #: assets/src/frontend/components/ProductSearch.vue:8
 msgid "Product"
 msgstr ""
@@ -171,11 +171,11 @@ msgstr ""
 msgid "to dismiss"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:109
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:110
 msgid "Select Variations"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:129
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:130
 #: assets/src/frontend/components/ProductSearch.vue:70
 msgid "Add Product"
 msgstr ""
@@ -267,7 +267,7 @@ msgstr ""
 msgid "Order Date"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:250
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:249
 #: assets/src/frontend/components/Home.vue:440
 #: assets/src/frontend/components/printReceiptHtml.vue:33
 msgid "Subtotal"
@@ -313,41 +313,41 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:73
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:74
 msgid "Sku :"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:77
-#: assets/src/frontend/components/Home.vue:99
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:78
+#: assets/src/frontend/components/Home.vue:100
 msgid "Price :"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:137
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:138
 msgid "No Product Found"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:159
-#: assets/src/frontend/components/Home.vue:238
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:160
+#: assets/src/frontend/components/Home.vue:237
 msgid "Empty Cart"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:160
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:161
 msgid "Help"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:167
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:168
 msgid "Logout"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:187
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:186
 msgid "Qty"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:188
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:187
 msgid "Price"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:224
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:223
 msgid "Quantity"
 msgstr ""
 
@@ -359,8 +359,17 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:272
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:266
+msgid "Taxable"
+msgstr ""
+
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:271
 msgid "Apply"
+msgstr ""
+
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:272
+#: lib/appsero/src/Insights.php:759
+msgid "Cancel"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:303
@@ -424,7 +433,7 @@ msgid "Go to payment receipt"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:384
-#: assets/src/frontend/components/Home.vue:525
+#: assets/src/frontend/components/Home.vue:524
 msgid "Process Payment"
 msgstr ""
 
@@ -459,7 +468,7 @@ msgstr ""
 msgid "Change money"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:524
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:523
 msgid "Back to Sale"
 msgstr ""
 
@@ -561,15 +570,15 @@ msgstr ""
 msgid "Show POS menu in vendor dashboard"
 msgstr ""
 
-#: includes/class-dokan.php:159 includes/functions.php:174
+#: includes/class-dokan.php:159 includes/functions.php:185
 msgid "Yes"
 msgstr ""
 
-#: includes/class-dokan.php:160 includes/functions.php:175
+#: includes/class-dokan.php:160 includes/functions.php:186
 msgid "No"
 msgstr ""
 
-#: includes/class-frontend.php:95
+#: includes/class-frontend.php:107
 msgid "Point of Sale"
 msgstr ""
 
@@ -577,65 +586,65 @@ msgstr ""
 msgid "The item %s already out of stock. Please remove this from cart"
 msgstr ""
 
-#: includes/functions.php:121
+#: includes/functions.php:132
 msgid "- select -"
 msgstr ""
 
-#: includes/functions.php:144
+#: includes/functions.php:155
 msgid "General"
 msgstr ""
 
-#: includes/functions.php:149
+#: includes/functions.php:160
 msgid "Receipts"
 msgstr ""
 
-#: includes/functions.php:169
+#: includes/functions.php:180
 msgid "Calculate tax for Fee"
 msgstr ""
 
-#: includes/functions.php:170
+#: includes/functions.php:181
 msgid "Choose if tax caluclate for fee in POS cart and checkout"
 msgstr ""
 
-#: includes/functions.php:180
+#: includes/functions.php:191
 msgid "Barcode Scanner field"
 msgstr ""
 
-#: includes/functions.php:181
+#: includes/functions.php:192
 msgid ""
 "Choose your barcode field. If you select <code>Custom Field</code> then you "
 "need to set barcode number manually in product edit page"
 msgstr ""
 
-#: includes/functions.php:185
+#: includes/functions.php:196
 msgid "ID"
 msgstr ""
 
-#: includes/functions.php:186
+#: includes/functions.php:197
 msgid "SKU"
 msgstr ""
 
-#: includes/functions.php:187
+#: includes/functions.php:198
 msgid "Custom field"
 msgstr ""
 
-#: includes/functions.php:194
+#: includes/functions.php:205
 msgid "Order receipt header"
 msgstr ""
 
-#: includes/functions.php:195
+#: includes/functions.php:206
 msgid "Enter your order receipt header"
 msgstr ""
 
-#: includes/functions.php:201
+#: includes/functions.php:212
 msgid "Order receipt footer"
 msgstr ""
 
-#: includes/functions.php:202
+#: includes/functions.php:213
 msgid "Enter your order receipt footer text"
 msgstr ""
 
-#: includes/functions.php:204
+#: includes/functions.php:215
 msgid "Thank you"
 msgstr ""
 
@@ -677,6 +686,40 @@ msgstr ""
 
 #: includes/gateways/class-cash-gateway.php:101
 msgid "Cash tendered amount: %1$s, Change amount: %2$s"
+msgstr ""
+
+#: lib/appsero/src/Insights.php:367
+msgid ""
+"Want to help make <strong>%1$s</strong> even more awesome? Allow %1$s to "
+"collect non-sensitive diagnostic data and usage information."
+msgstr ""
+
+#: lib/appsero/src/Insights.php:372
+msgid "what we collect"
+msgstr ""
+
+#: lib/appsero/src/Insights.php:378
+msgid "Allow"
+msgstr ""
+
+#: lib/appsero/src/Insights.php:379
+msgid "No thanks"
+msgstr ""
+
+#: lib/appsero/src/Insights.php:578
+msgid "Once Weekly"
+msgstr ""
+
+#: lib/appsero/src/Insights.php:743
+msgid "If you have a moment, please let us know why you are deactivating:"
+msgstr ""
+
+#: lib/appsero/src/Insights.php:757
+msgid "I rather wouldn't say"
+msgstr ""
+
+#: lib/appsero/src/Insights.php:758
+msgid "Submit & Deactivate"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

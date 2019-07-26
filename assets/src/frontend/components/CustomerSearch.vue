@@ -205,6 +205,9 @@ export default {
                 };
             } );
         },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
+        }
     },
 
     watch: {
@@ -220,7 +223,12 @@ export default {
                 }
             },
             deep: true
+        },
+
+        'orderdata.customer_id'(newVal) {
+            this.serachInput = newVal ? this.orderdata.billing.first_name + ' ' + this.orderdata.billing.last_name : '';
         }
+
     },
 
     methods: {
@@ -363,10 +371,16 @@ export default {
             return retVal;
         }
     },
-    mounted() {
+    created() {
         this.eventBus.$on( 'emptycart', ( orderdata ) => {
             this.serachInput = '';
         } );
+
+        var orderdata = JSON.parse( localStorage.getItem( 'orderdata' ) );
+
+        if ( orderdata.customer_id != undefined && orderdata.customer_id != 0 ) {
+            this.serachInput = orderdata.billing.first_name + ' ' + orderdata.billing.last_name;
+        }
     }
 };
 

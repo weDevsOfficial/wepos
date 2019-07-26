@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-07-16 04:09:09+00:00\n"
+"POT-Creation-Date: 2019-07-24 06:07:03+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -134,7 +134,7 @@ msgstr ""
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:8270
+#: assets/js/frontend.js:8271
 msgid "td"
 msgstr ""
 
@@ -368,7 +368,7 @@ msgid "Apply"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:272
-#: libs/appsero/src/Insights.php:759
+#: lib/appsero/src/Insights.php:759
 msgid "Cancel"
 msgstr ""
 
@@ -688,37 +688,37 @@ msgstr ""
 msgid "Cash tendered amount: %1$s, Change amount: %2$s"
 msgstr ""
 
-#: libs/appsero/src/Insights.php:367
+#: lib/appsero/src/Insights.php:367
 msgid ""
 "Want to help make <strong>%1$s</strong> even more awesome? Allow %1$s to "
 "collect non-sensitive diagnostic data and usage information."
 msgstr ""
 
-#: libs/appsero/src/Insights.php:372
+#: lib/appsero/src/Insights.php:372
 msgid "what we collect"
 msgstr ""
 
-#: libs/appsero/src/Insights.php:378
+#: lib/appsero/src/Insights.php:378
 msgid "Allow"
 msgstr ""
 
-#: libs/appsero/src/Insights.php:379
+#: lib/appsero/src/Insights.php:379
 msgid "No thanks"
 msgstr ""
 
-#: libs/appsero/src/Insights.php:578
+#: lib/appsero/src/Insights.php:578
 msgid "Once Weekly"
 msgstr ""
 
-#: libs/appsero/src/Insights.php:743
+#: lib/appsero/src/Insights.php:743
 msgid "If you have a moment, please let us know why you are deactivating:"
 msgstr ""
 
-#: libs/appsero/src/Insights.php:757
+#: lib/appsero/src/Insights.php:757
 msgid "I rather wouldn't say"
 msgstr ""
 
-#: libs/appsero/src/Insights.php:758
+#: lib/appsero/src/Insights.php:758
 msgid "Submit & Deactivate"
 msgstr ""
 

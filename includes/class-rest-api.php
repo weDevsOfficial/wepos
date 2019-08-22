@@ -66,7 +66,8 @@ class REST_API {
 
         if ( 'variable' == $type ) {
             foreach( $data['variations'] as $variation ) {
-                $response = WC()->api->WC_REST_Product_Variations_Controller->get_item(
+                $variation_api_class = new \WC_REST_Product_Variations_Controller();
+                $response = $variation_api_class->get_item(
                     [
                         'id'         => $variation,
                         'product_id' => $variation

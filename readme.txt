@@ -5,7 +5,7 @@ Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of
 Requires at least: 4.4
 Tested up to: 5.2.2
 WC requires at least: 3.0
-WC tested up to: 3.6.5
+WC tested up to: 3.7.0
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -52,6 +52,11 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.0.8 -> 22 August, 2019 =
+----------------------------
+- **Fix**   Variation REST api rendering issue
+- **Fix**   Gateway class not loaded if WooCommerce deactivate
 
 = v1.0.7 -> 26 July, 2019 =
 ----------------------------

@@ -88,6 +88,21 @@ final class We_POS {
     }
 
     /**
+     * Is WC active
+     *
+     * @since 1.0.8
+     *
+     * @return void
+     */
+    public function is_wc_active() {
+        if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'wepos_active_plugins', get_option( 'active_plugins' ) ) ) ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Add the required rewrite rules
      *
      * @return void
@@ -135,6 +150,10 @@ final class We_POS {
      * @return void
      */
     public function init_gateways() {
+        if ( ! $this->is_wc_active() ) {
+            return;
+        }
+
         $gateways = $this->available_gateway();
 
         foreach ( $gateways as $class => $path ) {

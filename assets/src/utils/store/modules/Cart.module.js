@@ -3,6 +3,8 @@ import Helper from '../helper';
 export default {
     namespaced: true,
     state: {
+        settings: {},
+        availableTax : {},
         cartdata :  {
             line_items: [],
             fee_lines: [],
@@ -40,6 +42,16 @@ export default {
 
             return discount;
         },
+        getTotalLineTax( state ) {
+            var self = this,
+                taxLineTotal = 0;
+
+            weLo_.forEach( state.cartdata.line_items, function( item, key ) {
+                taxLineTotal += Math.abs( item.tax_amount * item.quantity );
+            });
+
+            return taxLineTotal;
+        },
         getTotalTax( state ) {
             var self = this,
                 taxLineTotal = 0,
@@ -48,11 +60,15 @@ export default {
                 taxLineTotal += Math.abs( item.tax_amount * item.quantity );
             });
 
+            if ( state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl' ) {
+                taxLineTotal = 0;
+            }
+
             weLo_.forEach( state.cartdata.fee_lines, function( item, key ) {
                 if ( item.type == 'fee' ) {
                     if ( item.tax_status == 'taxable' ) {
                         var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find( self.availableTax, { 'class' : itemTaxClass.toString() } );
+                        var taxClass = weLo_.find( state.availableTax, { 'class' : itemTaxClass.toString() } );
                         if ( taxClass !== undefined ) {
                             taxFeeTotal += ( Math.abs(item.total)*Math.abs( taxClass.rate ) )/100;
                         }
@@ -70,6 +86,14 @@ export default {
         },
     },
     mutations: {
+        setSettings( state, settings ) {
+            state.settings = settings;
+        },
+
+        setAvailableTax( state, availableTax ) {
+            state.availableTax = availableTax;
+        },
+
         setCartData( state, cartdata ) {
             if ( weLo_.isEmpty( cartdata ) ) {
                 state.cartdata = {
@@ -213,6 +237,14 @@ export default {
         },
     },
     actions: {
+        setSettingsAction( context, settings ) {
+            context.commit( 'setSettings', settings );
+        },
+
+        setAvailableTaxAction( context, availableTax ) {
+            context.commit( 'setAvailableTax', availableTax );
+        },
+
         setCartDataAction( context, cartdata ) {
             context.commit( 'setCartData', cartdata );
             context.commit( 'calculateDiscount', context.getters );

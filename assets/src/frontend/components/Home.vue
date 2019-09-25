@@ -245,8 +245,13 @@
                     <form autocomplete="off">
                         <table class="cart-total-table">
                             <tbody>
-                                <tr>
-                                    <td class="label">{{ __( 'Subtotal', 'wepos' ) }}</td>
+                                <tr class="cart-meta-data">
+                                    <td class="label">
+                                        {{ __( 'Subtotal', 'wepos' ) }}
+                                        <span class="name" v-if="settings.woo_tax.wc_tax_display_cart == 'incl' && $store.getters['Cart/getTotalLineTax'] > 0">
+                                            {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
+                                        </span>
+                                    </td>
                                     <td class="price">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</td>
                                     <td class="action"></td>
                                 </tr>
@@ -437,7 +442,12 @@
                         <div class="footer">
                             <ul>
                                 <li class="wepos-clearfix">
-                                    <span class="wepos-left">{{ __( 'Subtotal', 'wepos' ) }}</span>
+                                    <span class="wepos-left">
+                                        {{ __( 'Subtotal', 'wepos' ) }}
+                                        <span class="metadata" v-if="settings.woo_tax.wc_tax_display_cart == 'incl'">
+                                            {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
+                                        </span>
+                                    </span>
                                     <span class="wepos-right">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</span>
                                 </li>
                                 <template v-if="cartdata.fee_lines.length > 0">
@@ -530,7 +540,7 @@
 
         <overlay :show="showOverlay"></overlay>
 
-        <print-receipt-html v-show="createprintreceipt" v-if="showReceiptHtml" :printdata="printdata" :settings="settings.wepos_receipts"></print-receipt-html>
+        <print-receipt-html v-show="createprintreceipt" v-if="showReceiptHtml" :printdata="printdata" :settings="settings"></print-receipt-html>
 
         <component
             v-for="(afterMainContent, key ) in afterMainContents"
@@ -593,6 +603,7 @@ export default {
             cashAmount: '',
             availableTax: [],
             settings: {},
+            taxSettings: {},
             printdata: wepos.hooks.applyFilters( 'wepos_initial_print_data', {
                 gateway: {
                     id: '',
@@ -984,12 +995,14 @@ export default {
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/settings' )
             .done( response => {
                 this.settings = response;
+                this.$store.dispatch( 'Cart/setSettingsAction', response );
             });
         },
         fetchTaxes() {
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/taxes' )
             .done( response => {
                 this.availableTax = response;
+                this.$store.dispatch( 'Cart/setAvailableTaxAction', response );
             });
         },
         handleCategorySelect( selectedOption, id ) {
@@ -1055,6 +1068,13 @@ export default {
             this.products = this.products.filter( ( product ) => {
                 return weLo_.findIndex( product.categories, { id : this.$route.query.category } ) > 0;
             } );
+        },
+
+        fetchTaxSettings() {
+            wepos.api.get( wepos.rest.root + wepos.rest.wcversion + '/settings/tax' )
+            .done( response => {
+                this.taxSettings = response;
+            });
         }
     },
 
@@ -1064,6 +1084,7 @@ export default {
         this.fetchProducts();
         this.fetchGateway();
         this.fetchCategories();
+        // this.fetchTaxSettings();
 
         if ( typeof(localStorage) != 'undefined' ) {
             try {

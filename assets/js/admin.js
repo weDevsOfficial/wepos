@@ -1707,6 +1707,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = {
     namespaced: true,
     state: {
+        settings: {},
+        availableTax: {},
         cartdata: {
             line_items: [],
             fee_lines: []
@@ -1744,6 +1746,16 @@ exports.default = {
 
             return discount;
         },
+        getTotalLineTax: function getTotalLineTax(state) {
+            var self = this,
+                taxLineTotal = 0;
+
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            return taxLineTotal;
+        },
         getTotalTax: function getTotalTax(state) {
             var self = this,
                 taxLineTotal = 0,
@@ -1752,11 +1764,15 @@ exports.default = {
                 taxLineTotal += Math.abs(item.tax_amount * item.quantity);
             });
 
+            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
+                taxLineTotal = 0;
+            }
+
             weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
                 if (item.type == 'fee') {
                     if (item.tax_status == 'taxable') {
                         var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find(self.availableTax, { 'class': itemTaxClass.toString() });
+                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
                         if (taxClass !== undefined) {
                             taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
                         }
@@ -1774,6 +1790,12 @@ exports.default = {
         }
     },
     mutations: {
+        setSettings: function setSettings(state, settings) {
+            state.settings = settings;
+        },
+        setAvailableTax: function setAvailableTax(state, availableTax) {
+            state.availableTax = availableTax;
+        },
         setCartData: function setCartData(state, cartdata) {
             if (weLo_.isEmpty(cartdata)) {
                 state.cartdata = {
@@ -1905,6 +1927,12 @@ exports.default = {
         }
     },
     actions: {
+        setSettingsAction: function setSettingsAction(context, settings) {
+            context.commit('setSettings', settings);
+        },
+        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
+            context.commit('setAvailableTax', availableTax);
+        },
         setCartDataAction: function setCartDataAction(context, cartdata) {
             context.commit('setCartData', cartdata);
             context.commit('calculateDiscount', context.getters);

@@ -1,6 +1,6 @@
 <template>
-    <div class="wepos-checkout-print-wrapper">
-        <div class="header" v-html="settings.receipt_header"></div>
+    <div class="wepos-checkout-print-wrapper" v-if="settings.wepos_receipts">
+        <div class="header" v-html="settings.wepos_receipts.receipt_header"></div>
         <div class="order-info">
             <span class="wepos-left"><strong>{{ __( 'Order ID', 'wepos' ) }}: #{{ printdata.order_id }}</strong></span>
             <span class="wepos-right"><strong>{{ __( 'Order Date', 'wepos' ) }}: {{ formatDate( printdata.order_date ) }}</strong></span>
@@ -29,8 +29,13 @@
                             </template>
                         </td>
                     </tr>
-                    <tr>
-                        <td colspan="2" class="name">{{ __( 'Subtotal', 'wepos' ) }}</td>
+                    <tr class="cart-meta-data">
+                        <td colspan="2" class="name">
+                            {{ __( 'Subtotal', 'wepos' ) }}
+                            <span class="metadata" v-if="settings.woo_tax.wc_tax_display_cart == 'incl'">
+                                {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
+                            </span>
+                        </td>
                         <td class="price">{{ formatPrice( printdata.subtotal ) }}</td>
                     </tr>
                     <tr v-for="(fee,key) in printdata.fee_lines" class="cart-meta-data">
@@ -71,7 +76,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="footer" v-html="settings.receipt_footer"></div>
+        <div class="footer" v-html="settings.wepos_receipts.receipt_footer"></div>
     </div>
 </template>
 <script>
@@ -103,6 +108,8 @@ export default {
 
 </script>
 <style lang="less">
+
+[v-cloak] {display: none}
 
 @media print {
     body * {

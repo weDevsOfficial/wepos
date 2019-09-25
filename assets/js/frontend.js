@@ -51,6 +51,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = {
     namespaced: true,
     state: {
+        settings: {},
+        availableTax: {},
         cartdata: {
             line_items: [],
             fee_lines: []
@@ -88,6 +90,16 @@ exports.default = {
 
             return discount;
         },
+        getTotalLineTax: function getTotalLineTax(state) {
+            var self = this,
+                taxLineTotal = 0;
+
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            return taxLineTotal;
+        },
         getTotalTax: function getTotalTax(state) {
             var self = this,
                 taxLineTotal = 0,
@@ -96,11 +108,15 @@ exports.default = {
                 taxLineTotal += Math.abs(item.tax_amount * item.quantity);
             });
 
+            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
+                taxLineTotal = 0;
+            }
+
             weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
                 if (item.type == 'fee') {
                     if (item.tax_status == 'taxable') {
                         var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find(self.availableTax, { 'class': itemTaxClass.toString() });
+                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
                         if (taxClass !== undefined) {
                             taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
                         }
@@ -118,6 +134,12 @@ exports.default = {
         }
     },
     mutations: {
+        setSettings: function setSettings(state, settings) {
+            state.settings = settings;
+        },
+        setAvailableTax: function setAvailableTax(state, availableTax) {
+            state.availableTax = availableTax;
+        },
         setCartData: function setCartData(state, cartdata) {
             if (weLo_.isEmpty(cartdata)) {
                 state.cartdata = {
@@ -249,6 +271,12 @@ exports.default = {
         }
     },
     actions: {
+        setSettingsAction: function setSettingsAction(context, settings) {
+            context.commit('setSettings', settings);
+        },
+        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
+            context.commit('setAvailableTax', availableTax);
+        },
         setCartDataAction: function setCartDataAction(context, cartdata) {
             context.commit('setCartData', cartdata);
             context.commit('calculateDiscount', context.getters);
@@ -1037,6 +1065,16 @@ exports.default = {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1088,6 +1126,7 @@ let Modal = wepos_get_lib('Modal');
             cashAmount: '',
             availableTax: [],
             settings: {},
+            taxSettings: {},
             printdata: wepos.hooks.applyFilters('wepos_initial_print_data', {
                 gateway: {
                     id: '',
@@ -1468,11 +1507,13 @@ let Modal = wepos_get_lib('Modal');
         fetchSettings() {
             wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/settings').done(response => {
                 this.settings = response;
+                this.$store.dispatch('Cart/setSettingsAction', response);
             });
         },
         fetchTaxes() {
             wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/taxes').done(response => {
                 this.availableTax = response;
+                this.$store.dispatch('Cart/setAvailableTaxAction', response);
             });
         },
         handleCategorySelect(selectedOption, id) {
@@ -1538,6 +1579,12 @@ let Modal = wepos_get_lib('Modal');
             this.products = this.products.filter(product => {
                 return weLo_.findIndex(product.categories, { id: this.$route.query.category }) > 0;
             });
+        },
+
+        fetchTaxSettings() {
+            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/settings/tax').done(response => {
+                this.taxSettings = response;
+            });
         }
     },
 
@@ -1547,6 +1594,7 @@ let Modal = wepos_get_lib('Modal');
         this.fetchProducts();
         this.fetchGateway();
         this.fetchCategories();
+        // this.fetchTaxSettings();
 
         if (typeof localStorage != 'undefined') {
             try {
@@ -2762,6 +2810,11 @@ const Tokens = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5186,255 +5239,290 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "wepos-checkout-print-wrapper" }, [
-    _c("div", {
-      staticClass: "header",
-      domProps: { innerHTML: _vm._s(_vm.settings.receipt_header) }
-    }),
-    _vm._v(" "),
-    _c("div", { staticClass: "order-info" }, [
-      _c("span", { staticClass: "wepos-left" }, [
-        _c("strong", [
-          _vm._v(
-            _vm._s(_vm.__("Order ID", "wepos")) +
-              ": #" +
-              _vm._s(_vm.printdata.order_id)
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "wepos-right" }, [
-        _c("strong", [
-          _vm._v(
-            _vm._s(_vm.__("Order Date", "wepos")) +
-              ": " +
-              _vm._s(_vm.formatDate(_vm.printdata.order_date))
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "wepos-clearfix" })
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "content" }, [
-      _c("table", { staticClass: "sale-summary" }, [
-        _c(
-          "tbody",
-          [
-            _vm._l(_vm.printdata.line_items, function(item) {
-              return _c("tr", [
-                _c("td", { staticClass: "name" }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(item.name) +
-                      "\n                        "
-                  ),
-                  item.attribute.length > 0
-                    ? _c("div", { staticClass: "attribute" }, [
-                        _c(
-                          "ul",
-                          _vm._l(item.attribute, function(attribute_item) {
-                            return _c("li", [
-                              _c("span", { staticClass: "attr_name" }, [
-                                _vm._v(_vm._s(attribute_item.name))
-                              ]),
-                              _vm._v(": "),
-                              _c("span", { staticClass: "attr_value" }, [
-                                _vm._v(_vm._s(attribute_item.option))
-                              ])
-                            ])
-                          })
-                        )
-                      ])
-                    : _vm._e()
-                ]),
-                _vm._v(" "),
-                _c("td", { staticClass: "quantity" }, [
-                  _vm._v(_vm._s(item.quantity))
-                ]),
-                _vm._v(" "),
-                _c(
-                  "td",
-                  { staticClass: "price" },
-                  [
-                    item.on_sale
-                      ? [
-                          _c("span", { staticClass: "regular-price" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.formatPrice(
-                                  item.quantity * item.regular_price
-                                )
-                              )
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("span", { staticClass: "sale-price" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.formatPrice(item.quantity * item.sale_price)
-                              )
-                            )
-                          ])
-                        ]
-                      : [
-                          _c("span", { staticClass: "sale-price" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.formatPrice(
-                                  item.quantity * item.regular_price
-                                )
-                              )
-                            )
-                          ])
-                        ]
-                  ],
-                  2
-                )
-              ])
-            }),
-            _vm._v(" "),
-            _c("tr", [
-              _c("td", { staticClass: "name", attrs: { colspan: "2" } }, [
-                _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
-              ]),
-              _vm._v(" "),
-              _c("td", { staticClass: "price" }, [
-                _vm._v(_vm._s(_vm.formatPrice(_vm.printdata.subtotal)))
-              ])
-            ]),
-            _vm._v(" "),
-            _vm._l(_vm.printdata.fee_lines, function(fee, key) {
-              return _c(
-                "tr",
-                { staticClass: "cart-meta-data" },
-                [
-                  fee.type == "discount"
-                    ? [
-                        _c(
-                          "td",
-                          { staticClass: "name", attrs: { colspan: "2" } },
-                          [
-                            _vm._v(_vm._s(_vm.__("Discount", "wepos")) + " "),
-                            _c("span", { staticClass: "metadata" }, [
-                              _vm._v(
-                                _vm._s(
-                                  fee.discount_type == "percent"
-                                    ? fee.value + "%"
-                                    : _vm.formatPrice(fee.value)
-                                )
-                              )
-                            ])
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "price" }, [
-                          _vm._v(
-                            "-" + _vm._s(_vm.formatPrice(Math.abs(fee.total)))
-                          )
-                        ])
-                      ]
-                    : [
-                        _c(
-                          "td",
-                          { staticClass: "name", attrs: { colspan: "2" } },
-                          [
-                            _vm._v(_vm._s(_vm.__("Fee", "wepos")) + " "),
-                            _c("span", { staticClass: "metadata" }, [
-                              _vm._v(
-                                _vm._s(fee.name) +
-                                  " " +
-                                  _vm._s(
-                                    fee.fee_type == "percent"
-                                      ? fee.value + "%"
-                                      : _vm.formatPrice(fee.value)
-                                  )
-                              )
-                            ])
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "price" }, [
-                          _vm._v(
-                            "-" + _vm._s(_vm.formatPrice(Math.abs(fee.total)))
-                          )
-                        ])
-                      ]
-                ],
-                2
+  return _vm.settings.wepos_receipts
+    ? _c("div", { staticClass: "wepos-checkout-print-wrapper" }, [
+        _c("div", {
+          staticClass: "header",
+          domProps: {
+            innerHTML: _vm._s(_vm.settings.wepos_receipts.receipt_header)
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "order-info" }, [
+          _c("span", { staticClass: "wepos-left" }, [
+            _c("strong", [
+              _vm._v(
+                _vm._s(_vm.__("Order ID", "wepos")) +
+                  ": #" +
+                  _vm._s(_vm.printdata.order_id)
               )
-            }),
-            _vm._v(" "),
-            _vm.printdata.taxtotal
-              ? _c("tr", [
+            ])
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "wepos-right" }, [
+            _c("strong", [
+              _vm._v(
+                _vm._s(_vm.__("Order Date", "wepos")) +
+                  ": " +
+                  _vm._s(_vm.formatDate(_vm.printdata.order_date))
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "wepos-clearfix" })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "content" }, [
+          _c("table", { staticClass: "sale-summary" }, [
+            _c(
+              "tbody",
+              [
+                _vm._l(_vm.printdata.line_items, function(item) {
+                  return _c("tr", [
+                    _c("td", { staticClass: "name" }, [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(item.name) +
+                          "\n                        "
+                      ),
+                      item.attribute.length > 0
+                        ? _c("div", { staticClass: "attribute" }, [
+                            _c(
+                              "ul",
+                              _vm._l(item.attribute, function(attribute_item) {
+                                return _c("li", [
+                                  _c("span", { staticClass: "attr_name" }, [
+                                    _vm._v(_vm._s(attribute_item.name))
+                                  ]),
+                                  _vm._v(": "),
+                                  _c("span", { staticClass: "attr_value" }, [
+                                    _vm._v(_vm._s(attribute_item.option))
+                                  ])
+                                ])
+                              })
+                            )
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "quantity" }, [
+                      _vm._v(_vm._s(item.quantity))
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      { staticClass: "price" },
+                      [
+                        item.on_sale
+                          ? [
+                              _c("span", { staticClass: "regular-price" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.formatPrice(
+                                      item.quantity * item.regular_price
+                                    )
+                                  )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("span", { staticClass: "sale-price" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.formatPrice(
+                                      item.quantity * item.sale_price
+                                    )
+                                  )
+                                )
+                              ])
+                            ]
+                          : [
+                              _c("span", { staticClass: "sale-price" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.formatPrice(
+                                      item.quantity * item.regular_price
+                                    )
+                                  )
+                                )
+                              ])
+                            ]
+                      ],
+                      2
+                    )
+                  ])
+                }),
+                _vm._v(" "),
+                _c("tr", { staticClass: "cart-meta-data" }, [
                   _c("td", { staticClass: "name", attrs: { colspan: "2" } }, [
-                    _vm._v(_vm._s(_vm.__("Tax", "wepos")))
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(_vm.__("Subtotal", "wepos")) +
+                        "\n                        "
+                    ),
+                    _vm.settings.woo_tax.wc_tax_display_cart == "incl"
+                      ? _c("span", { staticClass: "metadata" }, [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(_vm.__("Includes Tax", "wepos")) +
+                              " " +
+                              _vm._s(
+                                _vm.formatPrice(
+                                  _vm.$store.getters["Cart/getTotalLineTax"]
+                                )
+                              ) +
+                              "\n                        "
+                          )
+                        ])
+                      : _vm._e()
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "price" }, [
-                    _vm._v(_vm._s(_vm.formatPrice(_vm.printdata.taxtotal)))
+                    _vm._v(_vm._s(_vm.formatPrice(_vm.printdata.subtotal)))
                   ])
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("tr", [
-              _c("td", { staticClass: "name", attrs: { colspan: "2" } }, [
-                _vm._v(_vm._s(_vm.__("Order Total", "wepos")))
-              ]),
-              _vm._v(" "),
-              _c("td", { staticClass: "price" }, [
-                _vm._v(_vm._s(_vm.formatPrice(_vm.printdata.ordertotal)))
-              ])
-            ]),
-            _vm._v(" "),
-            _vm._m(0),
-            _vm._v(" "),
-            _c("tr", [
-              _c("td", { attrs: { colspan: "2" } }, [
-                _vm._v(_vm._s(_vm.__("Payment method", "wepos")))
-              ]),
-              _vm._v(" "),
-              _c("td", { staticClass: "price" }, [
-                _vm._v(_vm._s(_vm.printdata.gateway.title || ""))
-              ])
-            ]),
-            _vm._v(" "),
-            (_vm.printdata.gateway.id = "wepos_cash")
-              ? [
-                  _c("tr", [
-                    _c("td", { attrs: { colspan: "2" } }, [
-                      _vm._v(_vm._s(_vm.__("Cash Given", "wepos")))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "price" }, [
-                      _vm._v(_vm._s(_vm.formatPrice(_vm.printdata.cashamount)))
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.printdata.fee_lines, function(fee, key) {
+                  return _c(
+                    "tr",
+                    { staticClass: "cart-meta-data" },
+                    [
+                      fee.type == "discount"
+                        ? [
+                            _c(
+                              "td",
+                              { staticClass: "name", attrs: { colspan: "2" } },
+                              [
+                                _vm._v(
+                                  _vm._s(_vm.__("Discount", "wepos")) + " "
+                                ),
+                                _c("span", { staticClass: "metadata" }, [
+                                  _vm._v(
+                                    _vm._s(
+                                      fee.discount_type == "percent"
+                                        ? fee.value + "%"
+                                        : _vm.formatPrice(fee.value)
+                                    )
+                                  )
+                                ])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "price" }, [
+                              _vm._v(
+                                "-" +
+                                  _vm._s(_vm.formatPrice(Math.abs(fee.total)))
+                              )
+                            ])
+                          ]
+                        : [
+                            _c(
+                              "td",
+                              { staticClass: "name", attrs: { colspan: "2" } },
+                              [
+                                _vm._v(_vm._s(_vm.__("Fee", "wepos")) + " "),
+                                _c("span", { staticClass: "metadata" }, [
+                                  _vm._v(
+                                    _vm._s(fee.name) +
+                                      " " +
+                                      _vm._s(
+                                        fee.fee_type == "percent"
+                                          ? fee.value + "%"
+                                          : _vm.formatPrice(fee.value)
+                                      )
+                                  )
+                                ])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "price" }, [
+                              _vm._v(
+                                "-" +
+                                  _vm._s(_vm.formatPrice(Math.abs(fee.total)))
+                              )
+                            ])
+                          ]
+                    ],
+                    2
+                  )
+                }),
+                _vm._v(" "),
+                _vm.printdata.taxtotal
+                  ? _c("tr", [
+                      _c(
+                        "td",
+                        { staticClass: "name", attrs: { colspan: "2" } },
+                        [_vm._v(_vm._s(_vm.__("Tax", "wepos")))]
+                      ),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "price" }, [
+                        _vm._v(_vm._s(_vm.formatPrice(_vm.printdata.taxtotal)))
+                      ])
                     ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", { staticClass: "name", attrs: { colspan: "2" } }, [
+                    _vm._v(_vm._s(_vm.__("Order Total", "wepos")))
                   ]),
                   _vm._v(" "),
-                  _c("tr", [
-                    _c("td", { attrs: { colspan: "2" } }, [
-                      _vm._v(_vm._s(_vm.__("Change Money", "wepos")))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "price" }, [
-                      _vm._v(
-                        _vm._s(_vm.formatPrice(_vm.printdata.changeamount))
-                      )
-                    ])
+                  _c("td", { staticClass: "price" }, [
+                    _vm._v(_vm._s(_vm.formatPrice(_vm.printdata.ordertotal)))
                   ])
-                ]
-              : _vm._e()
-          ],
-          2
-        )
+                ]),
+                _vm._v(" "),
+                _vm._m(0),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", { attrs: { colspan: "2" } }, [
+                    _vm._v(_vm._s(_vm.__("Payment method", "wepos")))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "price" }, [
+                    _vm._v(_vm._s(_vm.printdata.gateway.title || ""))
+                  ])
+                ]),
+                _vm._v(" "),
+                (_vm.printdata.gateway.id = "wepos_cash")
+                  ? [
+                      _c("tr", [
+                        _c("td", { attrs: { colspan: "2" } }, [
+                          _vm._v(_vm._s(_vm.__("Cash Given", "wepos")))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "price" }, [
+                          _vm._v(
+                            _vm._s(_vm.formatPrice(_vm.printdata.cashamount))
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", { attrs: { colspan: "2" } }, [
+                          _vm._v(_vm._s(_vm.__("Change Money", "wepos")))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "price" }, [
+                          _vm._v(
+                            _vm._s(_vm.formatPrice(_vm.printdata.changeamount))
+                          )
+                        ])
+                      ])
+                    ]
+                  : _vm._e()
+              ],
+              2
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", {
+          staticClass: "footer",
+          domProps: {
+            innerHTML: _vm._s(_vm.settings.wepos_receipts.receipt_footer)
+          }
+        })
       ])
-    ]),
-    _vm._v(" "),
-    _c("div", {
-      staticClass: "footer",
-      domProps: { innerHTML: _vm._s(_vm.settings.receipt_footer) }
-    })
-  ])
+    : _vm._e()
 }
 var staticRenderFns = [
   function() {
@@ -6778,9 +6866,34 @@ var render = function() {
                       _c(
                         "tbody",
                         [
-                          _c("tr", [
+                          _c("tr", { staticClass: "cart-meta-data" }, [
                             _c("td", { staticClass: "label" }, [
-                              _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
+                              _vm._v(
+                                "\n                                    " +
+                                  _vm._s(_vm.__("Subtotal", "wepos")) +
+                                  "\n                                    "
+                              ),
+                              _vm.settings.woo_tax.wc_tax_display_cart ==
+                                "incl" &&
+                              _vm.$store.getters["Cart/getTotalLineTax"] > 0
+                                ? _c("span", { staticClass: "name" }, [
+                                    _vm._v(
+                                      "\n                                        " +
+                                        _vm._s(
+                                          _vm.__("Includes Tax", "wepos")
+                                        ) +
+                                        " " +
+                                        _vm._s(
+                                          _vm.formatPrice(
+                                            _vm.$store.getters[
+                                              "Cart/getTotalLineTax"
+                                            ]
+                                          )
+                                        ) +
+                                        "\n                                    "
+                                    )
+                                  ])
+                                : _vm._e()
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "price" }, [
@@ -7838,7 +7951,30 @@ var render = function() {
                         [
                           _c("li", { staticClass: "wepos-clearfix" }, [
                             _c("span", { staticClass: "wepos-left" }, [
-                              _vm._v(_vm._s(_vm.__("Subtotal", "wepos")))
+                              _vm._v(
+                                "\n                                    " +
+                                  _vm._s(_vm.__("Subtotal", "wepos")) +
+                                  "\n                                    "
+                              ),
+                              _vm.settings.woo_tax.wc_tax_display_cart == "incl"
+                                ? _c("span", { staticClass: "metadata" }, [
+                                    _vm._v(
+                                      "\n                                        " +
+                                        _vm._s(
+                                          _vm.__("Includes Tax", "wepos")
+                                        ) +
+                                        " " +
+                                        _vm._s(
+                                          _vm.formatPrice(
+                                            _vm.$store.getters[
+                                              "Cart/getTotalLineTax"
+                                            ]
+                                          )
+                                        ) +
+                                        "\n                                    "
+                                    )
+                                  ])
+                                : _vm._e()
                             ]),
                             _vm._v(" "),
                             _c("span", { staticClass: "wepos-right" }, [
@@ -8245,10 +8381,7 @@ var render = function() {
                 expression: "createprintreceipt"
               }
             ],
-            attrs: {
-              printdata: _vm.printdata,
-              settings: _vm.settings.wepos_receipts
-            }
+            attrs: { printdata: _vm.printdata, settings: _vm.settings }
           })
         : _vm._e(),
       _vm._v(" "),

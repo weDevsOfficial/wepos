@@ -46,6 +46,7 @@ return [
 	__( 'Order ID', 'wepos' ),
 	__( 'Order Date', 'wepos' ),
 	__( 'Subtotal', 'wepos' ),
+	__( 'Includes Tax', 'wepos' ),
 	__( 'Tax', 'wepos' ),
 	__( 'Order Total', 'wepos' ),
 	__( 'Payment method', 'wepos' ),

@@ -53,6 +53,13 @@ class Settings extends \WP_REST_Controller {
             }
         }
 
+        $tax_display_on_shop = get_option( 'woocommerce_tax_display_shop', 'excl' );
+        $tax_display_on_cart = get_option( 'woocommerce_tax_display_cart', 'excl' );
+        $settings['woo_tax'] = [
+            'wc_tax_display_shop' => $tax_display_on_shop,
+            'wc_tax_display_cart' => $tax_display_on_cart,
+        ];
+
         return rest_ensure_response( $settings );
     }
 

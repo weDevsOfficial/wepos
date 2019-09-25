@@ -256,3 +256,31 @@ function wepos_is_frontend() {
 
     return $hasPermission;
 }
+
+function wepos_get_product_price( $product ) {
+    $price = $product->get_price();
+
+    if ( $product->is_taxable() ) {
+
+        if ( WC()->cart->display_prices_including_tax() ) {
+            $row_price        = wc_get_price_including_tax( $product, array( 'qty' => $quantity ) );
+            $product_subtotal = wc_price( $row_price );
+
+            if ( ! wc_prices_include_tax() && WC()->cart->get_subtotal_tax() > 0 ) {
+                $product_subtotal .= ' <small class="tax_label">' . WC()->countries->inc_tax_or_vat() . '</small>';
+            }
+        } else {
+            $row_price        = wc_get_price_excluding_tax( $product, array( 'qty' => $quantity ) );
+            $product_subtotal = wc_price( $row_price );
+
+            if ( wc_prices_include_tax() && $this->get_subtotal_tax() > 0 ) {
+                $product_subtotal .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
+            }
+        }
+    } else {
+        $row_price        = $price * $quantity;
+        $product_subtotal = wc_price( $row_price );
+    }
+
+    return apply_filters( 'woocommerce_cart_product_subtotal', $product_subtotal, $product, $quantity, $this );
+}

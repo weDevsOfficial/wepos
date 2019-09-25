@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.8\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-08-22 10:18:55+00:00\n"
+"POT-Creation-Date: 2019-09-25 09:37:20+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,23 +15,23 @@ msgstr ""
 
 #: assets/js/admin.js:122 assets/js/admin.js:369 assets/js/admin.js:461
 #: assets/js/admin.js:1429 assets/js/bootstrap.js:949
-#: assets/js/frontend.js:3102 assets/js/frontend.js:3284
-#: assets/js/frontend.js:3368 assets/js/frontend.js:3878
-#: assets/js/frontend.js:4918 assets/js/frontend.js:5085
-#: assets/js/frontend.js:5189 assets/js/frontend.js:5530
-#: assets/js/frontend.js:5641 assets/js/vendor.js:27230
+#: assets/js/frontend.js:3155 assets/js/frontend.js:3337
+#: assets/js/frontend.js:3421 assets/js/frontend.js:3931
+#: assets/js/frontend.js:4971 assets/js/frontend.js:5138
+#: assets/js/frontend.js:5243 assets/js/frontend.js:5618
+#: assets/js/frontend.js:5729 assets/js/vendor.js:27230
 #: assets/js/vendor.js:27806 assets/js/vendor.js:27916
 #: assets/js/vendor.js:28036 assets/js/vendor.js:28058
 #: assets/js/vendor.js:28115
 msgid "div"
 msgstr ""
 
-#: assets/js/admin.js:2251 assets/js/admin.min.js:1
+#: assets/js/admin.js:2279 assets/js/admin.min.js:1
 #: assets/src/admin/components/Settings.vue:134
 msgid "Choose your file"
 msgstr ""
 
-#: assets/js/admin.js:2253 assets/js/admin.min.js:1
+#: assets/js/admin.js:2281 assets/js/admin.min.js:1
 #: assets/src/admin/components/Fields.vue:171
 #: assets/src/admin/components/Settings.vue:136
 msgid "Select"
@@ -87,54 +87,54 @@ msgstr ""
 msgid "label"
 msgstr ""
 
-#: assets/js/frontend.js:1189 assets/js/frontend.js:1490
-#: assets/js/frontend.js:1518 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:694
-#: assets/src/frontend/components/Home.vue:1007
-#: assets/src/frontend/components/Home.vue:1035
+#: assets/js/frontend.js:1228 assets/js/frontend.js:1531
+#: assets/js/frontend.js:1559 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/Home.vue:705
+#: assets/src/frontend/components/Home.vue:1020
+#: assets/src/frontend/components/Home.vue:1048
 msgid "All categories"
 msgstr ""
 
-#: assets/js/frontend.js:1346 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:256
-#: assets/src/frontend/components/Home.vue:446
-#: assets/src/frontend/components/Home.vue:857
-#: assets/src/frontend/components/printReceiptHtml.vue:38
+#: assets/js/frontend.js:1385 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/Home.vue:261
+#: assets/src/frontend/components/Home.vue:456
+#: assets/src/frontend/components/Home.vue:868
+#: assets/src/frontend/components/printReceiptHtml.vue:43
 msgid "Discount"
 msgstr ""
 
-#: assets/js/frontend.js:1364 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:277
-#: assets/src/frontend/components/Home.vue:450
-#: assets/src/frontend/components/Home.vue:875
-#: assets/src/frontend/components/printReceiptHtml.vue:42
+#: assets/js/frontend.js:1403 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/Home.vue:282
+#: assets/src/frontend/components/Home.vue:460
+#: assets/src/frontend/components/Home.vue:886
+#: assets/src/frontend/components/printReceiptHtml.vue:47
 msgid "Fee"
 msgstr ""
 
-#: assets/js/frontend.js:1721 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1769 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Scan your product"
 msgstr ""
 
-#: assets/js/frontend.js:1721 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1769 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Search product by typing"
 msgstr ""
 
-#: assets/js/frontend.js:2360 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:2408 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/CustomerSearch.vue:334
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4852
+#: assets/js/frontend.js:4905
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5444
+#: assets/js/frontend.js:5532
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:8271
+#: assets/js/frontend.js:8404
 msgid "td"
 msgstr ""
 
@@ -252,7 +252,7 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:388
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:393
 #: assets/src/frontend/components/PrintReceipt.vue:5
 msgid "Print Receipt"
 msgstr ""
@@ -267,35 +267,41 @@ msgstr ""
 msgid "Order Date"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:249
-#: assets/src/frontend/components/Home.vue:440
-#: assets/src/frontend/components/printReceiptHtml.vue:33
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:250
+#: assets/src/frontend/components/Home.vue:446
+#: assets/src/frontend/components/printReceiptHtml.vue:34
 msgid "Subtotal"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:285
-#: assets/src/frontend/components/Home.vue:456
-#: assets/src/frontend/components/printReceiptHtml.vue:47
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:252
+#: assets/src/frontend/components/Home.vue:448
+#: assets/src/frontend/components/printReceiptHtml.vue:36
+msgid "Includes Tax"
+msgstr ""
+
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:290
+#: assets/src/frontend/components/Home.vue:466
+#: assets/src/frontend/components/printReceiptHtml.vue:52
 msgid "Tax"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:460
-#: assets/src/frontend/components/printReceiptHtml.vue:51
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:470
+#: assets/src/frontend/components/printReceiptHtml.vue:56
 msgid "Order Total"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:58
+#: assets/src/frontend/components/printReceiptHtml.vue:63
 msgid "Payment method"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:63
+#: assets/src/frontend/components/printReceiptHtml.vue:68
 msgid "Cash Given"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:67
+#: assets/src/frontend/components/printReceiptHtml.vue:72
 msgid "Change Money"
 msgstr ""
 
@@ -359,116 +365,116 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:266
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:271
 msgid "Taxable"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:271
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:276
 msgid "Apply"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:272
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:277
 #: lib/appsero/src/Insights.php:759
 msgid "Cancel"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:303
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:308
 msgid "Pay Now"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:319
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:324
 msgid "Sale Completed"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:326
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:331
 msgid "New Sale"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:336
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:341
 msgid "Shortcut Keys"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:340
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:345
 msgid "Search Product"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:344
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:349
 msgid "Scan Product"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:348
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:353
 msgid "Toggle Product View"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:352
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:357
 msgid "Add Fee in cart"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:356
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:361
 msgid "Add Discount in cart"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:360
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:365
 msgid "Add Customer note"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:364
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:369
 msgid "Customer Search"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:368
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:373
 msgid "Add new Customer"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:372
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:377
 msgid "Create New Sale"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:376
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:381
 msgid "Empty your cart"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:380
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:385
 msgid "Go to payment receipt"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:384
-#: assets/src/frontend/components/Home.vue:524
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:389
+#: assets/src/frontend/components/Home.vue:534
 msgid "Process Payment"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:392
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:397
 msgid "Show/Close(Toggle) Help"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:396
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:401
 msgid "Close anything"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:408
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:413
 msgid "Sale Summary"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:464
-#: assets/src/frontend/components/Home.vue:472
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:474
+#: assets/src/frontend/components/Home.vue:482
 msgid "Pay"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:492
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:502
 msgid "No gateway found"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:500
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:510
 #: includes/gateways/class-cash-gateway.php:36
 #: includes/gateways/class-cash-gateway.php:58
 msgid "Cash"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:508
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:518
 msgid "Change money"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:523
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:533
 msgid "Back to Sale"
 msgstr ""
 
@@ -582,7 +588,7 @@ msgstr ""
 msgid "Point of Sale"
 msgstr ""
 
-#: includes/class-rest-api.php:161
+#: includes/class-rest-api.php:181
 msgid "The item %s already out of stock. Please remove this from cart"
 msgstr ""
 

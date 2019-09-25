@@ -3,7 +3,7 @@ Contributors: tareq1988, wedevs, sabbir1991, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.2.2
+Tested up to: 5.2.3
 WC requires at least: 3.0
 WC tested up to: 3.7.0
 Requires PHP: 5.6
@@ -52,6 +52,11 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.0.9 -> 25 September, 2019 =
+----------------------------
+- **Fix**   Tax calculation issue in pos cart
+- **Fix**   Fee tax not calculated when manually added in pos cart
 
 = v1.0.8 -> 22 August, 2019 =
 ----------------------------

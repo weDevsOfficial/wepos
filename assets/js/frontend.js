@@ -1124,6 +1124,7 @@ let Modal = wepos_get_lib('Modal');
             availableGateways: [],
             emptyGatewayDiv: 0,
             cashAmount: '',
+            cardAmount: '',
             availableTax: [],
             settings: {},
             taxSettings: {},
@@ -1276,6 +1277,7 @@ let Modal = wepos_get_lib('Modal');
 
             this.showPaymentReceipt = false;
             this.cashAmount = '';
+            this.cardAmount = '';
             this.eventBus.$emit('emptycart', this.orderdata);
             this.showQucikMenu = false;
         },
@@ -1300,30 +1302,90 @@ let Modal = wepos_get_lib('Modal');
             var self = this,
                 gateway = weLo_.find(this.availableGateways, { 'id': this.orderdata.payment_method }),
                 orderdata = wepos.hooks.applyFilters('wepos_order_form_data', {
-                billing: this.orderdata.billing,
-                shipping: this.orderdata.shipping,
-                line_items: this.cartdata.line_items,
-                fee_lines: this.cartdata.fee_lines,
-                customer_id: this.orderdata.customer_id,
-                customer_note: this.orderdata.customer_note,
-                payment_method: this.orderdata.payment_method,
-                payment_method_title: this.orderdata.payment_method_title,
-                meta_data: [{
-                    key: '_wepos_is_pos_order',
-                    value: true
-                }, {
-                    key: '_wepos_cash_tendered_amount',
-                    value: self.cashAmount.toString()
-                }, {
-                    key: '_wepos_cash_change_amount',
-                    value: self.changeAmount.toString()
-                }]
-            }, this.orderdata, this.cartdata);
+                  billing: this.orderdata.billing,
+                  shipping: this.orderdata.shipping,
+                  line_items: this.cartdata.line_items,
+                  fee_lines: this.cartdata.fee_lines,
+                  customer_id: this.orderdata.customer_id,
+                  customer_note: this.orderdata.customer_note,
+                  payment_method: this.orderdata.payment_method,
+                  payment_method_title: this.orderdata.payment_method_title,
+                  meta_data: [{
+                      key: '_wepos_is_pos_order',
+                      value: true
+                  }, {
+                      key: '_wepos_cash_tendered_amount',
+                      value: self.cashAmount.toString()
+                  }, {
+                      key: '_wepos_card_tendered_amount',
+                      value: self.cardAmount.toString()
+                  }, {
+                      key: '_wepos_cash_change_amount',
+                      value: self.changeAmount.toString()
+                  }]
+              }, this.orderdata, this.cartdata);
 
             var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
 
-            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata).done(response => {
+            if (this.orderdata.payment_method == 'wepos_shoplit') {
+              // if (typeof mpress !== 'undefined' || navigator.userAgent.indexOf('SHOPLIT') == -1) {
+              //   var data = {
+              //     result: 'failure',
+              //     responseJSON: {
+              //       message: this.__('Shoplit Interface not available', 'wepos')
+              //     }
+              //   };
+              //   alert(data.responseJSON.message);
+              //   $contentWrap.unblock();
+              //   return data;
+              // }
+              wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata).done(response => {
+                mpress.doPayment(response)
+                .then(
+                  result => wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/payment/process', response).done(data => {
+                    if (data.result == 'success') {
+                        this.$router.push({
+                            name: 'Home',
+                            query: {
+                                order_key: response.order_key,
+                                payment: 'success'
+                            }
+                        });
+                        this.printdata = wepos.hooks.applyFilters('wepos_after_payment_print_data', {
+                            line_items: this.cartdata.line_items,
+                            fee_lines: this.cartdata.fee_lines,
+                            subtotal: this.$store.getters['Cart/getSubtotal'],
+                            taxtotal: this.$store.getters['Cart/getTotalTax'],
+                            ordertotal: this.$store.getters['Cart/getTotal'],
+                            gateway: {
+                                id: response.payment_method,
+                                title: response.payment_method_title
+                            },
+                            order_id: response.id,
+                            order_date: response.date_created,
+                            cashamount: this.cashAmount.toString(),
+                            cardamount: this.cardAmount.toString(),
+                            changeamount: this.changeAmount.toString()
+                        }, orderdata);
+                    } else {
+                        $contentWrap.unblock();
+                    }
+                  }).fail(data => {
+                    $contentWrap.unblock();
+                    alert(data.responseJSON.message);
+                  }),
+                  error => {
+                    $contentWrap.unblock();
+                    alert(data.responseJSON.message);
+                  }
+                );
+            }).fail(response => {
+                $contentWrap.unblock();
+                alert(response.responseJSON.message);
+              });
+            } else {
+              wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata).done(response => {
                 wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/payment/process', response).done(data => {
                     if (data.result == 'success') {
                         this.$router.push({
@@ -1346,6 +1408,7 @@ let Modal = wepos_get_lib('Modal');
                             order_id: response.id,
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
+                            cardamount: this.cardAmount.toString(),
                             changeamount: this.changeAmount.toString()
                         }, orderdata);
                     } else {
@@ -1355,10 +1418,11 @@ let Modal = wepos_get_lib('Modal');
                     $contentWrap.unblock();
                     alert(data.responseJSON.message);
                 });
-            }).fail(response => {
+              }).fail(response => {
                 $contentWrap.unblock();
                 alert(response.responseJSON.message);
             });
+          }
         },
 
         initPayment() {
@@ -5508,7 +5572,22 @@ var render = function() {
                         ])
                       ])
                     ]
+                  : (_vm.printdata.gateway.id = "wepos_shoplit")
+                  ? [
+                      _c("tr", [
+                        _c("td", { attrs: { colspan: "2" } }, [
+                          _vm._v(_vm._s(_vm.__("Card Amount", "wepos")))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "price" }, [
+                          _vm._v(
+                            _vm._s(_vm.formatPrice(_vm.printdata.cardamount))
+                          )
+                        ])
+                      ])
+                    ]
                   : _vm._e()
+
               ],
               2
             )
@@ -8309,6 +8388,41 @@ var render = function() {
                                             _vm.formatPrice(_vm.changeAmount)
                                           )
                                       )
+                                    ])
+                                  ])
+                                ])
+                              ])
+                            ]
+                          : _vm.orderdata.payment_method == "wepos_shoplit"
+                          ? [
+                              _c("div", { staticClass: "payment-option" }, [
+                                _c("div", { staticClass: "payment-amount" }, [
+                                  _c("div", { staticClass: "input-part" }, [
+                                    _c("div", { staticClass: "input-wrap" }, [
+                                      _c("p", [
+                                        _vm._v(_vm._s(_vm.__("Process Payment on the Shoplit PED", "wepos")))
+                                      ]),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "input-addon" },
+                                        [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.cardAmount,
+                                                expression: "cardAmount"
+                                              }
+                                            ],
+                                            ref: "cardamount",
+                                            attrs: { type: "text", disabled: true },
+                                            domProps: { value: "Waiting" },
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
                                     ])
                                   ])
                                 ])

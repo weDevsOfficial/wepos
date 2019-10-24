@@ -123,11 +123,16 @@ class Assets {
                 'version'   => filemtime( WEPOS_PATH . '/assets/js/admin'. $prefix .'.js' ),
                 'in_footer' => true
             ],
-            'wepos-wp-hook' => array(
+            'wepos-wp-hook' => [
                 'src'       => WEPOS_ASSETS . '/js/wphook'. $prefix .'.js',
                 'deps'      => array( 'jquery' ),
                 'version'   => filemtime( WEPOS_PATH . '/assets/js/wphook'. $prefix .'.js' ),
-            )
+            ],
+            'wepos-shoplit' => [
+                'src'       => WEPOS_ASSETS . '/js/mpresspay'. $prefix .'.js',
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/mpresspay'. $prefix .'.js' ),
+                'in_footer' => true
+            ]
         ];
 
         return $scripts;
@@ -183,6 +188,8 @@ class Assets {
             do_action( 'wepos_load_forntend_scripts' );
 
             wp_enqueue_script( 'wepos-frontend' );
+            wp_enqueue_script( 'wepos-shoplit' );
+
         }
     }
 

@@ -138,7 +138,7 @@ final class We_POS {
      */
     public function available_gateway() {
         return apply_filters( 'wepos_register_gateway', [
-            'WePOS\gateways\Shoplit' => WEPOS_INCLUDES . '/gateways/class-shoplit-gateway.php',
+            'WePOS\gateways\Card' => WEPOS_INCLUDES . '/gateways/class-card-gateway.php',
             'WePOS\gateways\Cash' => WEPOS_INCLUDES . '/gateways/class-cash-gateway.php'
         ] );
     }

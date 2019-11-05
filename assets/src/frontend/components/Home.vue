@@ -148,7 +148,7 @@
                 <customer-search @onCustomerSelected="selectCustomer"></customer-search>
                 <div class="action">
                     <div class="more-options">
-                        <v-popover offset="5" popover-base-class="wepos-dropdown-menu tooltip popover" placement="bottom-end" :open="showQucikMenu">
+                        <v-popover offset="5" popover-base-class="wepos-dropdown-menu tooltip popover" placement="bottom-end" :open="showQuickMenu">
                             <button class="wepos-button" @click.prevent="openQucikMenu()"><span class="more-icon flaticon-more"></span></button>
                             <template slot="popover">
                                 <ul>
@@ -499,7 +499,7 @@
                                     </template>
                                 </template>
                                 <template v-else>
-                                    <p>{{ __( 'No gateway found', 'wepos' ) }}</p>
+                                    <p>{{ __( 'No payment gateway found', 'wepos' ) }}</p>
                                 </template>
                             </div>
                             <template v-if="orderdata.payment_method=='wepos_cash'">
@@ -520,6 +520,21 @@
                                     </div>
                                 </div>
                             </template>
+                            <template v-if="orderdata.payment_method=='wepos_card'">
+                                <div class="payment-option">
+                                    <div class="payment-amount">
+                                        <div class="input-part">
+                                            <div class="input-wrap">
+                                                <p>{{ __( 'Authorisation Code', 'wepos' ) }}</p>
+                                                <div class="input-addon">
+                                                    <input type="text" v-model="cardAuthCode" ref="cardauthcode">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
 
                             <component
                                 v-for="(availableGatewayComponent, key ) in availableGatewayContent"
@@ -584,7 +599,7 @@ export default {
     data () {
         return {
             showHelp: false,
-            showQucikMenu: false,
+            showQuickMenu: false,
             productView: 'grid',
             productLoading: false,
             viewVariationPopover: false,
@@ -601,6 +616,9 @@ export default {
             availableGateways: [],
             emptyGatewayDiv: 0,
             cashAmount: '',
+            cardAmount: '',
+            cardAuthCode: '',
+            contentWrap: {},
             availableTax: [],
             settings: {},
             taxSettings: {},
@@ -717,12 +735,12 @@ export default {
 
     methods: {
         openQucikMenu() {
-            this.showQucikMenu = true;
+            this.showQuickMenu = true;
         },
         openHelp(e) {
             e.preventDefault();
             this.showHelp = true;
-            this.showQucikMenu = false;
+            this.showQuickMenu = false;
         },
         closeHelp() {
             this.showHelp = false;
@@ -753,8 +771,10 @@ export default {
 
             this.showPaymentReceipt = false;
             this.cashAmount = '';
+            this.cardAmount = '';
+            this.cardAuthCode = '';
             this.eventBus.$emit( 'emptycart', this.orderdata );
-            this.showQucikMenu = false;
+            this.showQuickMenu = false;
         },
         toggleProductView(e) {
             e.preventDefault();
@@ -767,12 +787,44 @@ export default {
             this.emptyCart();
         },
         ableToProcess() {
-            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            return this.cartdata.line_items.length > 0 && this.isSelectGateway() && !(this.gateway.id == 'wepos_card' && this.cardAuthCode.length);
         },
         processPayment(e) {
             e.preventDefault();
             if ( ! this.ableToProcess() ) {
                 return;
+            }
+            var pay_meta_data;
+            if (this.gateway.id == 'wepos_cash') {
+                pay_meta_data = [
+                {
+                    key: '_wepos_is_pos_order',
+                    value: true
+                },
+                {
+                    key: '_wepos_cash_tendered_amount',
+                    value: self.cashAmount.toString()
+                },
+                {
+                    key: '_wepos_cash_change_amount',
+                    value: self.changeAmount.toString()
+                }
+                ];
+            } else {
+                pay_meta_data = [
+                {
+                    key: '_wepos_is_pos_order',
+                    value: true
+                },
+                {
+                    key: '_wepos_card_tendered_amount',
+                    value: self.cardAmount.toString()
+                },
+                {
+                    key: '_wepos_card_authcode',
+                    value: self.cardAuthCode.toString()
+                }
+                ];
             }
             var self = this,
                 gateway = weLo_.find( this.availableGateways, { 'id' : this.orderdata.payment_method } ),
@@ -785,24 +837,11 @@ export default {
                     customer_note: this.orderdata.customer_note,
                     payment_method: this.orderdata.payment_method,
                     payment_method_title: this.orderdata.payment_method_title,
-                    meta_data: [
-                        {
-                            key: '_wepos_is_pos_order',
-                            value: true
-                        },
-                        {
-                            key: '_wepos_cash_tendered_amount',
-                            value: self.cashAmount.toString()
-                        },
-                        {
-                            key: '_wepos_cash_change_amount',
-                            value: self.changeAmount.toString()
-                        }
-                    ]
+                    meta_data: pay_meta_data
                 }, this.orderdata, this.cartdata );
 
-            var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
-            $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+            this.$contentWrap = jQuery('.wepos-checkout-wrapper').find('.right-content');
+            this.$contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
 
             wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata )
             .done( response => {
@@ -829,17 +868,19 @@ export default {
                             order_id: response.id,
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
-                            changeamount: this.changeAmount.toString()
+                            changeamount: this.changeAmount.toString(),
+                            cardAmount: this.cardAmount.toString(),
+                            cardAuthCode: this.cardAuthCode,
                         }, orderdata );
                     } else {
-                        $contentWrap.unblock();
+                        this.$contentWrap.unblock();
                     }
                 }).fail( data => {
-                    $contentWrap.unblock();
+                    this.$contentWrap.unblock();
                     alert( data.responseJSON.message );
                 });
             }).fail( response => {
-                $contentWrap.unblock();
+                this.$contentWrap.unblock();
                 alert( response.responseJSON.message );
             } );
         },

@@ -787,15 +787,24 @@ export default {
             this.emptyCart();
         },
         ableToProcess() {
-            return this.cartdata.line_items.length > 0 && this.isSelectGateway() && !(this.gateway.id == 'wepos_card' && this.cardAuthCode.length);
+            var rc = this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            if (this.selectedGateway == 'wepos_cash') {
+                   rc = this.cashAmount > this.$store.getters['Cart/getTotal'];
+            } else if (this.selectedGateway == 'wepos_card') {
+                this.cardAmount = this.$store.getters['Cart/getTotal'];
+                rc = this.cardAuthCode.length >0;
+            }
+            return rc;
         },
         processPayment(e) {
             e.preventDefault();
             if ( ! this.ableToProcess() ) {
                 return;
             }
+            var gateway = weLo_.find( this.availableGateways, { 'id' : this.orderdata.payment_method } );
+
             var pay_meta_data;
-            if (this.gateway.id == 'wepos_cash') {
+            if (gateway.id == 'wepos_cash') {
                 pay_meta_data = [
                 {
                     key: '_wepos_is_pos_order',
@@ -803,11 +812,11 @@ export default {
                 },
                 {
                     key: '_wepos_cash_tendered_amount',
-                    value: self.cashAmount.toString()
+                    value: this.cashAmount.toString()
                 },
                 {
                     key: '_wepos_cash_change_amount',
-                    value: self.changeAmount.toString()
+                    value: this.changeAmount.toString()
                 }
                 ];
             } else {
@@ -818,16 +827,15 @@ export default {
                 },
                 {
                     key: '_wepos_card_tendered_amount',
-                    value: self.cardAmount.toString()
+                    value: this.cardAmount.toString()
                 },
                 {
                     key: '_wepos_card_authcode',
-                    value: self.cardAuthCode.toString()
+                    value: this.cardAuthCode.toString()
                 }
                 ];
             }
             var self = this,
-                gateway = weLo_.find( this.availableGateways, { 'id' : this.orderdata.payment_method } ),
                 orderdata = wepos.hooks.applyFilters( 'wepos_order_form_data', {
                     billing: this.orderdata.billing,
                     shipping: this.orderdata.shipping,
@@ -869,19 +877,18 @@ export default {
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString(),
-                            cardAmount: this.cardAmount.toString(),
-                            cardAuthCode: this.cardAuthCode,
+                            cardamount: this.cardAmount.toString(),
+                            cardauthcode: this.cardAuthCode,
                         }, orderdata );
-                    } else {
-                        this.$contentWrap.unblock();
                     }
+                    this.$contentWrap.unblock();
                 }).fail( data => {
                     this.$contentWrap.unblock();
-                    alert( data.responseJSON.message );
+                    alert( data.responseText );
                 });
             }).fail( response => {
                 this.$contentWrap.unblock();
-                alert( response.responseJSON.message );
+                alert( response.responseText );
             } );
         },
 

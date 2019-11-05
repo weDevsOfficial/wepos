@@ -76,7 +76,7 @@
                     <template v-if="printdata.gateway.id='wepos_card'">
                         <tr>
                             <td colspan="2">{{ __( 'Card Amount', 'wepos' ) }}</td>
-                            <td class="price">{{ formatPrice( printdata.cashamount ) }}</td>
+                            <td class="price">{{ formatPrice( printdata.cardamount ) }}</td>
                         </tr>
                         <tr>
                             <td colspan="2">{{ __( 'Authorisation Code', 'wepos' ) }}</td>

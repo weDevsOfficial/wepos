@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-09-25 09:37:20+00:00\n"
+"POT-Creation-Date: 2019-11-05 13:45:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,24 +14,24 @@ msgstr ""
 "X-Generator: wp-vue-i18n 1.1.3\n"
 
 #: assets/js/admin.js:122 assets/js/admin.js:369 assets/js/admin.js:461
-#: assets/js/admin.js:1429 assets/js/bootstrap.js:949
-#: assets/js/frontend.js:3155 assets/js/frontend.js:3337
-#: assets/js/frontend.js:3421 assets/js/frontend.js:3931
-#: assets/js/frontend.js:4971 assets/js/frontend.js:5138
-#: assets/js/frontend.js:5243 assets/js/frontend.js:5618
-#: assets/js/frontend.js:5729 assets/js/vendor.js:27230
-#: assets/js/vendor.js:27806 assets/js/vendor.js:27916
-#: assets/js/vendor.js:28036 assets/js/vendor.js:28058
-#: assets/js/vendor.js:28115
+#: assets/js/admin.js:1443 assets/js/bootstrap.js:949
+#: assets/js/frontend.js:3209 assets/js/frontend.js:3391
+#: assets/js/frontend.js:3475 assets/js/frontend.js:3997
+#: assets/js/frontend.js:5058 assets/js/frontend.js:5225
+#: assets/js/frontend.js:5330 assets/js/frontend.js:5732
+#: assets/js/frontend.js:5843 assets/js/vendor.js:28320
+#: assets/js/vendor.js:28896 assets/js/vendor.js:29006
+#: assets/js/vendor.js:29126 assets/js/vendor.js:29148
+#: assets/js/vendor.js:29205
 msgid "div"
 msgstr ""
 
-#: assets/js/admin.js:2279 assets/js/admin.min.js:1
+#: assets/js/admin.js:2296 assets/js/admin.min.js:1
 #: assets/src/admin/components/Settings.vue:134
 msgid "Choose your file"
 msgstr ""
 
-#: assets/js/admin.js:2281 assets/js/admin.min.js:1
+#: assets/js/admin.js:2298 assets/js/admin.min.js:1
 #: assets/src/admin/components/Fields.vue:171
 #: assets/src/admin/components/Settings.vue:136
 msgid "Select"
@@ -87,54 +87,54 @@ msgstr ""
 msgid "label"
 msgstr ""
 
-#: assets/js/frontend.js:1228 assets/js/frontend.js:1531
-#: assets/js/frontend.js:1559 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:705
-#: assets/src/frontend/components/Home.vue:1020
-#: assets/src/frontend/components/Home.vue:1048
+#: assets/js/frontend.js:1248 assets/js/frontend.js:1577
+#: assets/js/frontend.js:1605 assets/js/frontend.min.js:1
+#: assets/src/frontend/components/Home.vue:723
+#: assets/src/frontend/components/Home.vue:1068
+#: assets/src/frontend/components/Home.vue:1096
 msgid "All categories"
 msgstr ""
 
-#: assets/js/frontend.js:1385 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1431 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:261
 #: assets/src/frontend/components/Home.vue:456
-#: assets/src/frontend/components/Home.vue:868
-#: assets/src/frontend/components/printReceiptHtml.vue:43
+#: assets/src/frontend/components/Home.vue:916
+#: assets/src/frontend/components/PrintReceiptHtml.vue:43
 msgid "Discount"
 msgstr ""
 
-#: assets/js/frontend.js:1403 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1449 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:282
 #: assets/src/frontend/components/Home.vue:460
-#: assets/src/frontend/components/Home.vue:886
-#: assets/src/frontend/components/printReceiptHtml.vue:47
+#: assets/src/frontend/components/Home.vue:934
+#: assets/src/frontend/components/PrintReceiptHtml.vue:47
 msgid "Fee"
 msgstr ""
 
-#: assets/js/frontend.js:1769 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1815 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Scan your product"
 msgstr ""
 
-#: assets/js/frontend.js:1769 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1815 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Search product by typing"
 msgstr ""
 
-#: assets/js/frontend.js:2408 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:2454 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/CustomerSearch.vue:334
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4905
+#: assets/js/frontend.js:4990
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5532
+#: assets/js/frontend.js:5646
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:8404
+#: assets/js/frontend.js:8610
 msgid "td"
 msgstr ""
 
@@ -258,51 +258,61 @@ msgid "Print Receipt"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:5
+#: assets/src/frontend/components/PrintReceiptHtml.vue:5
 msgid "Order ID"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:6
+#: assets/src/frontend/components/PrintReceiptHtml.vue:6
 msgid "Order Date"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:250
 #: assets/src/frontend/components/Home.vue:446
-#: assets/src/frontend/components/printReceiptHtml.vue:34
+#: assets/src/frontend/components/PrintReceiptHtml.vue:34
 msgid "Subtotal"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:252
 #: assets/src/frontend/components/Home.vue:448
-#: assets/src/frontend/components/printReceiptHtml.vue:36
+#: assets/src/frontend/components/PrintReceiptHtml.vue:36
 msgid "Includes Tax"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:290
 #: assets/src/frontend/components/Home.vue:466
-#: assets/src/frontend/components/printReceiptHtml.vue:52
+#: assets/src/frontend/components/PrintReceiptHtml.vue:52
 msgid "Tax"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:470
-#: assets/src/frontend/components/printReceiptHtml.vue:56
+#: assets/src/frontend/components/PrintReceiptHtml.vue:56
 msgid "Order Total"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:63
+#: assets/src/frontend/components/PrintReceiptHtml.vue:63
 msgid "Payment method"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:68
+#: assets/src/frontend/components/PrintReceiptHtml.vue:68
 msgid "Cash Given"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
-#: assets/src/frontend/components/printReceiptHtml.vue:72
+#: assets/src/frontend/components/PrintReceiptHtml.vue:72
 msgid "Change Money"
+msgstr ""
+
+#: assets/js/frontend.min.js:1
+#: assets/src/frontend/components/PrintReceiptHtml.vue:78
+msgid "Card Amount"
+msgstr ""
+
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:528
+#: assets/src/frontend/components/PrintReceiptHtml.vue:82
+msgid "Authorisation Code"
 msgstr ""
 
 #: assets/js/frontend.min.js:1
@@ -439,7 +449,7 @@ msgid "Go to payment receipt"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:389
-#: assets/src/frontend/components/Home.vue:534
+#: assets/src/frontend/components/Home.vue:549
 msgid "Process Payment"
 msgstr ""
 
@@ -461,7 +471,7 @@ msgid "Pay"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:502
-msgid "No gateway found"
+msgid "No payment gateway found"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:510
@@ -474,7 +484,7 @@ msgstr ""
 msgid "Change money"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:533
+#: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:548
 msgid "Back to Sale"
 msgstr ""
 
@@ -654,32 +664,62 @@ msgstr ""
 msgid "Thank you"
 msgstr ""
 
-#: includes/gateways/class-cash-gateway.php:37
-msgid "Have your customers pay with cash"
+#: includes/gateways/class-card-gateway.php:38
+#: includes/gateways/class-card-gateway.php:60
+msgid "Card"
 msgstr ""
 
+#: includes/gateways/class-card-gateway.php:39
+msgid "Use an external Payment Device to take a live card payment"
+msgstr ""
+
+#: includes/gateways/class-card-gateway.php:50
 #: includes/gateways/class-cash-gateway.php:48
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/gateways/class-cash-gateway.php:49
-msgid "Enable cash gateway"
+#: includes/gateways/class-card-gateway.php:51
+msgid "Enable Card gateway"
 msgstr ""
 
+#: includes/gateways/class-card-gateway.php:57
 #: includes/gateways/class-cash-gateway.php:55
 msgid "Title"
 msgstr ""
 
+#: includes/gateways/class-card-gateway.php:59
 #: includes/gateways/class-cash-gateway.php:57
 msgid "Payment method description that the marchent see in pos checkout"
 msgstr ""
 
+#: includes/gateways/class-card-gateway.php:64
 #: includes/gateways/class-cash-gateway.php:62
 msgid "Description"
 msgstr ""
 
+#: includes/gateways/class-card-gateway.php:66
 #: includes/gateways/class-cash-gateway.php:64
 msgid "Payment method description that marchent see in pos checkout page"
+msgstr ""
+
+#: includes/gateways/class-card-gateway.php:67
+msgid "Take payment with an external P.E.D."
+msgstr ""
+
+#: includes/gateways/class-card-gateway.php:102
+msgid "Payment made using Card PED"
+msgstr ""
+
+#: includes/gateways/class-card-gateway.php:103
+msgid "Card tendered amount: %1$s Authorisation Code %2$s"
+msgstr ""
+
+#: includes/gateways/class-cash-gateway.php:37
+msgid "Have your customers pay with cash"
+msgstr ""
+
+#: includes/gateways/class-cash-gateway.php:49
+msgid "Enable cash gateway"
 msgstr ""
 
 #: includes/gateways/class-cash-gateway.php:65

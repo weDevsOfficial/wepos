@@ -100,7 +100,7 @@ class Card extends \WC_Payment_Gateway {
         $order->payment_complete();
 
         $order->update_status( 'completed', __( 'Payment made using Card PED', 'wepos' ) );
-        $order->add_order_note( sprintf( __( 'Card tendered amount: %1$s', 'wepos' ), $order->get_meta( '_wepos_card_tendered_amount', true )) );
+        $order->add_order_note( sprintf( __( 'Card tendered amount: %1$s Authorisation Code %2$s', 'wepos' ), wc_price($order->get_meta( '_wepos_card_tendered_amount')), $order->get_meta( '_wepos_card_authcode')),true );
 
         $order->set_created_via( 'wepos' );
         $order->save();

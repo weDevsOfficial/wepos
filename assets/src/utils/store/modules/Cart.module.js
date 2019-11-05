@@ -123,7 +123,7 @@ export default {
             cartObject.backorders_allowed = product.backorders_allowed;
             cartObject.stock_quantity     = product.stock_quantity;
 
-            var index = weLo_.findIndex( state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id} );
+            var index = state.cartdata.line_items.findIndex(function(el) { return el.product_id == cartObject.product_id && el.variation_id == cartObject.variation_id} );
 
             if ( index < 0 ) {
                 if ( Helper.hasStock( product ) ) {

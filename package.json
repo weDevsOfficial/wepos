@@ -1,6 +1,6 @@
 {
   "name": "wepos",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Point of Sale plugin for WooCommerce",
   "author": "weDevs <info@wedevs.com>",
   "license": "GPLv2",
@@ -16,7 +16,7 @@
     "lodash": "^4.17.11",
     "v-hotkey": "^0.3.0",
     "v-tooltip": "^2.0.0-rc.33",
-    "vue": "^2.5.2",
+    "vue": "^2.6.10",
     "vue-js-popover": "^1.1.8",
     "vue-mugen-scroll": "^0.2.5",
     "vue-multiselect": "^2.1.3",
@@ -36,7 +36,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "browser-sync": "^2.23.6",
-    "browser-sync-webpack-plugin": "^2.0.1",
+    "browser-sync-webpack-plugin": "^2.2.2",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.8",
     "extract-text-webpack-plugin": "^3.0.2",
@@ -51,9 +51,9 @@
     "vue-color": "^2.7.0",
     "vue-loader": "^13.7.0",
     "vue-style-loader": "^3.1.2",
-    "vue-template-compiler": "^2.5.13",
-    "webpack": "^3.11.0",
-    "webpack-cli": "^2.0.14",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^3.12.0",
+    "webpack-cli": "^1.5.3",
     "wp-vue-i18n": "^1.1.3"
   }
 }

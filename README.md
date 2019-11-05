@@ -16,10 +16,10 @@ WooCommerce point of sale WordPress plugin.
 ## Description ##
 
 ### WooCommerce Point of Sales (POS) ###
-wePOS is a fast and responsive( Tablets & Desktop ) WooCommerce Point of Sales plugin. It lets you take orders and track your inventory using your WooCommerce store. You can physically count your WooCommerce products by scanning Bar codes and add them directly to customer’s cart for processing the order.
+wePOS is a fast and responsive( Tablets & Desktop ) WooCommerce Point of Sales plugin. It lets you process sales and track your inventory using your WooCommerce store. You can physically count your WooCommerce products by scanning Bar codes and add them directly to customer’s cart for processing the order.
 
 ### Based of REST API ###
-wePOS is a single page application that works super fast. We have used WooCommerce REST API and some custom API to develop the plugin. This has made the plugin to response fast and gets your work done in time. In a physical store, you get a lot of customers who wait to checkout their products. So, a fast system like wePoS can be your one-way ticket to manage your inventory easily.
+wePOS is a single page application that works super fast. We have used WooCommerce REST API and some custom API to develop the plugin. This has made the plugin response and fast, getting your work done in time. In a physical store, you get a lot of customers who wait to checkout their products. So, a fast system like wePoS can be your one-way ticket to manage your inventory easily.
 
 ### Attractive User Interface ###
 A good UI can sometimes makes a system even more attractive. wePOS has an intuitive design that allows navigating easily. With it, you can manage your inventory and orders in an organized way.
@@ -52,6 +52,9 @@ No FAQ
 9. Admin Dashboard Settings
 
 ## Changelog ##
+
+### v1.0.10 -> 5 November, 2019 ###
+- **Tweak**   Added Card Payments 
 
 ### v1.0.9 -> 25 September, 2019 ###
 - **Fix**   Tax calculation issue in pos cart

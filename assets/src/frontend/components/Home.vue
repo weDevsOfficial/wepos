@@ -789,7 +789,7 @@ export default {
         ableToProcess() {
             var rc = this.cartdata.line_items.length > 0 && this.isSelectGateway();
             if (this.selectedGateway == 'wepos_cash') {
-                   rc = this.cashAmount > this.$store.getters['Cart/getTotal'];
+                   rc = this.cashAmount >= this.$store.getters['Cart/getTotal'];
             } else if (this.selectedGateway == 'wepos_card') {
                 this.cardAmount = this.$store.getters['Cart/getTotal'];
                 rc = this.cardAuthCode.length >0;

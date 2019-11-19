@@ -152,7 +152,7 @@ class Insights {
         add_action( 'wp_ajax_' . $this->client->slug . '_submit-uninstall-reason', array( $this, 'uninstall_reason_submission' ) );
 
         // cron events
-        add_action( 'cron_schedules', array( $this, 'add_weekly_schedule' ) );
+        add_filter( 'cron_schedules', array( $this, 'add_weekly_schedule' ) );
         add_action( $this->client->slug . '_tracker_send_event', array( $this, 'send_tracking_data' ) );
         // add_action( 'admin_init', array( $this, 'send_tracking_data' ) ); // test
     }
@@ -242,12 +242,12 @@ class Insights {
      * @return mixed
      */
     protected function get_extra_data() {
-        $extra_data = $this->extra_data;
+        if ( is_callable( $this->extra_data ) ) {
+            return call_user_func( $this->extra_data );
+        }
 
-        if ( is_callable( $extra_data ) ) {
-            return $extra_data();
-        } else if ( is_array( $extra_data ) ) {
-            return $extra_data;
+        if ( is_array( $this->extra_data ) ) {
+            return $this->extra_data;
         }
 
         return array();
@@ -325,8 +325,11 @@ class Insights {
      * @return void
      */
     private function schedule_event() {
-        wp_schedule_event( time(), 'weekly', $this->client->slug . '_tracker_send_event' );
-        wp_schedule_event( time(), 'daily', $this->client->slug . '_license_check_event' );
+        $hook_name = $this->client->slug . '_tracker_send_event';
+
+        if ( ! wp_next_scheduled( $hook_name ) ) {
+            wp_schedule_event( time(), 'weekly', $hook_name );
+        }
     }
 
     /**
@@ -336,7 +339,6 @@ class Insights {
      */
     private function clear_schedule_event() {
         wp_clear_scheduled_hook( $this->client->slug . '_tracker_send_event' );
-        wp_clear_scheduled_hook( $this->client->slug . '_license_check_event' );
     }
 
     /**
@@ -575,7 +577,7 @@ class Insights {
 
         $schedules['weekly'] = array(
             'interval' => DAY_IN_SECONDS * 7,
-            'display'  => __( 'Once Weekly', 'textdomain' )
+            'display'  => 'Once Weekly',
         );
 
         return $schedules;
@@ -595,7 +597,11 @@ class Insights {
         }
 
         // re-schedule and delete the last sent time so we could force send again
-        wp_schedule_event( time(), 'weekly', $this->client->slug . '_tracker_send_event' );
+        $hook_name = $this->client->slug . '_tracker_send_event';
+        if ( ! wp_next_scheduled( $hook_name ) ) {
+            wp_schedule_event( time(), 'weekly', $hook_name );
+        }
+
         delete_option( $this->client->slug . '_tracking_last_send' );
 
         $this->send_tracking_data( true );

@@ -2452,7 +2452,7 @@ let Modal = wepos_get_lib('Modal');
 
         var orderdata = JSON.parse(localStorage.getItem('orderdata'));
 
-        if (orderdata.customer_id != undefined && orderdata.customer_id != 0) {
+        if (orderdata.customer_id != 'undefined' && orderdata.customer_id != 0) {
             this.serachInput = orderdata.billing.first_name + ' ' + orderdata.billing.last_name;
         }
     }

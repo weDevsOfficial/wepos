@@ -34,14 +34,14 @@ class License {
      *
      * @var string
      */
-    protected $error;
+    public $error;
 
     /**
      * Success message on form submit
      *
      * @var string
      */
-    protected $success;
+    public $success;
 
     /**
      * Corn schedule hook name
@@ -202,7 +202,7 @@ class License {
     public function menu_output() {
 
         if ( isset( $_POST['submit'] ) ) {
-            $this->license_page_form( $_POST );
+            $this->license_form_submit( $_POST );
         }
 
         $license = get_option( $this->option_key, null );
@@ -225,6 +225,7 @@ class License {
                     <p>Active <strong><?php echo $this->client->name; ?></strong> by your license key to get professional support and automatic update from your WordPress dashboard.</p>
                     <form method="post" action="<?php $this->formActionUrl(); ?>" novalidate="novalidate" spellcheck="false">
                         <input type="hidden" name="_action" value="<?php echo $action; ?>">
+                        <input type="hidden" name="_nonce" value="<?php echo wp_create_nonce( $this->client->name ); ?>">
                         <div class="license-input-fields">
                             <div class="license-input-key">
                                 <svg enable-background="new 0 0 512 512" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
@@ -257,7 +258,17 @@ class License {
     /**
      * License form submit
      */
-    private function license_page_form( $form ) {
+    public function license_form_submit( $form ) {
+        if ( ! isset( $form['_nonce'], $form['_action'] ) ) {
+            $this->error = "Please add all information";
+            return;
+        }
+
+        if ( ! wp_verify_nonce( $form['_nonce'], $this->client->name ) ) {
+            $this->error = "You don't have permission to manage license.";
+            return;
+        }
+
         switch ( $form['_action'] ) {
             case 'active':
                 $this->active_client_license( $form );
@@ -279,9 +290,16 @@ class License {
             $response = $this->check( $license['key'] );
 
             if ( isset( $response['success'] ) && $response['success'] ) {
-                $license['status'] = 'activate';
+                $license['status']           = 'activate';
+                $license['remaining']        = $response['remaining'];
+                $license['activation_limit'] = $response['activation_limit'];
+                $license['expiry_days']      = $response['expiry_days'];
+                $license['title']            = $response['title'];
+                $license['source_id']        = $response['source_identifier'];
+                $license['recurring']        = $response['recurring'];
             } else {
-                $license['status'] = 'deactivate';
+                $license['status']      = 'deactivate';
+                $license['expiry_days'] = 0;
             }
 
             update_option( $this->option_key, $license, false );
@@ -304,6 +322,21 @@ class License {
         }
 
         return $this->is_valid_licnese;
+    }
+
+    /**
+     * Check this is a valid license
+     */
+    public function is_valid_by( $option, $value ) {
+        $license = get_option( $this->option_key, null );
+
+        if ( ! empty( $license['key'] ) && isset( $license['status'] ) && $license['status'] == 'activate' ) {
+            if ( isset( $license[ $option ] ) && $license[ $option ] == $value ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -444,7 +477,14 @@ class License {
             </div>
             <div class="single-license-info">
                 <h3>Expires in</h3>
-                <p class="<?php echo $license['expiry_days'] > 10 ? '' : 'occupied'; ?>"><?php echo $license['expiry_days']; ?> days</p>
+                <?php
+                    if ( $license['recurring'] && false !== $license['expiry_days'] ) {
+                        $occupied = $license['expiry_days'] > 10 ? '' : 'occupied';
+                        echo '<p class="' . $occupied . '">' . $license['expiry_days'] . ' days</p>';
+                    } else {
+                        echo '<p>Never</p>';
+                    }
+                ?>
             </div>
         </div>
         <?php
@@ -510,6 +550,9 @@ class License {
             'remaining'        => $response['remaining'],
             'activation_limit' => $response['activation_limit'],
             'expiry_days'      => $response['expiry_days'],
+            'title'            => $response['title'],
+            'source_id'        => $response['source_identifier'],
+            'recurring'        => $response['recurring'],
         );
 
         update_option( $this->option_key, $data, false );
@@ -530,17 +573,17 @@ class License {
 
         $response = $this->deactivate( $license['key'] );
 
-        if ( ! $response['success'] ) {
-            $this->error = $response['error'] ? $response['error'] : 'Unknown error occurred.';
-            return;
-        }
-
         $data = array(
             'key'    => '',
             'status' => 'deactivate',
         );
 
         update_option( $this->option_key, $data, false );
+
+        if ( ! $response['success'] ) {
+            $this->error = $response['error'] ? $response['error'] : 'Unknown error occurred.';
+            return;
+        }
 
         $this->success = 'License deactivated successfully.';
     }
@@ -636,19 +679,23 @@ class License {
 
     /**
      * Get input license key
-     * @param  [type] $key [description]
-     * @return [type]      [description]
+     * @param  $action
+     * @return $license
      */
     private function get_input_license_value( $action, $license ) {
-        if ( 'deactive' != $action ) {
-            return '';
+        if ( 'active' == $action ) {
+            return isset( $license['key'] ) ? $license['key'] : '';
         }
 
-        $key_length = strlen( $license['key'] );
+        if ( 'deactive' == $action ) {
+            $key_length = strlen( $license['key'] );
 
-        return str_pad(
-            substr( $license['key'], 0, $key_length / 2 ), $key_length, '*'
-        );
+            return str_pad(
+                substr( $license['key'], 0, $key_length / 2 ), $key_length, '*'
+            );
+        }
+
+        return '';
     }
 
 }

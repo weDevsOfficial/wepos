@@ -3,9 +3,9 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 5.2.3
+**Tested up to:** 5.3.0
 **WC requires at least:** 3.0
-**WC tested up to:** 3.7.0
+**WC tested up to:** 3.8.1
 **Requires PHP:** 5.6
 **Stable tag:** trunk
 **License:** GPLv2 or later
@@ -52,6 +52,11 @@ No FAQ
 9. Admin Dashboard Settings
 
 ## Changelog ##
+
+### v1.1.0 -> 09 December, 2019 ###
+- **Fix**    Undefined customer_id error fixed
+- **Tweak**  Update some styling issues
+- **Tweak**  Added appsero client
 
 ### v1.0.9 -> 25 September, 2019 ###
 - **Fix**   Tax calculation issue in pos cart

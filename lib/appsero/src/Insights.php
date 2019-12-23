@@ -276,7 +276,7 @@ class Insights {
      *
      * @return bool
      */
-    private function tracking_allowed() {
+    public function tracking_allowed() {
         $allow_tracking = get_option( $this->client->slug . '_allow_tracking', 'no' );
 
         return $allow_tracking == 'yes';
@@ -297,7 +297,7 @@ class Insights {
      * @return boolean
      */
     private function notice_dismissed() {
-        $hide_notice = get_option( $this->client->slug . '_tracking_notice', 'no' );
+        $hide_notice = get_option( $this->client->slug . '_tracking_notice', null );
 
         if ( 'hide' == $hide_notice ) {
             return true;
@@ -366,28 +366,26 @@ class Insights {
             $optout_url = add_query_arg( $this->client->slug . '_tracker_optout', 'true' );
 
             if ( empty( $this->notice ) ) {
-                $notice = sprintf( __( 'Want to help make <strong>%1$s</strong> even more awesome? Allow %1$s to collect non-sensitive diagnostic data and usage information.', 'textdomain' ), $this->client->name );
+                $notice = sprintf( __( 'Want to help make <strong>%1$s</strong> even more awesome? Allow %1$s to collect non-sensitive diagnostic data and usage information.', $this->client->textdomain ), $this->client->name );
             } else {
                 $notice = $this->notice;
             }
 
-            $notice .= ' (<a class="' . $this->client->slug . '-insights-data-we-collect" href="#">' . __( 'what we collect', 'textdomain' ) . '</a>)';
-            $notice .= '<p class="description" style="display:none;">' . implode( ', ', $this->data_we_collect() ) . '. No sensitive data is tracked.</p>';
+            $notice .= ' (<a class="' . $this->client->slug . '-insights-data-we-collect" href="#">' . __( 'what we collect', $this->client->textdomain ) . '</a>)';
+            $notice .= '<p class="description" style="display:none;">' . implode( ', ', $this->data_we_collect() ) . '. No sensitive data is tracked. ';
+            $notice .= 'We are using Appsero to collect your data. <a href="https://appsero.com/privacy-policy/">Learn more</a> about how Appsero collects and handle your data.</p>';
 
             echo '<div class="updated"><p>';
                 echo $notice;
                 echo '</p><p class="submit">';
-                echo '&nbsp;<a href="' . esc_url( $optin_url ) . '" class="button-primary button-large">' . __( 'Allow', 'textdomain' ) . '</a>';
-                echo '&nbsp;<a href="' . esc_url( $optout_url ) . '" class="button-secondary button-large">' . __( 'No thanks', 'textdomain' ) . '</a>';
+                echo '&nbsp;<a href="' . esc_url( $optin_url ) . '" class="button-primary button-large">' . __( 'Allow', $this->client->textdomain ) . '</a>';
+                echo '&nbsp;<a href="' . esc_url( $optout_url ) . '" class="button-secondary button-large">' . __( 'No thanks', $this->client->textdomain ) . '</a>';
             echo '</p></div>';
 
             echo "<script type='text/javascript'>jQuery('." . $this->client->slug . "-insights-data-we-collect').on('click', function(e) {
                     e.preventDefault();
                     jQuery(this).parents('.updated').find('p.description').slideToggle('fast');
                 });
-                jQuery.getJSON('https://api.ipify.org?format=jsonp&callback=?', function(json) {
-                    json.ip;
-                } );
                 </script>
             ";
         }
@@ -746,7 +744,7 @@ class Insights {
         <div class="wd-dr-modal" id="<?php echo $this->client->slug; ?>-wd-dr-modal">
             <div class="wd-dr-modal-wrap">
                 <div class="wd-dr-modal-header">
-                    <h3><?php _e( 'If you have a moment, please let us know why you are deactivating:', 'domain' ); ?></h3>
+                    <h3><?php _e( 'If you have a moment, please let us know why you are deactivating:', $this->client->textdomain ); ?></h3>
                 </div>
 
                 <div class="wd-dr-modal-body">
@@ -757,12 +755,13 @@ class Insights {
                             </li>
                         <?php } ?>
                     </ul>
+                    <p class="wd-dr-modal-reasons-bottom">We share your data with <a href="https://appsero.com/">Appsero</a> to troubleshoot problems &amp; make product improvements. <a href="https://appsero.com/privacy-policy/">Learn more</a> about how Appsero handles your data.</p>
                 </div>
 
                 <div class="wd-dr-modal-footer">
-                    <a href="#" class="dont-bother-me"><?php _e( 'I rather wouldn\'t say', 'domain' ); ?></a>
-                    <button class="button-secondary"><?php _e( 'Submit & Deactivate', 'domain' ); ?></button>
-                    <button class="button-primary"><?php _e( 'Cancel', 'domain' ); ?></button>
+                    <a href="#" class="dont-bother-me"><?php _e( 'I rather wouldn\'t say', $this->client->textdomain ); ?></a>
+                    <button class="button-secondary"><?php _e( 'Submit & Deactivate', $this->client->textdomain ); ?></button>
+                    <button class="button-primary"><?php _e( 'Cancel', $this->client->textdomain ); ?></button>
                 </div>
             </div>
         </div>
@@ -812,6 +811,9 @@ class Insights {
                 border-top: 1px solid #eee;
                 padding: 12px 20px;
                 text-align: right;
+            }
+            .wd-dr-modal-reasons-bottom {
+                margin: 15px 0 0 0;
             }
         </style>
 

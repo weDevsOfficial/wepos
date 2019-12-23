@@ -3,7 +3,7 @@ Contributors: tareq1988, wedevs, sabbir1991, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.3.0
+Tested up to: 5.3.2
 WC requires at least: 3.0
 WC tested up to: 3.8.1
 Requires PHP: 5.6
@@ -59,6 +59,10 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.1.1 -> 23 December, 2019 =
+----------------------------
+- **Tweak**  Appser client updated
 
 = v1.1.0 -> 09 December, 2019 =
 ----------------------------

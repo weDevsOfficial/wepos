@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.1.0\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-12-09 09:11:32+00:00\n"
+"POT-Creation-Date: 2019-12-23 09:13:19+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -374,7 +374,7 @@ msgid "Apply"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:277
-#: lib/appsero/src/Insights.php:765
+#: lib/appsero/src/Insights.php:764
 msgid "Cancel"
 msgstr ""
 
@@ -704,23 +704,23 @@ msgstr ""
 msgid "what we collect"
 msgstr ""
 
-#: lib/appsero/src/Insights.php:380
+#: lib/appsero/src/Insights.php:381
 msgid "Allow"
 msgstr ""
 
-#: lib/appsero/src/Insights.php:381
+#: lib/appsero/src/Insights.php:382
 msgid "No thanks"
 msgstr ""
 
-#: lib/appsero/src/Insights.php:749
+#: lib/appsero/src/Insights.php:747
 msgid "If you have a moment, please let us know why you are deactivating:"
 msgstr ""
 
-#: lib/appsero/src/Insights.php:763
+#: lib/appsero/src/Insights.php:762
 msgid "I rather wouldn't say"
 msgstr ""
 
-#: lib/appsero/src/Insights.php:764
+#: lib/appsero/src/Insights.php:763
 msgid "Submit & Deactivate"
 msgstr ""
 

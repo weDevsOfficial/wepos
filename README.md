@@ -3,7 +3,7 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 5.3.0
+**Tested up to:** 5.3.2
 **WC requires at least:** 3.0
 **WC tested up to:** 3.8.1
 **Requires PHP:** 5.6
@@ -26,6 +26,13 @@ A good UI can sometimes makes a system even more attractive. wePOS has an intuit
 
 ### Shortcut / Hotkey Support ###
 wePOS has shortcut key support that lets you use its features faster. This is very important for any physical store so that the sales executive can read the Barcodes and process the orders with pace.
+
+### Privacy Policy ###
+wePOS uses [Appsero](https://appsero.com) SDK to collect some telemetry data upon user's confirmation. This helps us to troubleshoot problems faster & make product improvements.
+
+Appsero SDK **does not gather any data by default.** The SDK only starts gathering basic telemetry data **when a user allows it via the admin notice**. We collect the data to ensure great user experience for all our users.
+
+Integrating Appsero SDK **DOES NOT IMMEDIATELY** start gathering data, **without confirmation from users in any case.**
 
 ### Contribute ###
 This may have bugs and lack of many features. If you want to contribute on this project, you are more than welcome. Please fork the repository from [Github](https://github.com/weDevsOfficial/wepos).
@@ -52,6 +59,9 @@ No FAQ
 9. Admin Dashboard Settings
 
 ## Changelog ##
+
+### v1.1.1 -> 23 December, 2019 ###
+- **Tweak**  Appser client updated
 
 ### v1.1.0 -> 09 December, 2019 ###
 - **Fix**    Undefined customer_id error fixed

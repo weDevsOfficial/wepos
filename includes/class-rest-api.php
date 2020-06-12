@@ -73,7 +73,8 @@ class REST_API {
                 $response = $variation_api_class->get_item(
                     [
                         'id'         => $variation,
-                        'product_id' => $variation
+                        'product_id' => $variation,
+                        'context'    => 'view'
                     ]
                 );
                 $variation_data[] = $response->get_data();

@@ -1,10 +1,10 @@
 <?php
-namespace WePOS\api;
+namespace WeDevs\WePOS\REST;
 
 /**
 * Payment API Controller
 */
-class Tax extends \WC_REST_Taxes_V2_Controller {
+class TaxController extends \WC_REST_Taxes_V2_Controller {
 
     /**
      * Endpoint namespace

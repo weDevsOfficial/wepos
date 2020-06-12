@@ -1,10 +1,10 @@
 <?php
-namespace WePOS\api;
+namespace WeDevs\WePOS\REST;
 
 /**
 * Payment API Controller
 */
-class Products extends \WC_REST_Products_Controller {
+class ProductController extends \WC_REST_Products_Controller {
 
     /**
      * Endpoint namespace

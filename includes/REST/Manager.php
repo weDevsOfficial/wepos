@@ -1,10 +1,10 @@
 <?php
-namespace WePOS;
+namespace WeDevs\WePOS\REST;
 
 /**
- * REST_API Handler
+ * REST Manager Handler
  */
-class REST_API {
+class Manager {
 
     /**
      * Class dir and class name mapping
@@ -22,11 +22,11 @@ class REST_API {
      */
     public function __construct() {
         $this->class_map = apply_filters( 'wepos_rest_api_class_map', array(
-            WEPOS_INCLUDES . '/api/class-payment-controller.php'   => 'WePOS\api\Payment',
-            WEPOS_INCLUDES . '/api/class-settings-controller.php'  => 'WePOS\api\Settings',
-            WEPOS_INCLUDES . '/api/class-tax-controller.php'       => 'WePOS\api\Tax',
-            WEPOS_INCLUDES . '/api/class-customers-controller.php' => 'WePOS\api\Customer',
-            WEPOS_INCLUDES . '/api/class-products-controller.php' => 'WePOS\api\Products'
+            WEPOS_INCLUDES . '/REST/PaymentController.php'  => '\WeDevs\WePOS\REST\PaymentController',
+            WEPOS_INCLUDES . '/REST/SettingController.php'  => '\WeDevs\WePOS\REST\SettingController',
+            WEPOS_INCLUDES . '/REST/TaxController.php'      => '\WeDevs\WePOS\REST\TaxController',
+            WEPOS_INCLUDES . '/REST/CustomerController.php' => '\WeDevs\WePOS\REST\CustomerController',
+            WEPOS_INCLUDES . '/REST/ProductController.php'  => '\WeDevs\WePOS\REST\ProductController'
         ) );
 
         // Init REST API routes.

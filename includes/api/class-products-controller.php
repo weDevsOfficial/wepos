@@ -31,7 +31,7 @@ class Products extends \WC_REST_Products_Controller {
                 'permission_callback' => array( $this, 'get_products_permissions_check' ),
                 'args'                => $this->get_collection_params(),
             ),
-            'schema' => array( $this, 'get_public_item_schema' ),
+            'schema' => array( $this, 'get_item_schema' ),
         ) );
     }
 

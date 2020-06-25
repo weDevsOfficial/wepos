@@ -42,38 +42,12 @@ class ProductController extends \WC_REST_Products_Controller {
      *
      * @return void
      */
-    public function create_customer_permission_callback() {
-        if ( ! ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_rest_manager_permissions', false ) ) ) {
-            return new \WP_Error( 'wepos_rest_cannot_batch', __( 'Sorry, you are not allowed view this resource.', 'wepos' ), array( 'status' => rest_authorization_required_code() ) );
-        }
-
-        return true;
-    }
-
-    /**
-     * Get taxes permission checking
-     *
-     * @since 1.0.2
-     *
-     * @return void
-     */
     public function get_products_permissions_check() {
         if ( ! ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_rest_manager_permissions', false ) ) ) {
             return new \WP_Error( 'wepos_rest_cannot_batch', __( 'Sorry, you are not allowed view this resource.', 'wepos' ), array( 'status' => rest_authorization_required_code() ) );
         }
 
         return true;
-    }
-
-    /**
-     * Create a customer
-     *
-     * @since 1.0.5
-     *
-     * @return void
-     */
-    public function create_customer( $request ) {
-        return $this->create_item( $request );
     }
 
     /**

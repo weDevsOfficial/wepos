@@ -59,6 +59,7 @@ return [
 	__( 'Price :', 'wepos' ),
 	__( 'No Product Found', 'wepos' ),
 	__( 'Empty Cart', 'wepos' ),
+	__( 'Cart Empty', 'wepos' ),
 	__( 'Help', 'wepos' ),
 	__( 'Logout', 'wepos' ),
 	__( 'Qty', 'wepos' ),

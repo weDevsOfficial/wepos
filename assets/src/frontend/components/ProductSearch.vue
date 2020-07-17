@@ -106,7 +106,7 @@ export default {
         return {
             showResults: false,
             showVariationModal: false,
-            mode: 'scan',
+            mode: 'product',
             serachInput: '',
             searchableProduct: [],
             selectedVariationProduct: {},

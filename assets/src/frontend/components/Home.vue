@@ -234,7 +234,7 @@
                                 <tr class="no-item">
                                     <td colspan="5">
                                         <img :src="wepos.assets_url+ '/images/empty-cart.png'" alt="" width="120px">
-                                        <p>{{ __( 'Empty Cart', 'wepos' ) }}</p>
+                                        <p>{{ __( 'Cart Empty', 'wepos' ) }}</p>
                                     </td>
                                 </tr>
                             </template>

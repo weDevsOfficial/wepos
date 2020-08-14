@@ -63,7 +63,7 @@
             width="700px"
             :footer="true"
             :header="true"
-        >
+            >
             <template slot="body">
                 <div class="wepos-new-customer-form">
                     <form action="" class="wepos-form" autocomplete="off">

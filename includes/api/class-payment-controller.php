@@ -32,7 +32,7 @@ class Payment extends \WC_REST_Orders_Controller {
             array(
                 'methods'  => \WP_REST_Server::READABLE,
                 'callback' => array( $this, 'get_avaible_gateways' ),
-                'permission_callback' => true,
+                'permission_callback' => '__return_true',
                 'args'     => $this->get_collection_params()
             ),
         ) );

@@ -801,7 +801,7 @@ export default {
                     ]
                 }, this.orderdata, this.cartdata );
 
-            var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
+            var $contentWrap = jQuery('.wepos-checkout-wrapper');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
 
             wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata )
@@ -831,6 +831,7 @@ export default {
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString()
                         }, orderdata );
+                      $contentWrap.unblock();
                     } else {
                         $contentWrap.unblock();
                     }

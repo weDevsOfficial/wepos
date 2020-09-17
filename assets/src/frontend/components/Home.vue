@@ -304,11 +304,20 @@
                                     </td>
                                     <td class="action"><span class="flaticon-cancel-music" @click.prevent="removeCustomerNote"></span></td>
                                 </tr>
-                                <tr class="pay-now" @click="initPayment()">
+                                <template v-if="$store.getters['Cart/getTotal'] > 0">
+                                  <tr class="pay-now" @click="initPayment()">
                                     <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
                                     <td class="amount">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</td>
                                     <td class="icon"><span class="flaticon-right-arrow"></span></td>
-                                </tr>
+                                  </tr>
+                                </template>
+                                <template v-else>
+                                  <tr class="pay-now disabled">
+                                    <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
+                                    <td class="amount">{{ formatPrice( 0 ) }}</td>
+                                    <td class="icon"><span class="flaticon-right-arrow"></span></td>
+                                  </tr>
+                                </template>
                             </tbody>
                         </table>
                     </form>
@@ -1991,6 +2000,12 @@ export default {
                                         line-height: 25px;
                                     }
                                 }
+                            }
+
+                            &.disabled {
+                              background: rgba(68, 184, 161, 0.5);
+                              color: #fff;
+                              cursor: default;
                             }
 
                         }

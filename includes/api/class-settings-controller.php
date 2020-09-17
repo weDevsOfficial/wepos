@@ -23,6 +23,8 @@ class Settings extends \WP_REST_Controller {
     /**
      * Register all routes releated with stores
      *
+     * @since 1.1.2
+     *
      * @return void
      */
     public function register_routes() {
@@ -31,7 +33,7 @@ class Settings extends \WP_REST_Controller {
                 'methods'              => \WP_REST_Server::READABLE,
                 'callback'             => array( $this, 'get_settings' ),
                 'args'                 => $this->get_collection_params(),
-                'permissiona_callback' => current_user_can( 'manage_woocommerce' )
+                'permission_callback' => current_user_can( 'manage_woocommerce' )
             ),
         ) );
     }

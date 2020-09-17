@@ -23,6 +23,8 @@ class Payment extends \WC_REST_Orders_Controller {
     /**
      * Register all routes releated with stores
      *
+     * @since 1.1.2
+     *
      * @return void
      */
     public function register_routes() {
@@ -30,6 +32,7 @@ class Payment extends \WC_REST_Orders_Controller {
             array(
                 'methods'  => \WP_REST_Server::READABLE,
                 'callback' => array( $this, 'get_avaible_gateways' ),
+                'permission_callback' => true,
                 'args'     => $this->get_collection_params()
             ),
         ) );

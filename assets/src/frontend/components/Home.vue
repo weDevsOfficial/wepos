@@ -776,7 +776,11 @@ export default {
             this.emptyCart();
         },
         ableToProcess() {
-            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            if( this.selectedGateway === 'wepos_cash' ) {
+              return this.cashAmount >= this.$store.getters['Cart/getTotal'] && canProcess;
+            }
+            return canProcess;
         },
         processPayment(e) {
             e.preventDefault();
@@ -2005,7 +2009,7 @@ export default {
                             &.disabled {
                               background: rgba(68, 184, 161, 0.5);
                               color: #fff;
-                              cursor: default;
+                              cursor: no-drop;
                             }
 
                         }

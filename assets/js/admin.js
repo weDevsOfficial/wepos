@@ -1,24 +1,371 @@
 pluginWebpack([1],{
 
-/***/ 173:
+/***/ 29:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(174);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Cart = __webpack_require__(30);
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+var _Order = __webpack_require__(32);
+
+var _Order2 = _interopRequireDefault(_Order);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Vue = wepos_get_lib('Vue');
+var Vuex = wepos_get_lib('Vuex');
+
+Vue.use(Vuex);
+
+exports.default = new Vuex.Store({
+    modules: {
+        Cart: _Cart2.default,
+        Order: _Order2.default
+    }
+});
+
+/***/ }),
+
+/***/ 30:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _helper = __webpack_require__(31);
+
+var _helper2 = _interopRequireDefault(_helper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    namespaced: true,
+    state: {
+        settings: {},
+        availableTax: {},
+        cartdata: {
+            line_items: [],
+            fee_lines: []
+        }
+    },
+    getters: {
+        getSubtotal: function getSubtotal(state) {
+            var subtotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                if (item.on_sale) {
+                    subtotal += item.quantity * item.sale_price;
+                } else {
+                    subtotal += item.quantity * item.regular_price;
+                }
+            });
+
+            return subtotal;
+        },
+        getTotalFee: function getTotalFee(state) {
+            var fee = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    fee += Math.abs(item.total);
+                }
+            });
+            return fee;
+        },
+        getTotalDiscount: function getTotalDiscount(state) {
+            var discount = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'discount') {
+                    discount += Number(Math.abs(item.total));
+                }
+            });
+
+            return discount;
+        },
+        getTotalLineTax: function getTotalLineTax(state) {
+            var self = this,
+                taxLineTotal = 0;
+
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            return taxLineTotal;
+        },
+        getTotalTax: function getTotalTax(state) {
+            var self = this,
+                taxLineTotal = 0,
+                taxFeeTotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
+                taxLineTotal = 0;
+            }
+
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    if (item.tax_status == 'taxable') {
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
+                        if (taxClass !== undefined) {
+                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        }
+                    }
+                }
+            });
+
+            return taxLineTotal + taxFeeTotal;
+        },
+        getOrderTotal: function getOrderTotal(state, getters) {
+            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
+        },
+        getTotal: function getTotal(state, getters) {
+            return getters.getOrderTotal - getters.getTotalDiscount;
+        }
+    },
+    mutations: {
+        setSettings: function setSettings(state, settings) {
+            state.settings = settings;
+        },
+        setAvailableTax: function setAvailableTax(state, availableTax) {
+            state.availableTax = availableTax;
+        },
+        setCartData: function setCartData(state, cartdata) {
+            if (weLo_.isEmpty(cartdata)) {
+                state.cartdata = {
+                    line_items: [],
+                    fee_lines: []
+                };
+            } else {
+                state.cartdata = Object.assign({}, cartdata);
+            }
+        },
+        addToCartItem: function addToCartItem(state, product) {
+            var cartObject = {};
+            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
+            cartObject.name = product.name;
+            cartObject.quantity = 1;
+            cartObject.regular_price = product.regular_display_price;
+            cartObject.sale_price = product.sales_display_price;
+            cartObject.on_sale = product.on_sale;
+            cartObject.attribute = product.attributes;
+            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
+            cartObject.editQuantity = false;
+            cartObject.type = product.type;
+            cartObject.tax_amount = product.tax_amount;
+            cartObject.manage_stock = product.manage_stock;
+            cartObject.stock_status = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity = product.stock_quantity;
+
+            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
+
+            if (index < 0) {
+                if (_helper2.default.hasStock(product)) {
+                    state.cartdata.line_items.push(cartObject);
+                }
+            } else {
+                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
+                    state.cartdata.line_items[index].quantity += 1;
+                }
+            }
+        },
+        removeCartItem: function removeCartItem(state, itemKey) {
+            state.cartdata.line_items.splice(itemKey, 1);
+        },
+        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (_helper2.default.hasStock(item, item.quantity)) {
+                state.cartdata.line_items[itemKey].quantity++;
+            }
+        },
+        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (item.quantity <= 1) {
+                state.cartdata.line_items[itemKey].quantity = 1;
+            } else {
+                state.cartdata.line_items[itemKey].quantity--;
+            }
+        },
+        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
+            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
+        },
+        addDiscount: function addDiscount(state, discountData) {
+            state.cartdata.fee_lines.push({
+                name: discountData.title,
+                type: 'discount',
+                value: discountData.value.toString(),
+                isEdit: false,
+                discount_type: discountData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        addFee: function addFee(state, feeData) {
+            state.cartdata.fee_lines.push({
+                name: feeData.title,
+                type: 'fee',
+                value: feeData.value.toString(),
+                isEdit: false,
+                fee_type: feeData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        saveFeeValue: function saveFeeValue(state, item) {
+            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
+            state.cartdata.fee_lines[item.key].isEdit = false;
+        },
+        editFeeValue: function editFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = true;
+        },
+        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = false;
+        },
+        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
+            state.cartdata.fee_lines.splice(itemKey, 1);
+        },
+        emptyCart: function emptyCart(state) {
+            state.cartdata = {
+                line_items: [],
+                fee_lines: []
+            };
+        },
+        calculateDiscount: function calculateDiscount(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == "discount") {
+                        if (item.discount_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
+                        } else {
+                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
+                        }
+                    }
+                });
+            }
+        },
+        calculateFee: function calculateFee(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == 'fee') {
+                        if (item.fee_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
+                        } else {
+                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
+                        }
+                    }
+                });
+            }
+        }
+    },
+    actions: {
+        setSettingsAction: function setSettingsAction(context, settings) {
+            context.commit('setSettings', settings);
+        },
+        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
+            context.commit('setAvailableTax', availableTax);
+        },
+        setCartDataAction: function setCartDataAction(context, cartdata) {
+            context.commit('setCartData', cartdata);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addToCartAction: function addToCartAction(context, product) {
+            context.commit('addToCartItem', product);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeCartItemAction: function removeCartItemAction(context, itemKey) {
+            context.commit('removeCartItem', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
+            context.commit('addCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
+            context.commit('removeCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
+            context.commit('toggleEditQuantity', itemKey);
+        },
+        addDiscountAction: function addDiscountAction(context, discountData) {
+            context.commit('addDiscount', discountData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addFeeAction: function addFeeAction(context, feeData) {
+            context.commit('addFee', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
+            context.commit('removeFeeLineItems', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
+            context.commit('saveFeeValue', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        editFeeValueAction: function editFeeValueAction(context, itemKey) {
+            context.commit('editFeeValue', itemKey);
+        },
+        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
+            context.commit('cancelSaveFeeValue', itemKey);
+        },
+        emptyCartAction: function emptyCartAction(context) {
+            context.commit('emptyCart');
+        },
+        calculateDiscount: function calculateDiscount(context) {
+            context.commit('calculateDiscount', context.getters);
+        },
+        calculateFee: function calculateFee(context) {
+            context.commit('calculateFee', context.getters);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 307:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _App = __webpack_require__(308);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(177);
+var _router = __webpack_require__(311);
 
 var _router2 = _interopRequireDefault(_router);
 
-var _store = __webpack_require__(28);
+var _store = __webpack_require__(29);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _adminMenuFix = __webpack_require__(208);
+var _adminMenuFix = __webpack_require__(342);
 
 var _adminMenuFix2 = _interopRequireDefault(_adminMenuFix);
 
@@ -46,20 +393,20 @@ new Vue({
 
 /***/ }),
 
-/***/ 174:
+/***/ 308:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(75);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(176);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(310);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(175)
+  __webpack_require__(309)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -104,14 +451,41 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 175:
+/***/ 309:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 176:
+/***/ 31:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    hasStock: function hasStock(product) {
+        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        if (!product.manage_stock) {
+            return 'outofstock' == product.stock_status ? false : true;
+        } else {
+            if (product.backorders_allowed) {
+                return true;
+            } else {
+                return product.stock_quantity > productCartQty;
+            }
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 310:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -134,7 +508,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 177:
+/***/ 311:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -144,7 +518,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Settings = __webpack_require__(178);
+var _Settings = __webpack_require__(312);
 
 var _Settings2 = _interopRequireDefault(_Settings);
 
@@ -165,20 +539,20 @@ exports.default = new Router({
 
 /***/ }),
 
-/***/ 178:
+/***/ 312:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(76);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(207);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(341);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(179)
+  __webpack_require__(313)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -223,26 +597,26 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 179:
+/***/ 313:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 180:
+/***/ 314:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(77);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(340);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(181)
+  __webpack_require__(315)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -287,26 +661,26 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 181:
+/***/ 315:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 182:
+/***/ 316:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(78);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(205);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(339);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(183)
+  __webpack_require__(317)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -351,14 +725,107 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 183:
+/***/ 317:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 205:
+/***/ 32:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    namespaced: true,
+    state: {
+        orderdata: {
+            billing: {},
+            shipping: {},
+            customer_id: 0,
+            customer_note: '',
+            payment_method: '',
+            payment_method_title: ''
+        }
+    },
+    getters: {},
+    mutations: {
+        setOrderData: function setOrderData(state, orderdata) {
+            if (weLo_.isEmpty(orderdata)) {
+                state.orderdata = {
+                    billing: {},
+                    shipping: {},
+                    customer_id: 0,
+                    customer_note: '',
+                    payment_method: '',
+                    payment_method_title: ''
+                };
+            } else {
+                state.orderdata = orderdata;
+            }
+        },
+        setCustomer: function setCustomer(state, customer) {
+            if (Object.keys(customer).length > 0) {
+                state.orderdata.billing = customer.billing;
+                state.orderdata.shipping = customer.shipping;
+                state.orderdata.customer_id = customer.id;
+            } else {
+                state.orderdata.billing = {};
+                state.orderdata.shipping = {};
+                state.orderdata.customer_id = 0;
+            }
+        },
+        emptyOrderdata: function emptyOrderdata(state) {
+            state.orderdata = {
+                billing: {},
+                shipping: {},
+                customer_id: 0,
+                customer_note: '',
+                payment_method: '',
+                payment_method_title: ''
+            };
+        },
+        setCustomerNote: function setCustomerNote(state, note) {
+            state.orderdata.customer_note = note.trim();
+        },
+        removeCustomerNote: function removeCustomerNote(state) {
+            state.orderdata.customer_note = '';
+        },
+        setGateway: function setGateway(state, gateway) {
+            state.orderdata.payment_method = gateway.id;
+            state.orderdata.payment_method_title = gateway.title;
+        }
+    },
+    actions: {
+        setOrderDataAction: function setOrderDataAction(context, orderdata) {
+            context.commit('setOrderData', orderdata);
+        },
+        setCustomerAction: function setCustomerAction(context, customer) {
+            context.commit('setCustomer', customer);
+        },
+        emptyOrderdataAction: function emptyOrderdataAction(context) {
+            context.commit('emptyOrderdata');
+        },
+        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
+            context.commit('setCustomerNote', note);
+        },
+        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
+            context.commit('removeCustomerNote');
+        },
+        setGatewayAction: function setGatewayAction(context, gateway) {
+            context.commit('setGateway', gateway);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 339:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -450,7 +917,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 206:
+/***/ 340:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1418,7 +1885,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 207:
+/***/ 341:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1608,7 +2075,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 208:
+/***/ 342:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1654,474 +2121,7 @@ exports.default = menuFix;
 
 /***/ }),
 
-/***/ 28:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _Cart = __webpack_require__(29);
-
-var _Cart2 = _interopRequireDefault(_Cart);
-
-var _Order = __webpack_require__(31);
-
-var _Order2 = _interopRequireDefault(_Order);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Vue = wepos_get_lib('Vue');
-var Vuex = wepos_get_lib('Vuex');
-
-Vue.use(Vuex);
-
-exports.default = new Vuex.Store({
-    modules: {
-        Cart: _Cart2.default,
-        Order: _Order2.default
-    }
-});
-
-/***/ }),
-
-/***/ 29:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _helper = __webpack_require__(30);
-
-var _helper2 = _interopRequireDefault(_helper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    namespaced: true,
-    state: {
-        settings: {},
-        availableTax: {},
-        cartdata: {
-            line_items: [],
-            fee_lines: []
-        }
-    },
-    getters: {
-        getSubtotal: function getSubtotal(state) {
-            var subtotal = 0;
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                if (item.on_sale) {
-                    subtotal += item.quantity * item.sale_price;
-                } else {
-                    subtotal += item.quantity * item.regular_price;
-                }
-            });
-
-            return subtotal;
-        },
-        getTotalFee: function getTotalFee(state) {
-            var fee = 0;
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    fee += Math.abs(item.total);
-                }
-            });
-            return fee;
-        },
-        getTotalDiscount: function getTotalDiscount(state) {
-            var discount = 0;
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'discount') {
-                    discount += Number(Math.abs(item.total));
-                }
-            });
-
-            return discount;
-        },
-        getTotalLineTax: function getTotalLineTax(state) {
-            var self = this,
-                taxLineTotal = 0;
-
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
-            });
-
-            return taxLineTotal;
-        },
-        getTotalTax: function getTotalTax(state) {
-            var self = this,
-                taxLineTotal = 0,
-                taxFeeTotal = 0;
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
-            });
-
-            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
-                taxLineTotal = 0;
-            }
-
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    if (item.tax_status == 'taxable') {
-                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
-                        if (taxClass !== undefined) {
-                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
-                        }
-                    }
-                }
-            });
-
-            return taxLineTotal + taxFeeTotal;
-        },
-        getOrderTotal: function getOrderTotal(state, getters) {
-            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
-        },
-        getTotal: function getTotal(state, getters) {
-            return getters.getOrderTotal - getters.getTotalDiscount;
-        }
-    },
-    mutations: {
-        setSettings: function setSettings(state, settings) {
-            state.settings = settings;
-        },
-        setAvailableTax: function setAvailableTax(state, availableTax) {
-            state.availableTax = availableTax;
-        },
-        setCartData: function setCartData(state, cartdata) {
-            if (weLo_.isEmpty(cartdata)) {
-                state.cartdata = {
-                    line_items: [],
-                    fee_lines: []
-                };
-            } else {
-                state.cartdata = Object.assign({}, cartdata);
-            }
-        },
-        addToCartItem: function addToCartItem(state, product) {
-            var cartObject = {};
-            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
-            cartObject.name = product.name;
-            cartObject.quantity = 1;
-            cartObject.regular_price = product.regular_display_price;
-            cartObject.sale_price = product.sales_display_price;
-            cartObject.on_sale = product.on_sale;
-            cartObject.attribute = product.attributes;
-            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
-            cartObject.editQuantity = false;
-            cartObject.type = product.type;
-            cartObject.tax_amount = product.tax_amount;
-            cartObject.manage_stock = product.manage_stock;
-            cartObject.stock_status = product.stock_status;
-            cartObject.backorders_allowed = product.backorders_allowed;
-            cartObject.stock_quantity = product.stock_quantity;
-
-            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
-
-            if (index < 0) {
-                if (_helper2.default.hasStock(product)) {
-                    state.cartdata.line_items.push(cartObject);
-                }
-            } else {
-                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
-                    state.cartdata.line_items[index].quantity += 1;
-                }
-            }
-        },
-        removeCartItem: function removeCartItem(state, itemKey) {
-            state.cartdata.line_items.splice(itemKey, 1);
-        },
-        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
-            var item = state.cartdata.line_items[itemKey];
-            if (_helper2.default.hasStock(item, item.quantity)) {
-                state.cartdata.line_items[itemKey].quantity++;
-            }
-        },
-        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
-            var item = state.cartdata.line_items[itemKey];
-            if (item.quantity <= 1) {
-                state.cartdata.line_items[itemKey].quantity = 1;
-            } else {
-                state.cartdata.line_items[itemKey].quantity--;
-            }
-        },
-        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
-            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
-        },
-        addDiscount: function addDiscount(state, discountData) {
-            state.cartdata.fee_lines.push({
-                name: discountData.title,
-                type: 'discount',
-                value: discountData.value.toString(),
-                isEdit: false,
-                discount_type: discountData.type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-        },
-        addFee: function addFee(state, feeData) {
-            state.cartdata.fee_lines.push({
-                name: feeData.title,
-                type: 'fee',
-                value: feeData.value.toString(),
-                isEdit: false,
-                fee_type: feeData.type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-        },
-        saveFeeValue: function saveFeeValue(state, item) {
-            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
-            state.cartdata.fee_lines[item.key].isEdit = false;
-        },
-        editFeeValue: function editFeeValue(state, itemKey) {
-            state.cartdata.fee_lines[itemKey].isEdit = true;
-        },
-        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
-            state.cartdata.fee_lines[itemKey].isEdit = false;
-        },
-        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
-            state.cartdata.fee_lines.splice(itemKey, 1);
-        },
-        emptyCart: function emptyCart(state) {
-            state.cartdata = {
-                line_items: [],
-                fee_lines: []
-            };
-        },
-        calculateDiscount: function calculateDiscount(state, payload) {
-            if (state.cartdata.fee_lines.length > 0) {
-                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                    if (item.type == "discount") {
-                        if (item.discount_type == 'percent') {
-                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
-                        } else {
-                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
-                        }
-                    }
-                });
-            }
-        },
-        calculateFee: function calculateFee(state, payload) {
-            if (state.cartdata.fee_lines.length > 0) {
-                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                    if (item.type == 'fee') {
-                        if (item.fee_type == 'percent') {
-                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
-                        } else {
-                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
-                        }
-                    }
-                });
-            }
-        }
-    },
-    actions: {
-        setSettingsAction: function setSettingsAction(context, settings) {
-            context.commit('setSettings', settings);
-        },
-        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
-            context.commit('setAvailableTax', availableTax);
-        },
-        setCartDataAction: function setCartDataAction(context, cartdata) {
-            context.commit('setCartData', cartdata);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addToCartAction: function addToCartAction(context, product) {
-            context.commit('addToCartItem', product);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeCartItemAction: function removeCartItemAction(context, itemKey) {
-            context.commit('removeCartItem', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
-            context.commit('addCartItemQuantity', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
-            context.commit('removeCartItemQuantity', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
-            context.commit('toggleEditQuantity', itemKey);
-        },
-        addDiscountAction: function addDiscountAction(context, discountData) {
-            context.commit('addDiscount', discountData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addFeeAction: function addFeeAction(context, feeData) {
-            context.commit('addFee', feeData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
-            context.commit('removeFeeLineItems', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
-            context.commit('saveFeeValue', feeData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        editFeeValueAction: function editFeeValueAction(context, itemKey) {
-            context.commit('editFeeValue', itemKey);
-        },
-        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
-            context.commit('cancelSaveFeeValue', itemKey);
-        },
-        emptyCartAction: function emptyCartAction(context) {
-            context.commit('emptyCart');
-        },
-        calculateDiscount: function calculateDiscount(context) {
-            context.commit('calculateDiscount', context.getters);
-        },
-        calculateFee: function calculateFee(context) {
-            context.commit('calculateFee', context.getters);
-        }
-    }
-};
-
-/***/ }),
-
-/***/ 30:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    hasStock: function hasStock(product) {
-        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-        if (!product.manage_stock) {
-            return 'outofstock' == product.stock_status ? false : true;
-        } else {
-            if (product.backorders_allowed) {
-                return true;
-            } else {
-                return product.stock_quantity > productCartQty;
-            }
-        }
-    }
-};
-
-/***/ }),
-
-/***/ 31:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    namespaced: true,
-    state: {
-        orderdata: {
-            billing: {},
-            shipping: {},
-            customer_id: 0,
-            customer_note: '',
-            payment_method: '',
-            payment_method_title: ''
-        }
-    },
-    getters: {},
-    mutations: {
-        setOrderData: function setOrderData(state, orderdata) {
-            if (weLo_.isEmpty(orderdata)) {
-                state.orderdata = {
-                    billing: {},
-                    shipping: {},
-                    customer_id: 0,
-                    customer_note: '',
-                    payment_method: '',
-                    payment_method_title: ''
-                };
-            } else {
-                state.orderdata = orderdata;
-            }
-        },
-        setCustomer: function setCustomer(state, customer) {
-            if (Object.keys(customer).length > 0) {
-                state.orderdata.billing = customer.billing;
-                state.orderdata.shipping = customer.shipping;
-                state.orderdata.customer_id = customer.id;
-            } else {
-                state.orderdata.billing = {};
-                state.orderdata.shipping = {};
-                state.orderdata.customer_id = 0;
-            }
-        },
-        emptyOrderdata: function emptyOrderdata(state) {
-            state.orderdata = {
-                billing: {},
-                shipping: {},
-                customer_id: 0,
-                customer_note: '',
-                payment_method: '',
-                payment_method_title: ''
-            };
-        },
-        setCustomerNote: function setCustomerNote(state, note) {
-            state.orderdata.customer_note = note.trim();
-        },
-        removeCustomerNote: function removeCustomerNote(state) {
-            state.orderdata.customer_note = '';
-        },
-        setGateway: function setGateway(state, gateway) {
-            state.orderdata.payment_method = gateway.id;
-            state.orderdata.payment_method_title = gateway.title;
-        }
-    },
-    actions: {
-        setOrderDataAction: function setOrderDataAction(context, orderdata) {
-            context.commit('setOrderData', orderdata);
-        },
-        setCustomerAction: function setCustomerAction(context, customer) {
-            context.commit('setCustomer', customer);
-        },
-        emptyOrderdataAction: function emptyOrderdataAction(context) {
-            context.commit('emptyOrderdata');
-        },
-        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
-            context.commit('setCustomerNote', note);
-        },
-        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
-            context.commit('removeCustomerNote');
-        },
-        setGatewayAction: function setGatewayAction(context, gateway) {
-            context.commit('setGateway', gateway);
-        }
-    }
-};
-
-/***/ }),
-
-/***/ 74:
+/***/ 75:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2138,11 +2138,11 @@ exports.default = {
 
 /***/ }),
 
-/***/ 75:
+/***/ 76:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(180);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(314);
 //
 //
 //
@@ -2334,11 +2334,11 @@ exports.default = {
 
 /***/ }),
 
-/***/ 76:
+/***/ 77:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(182);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(316);
 //
 //
 //
@@ -2568,11 +2568,11 @@ let TextEditor = wepos_get_lib('TextEditor');
 
 /***/ }),
 
-/***/ 77:
+/***/ 78:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(184);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(318);
 //
 //
 //
@@ -2693,4 +2693,4 @@ let TextEditor = wepos_get_lib('TextEditor');
 
 /***/ })
 
-},[173]);
+},[307]);

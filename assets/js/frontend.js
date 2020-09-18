@@ -1,3061 +1,20 @@
-pluginWebpack([0],Array(28).concat([
-/* 28 */
+pluginWebpack([0],{
+
+/***/ 273:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _Cart = __webpack_require__(29);
-
-var _Cart2 = _interopRequireDefault(_Cart);
-
-var _Order = __webpack_require__(31);
-
-var _Order2 = _interopRequireDefault(_Order);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Vue = wepos_get_lib('Vue');
-var Vuex = wepos_get_lib('Vuex');
-
-Vue.use(Vuex);
-
-exports.default = new Vuex.Store({
-    modules: {
-        Cart: _Cart2.default,
-        Order: _Order2.default
-    }
-});
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _helper = __webpack_require__(30);
-
-var _helper2 = _interopRequireDefault(_helper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    namespaced: true,
-    state: {
-        settings: {},
-        availableTax: {},
-        cartdata: {
-            line_items: [],
-            fee_lines: []
-        }
-    },
-    getters: {
-        getSubtotal: function getSubtotal(state) {
-            var subtotal = 0;
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                if (item.on_sale) {
-                    subtotal += item.quantity * item.sale_price;
-                } else {
-                    subtotal += item.quantity * item.regular_price;
-                }
-            });
-
-            return subtotal;
-        },
-        getTotalFee: function getTotalFee(state) {
-            var fee = 0;
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    fee += Math.abs(item.total);
-                }
-            });
-            return fee;
-        },
-        getTotalDiscount: function getTotalDiscount(state) {
-            var discount = 0;
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'discount') {
-                    discount += Number(Math.abs(item.total));
-                }
-            });
-
-            return discount;
-        },
-        getTotalLineTax: function getTotalLineTax(state) {
-            var self = this,
-                taxLineTotal = 0;
-
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
-            });
-
-            return taxLineTotal;
-        },
-        getTotalTax: function getTotalTax(state) {
-            var self = this,
-                taxLineTotal = 0,
-                taxFeeTotal = 0;
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
-            });
-
-            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
-                taxLineTotal = 0;
-            }
-
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    if (item.tax_status == 'taxable') {
-                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
-                        if (taxClass !== undefined) {
-                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
-                        }
-                    }
-                }
-            });
-
-            return taxLineTotal + taxFeeTotal;
-        },
-        getOrderTotal: function getOrderTotal(state, getters) {
-            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
-        },
-        getTotal: function getTotal(state, getters) {
-            return getters.getOrderTotal - getters.getTotalDiscount;
-        }
-    },
-    mutations: {
-        setSettings: function setSettings(state, settings) {
-            state.settings = settings;
-        },
-        setAvailableTax: function setAvailableTax(state, availableTax) {
-            state.availableTax = availableTax;
-        },
-        setCartData: function setCartData(state, cartdata) {
-            if (weLo_.isEmpty(cartdata)) {
-                state.cartdata = {
-                    line_items: [],
-                    fee_lines: []
-                };
-            } else {
-                state.cartdata = Object.assign({}, cartdata);
-            }
-        },
-        addToCartItem: function addToCartItem(state, product) {
-            var cartObject = {};
-            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
-            cartObject.name = product.name;
-            cartObject.quantity = 1;
-            cartObject.regular_price = product.regular_display_price;
-            cartObject.sale_price = product.sales_display_price;
-            cartObject.on_sale = product.on_sale;
-            cartObject.attribute = product.attributes;
-            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
-            cartObject.editQuantity = false;
-            cartObject.type = product.type;
-            cartObject.tax_amount = product.tax_amount;
-            cartObject.manage_stock = product.manage_stock;
-            cartObject.stock_status = product.stock_status;
-            cartObject.backorders_allowed = product.backorders_allowed;
-            cartObject.stock_quantity = product.stock_quantity;
-
-            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
-
-            if (index < 0) {
-                if (_helper2.default.hasStock(product)) {
-                    state.cartdata.line_items.push(cartObject);
-                }
-            } else {
-                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
-                    state.cartdata.line_items[index].quantity += 1;
-                }
-            }
-        },
-        removeCartItem: function removeCartItem(state, itemKey) {
-            state.cartdata.line_items.splice(itemKey, 1);
-        },
-        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
-            var item = state.cartdata.line_items[itemKey];
-            if (_helper2.default.hasStock(item, item.quantity)) {
-                state.cartdata.line_items[itemKey].quantity++;
-            }
-        },
-        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
-            var item = state.cartdata.line_items[itemKey];
-            if (item.quantity <= 1) {
-                state.cartdata.line_items[itemKey].quantity = 1;
-            } else {
-                state.cartdata.line_items[itemKey].quantity--;
-            }
-        },
-        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
-            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
-        },
-        addDiscount: function addDiscount(state, discountData) {
-            state.cartdata.fee_lines.push({
-                name: discountData.title,
-                type: 'discount',
-                value: discountData.value.toString(),
-                isEdit: false,
-                discount_type: discountData.type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-        },
-        addFee: function addFee(state, feeData) {
-            state.cartdata.fee_lines.push({
-                name: feeData.title,
-                type: 'fee',
-                value: feeData.value.toString(),
-                isEdit: false,
-                fee_type: feeData.type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-        },
-        saveFeeValue: function saveFeeValue(state, item) {
-            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
-            state.cartdata.fee_lines[item.key].isEdit = false;
-        },
-        editFeeValue: function editFeeValue(state, itemKey) {
-            state.cartdata.fee_lines[itemKey].isEdit = true;
-        },
-        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
-            state.cartdata.fee_lines[itemKey].isEdit = false;
-        },
-        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
-            state.cartdata.fee_lines.splice(itemKey, 1);
-        },
-        emptyCart: function emptyCart(state) {
-            state.cartdata = {
-                line_items: [],
-                fee_lines: []
-            };
-        },
-        calculateDiscount: function calculateDiscount(state, payload) {
-            if (state.cartdata.fee_lines.length > 0) {
-                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                    if (item.type == "discount") {
-                        if (item.discount_type == 'percent') {
-                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
-                        } else {
-                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
-                        }
-                    }
-                });
-            }
-        },
-        calculateFee: function calculateFee(state, payload) {
-            if (state.cartdata.fee_lines.length > 0) {
-                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                    if (item.type == 'fee') {
-                        if (item.fee_type == 'percent') {
-                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
-                        } else {
-                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
-                        }
-                    }
-                });
-            }
-        }
-    },
-    actions: {
-        setSettingsAction: function setSettingsAction(context, settings) {
-            context.commit('setSettings', settings);
-        },
-        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
-            context.commit('setAvailableTax', availableTax);
-        },
-        setCartDataAction: function setCartDataAction(context, cartdata) {
-            context.commit('setCartData', cartdata);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addToCartAction: function addToCartAction(context, product) {
-            context.commit('addToCartItem', product);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeCartItemAction: function removeCartItemAction(context, itemKey) {
-            context.commit('removeCartItem', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
-            context.commit('addCartItemQuantity', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
-            context.commit('removeCartItemQuantity', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
-            context.commit('toggleEditQuantity', itemKey);
-        },
-        addDiscountAction: function addDiscountAction(context, discountData) {
-            context.commit('addDiscount', discountData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addFeeAction: function addFeeAction(context, feeData) {
-            context.commit('addFee', feeData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
-            context.commit('removeFeeLineItems', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
-            context.commit('saveFeeValue', feeData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        editFeeValueAction: function editFeeValueAction(context, itemKey) {
-            context.commit('editFeeValue', itemKey);
-        },
-        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
-            context.commit('cancelSaveFeeValue', itemKey);
-        },
-        emptyCartAction: function emptyCartAction(context) {
-            context.commit('emptyCart');
-        },
-        calculateDiscount: function calculateDiscount(context) {
-            context.commit('calculateDiscount', context.getters);
-        },
-        calculateFee: function calculateFee(context) {
-            context.commit('calculateFee', context.getters);
-        }
-    }
-};
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    hasStock: function hasStock(product) {
-        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-        if (!product.manage_stock) {
-            return 'outofstock' == product.stock_status ? false : true;
-        } else {
-            if (product.backorders_allowed) {
-                return true;
-            } else {
-                return product.stock_quantity > productCartQty;
-            }
-        }
-    }
-};
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    namespaced: true,
-    state: {
-        orderdata: {
-            billing: {},
-            shipping: {},
-            customer_id: 0,
-            customer_note: '',
-            payment_method: '',
-            payment_method_title: ''
-        }
-    },
-    getters: {},
-    mutations: {
-        setOrderData: function setOrderData(state, orderdata) {
-            if (weLo_.isEmpty(orderdata)) {
-                state.orderdata = {
-                    billing: {},
-                    shipping: {},
-                    customer_id: 0,
-                    customer_note: '',
-                    payment_method: '',
-                    payment_method_title: ''
-                };
-            } else {
-                state.orderdata = orderdata;
-            }
-        },
-        setCustomer: function setCustomer(state, customer) {
-            if (Object.keys(customer).length > 0) {
-                state.orderdata.billing = customer.billing;
-                state.orderdata.shipping = customer.shipping;
-                state.orderdata.customer_id = customer.id;
-            } else {
-                state.orderdata.billing = {};
-                state.orderdata.shipping = {};
-                state.orderdata.customer_id = 0;
-            }
-        },
-        emptyOrderdata: function emptyOrderdata(state) {
-            state.orderdata = {
-                billing: {},
-                shipping: {},
-                customer_id: 0,
-                customer_note: '',
-                payment_method: '',
-                payment_method_title: ''
-            };
-        },
-        setCustomerNote: function setCustomerNote(state, note) {
-            state.orderdata.customer_note = note.trim();
-        },
-        removeCustomerNote: function removeCustomerNote(state) {
-            state.orderdata.customer_note = '';
-        },
-        setGateway: function setGateway(state, gateway) {
-            state.orderdata.payment_method = gateway.id;
-            state.orderdata.payment_method_title = gateway.title;
-        }
-    },
-    actions: {
-        setOrderDataAction: function setOrderDataAction(context, orderdata) {
-            context.commit('setOrderData', orderdata);
-        },
-        setCustomerAction: function setCustomerAction(context, customer) {
-            context.commit('setCustomer', customer);
-        },
-        emptyOrderdataAction: function emptyOrderdataAction(context) {
-            context.commit('emptyOrderdata');
-        },
-        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
-            context.commit('setCustomerNote', note);
-        },
-        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
-            context.commit('removeCustomerNote');
-        },
-        setGatewayAction: function setGatewayAction(context, gateway) {
-            context.commit('setGateway', gateway);
-        }
-    }
-};
-
-/***/ }),
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'App'
-});
-
-/***/ }),
-/* 62 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(147);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(150);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(153);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(156);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(163);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(166);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(169);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-let Modal = wepos_get_lib('Modal');
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-    name: 'Home',
-
-    components: {
-        ProductSearch: __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__["a" /* default */],
-        CustomerSearch: __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__["a" /* default */],
-        Overlay: __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__["a" /* default */],
-        Modal,
-        MugenScroll: __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll___default.a,
-        FeeKeypad: __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__["a" /* default */],
-        PrintReceipt: __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__["a" /* default */],
-        PrintReceiptHtml: __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__["a" /* default */],
-        CustomerNote: __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__["a" /* default */]
-    },
-
-    data() {
-        return {
-            showHelp: false,
-            showQucikMenu: false,
-            productView: 'grid',
-            productLoading: false,
-            viewVariationPopover: false,
-            showModal: false,
-            showPaymentReceipt: false,
-            products: [],
-            filteredProducts: [],
-            totalPages: 1,
-            page: 1,
-            showOverlay: false,
-            selectedVariationProduct: {},
-            attributeDisabled: true,
-            selectedAttribute: {},
-            availableGateways: [],
-            emptyGatewayDiv: 0,
-            cashAmount: '',
-            availableTax: [],
-            settings: {},
-            taxSettings: {},
-            printdata: wepos.hooks.applyFilters('wepos_initial_print_data', {
-                gateway: {
-                    id: '',
-                    title: ''
-                }
-            }),
-            feeData: {},
-            createprintreceipt: false,
-            selectedCategory: '',
-            selectedGateway: '',
-            categories: [],
-            showReceiptHtml: wepos.hooks.applyFilters('wepos_render_receipt_html', true),
-            quickLinkList: wepos.hooks.applyFilters('wepos_quick_links', []),
-            quickLinkListStart: wepos.hooks.applyFilters('wepos_quick_links_start', []),
-            availableGatewayContent: wepos.hooks.applyFilters('wepos_avaialable_gateway_content', []),
-            afterMainContents: wepos.hooks.applyFilters('wepos_after_main_content', []),
-            beforCartPanels: wepos.hooks.applyFilters('wepos_before_cart_panel', [])
-        };
-    },
-    computed: {
-        cartdata() {
-            return this.$store.state.Cart.cartdata;
-        },
-        orderdata() {
-            return this.$store.state.Order.orderdata;
-        },
-        hotkeys() {
-            return {
-                'f3': this.toggleProductView,
-                'f9': this.initPayment,
-                'f10': this.processPayment,
-                'f8': this.createNewSale,
-                'shift+f8': this.emptyCart,
-                'esc': this.backToSale,
-                'meta+/': this.openHelp,
-                'ctrl+/': this.openHelp
-            };
-        },
-        getFilteredProduct() {
-            if (this.$route.query.category !== undefined) {
-                return this.products.filter(product => {
-                    var foundCat = weLo_.find(product.categories, { id: parseInt(this.$route.query.category) });
-                    return foundCat != undefined && Object.keys(foundCat).length > 0;
-                });
-            } else {
-                return this.products;
-            }
-        },
-        changeAmount() {
-            var returnMoney = this.cashAmount - this.$store.getters['Cart/getTotal'];
-            return returnMoney > 0 ? returnMoney : 0;
-        },
-        getBreadCrums() {
-            if (this.$route.query.category !== undefined) {
-                var categories = jQuery.extend(true, [], this.categories),
-                    selectedCat = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) }),
-                    selectedCatIndex = weLo_.findIndex(this.categories, selectedCat);
-
-                var categoriesLoop = categories.splice(0, selectedCatIndex + 1);
-                var choosenCat = [];
-                if (categoriesLoop.length > 0) {
-                    for (var i = categoriesLoop.length - 1; i >= 0; i--) {
-                        if (choosenCat.length > 0) {
-                            var foundCat = weLo_.find(categoriesLoop, { id: categoriesLoop[i + 1].parent_id });
-                            if (foundCat != undefined) {
-                                choosenCat.push(foundCat);
-                                if (foundCat.parent_id == null) {
-                                    break;
-                                }
-                            }
-                        } else {
-                            choosenCat.push(categoriesLoop[i]);
-                        }
-                    }
-
-                    return choosenCat.slice().reverse();
-                }
-            }
-            return [];
-        }
-    },
-
-    watch: {
-        selectedAttribute(newdata, olddata) {
-            if (Object.keys(newdata).length == this.selectedVariationProduct.attributes.length) {
-                this.attributeDisabled = false;
-            }
-        },
-        '$route.query.order_key'() {
-            if (this.$route.query.order_key != '' && this.$route.query.payment == 'success') {
-                this.showModal = false;
-                this.showPaymentReceipt = true;
-            };
-        },
-        '$route.query.category'() {
-            this.selectedCategory = {
-                id: -1,
-                level: 0,
-                name: this.__('All categories', 'wepos'),
-                parent_id: null
-            };
-            if (this.$route.query.category !== undefined) {
-                this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
-            }
-        },
-        'selectedGateway'(newdata, olddata) {
-            var gateway = weLo_.find(this.availableGateways, { 'id': newdata });
-            this.$store.dispatch('Order/setGatewayAction', gateway);
-        }
-    },
-
-    methods: {
-        openQucikMenu() {
-            this.showQucikMenu = true;
-        },
-        openHelp(e) {
-            e.preventDefault();
-            this.showHelp = true;
-            this.showQucikMenu = false;
-        },
-        closeHelp() {
-            this.showHelp = false;
-        },
-        addCustomerNote(note) {
-            this.$store.dispatch('Order/setCustomerNoteAction', note);
-        },
-        removeCustomerNote() {
-            this.$store.dispatch('Order/removeCustomerNoteAction');
-        },
-        removeBreadcrums() {
-            this.$router.push({ name: 'Home' });
-        },
-        logout() {
-            wepos.hooks.doAction('wepos_before_logout');
-            window.location.href = wepos.logout_url.toString();
-        },
-        emptyCart() {
-            this.$store.dispatch('Cart/emptyCartAction');
-            this.$store.dispatch('Order/emptyOrderdataAction');
-
-            this.printdata = wepos.hooks.applyFilters('wepos_initial_print_data', {
-                gateway: {
-                    id: '',
-                    title: ''
-                }
-            });
-
-            this.showPaymentReceipt = false;
-            this.cashAmount = '';
-            this.eventBus.$emit('emptycart', this.orderdata);
-            this.showQucikMenu = false;
-        },
-        toggleProductView(e) {
-            e.preventDefault();
-            this.productView = this.productView == 'grid' ? 'list' : 'grid';
-        },
-        createNewSale() {
-            this.$router.push({
-                name: 'Home'
-            });
-            this.emptyCart();
-        },
-        ableToProcess() {
-            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
-        },
-        processPayment(e) {
-            e.preventDefault();
-            if (!this.ableToProcess()) {
-                return;
-            }
-            var self = this,
-                gateway = weLo_.find(this.availableGateways, { 'id': this.orderdata.payment_method }),
-                orderdata = wepos.hooks.applyFilters('wepos_order_form_data', {
-                billing: this.orderdata.billing,
-                shipping: this.orderdata.shipping,
-                line_items: this.cartdata.line_items,
-                fee_lines: this.cartdata.fee_lines,
-                customer_id: this.orderdata.customer_id,
-                customer_note: this.orderdata.customer_note,
-                payment_method: this.orderdata.payment_method,
-                payment_method_title: this.orderdata.payment_method_title,
-                meta_data: [{
-                    key: '_wepos_is_pos_order',
-                    value: true
-                }, {
-                    key: '_wepos_cash_tendered_amount',
-                    value: self.cashAmount.toString()
-                }, {
-                    key: '_wepos_cash_change_amount',
-                    value: self.changeAmount.toString()
-                }]
-            }, this.orderdata, this.cartdata);
-
-            var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
-            $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-
-            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata).done(response => {
-                wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/payment/process', response).done(data => {
-                    if (data.result == 'success') {
-                        this.$router.push({
-                            name: 'Home',
-                            query: {
-                                order_key: response.order_key,
-                                payment: 'success'
-                            }
-                        });
-                        this.printdata = wepos.hooks.applyFilters('wepos_after_payment_print_data', {
-                            line_items: this.cartdata.line_items,
-                            fee_lines: this.cartdata.fee_lines,
-                            subtotal: this.$store.getters['Cart/getSubtotal'],
-                            taxtotal: this.$store.getters['Cart/getTotalTax'],
-                            ordertotal: this.$store.getters['Cart/getTotal'],
-                            gateway: {
-                                id: response.payment_method,
-                                title: response.payment_method_title
-                            },
-                            order_id: response.id,
-                            order_date: response.date_created,
-                            cashamount: this.cashAmount.toString(),
-                            changeamount: this.changeAmount.toString()
-                        }, orderdata);
-                    } else {
-                        $contentWrap.unblock();
-                    }
-                }).fail(data => {
-                    $contentWrap.unblock();
-                    alert(data.responseJSON.message);
-                });
-            }).fail(response => {
-                $contentWrap.unblock();
-                alert(response.responseJSON.message);
-            });
-        },
-
-        initPayment() {
-            this.showModal = true;
-            this.$store.dispatch('Order/setGatewayAction', this.availableGateways[0]);
-            this.selectedGateway = this.availableGateways[0].id;
-        },
-
-        backToSale() {
-            this.showModal = false;
-            this.showHelp = false;
-            // Remove gateway selections
-        },
-        isSelectGateway() {
-            return !(this.orderdata.payment_method == undefined || this.orderdata.payment_method == '');
-        },
-        getProductImage(product) {
-            return product.images.length > 0 ? product.images[0].woocommerce_thumbnail : wepos.placeholder_image;
-        },
-        getProductImageName(product) {
-            return product.images.length > 0 ? product.images[0].name : product.name;
-        },
-        setDiscount(value, type) {
-            this.$store.dispatch('Cart/addDiscountAction', { title: this.__('Discount', 'wepos'), value: value, type: type });
-        },
-        saveFee(key) {
-            this.$store.dispatch('Cart/saveFeeValueAction', { key: key, feeData: this.feeData });
-            this.feeData = {};
-        },
-        cancelEditFee(key) {
-            this.$store.dispatch('Cart/cancelSaveFeeValueAction', key);
-            this.feeData = {};
-        },
-        editFeeData(key) {
-            this.$store.dispatch('Cart/editFeeValueAction', key);
-            this.feeData = Object.assign({}, this.cartdata.fee_lines[key]);
-            this.$nextTick(() => {
-                jQuery(this.$refs.fee_name).focus();
-            });
-        },
-        setFee(value, type) {
-            this.$store.dispatch('Cart/addFeeAction', { title: this.__('Fee', 'wepos'), value: value, type: type });
-        },
-        removeFeeLine(key) {
-            this.$store.dispatch('Cart/removeFeeLineItemsAction', key);
-        },
-        fetchProducts() {
-            if (this.page == 1) {
-                this.productLoading = true;
-            }
-
-            if (this.totalPages >= this.page) {
-                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page).done((response, status, xhr) => {
-                    this.products = this.products.concat(response);
-                    this.page += 1;
-                    this.totalPages = parseInt(xhr.getResponseHeader('X-WP-TotalPages'));
-                    this.productLoading = false;
-                }).then((response, status, xhr) => {
-                    this.fetchProducts();
-                });
-            } else {
-                this.productLoading = false;
-            }
-        },
-
-        maybeRemoveDeletedProduct(cartData) {
-            return new Promise((resolve, reject) => {
-                if (!cartData) {
-                    return resolve(cartData);
-                }
-
-                if (!cartData.line_items || cartData.line_items.length < 1) {
-                    return resolve(cartData);
-                }
-
-                let productIds = cartData.line_items.map(lineItem => {
-                    return lineItem.product_id;
-                });
-
-                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/products?include=' + productIds.toString()).then(response => {
-                    let foundProducts = response.map(product => {
-                        return product.id;
-                    });
-
-                    cartData.line_items.forEach((product, key) => {
-                        if (!foundProducts.includes(product.product_id)) {
-                            cartData.line_items.splice(key, 1);
-                            localStorage.setItem('cartdata', JSON.stringify(cartData));
-                        }
-                    });
-
-                    return resolve(cartData);
-                }).fail(() => {
-                    return reject(cartData);
-                });
-            });
-        },
-
-        selectCustomer(customer) {
-            this.$store.dispatch('Order/setCustomerAction', customer);
-        },
-        selectVariationProduct(product) {
-            this.viewVariationPopover = true;
-            this.selectedVariationProduct = product;
-        },
-        addVariationProduct() {
-            var chosenVariationProduct = this.findMatchingVariations(this.selectedVariationProduct.variations, this.selectedAttribute);
-            var variationProduct = chosenVariationProduct[0];
-            variationProduct.parent_id = this.selectedVariationProduct.id;
-            variationProduct.type = this.selectedVariationProduct.type;
-            variationProduct.name = this.selectedVariationProduct.name;
-            variationProduct.type = this.selectedVariationProduct.type;
-            this.selectedAttribute = {};
-            this.attributeDisabled = true;
-            this.$store.dispatch('Cart/addToCartAction', variationProduct);
-        },
-        addToCart(product) {
-            this.$store.dispatch('Cart/addToCartAction', product);
-        },
-        toggleEditQuantity(product, key) {
-            this.$store.dispatch('Cart/toggleEditQuantityAction', key);
-        },
-        removeItem(key) {
-            this.$store.dispatch('Cart/removeCartItemAction', key);
-        },
-        addQuantity(item, key) {
-            this.$store.dispatch('Cart/addItemQuantityAction', key);
-        },
-        removeQuantity(item, key) {
-            this.$store.dispatch('Cart/removeItemQuantityAction', key);
-        },
-        fetchGateway() {
-            wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/payment/gateways').done(response => {
-                this.availableGateways = response;
-                this.emptyGatewayDiv = 4 - this.availableGateways.length % 4;
-            });
-        },
-        truncateTitle(text, length) {
-            return weLo_.truncate(text, { 'length': length });
-        },
-        unSanitizeString(str) {
-            return str.split('-').map(function capitalize(part) {
-                return part.charAt(0).toUpperCase() + part.slice(1);
-            }).join(' ');
-        },
-        fetchSettings() {
-            wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/settings').done(response => {
-                this.settings = response;
-                this.$store.dispatch('Cart/setSettingsAction', response);
-            });
-        },
-        fetchTaxes() {
-            wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/taxes').done(response => {
-                this.availableTax = response;
-                this.$store.dispatch('Cart/setAvailableTaxAction', response);
-            });
-        },
-        handleCategorySelect(selectedOption, id) {
-            if (selectedOption.id == '-1') {
-                this.$router.push({ name: 'Home' });
-            } else {
-                this.$router.push({ name: 'Home', query: { 'category': selectedOption.id } });
-            }
-        },
-        handleCategoryRemove(selectedOption, id) {
-            this.$router.push({ name: 'Home' });
-            this.selectedCategory = {
-                id: -1,
-                level: 0,
-                name: this.__('All categories', 'wepos'),
-                parent_id: null
-            };
-        },
-        fetchCategories() {
-            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id&per_page=100').then(response => {
-                response.sort(function (a, b) {
-                    return a.name.localeCompare(b.name);
-                });
-                var tree = function (response, root) {
-                    var r = [],
-                        o = {};
-                    response.forEach(function (a) {
-                        o[a.id] = { response: a, children: o[a.id] && o[a.id].children };
-                        if (a.parent_id === root) {
-                            r.push(o[a.id]);
-                        } else {
-                            o[a.parent_id] = o[a.parent_id] || {};
-                            o[a.parent_id].children = o[a.parent_id].children || [];
-                            o[a.parent_id].children.push(o[a.id]);
-                        }
-                    });
-                    return r;
-                }(response, null);
-
-                var selectedCat = {
-                    id: -1,
-                    level: 0,
-                    name: this.__('All categories', 'wepos'),
-                    parent_id: null
-                };
-                var sorted = tree.reduce(function traverse(level) {
-                    return function (r, a) {
-                        a.response.level = level;
-                        return r.concat(a.response, (a.children || []).reduce(traverse(level + 1), []));
-                    };
-                }(0), []);
-                this.categories = sorted;
-
-                this.categories.unshift(selectedCat);
-                this.selectedCategory = selectedCat;
-
-                if (this.$route.query.category !== undefined) {
-                    this.selectedCategory = weLo_.find(response, { id: parseInt(this.$route.query.category) });
-                }
-            });
-        },
-        filterProducts() {
-            this.products = this.products.filter(product => {
-                return weLo_.findIndex(product.categories, { id: this.$route.query.category }) > 0;
-            });
-        },
-
-        fetchTaxSettings() {
-            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/settings/tax').done(response => {
-                this.taxSettings = response;
-            });
-        }
-    },
-
-    async created() {
-        this.fetchSettings();
-        this.fetchTaxes();
-        this.fetchProducts();
-        this.fetchGateway();
-        this.fetchCategories();
-        // this.fetchTaxSettings();
-
-        if (typeof localStorage != 'undefined') {
-            try {
-                var cartdata = JSON.parse(localStorage.getItem('cartdata'));
-                var orderdata = JSON.parse(localStorage.getItem('orderdata'));
-                cartdata = await this.maybeRemoveDeletedProduct(cartdata);
-                this.$store.dispatch('Cart/setCartDataAction', cartdata);
-                this.$store.dispatch('Order/setOrderDataAction', orderdata);
-            } catch (cartdata) {
-                var orderdata = JSON.parse(localStorage.getItem('orderdata'));
-                this.$store.dispatch('Cart/setCartDataAction', cartdata);
-                this.$store.dispatch('Order/setOrderDataAction', orderdata);
-            }
-        }
-
-        window.addEventListener('beforeunload', () => {
-            if (typeof localStorage != 'undefined') {
-                localStorage.setItem('cartdata', JSON.stringify(this.$store.state.Cart.cartdata));
-                localStorage.setItem('orderdata', JSON.stringify(this.$store.state.Order.orderdata));
-            }
-        }, false);
-    }
-});
-
-/***/ }),
-/* 63 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'Overlay',
-
-    props: {
-        show: {
-            type: Boolean
-        }
-    }
-});
-
-/***/ }),
-/* 64 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(65);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_v_hotkey__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-// import Modal from './Modal.vue';
-
-
-
-let Modal = wepos_get_lib('Modal');
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'ProductInlineSearch',
-
-    props: {
-        products: {
-            type: Array,
-            default() {
-                return [];
-            }
-        },
-        settings: {
-            type: Object,
-            default() {
-                return {};
-            }
-        }
-    },
-
-    components: {
-        Modal,
-        KeyboardControl: __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__["a" /* default */]
-    },
-    data() {
-        return {
-            showResults: false,
-            showVariationModal: false,
-            mode: 'scan',
-            serachInput: '',
-            searchableProduct: [],
-            selectedVariationProduct: {},
-            attributeDisabled: true,
-            chosenAttribute: {}
-        };
-    },
-
-    computed: {
-        placeholder() {
-            return this.mode == 'scan' ? this.__('Scan your product', 'wepos') : this.__('Search product by typing', 'wepos');
-        },
-
-        hotkeys() {
-            return {
-                'f1': this.changeProductSearch,
-                'f2': this.changeScan,
-                'esc': this.searchClose
-            };
-        }
-    },
-
-    watch: {
-        chosenAttribute(newdata, olddata) {
-            if (Object.keys(newdata).length == this.selectedVariationProduct.attributes.length) {
-                this.attributeDisabled = false;
-            }
-        }
-    },
-
-    methods: {
-        changeScan(e) {
-            e.preventDefault();
-            this.changeMode('scan');
-        },
-
-        changeProductSearch(e) {
-            e.preventDefault();
-            this.changeMode('product');
-        },
-
-        searchClose() {
-            this.showResults = false;
-            this.showVariationModal = false;
-            this.changeMode('scan');
-            this.$refs.productSearch.blur();
-        },
-
-        selectedHandler(selectedIndex) {
-            var selectedProduct = this.searchableProduct[selectedIndex];
-            if (selectedProduct.type == 'simple') {
-                this.addToCartAction(selectedProduct);
-            } else {
-                this.selectVariation(selectedProduct);
-            }
-        },
-
-        onKeyDown() {
-            jQuery('.product-search-item.selected').next().children('a').focus();
-        },
-
-        onKeyUp() {
-            jQuery('.product-search-item.selected').prev().children('a').focus();
-        },
-
-        triggerFocus() {
-            this.showResults = true;
-            this.$emit('onfocus');
-        },
-
-        outside() {
-            this.showResults = false;
-            this.$emit('onblur');
-        },
-
-        changeMode(mode) {
-            this.mode = mode;
-            if (this.mode == 'scan') {
-                this.searchableProduct = [];
-                this.showResults = false;
-            }
-            this.$refs.productSearch.focus();
-        },
-
-        handleProductScan() {
-            if (this.mode == 'product') {
-                return;
-            }
-            var generalSettings = this.settings.wepos_general,
-                field = generalSettings.barcode_scanner_field == 'custom' ? 'barcode' : generalSettings.barcode_scanner_field,
-                selectedProduct = {},
-                filterProduct = this.products.filter(product => {
-                if (product.type == 'simple') {
-                    if (product[field].toString() == this.serachInput) {
-                        return true;
-                    }
-                }
-                if (product.type == 'variable') {
-                    var ifFound = false;
-                    if (product.variations.length > 0) {
-                        weLo_.forEach(product.variations, (item, key) => {
-                            if (item[field].toString() == this.serachInput) {
-                                ifFound = true;
-                            }
-                        });
-                    }
-
-                    if (ifFound) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-
-            if (filterProduct.length > 0) {
-                filterProduct = filterProduct[0];
-
-                if (filterProduct.type == 'variable') {
-                    var variations = filterProduct.variations;
-                    var selectedVariationProduct = variations.filter(item => {
-                        if (item[field].toString() == this.serachInput) {
-                            return true;
-                        }
-                        return false;
-                    });
-                    selectedProduct = selectedVariationProduct[0];
-                    selectedProduct.parent_id = filterProduct.id;
-                    selectedProduct.type = filterProduct.type;
-                    selectedProduct.name = filterProduct.name;
-
-                    this.$emit('onProductAdded', selectedProduct);
-                } else {
-                    this.$emit('onProductAdded', filterProduct);
-                }
-            }
-
-            this.serachInput = '';
-        },
-
-        searchProduct(e) {
-            if (this.serachInput) {
-                if (this.mode == 'product') {
-                    this.searchableProduct = this.products.filter(product => {
-                        if (product.id.toString().indexOf(this.serachInput) != -1) {
-                            return true;
-                        } else if (product.name.toString().toLowerCase().indexOf(this.serachInput.toLowerCase()) != -1) {
-                            return true;
-                        } else if (product.sku.indexOf(this.serachInput) != -1) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                }
-            }
-        },
-
-        selectVariation(product) {
-            this.selectedVariationProduct = product;
-            this.showVariationModal = true;
-        },
-
-        addVariationProduct() {
-            var chosenVariationProduct = this.findMatchingVariations(this.selectedVariationProduct.variations, this.chosenAttribute);
-            var variationProduct = chosenVariationProduct[0];
-            variationProduct.parent_id = this.selectedVariationProduct.id;
-            variationProduct.type = this.selectedVariationProduct.type;
-            variationProduct.name = this.selectedVariationProduct.name;
-
-            this.$emit('onProductAdded', variationProduct);
-            this.showVariationModal = false;
-            this.chosenAttribute = {};
-        },
-
-        addToCartAction(product) {
-            this.$emit('onProductAdded', product);
-        }
-
-    },
-
-    mounted() {
-        this.$refs.productSearch.focus();
-    }
-});
-
-/***/ }),
-/* 65 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(66);
-/* unused harmony namespace reexport */
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-
-
-/* template */
-var __vue_template__ = null
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__["a" /* default */],
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "assets/src/frontend/components/KeyboardControl.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-28df4a5e", Component.options)
-  } else {
-    hotAPI.reload("data-v-28df4a5e", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 66 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-  props: {
-    listLength: Number
-  },
-  data() {
-    return {
-      selectedIndex: 0
-    };
-  },
-  render(h) {
-    return h("ul", this.$scopedSlots.default({ selectedIndex: this.selectedIndex }));
-  },
-  methods: {
-    keyHandler(e) {
-      /**
-        38 - up
-        40 - down
-        9 - tab
-        13 - enter
-       */
-      const key = e.which || e.keyCode;
-
-      if (key === 38 || e.shiftKey && key === 9) {
-        this.handleKeyUp(e);
-        this.$emit('key-up');
-      } else if (key === 40 || key === 9) {
-        this.handleKeyDown(e);
-        this.$emit('key-down');
-      } else if (key === 13) {
-        this.handleEnter(e);
-      }
-    },
-    handleEnter(e) {
-      e.preventDefault();
-      this.$emit("selected", this.selectedIndex);
-    },
-    handleKeyUp(e) {
-      e.preventDefault();
-      if (this.selectedIndex <= 0) {
-        // If index is less than or equal to zero then set it to the last item index
-        this.selectedIndex = this.listLength - 1;
-      } else if (this.selectedIndex > 0 && this.selectedIndex <= this.listLength - 1) {
-        // If index is larger than zero and smaller or equal to last index then decrement
-        this.selectedIndex--;
-      }
-    },
-
-    handleKeyDown(e) {
-      e.preventDefault();
-      // Check if index is below 0
-      // This means that we did not start yet
-      if (this.selectedIndex < 0 || this.selectedIndex === this.listLength - 1) {
-        // Set the index to the first item
-        this.selectedIndex = 0;
-      } else if (this.selectedIndex >= 0 && this.selectedIndex < this.listLength - 1) {
-        this.selectedIndex++;
-      }
-    },
-    addKeyHandler(e) {
-      window.addEventListener("keydown", this.keyHandler);
-    },
-
-    removeKeyHandler() {
-      window.removeEventListener("keydown", this.keyHandler);
-    }
-  },
-  created() {
-    this.addKeyHandler();
-  },
-  destroyed() {
-    this.removeKeyHandler();
-  }
-});
-
-/***/ }),
-/* 67 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(65);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-// import Modal from './Modal.vue';
-
-let Modal = wepos_get_lib('Modal');
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'CustomerSearch',
-
-    components: {
-        Modal,
-        KeyboardControl: __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__["a" /* default */]
-    },
-
-    data() {
-        return {
-            submitDisable: false,
-            customers: [],
-            customer: {
-                email: '',
-                first_name: '',
-                last_name: '',
-                address_1: '',
-                address_2: '',
-                country: '',
-                state: '',
-                postcode: '',
-                city: '',
-                phone: ''
-            },
-            showCustomerResults: false,
-            serachInput: '',
-            showNewCustomerModal: false,
-            stateList: [],
-            selectedState: null,
-            selectedCountry: null,
-            isDisabled: true
-        };
-    },
-    computed: {
-        hotkeys() {
-            return {
-                'f7': this.focusCustomerSearch,
-                'shift+f7': this.addNewCustomer,
-                'esc': this.searchClose
-            };
-        },
-        getCountryList() {
-            return Object.keys(wepos.countries).map(val => {
-                return {
-                    code: val,
-                    name: wepos.countries[val]
-                };
-            });
-        },
-        orderdata() {
-            return this.$store.state.Order.orderdata;
-        }
-    },
-
-    watch: {
-        customer: {
-            handler(val) {
-                this.isDisabled = true;
-                if (val.first_name !== undefined && val.first_name.trim() != '' && val.last_name !== undefined && val.last_name.trim() != '' && val.email !== undefined && val.email.trim() != '') {
-                    this.isDisabled = false;
-                }
-            },
-            deep: true
-        },
-
-        'orderdata.customer_id'(newVal) {
-            this.serachInput = newVal ? this.orderdata.billing.first_name + ' ' + this.orderdata.billing.last_name : '';
-        }
-
-    },
-
-    methods: {
-        focusCustomerSearch(e) {
-            e.preventDefault();
-            this.$refs.customerSearch.focus();
-        },
-        searchClose() {
-            this.showCustomerResults = false;
-            this.serachInput = '';
-            this.showNewCustomerModal = false;
-            this.$refs.customerSearch.blur();
-        },
-        addNewCustomer() {
-            this.showNewCustomerModal = true;
-        },
-        selectedHandler(selectedIndex) {
-            var selectedCustomer = this.customers[selectedIndex];
-            this.selectCustomer(selectedCustomer);
-        },
-        onKeyDown() {
-            jQuery('.customer-search-item.selected').next().children('a').focus();
-        },
-
-        onKeyUp() {
-            jQuery('.customer-search-item.selected').prev().children('a').focus();
-        },
-        triggerFocus() {
-            this.showCustomerResults = true;
-            this.$emit('onfocus');
-        },
-        onblur() {
-            this.showCustomerResults = false;
-            this.$emit('onblur');
-        },
-        closeNewCustomerModal() {
-            this.customer = {
-                email: '',
-                first_name: '',
-                last_name: '',
-                address_1: '',
-                address_2: '',
-                country: '',
-                state: '',
-                postcode: '',
-                city: '',
-                phone: ''
-            };
-            this.selectedState = null;
-            this.selectedCountry = null;
-            this.showNewCustomerModal = false;
-        },
-        searchCustomer() {
-            if (this.serachInput) {
-                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/customers?search=' + this.serachInput).done(response => {
-                    this.customers = response;
-                });
-            } else {
-                this.$emit('onCustomerSelected', {});
-            }
-        },
-        selectCustomer(customer) {
-            this.$emit('onCustomerSelected', customer);
-            this.serachInput = customer.first_name + ' ' + customer.last_name;
-            this.showCustomerResults = false;
-        },
-        createCustomer() {
-            if (this.customer.email) {
-                var customerData = {
-                    email: this.customer.email,
-                    first_name: this.customer.first_name,
-                    last_name: this.customer.last_name,
-                    username: this.customer.email,
-                    password: this.generatePassword(20),
-                    billing: {
-                        first_name: this.customer.first_name,
-                        last_name: this.customer.last_name,
-                        address_1: this.customer.address_1,
-                        address_2: this.customer.address_2,
-                        country: this.selectedCountry !== null ? this.selectedCountry.code : '',
-                        state: this.selectedState !== null ? this.selectedState.code : this.customer.state,
-                        postcode: this.customer.postcode,
-                        city: this.customer.city,
-                        phone: this.customer.phone,
-                        email: this.customer.email
-                    }
-                };
-                var $contentWrap = jQuery('.wepos-new-customer-form');
-                $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
-
-                wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/customers', customerData).done(response => {
-                    this.serachInput = response.first_name + ' ' + response.last_name;
-                    this.$emit('onCustomerSelected', response);
-                    $contentWrap.unblock();
-                    this.closeNewCustomerModal();
-                }).fail(response => {
-                    $contentWrap.unblock();
-                    alert(response.responseJSON.message);
-                });
-            } else {
-                alert(this.__('Please enter an email address for customer', 'wepos'));
-            }
-        },
-        removeCountrySelect(selectedOption, id) {
-            this.selectedState = null;
-            this.selectedCountry = null;
-            this.stateList = [];
-            this.customer.country = '';
-            this.customer.state = '';
-        },
-
-        removeStateSelect(selectedOption, id) {
-            this.selectedState = null;
-            this.customer.state = '';
-        },
-        handleCountrySelect(selectedOption, id) {
-            var state = wepos.states[selectedOption.code] !== undefined ? wepos.states[selectedOption.code] : [];
-            var stateKeys = Object.keys(state);
-
-            if (stateKeys.length > 0) {
-                this.stateList = stateKeys.map(val => {
-                    return {
-                        code: val,
-                        name: state[val]
-                    };
-                });
-            } else {
-                this.stateList = state;
-                this.selectedState = null;
-            }
-        },
-        generatePassword(length) {
-            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-                retVal = "";
-            for (var i = 0, n = charset.length; i < length; ++i) {
-                retVal += charset.charAt(Math.floor(Math.random() * n));
-            }
-            return retVal;
-        }
-    },
-    created() {
-        this.eventBus.$on('emptycart', orderdata => {
-            this.serachInput = '';
-        });
-
-        var orderdata = JSON.parse(localStorage.getItem('orderdata'));
-
-        if (orderdata.customer_id != 'undefined' && orderdata.customer_id != 0) {
-            this.serachInput = orderdata.billing.first_name + ' ' + orderdata.billing.last_name;
-        }
-    }
-});
-
-/***/ }),
-/* 68 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(158);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-    name: 'FeeKeypad',
-
-    components: {
-        keyboard: __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__["a" /* default */]
-    },
-    computed: {
-        hotkeys() {
-            var keymap = {
-                discount: {
-                    'f4': this.showFeeKeypad,
-                    'esc': this.hideFeeKepad
-                },
-                fee: {
-                    'f5': this.showFeeKeypad,
-                    'esc': this.hideFeeKepad
-                }
-            };
-            return keymap[this.shortKey];
-        }
-    },
-    props: {
-        name: {
-            type: String,
-            default: 'Fee'
-        },
-        className: {
-            type: String,
-            default: ''
-        },
-        shortKey: {
-            type: String,
-            default: ''
-        }
-    },
-    data() {
-        return {
-            input: '',
-            displayValue: '',
-            viewFeeKeypad: false
-        };
-    },
-    methods: {
-        hideFeeKepad(e) {
-            this.viewFeeKeypad = false;
-        },
-        layout() {
-            return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0' + wepos.currency_format_decimal_sep + '|{% ' + this.name + ':percent}{' + wepos.currency_format_symbol + ' ' + this.name + ':flat}';
-        },
-        percentFee(keyboard) {
-            this.$emit('inputfee', keyboard.value.toString(), 'percent');
-            this.viewFeeKeypad = false;
-            this.input = '';
-            this.displayValue = '';
-        },
-        flatFee(keyboard) {
-            this.$emit('inputfee', keyboard.value.toString(), 'flat');
-            this.viewFeeKeypad = false;
-            this.input = '';
-            this.displayValue = '';
-        },
-        change(value) {
-            if (!isNaN(value)) {
-                this.displayValue = value;
-                this.input = this.displayValue;
-            } else {
-                this.input = this.displayValue;
-                if (this.displayValue == '') {
-                    this.input = '';
-                }
-            }
-
-            jQuery(this.$refs.feeinput).focus();
-
-            if (this.input == '') {
-                jQuery(this.$refs.feeinput).focus();
-            }
-        },
-        inputChange() {
-            if (!isNaN(this.displayValue)) {
-                this.input = this.displayValue;
-            } else {
-                this.displayValue = this.input;
-            }
-
-            if (this.input == '') {
-                jQuery(this.$refs.feeinput).focus();
-            }
-        },
-        showFeeKeypad(e) {
-            e.preventDefault();
-            this.viewFeeKeypad = true;
-            setTimeout(() => {
-                jQuery(this.$refs.feeinput).focus();
-            }, 500);
-        }
-    }
-});
-
-/***/ }),
-/* 69 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-const Tokens = {
-	// Sequences that no-one will ever put in their keyboards.
-	PIPE: '7440011c983cf39ae730b1f831e2922ac5a76910',
-	OPEN_BRACE: 'f630c4abcae620278f82e142a526ef325c2a773a',
-	CLOSE_BRACE: 'ad982c66898e02a5dab419ea7568421b03f68ee2'
-};
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	name: 'keyboard',
-
-	props: {
-		value: {
-			type: String,
-			default: ''
-		},
-		layouts: {
-			type: [String, Array],
-			required: true
-		},
-		maxlength: {
-			type: Number,
-			default: 0,
-			validator: value => value >= 0
-		},
-		pattern: {
-			type: String,
-			default: null
-		}
-	},
-
-	data() {
-		return {
-			layout: 0
-		};
-	},
-
-	computed: {
-		/**
-   * Whether or not the keyboard input has hit its maximum length.
-   * @returns {Boolean}
-   */
-		full() {
-			return this.maxlength > 0 && this.value.length >= this.maxlength;
-		},
-
-		/**
-   * Whether or not the keyboard input is empty.
-   * @return {Boolean}
-   */
-		empty() {
-			return this.value.length === 0;
-		},
-
-		/**
-   * Returns the lines that make up a layout.
-   * @return {Array}
-   */
-		lines() {
-			let layout = (Array.isArray(this.layouts) ? this.layouts : [this.layouts])[this.layout];
-
-			return layout.replace('||', Tokens.PIPE).replace('{{', Tokens.OPEN_BRACE).replace('}}', Tokens.CLOSE_BRACE).split('|');
-		},
-
-		/**
-   * Returns an array of buttons to render in the component.
-   * @returns {Array[]}
-   */
-		buttons() {
-			return this.lines.map(line => {
-				// TODO: Could potentially rely on Object.values() here instead of being explicit.
-				let stream = line.match(new RegExp(`(${Tokens.OPEN_BRACE}|${Tokens.CLOSE_BRACE}|${Tokens.PIPE}|.)`, 'g'));
-
-				let buttons = [];
-				let token = null;
-
-				stream.forEach(char => {
-					if (char === '{') {
-						token = '';
-					} else if (char === '}') {
-						let command = token.split(':');
-						let text = command.length > 1 ? command[0] : '';
-						let action = command.length > 1 ? command[1] : command[0];
-						let args = command.length > 2 ? command[2] : null;
-						let method = null;
-
-						if (['append', 'backspace', 'space', 'clear', 'goto'].indexOf(action) >= 0) method = this[action].bind(this, args);else method = this.$emit.bind(this, action, this);
-
-						buttons.push({
-							type: 'action',
-							action: { name: action.replace(/\s+/g, '-').toLowerCase(), callable: method },
-							value: text,
-							args
-						});
-
-						token = null;
-					} else {
-						if (token !== null) {
-							token += char;
-						} else {
-							if (char === Tokens.PIPE) char = '|';
-							if (char === Tokens.OPEN_BRACE) char = '{';
-							if (char === Tokens.CLOSE_BRACE) char = '}';
-
-							buttons.push({
-								type: 'char',
-								action: { name: null, callable: this.append.bind(this, char) },
-								value: char,
-								args: null
-							});
-						}
-					}
-				});
-
-				return buttons;
-			});
-		},
-
-		/**
-   * Whether or not the current value matches the regex provided to pattern. Always
-   * returns true if no pattern was provided.
-   * @returns {Boolean}
-   */
-		valid() {
-			return !this.pattern || this.value.match(new RegExp(this.pattern));
-		}
-	},
-
-	methods: {
-		/**
-   * Mutates the keyboard value to a new value.
-   * @param {String} value The new value.
-   */
-		mutate(value) {
-			if (this.maxlength > 0) {
-				value = value.slice(0, this.maxlength);
-			}
-
-			this.$emit('input', value);
-		},
-
-		/**
-   * Appends a new value to the end of the current keyboard value.
-   * @param {String} char The character(s) to append.
-   */
-		append(char) {
-			this.mutate(this.value + char);
-		},
-
-		/**
-   * Remove the last character from the current keyboard value.
-   */
-		backspace() {
-			this.mutate(this.value.slice(0, this.value.length - 1));
-		},
-
-		/**
-   * Add one whitespace character to the current keyboard value.
-   */
-		space() {
-			this.append(' ');
-		},
-
-		/**
-   * Go to a new layout.
-   * @param {Number} The layout index.
-   */
-		goto(layout) {
-			if (Array.isArray(this.layouts)) {
-				if (layout >= 0 && layout < this.layouts.length) {
-					this.layout = layout;
-				} else {
-					throw new Error('The requested layout does not exist.');
-				}
-			} else {
-				throw new Error('A single non-array layout was provided.');
-			}
-		},
-
-		/**
-   * Clear the entire keyboard value.
-   */
-		clear() {
-			this.mutate('');
-		}
-	}
-});
-
-/***/ }),
-/* 70 */,
-/* 71 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'ReceiptPrint',
-
-    methods: {
-        printReceipt() {
-            var self = this;
-
-            setTimeout(() => {
-                window.print();
-            }, 500);
-        }
-    }
-});
-
-/***/ }),
-/* 72 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'ReceiptPrintHtml',
-
-    props: {
-        printdata: {
-            type: Object,
-            default() {
-                return {};
-            }
-        },
-        settings: {
-            type: Object,
-            default() {
-                return {};
-            }
-        }
-    },
-    methods: {
-        formatDate(date) {
-            var date = new Date(date);
-            return date.toLocaleString();
-        }
-    }
-});
-
-/***/ }),
-/* 73 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-    data() {
-        return {
-            viewNotePopover: false,
-            customerNote: ''
-        };
-    },
-
-    computed: {
-        hotkeys() {
-            return {
-                'f6': this.openNote,
-                'esc': this.closeNote
-            };
-        }
-    },
-
-    methods: {
-        openNote(e) {
-            e.preventDefault();
-            this.viewNotePopover = true;
-            setTimeout(() => {
-                jQuery(this.$refs.customernote).focus();
-            }, 500);
-        },
-        closeNote() {
-            this.viewNotePopover = false;
-        },
-        addCustomerNote() {
-            this.$emit('addnote', this.customerNote);
-            this.viewNotePopover = false;
-            this.customerNote = '';
-        }
-    }
-});
-
-/***/ }),
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */,
-/* 95 */,
-/* 96 */,
-/* 97 */,
-/* 98 */,
-/* 99 */,
-/* 100 */,
-/* 101 */,
-/* 102 */,
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */,
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */,
-/* 114 */,
-/* 115 */,
-/* 116 */,
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */,
-/* 128 */,
-/* 129 */,
-/* 130 */,
-/* 131 */,
-/* 132 */,
-/* 133 */,
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _App = __webpack_require__(140);
+var _App = __webpack_require__(274);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(144);
+var _router = __webpack_require__(278);
 
 var _router2 = _interopRequireDefault(_router);
 
-var _store = __webpack_require__(28);
+var _store = __webpack_require__(29);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -3080,20 +39,21 @@ new Vue({
 });
 
 /***/ }),
-/* 140 */
+
+/***/ 274:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(62);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(277);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(141)
+  __webpack_require__(275)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -3137,14 +97,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 141 */
+
+/***/ 275:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 142 */,
-/* 143 */
+
+/***/ 277:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3171,7 +132,8 @@ if (false) {
 }
 
 /***/ }),
-/* 144 */
+
+/***/ 278:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3181,7 +143,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Home = __webpack_require__(145);
+var _Home = __webpack_require__(279);
 
 var _Home2 = _interopRequireDefault(_Home);
 
@@ -3201,20 +163,21 @@ exports.default = new Router({
 });
 
 /***/ }),
-/* 145 */
+
+/***/ 279:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(63);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(306);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(146)
+  __webpack_require__(280)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -3258,25 +221,27 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 146 */
+
+/***/ 280:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 147 */
+
+/***/ 281:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(64);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(283);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(148)
+  __webpack_require__(282)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -3320,13 +285,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 148 */
+
+/***/ 282:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 149 */
+
+/***/ 283:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3348,19 +315,20 @@ if (false) {
 }
 
 /***/ }),
-/* 150 */
+
+/***/ 284:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(65);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(152);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(286);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(151)
+  __webpack_require__(285)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -3404,13 +372,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 151 */
+
+/***/ 285:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 152 */
+
+/***/ 286:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3858,19 +828,20 @@ if (false) {
 }
 
 /***/ }),
-/* 153 */
+
+/***/ 287:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(68);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(289);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(154)
+  __webpack_require__(288)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -3914,13 +885,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 154 */
+
+/***/ 288:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 155 */
+
+/***/ 289:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4770,19 +1743,54 @@ if (false) {
 }
 
 /***/ }),
-/* 156 */
+
+/***/ 29:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Cart = __webpack_require__(30);
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+var _Order = __webpack_require__(32);
+
+var _Order2 = _interopRequireDefault(_Order);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Vue = wepos_get_lib('Vue');
+var Vuex = wepos_get_lib('Vuex');
+
+Vue.use(Vuex);
+
+exports.default = new Vuex.Store({
+    modules: {
+        Cart: _Cart2.default,
+        Order: _Order2.default
+    }
+});
+
+/***/ }),
+
+/***/ 290:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(69);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(295);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(157)
+  __webpack_require__(291)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -4826,25 +1834,27 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 157 */
+
+/***/ 291:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 158 */
+
+/***/ 292:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(70);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(294);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(159)
+  __webpack_require__(293)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -4888,13 +1898,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 159 */
+
+/***/ 293:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 160 */
+
+/***/ 294:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4960,7 +1972,8 @@ if (false) {
 }
 
 /***/ }),
-/* 161 */
+
+/***/ 295:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5064,20 +2077,20 @@ if (false) {
 }
 
 /***/ }),
-/* 162 */,
-/* 163 */
+
+/***/ 297:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(72);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(299);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(164)
+  __webpack_require__(298)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -5121,13 +2134,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 164 */
+
+/***/ 298:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 165 */
+
+/***/ 299:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5169,19 +2184,333 @@ if (false) {
 }
 
 /***/ }),
-/* 166 */
+
+/***/ 30:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _helper = __webpack_require__(31);
+
+var _helper2 = _interopRequireDefault(_helper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    namespaced: true,
+    state: {
+        settings: {},
+        availableTax: {},
+        cartdata: {
+            line_items: [],
+            fee_lines: []
+        }
+    },
+    getters: {
+        getSubtotal: function getSubtotal(state) {
+            var subtotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                if (item.on_sale) {
+                    subtotal += item.quantity * item.sale_price;
+                } else {
+                    subtotal += item.quantity * item.regular_price;
+                }
+            });
+
+            return subtotal;
+        },
+        getTotalFee: function getTotalFee(state) {
+            var fee = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    fee += Math.abs(item.total);
+                }
+            });
+            return fee;
+        },
+        getTotalDiscount: function getTotalDiscount(state) {
+            var discount = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'discount') {
+                    discount += Number(Math.abs(item.total));
+                }
+            });
+
+            return discount;
+        },
+        getTotalLineTax: function getTotalLineTax(state) {
+            var self = this,
+                taxLineTotal = 0;
+
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            return taxLineTotal;
+        },
+        getTotalTax: function getTotalTax(state) {
+            var self = this,
+                taxLineTotal = 0,
+                taxFeeTotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
+                taxLineTotal = 0;
+            }
+
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    if (item.tax_status == 'taxable') {
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
+                        if (taxClass !== undefined) {
+                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        }
+                    }
+                }
+            });
+
+            return taxLineTotal + taxFeeTotal;
+        },
+        getOrderTotal: function getOrderTotal(state, getters) {
+            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
+        },
+        getTotal: function getTotal(state, getters) {
+            return getters.getOrderTotal - getters.getTotalDiscount;
+        }
+    },
+    mutations: {
+        setSettings: function setSettings(state, settings) {
+            state.settings = settings;
+        },
+        setAvailableTax: function setAvailableTax(state, availableTax) {
+            state.availableTax = availableTax;
+        },
+        setCartData: function setCartData(state, cartdata) {
+            if (weLo_.isEmpty(cartdata)) {
+                state.cartdata = {
+                    line_items: [],
+                    fee_lines: []
+                };
+            } else {
+                state.cartdata = Object.assign({}, cartdata);
+            }
+        },
+        addToCartItem: function addToCartItem(state, product) {
+            var cartObject = {};
+            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
+            cartObject.name = product.name;
+            cartObject.quantity = 1;
+            cartObject.regular_price = product.regular_display_price;
+            cartObject.sale_price = product.sales_display_price;
+            cartObject.on_sale = product.on_sale;
+            cartObject.attribute = product.attributes;
+            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
+            cartObject.editQuantity = false;
+            cartObject.type = product.type;
+            cartObject.tax_amount = product.tax_amount;
+            cartObject.manage_stock = product.manage_stock;
+            cartObject.stock_status = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity = product.stock_quantity;
+
+            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
+
+            if (index < 0) {
+                if (_helper2.default.hasStock(product)) {
+                    state.cartdata.line_items.push(cartObject);
+                }
+            } else {
+                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
+                    state.cartdata.line_items[index].quantity += 1;
+                }
+            }
+        },
+        removeCartItem: function removeCartItem(state, itemKey) {
+            state.cartdata.line_items.splice(itemKey, 1);
+        },
+        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (_helper2.default.hasStock(item, item.quantity)) {
+                state.cartdata.line_items[itemKey].quantity++;
+            }
+        },
+        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (item.quantity <= 1) {
+                state.cartdata.line_items[itemKey].quantity = 1;
+            } else {
+                state.cartdata.line_items[itemKey].quantity--;
+            }
+        },
+        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
+            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
+        },
+        addDiscount: function addDiscount(state, discountData) {
+            state.cartdata.fee_lines.push({
+                name: discountData.title,
+                type: 'discount',
+                value: discountData.value.toString(),
+                isEdit: false,
+                discount_type: discountData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        addFee: function addFee(state, feeData) {
+            state.cartdata.fee_lines.push({
+                name: feeData.title,
+                type: 'fee',
+                value: feeData.value.toString(),
+                isEdit: false,
+                fee_type: feeData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        saveFeeValue: function saveFeeValue(state, item) {
+            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
+            state.cartdata.fee_lines[item.key].isEdit = false;
+        },
+        editFeeValue: function editFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = true;
+        },
+        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = false;
+        },
+        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
+            state.cartdata.fee_lines.splice(itemKey, 1);
+        },
+        emptyCart: function emptyCart(state) {
+            state.cartdata = {
+                line_items: [],
+                fee_lines: []
+            };
+        },
+        calculateDiscount: function calculateDiscount(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == "discount") {
+                        if (item.discount_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
+                        } else {
+                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
+                        }
+                    }
+                });
+            }
+        },
+        calculateFee: function calculateFee(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == 'fee') {
+                        if (item.fee_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
+                        } else {
+                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
+                        }
+                    }
+                });
+            }
+        }
+    },
+    actions: {
+        setSettingsAction: function setSettingsAction(context, settings) {
+            context.commit('setSettings', settings);
+        },
+        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
+            context.commit('setAvailableTax', availableTax);
+        },
+        setCartDataAction: function setCartDataAction(context, cartdata) {
+            context.commit('setCartData', cartdata);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addToCartAction: function addToCartAction(context, product) {
+            context.commit('addToCartItem', product);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeCartItemAction: function removeCartItemAction(context, itemKey) {
+            context.commit('removeCartItem', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
+            context.commit('addCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
+            context.commit('removeCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
+            context.commit('toggleEditQuantity', itemKey);
+        },
+        addDiscountAction: function addDiscountAction(context, discountData) {
+            context.commit('addDiscount', discountData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addFeeAction: function addFeeAction(context, feeData) {
+            context.commit('addFee', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
+            context.commit('removeFeeLineItems', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
+            context.commit('saveFeeValue', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        editFeeValueAction: function editFeeValueAction(context, itemKey) {
+            context.commit('editFeeValue', itemKey);
+        },
+        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
+            context.commit('cancelSaveFeeValue', itemKey);
+        },
+        emptyCartAction: function emptyCartAction(context) {
+            context.commit('emptyCart');
+        },
+        calculateDiscount: function calculateDiscount(context) {
+            context.commit('calculateDiscount', context.getters);
+        },
+        calculateFee: function calculateFee(context) {
+            context.commit('calculateFee', context.getters);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 300:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(73);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(302);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(167)
+  __webpack_require__(301)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -5225,13 +2554,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 167 */
+
+/***/ 301:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 168 */
+
+/***/ 302:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5545,19 +2876,20 @@ if (false) {
 }
 
 /***/ }),
-/* 169 */
+
+/***/ 303:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(74);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(305);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(170)
+  __webpack_require__(304)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 
 
@@ -5601,13 +2933,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 170 */
+
+/***/ 304:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 171 */
+
+/***/ 305:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5718,7 +3052,8 @@ if (false) {
 }
 
 /***/ }),
-/* 172 */
+
+/***/ 306:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8416,5 +5751,2622 @@ if (false) {
   }
 }
 
+/***/ }),
+
+/***/ 31:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    hasStock: function hasStock(product) {
+        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        if (!product.manage_stock) {
+            return 'outofstock' == product.stock_status ? false : true;
+        } else {
+            if (product.backorders_allowed) {
+                return true;
+            } else {
+                return product.stock_quantity > productCartQty;
+            }
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 32:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    namespaced: true,
+    state: {
+        orderdata: {
+            billing: {},
+            shipping: {},
+            customer_id: 0,
+            customer_note: '',
+            payment_method: '',
+            payment_method_title: ''
+        }
+    },
+    getters: {},
+    mutations: {
+        setOrderData: function setOrderData(state, orderdata) {
+            if (weLo_.isEmpty(orderdata)) {
+                state.orderdata = {
+                    billing: {},
+                    shipping: {},
+                    customer_id: 0,
+                    customer_note: '',
+                    payment_method: '',
+                    payment_method_title: ''
+                };
+            } else {
+                state.orderdata = orderdata;
+            }
+        },
+        setCustomer: function setCustomer(state, customer) {
+            if (Object.keys(customer).length > 0) {
+                state.orderdata.billing = customer.billing;
+                state.orderdata.shipping = customer.shipping;
+                state.orderdata.customer_id = customer.id;
+            } else {
+                state.orderdata.billing = {};
+                state.orderdata.shipping = {};
+                state.orderdata.customer_id = 0;
+            }
+        },
+        emptyOrderdata: function emptyOrderdata(state) {
+            state.orderdata = {
+                billing: {},
+                shipping: {},
+                customer_id: 0,
+                customer_note: '',
+                payment_method: '',
+                payment_method_title: ''
+            };
+        },
+        setCustomerNote: function setCustomerNote(state, note) {
+            state.orderdata.customer_note = note.trim();
+        },
+        removeCustomerNote: function removeCustomerNote(state) {
+            state.orderdata.customer_note = '';
+        },
+        setGateway: function setGateway(state, gateway) {
+            state.orderdata.payment_method = gateway.id;
+            state.orderdata.payment_method_title = gateway.title;
+        }
+    },
+    actions: {
+        setOrderDataAction: function setOrderDataAction(context, orderdata) {
+            context.commit('setOrderData', orderdata);
+        },
+        setCustomerAction: function setCustomerAction(context, customer) {
+            context.commit('setCustomer', customer);
+        },
+        emptyOrderdataAction: function emptyOrderdataAction(context) {
+            context.commit('emptyOrderdata');
+        },
+        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
+            context.commit('setCustomerNote', note);
+        },
+        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
+            context.commit('removeCustomerNote');
+        },
+        setGatewayAction: function setGatewayAction(context, gateway) {
+            context.commit('setGateway', gateway);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 62:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'App'
+});
+
+/***/ }),
+
+/***/ 63:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(281);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(284);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(287);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(290);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(297);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(300);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(303);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+let Modal = wepos_get_lib('Modal');
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    name: 'Home',
+
+    components: {
+        ProductSearch: __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__["a" /* default */],
+        CustomerSearch: __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__["a" /* default */],
+        Overlay: __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__["a" /* default */],
+        Modal,
+        MugenScroll: __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll___default.a,
+        FeeKeypad: __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__["a" /* default */],
+        PrintReceipt: __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__["a" /* default */],
+        PrintReceiptHtml: __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__["a" /* default */],
+        CustomerNote: __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__["a" /* default */]
+    },
+
+    data() {
+        return {
+            showHelp: false,
+            showQucikMenu: false,
+            productView: 'grid',
+            productLoading: false,
+            viewVariationPopover: false,
+            showModal: false,
+            showPaymentReceipt: false,
+            products: [],
+            filteredProducts: [],
+            totalPages: 1,
+            page: 1,
+            showOverlay: false,
+            selectedVariationProduct: {},
+            attributeDisabled: true,
+            selectedAttribute: {},
+            availableGateways: [],
+            emptyGatewayDiv: 0,
+            cashAmount: '',
+            availableTax: [],
+            settings: {},
+            taxSettings: {},
+            printdata: wepos.hooks.applyFilters('wepos_initial_print_data', {
+                gateway: {
+                    id: '',
+                    title: ''
+                }
+            }),
+            feeData: {},
+            createprintreceipt: false,
+            selectedCategory: '',
+            selectedGateway: '',
+            categories: [],
+            showReceiptHtml: wepos.hooks.applyFilters('wepos_render_receipt_html', true),
+            quickLinkList: wepos.hooks.applyFilters('wepos_quick_links', []),
+            quickLinkListStart: wepos.hooks.applyFilters('wepos_quick_links_start', []),
+            availableGatewayContent: wepos.hooks.applyFilters('wepos_avaialable_gateway_content', []),
+            afterMainContents: wepos.hooks.applyFilters('wepos_after_main_content', []),
+            beforCartPanels: wepos.hooks.applyFilters('wepos_before_cart_panel', [])
+        };
+    },
+    computed: {
+        cartdata() {
+            return this.$store.state.Cart.cartdata;
+        },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
+        },
+        hotkeys() {
+            return {
+                'f3': this.toggleProductView,
+                'f9': this.initPayment,
+                'f10': this.processPayment,
+                'f8': this.createNewSale,
+                'shift+f8': this.emptyCart,
+                'esc': this.backToSale,
+                'meta+/': this.openHelp,
+                'ctrl+/': this.openHelp
+            };
+        },
+        getFilteredProduct() {
+            if (this.$route.query.category !== undefined) {
+                return this.products.filter(product => {
+                    var foundCat = weLo_.find(product.categories, { id: parseInt(this.$route.query.category) });
+                    return foundCat != undefined && Object.keys(foundCat).length > 0;
+                });
+            } else {
+                return this.products;
+            }
+        },
+        changeAmount() {
+            var returnMoney = this.cashAmount - this.$store.getters['Cart/getTotal'];
+            return returnMoney > 0 ? returnMoney : 0;
+        },
+        getBreadCrums() {
+            if (this.$route.query.category !== undefined) {
+                var categories = jQuery.extend(true, [], this.categories),
+                    selectedCat = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) }),
+                    selectedCatIndex = weLo_.findIndex(this.categories, selectedCat);
+
+                var categoriesLoop = categories.splice(0, selectedCatIndex + 1);
+                var choosenCat = [];
+                if (categoriesLoop.length > 0) {
+                    for (var i = categoriesLoop.length - 1; i >= 0; i--) {
+                        if (choosenCat.length > 0) {
+                            var foundCat = weLo_.find(categoriesLoop, { id: categoriesLoop[i + 1].parent_id });
+                            if (foundCat != undefined) {
+                                choosenCat.push(foundCat);
+                                if (foundCat.parent_id == null) {
+                                    break;
+                                }
+                            }
+                        } else {
+                            choosenCat.push(categoriesLoop[i]);
+                        }
+                    }
+
+                    return choosenCat.slice().reverse();
+                }
+            }
+            return [];
+        }
+    },
+
+    watch: {
+        selectedAttribute(newdata, olddata) {
+            if (Object.keys(newdata).length == this.selectedVariationProduct.attributes.length) {
+                this.attributeDisabled = false;
+            }
+        },
+        '$route.query.order_key'() {
+            if (this.$route.query.order_key != '' && this.$route.query.payment == 'success') {
+                this.showModal = false;
+                this.showPaymentReceipt = true;
+            };
+        },
+        '$route.query.category'() {
+            this.selectedCategory = {
+                id: -1,
+                level: 0,
+                name: this.__('All categories', 'wepos'),
+                parent_id: null
+            };
+            if (this.$route.query.category !== undefined) {
+                this.selectedCategory = weLo_.find(this.categories, { id: parseInt(this.$route.query.category) });
+            }
+        },
+        'selectedGateway'(newdata, olddata) {
+            var gateway = weLo_.find(this.availableGateways, { 'id': newdata });
+            this.$store.dispatch('Order/setGatewayAction', gateway);
+        }
+    },
+
+    methods: {
+        openQucikMenu() {
+            this.showQucikMenu = true;
+        },
+        openHelp(e) {
+            e.preventDefault();
+            this.showHelp = true;
+            this.showQucikMenu = false;
+        },
+        closeHelp() {
+            this.showHelp = false;
+        },
+        addCustomerNote(note) {
+            this.$store.dispatch('Order/setCustomerNoteAction', note);
+        },
+        removeCustomerNote() {
+            this.$store.dispatch('Order/removeCustomerNoteAction');
+        },
+        removeBreadcrums() {
+            this.$router.push({ name: 'Home' });
+        },
+        logout() {
+            wepos.hooks.doAction('wepos_before_logout');
+            window.location.href = wepos.logout_url.toString();
+        },
+        emptyCart() {
+            this.$store.dispatch('Cart/emptyCartAction');
+            this.$store.dispatch('Order/emptyOrderdataAction');
+
+            this.printdata = wepos.hooks.applyFilters('wepos_initial_print_data', {
+                gateway: {
+                    id: '',
+                    title: ''
+                }
+            });
+
+            this.showPaymentReceipt = false;
+            this.cashAmount = '';
+            this.eventBus.$emit('emptycart', this.orderdata);
+            this.showQucikMenu = false;
+        },
+        toggleProductView(e) {
+            e.preventDefault();
+            this.productView = this.productView == 'grid' ? 'list' : 'grid';
+        },
+        createNewSale() {
+            this.$router.push({
+                name: 'Home'
+            });
+            this.emptyCart();
+        },
+        ableToProcess() {
+            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
+        },
+        processPayment(e) {
+            e.preventDefault();
+            if (!this.ableToProcess()) {
+                return;
+            }
+            var self = this,
+                gateway = weLo_.find(this.availableGateways, { 'id': this.orderdata.payment_method }),
+                orderdata = wepos.hooks.applyFilters('wepos_order_form_data', {
+                billing: this.orderdata.billing,
+                shipping: this.orderdata.shipping,
+                line_items: this.cartdata.line_items,
+                fee_lines: this.cartdata.fee_lines,
+                customer_id: this.orderdata.customer_id,
+                customer_note: this.orderdata.customer_note,
+                payment_method: this.orderdata.payment_method,
+                payment_method_title: this.orderdata.payment_method_title,
+                meta_data: [{
+                    key: '_wepos_is_pos_order',
+                    value: true
+                }, {
+                    key: '_wepos_cash_tendered_amount',
+                    value: self.cashAmount.toString()
+                }, {
+                    key: '_wepos_cash_change_amount',
+                    value: self.changeAmount.toString()
+                }]
+            }, this.orderdata, this.cartdata);
+
+            var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
+            $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+
+            wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata).done(response => {
+                wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/payment/process', response).done(data => {
+                    if (data.result == 'success') {
+                        this.$router.push({
+                            name: 'Home',
+                            query: {
+                                order_key: response.order_key,
+                                payment: 'success'
+                            }
+                        });
+                        this.printdata = wepos.hooks.applyFilters('wepos_after_payment_print_data', {
+                            line_items: this.cartdata.line_items,
+                            fee_lines: this.cartdata.fee_lines,
+                            subtotal: this.$store.getters['Cart/getSubtotal'],
+                            taxtotal: this.$store.getters['Cart/getTotalTax'],
+                            ordertotal: this.$store.getters['Cart/getTotal'],
+                            gateway: {
+                                id: response.payment_method,
+                                title: response.payment_method_title
+                            },
+                            order_id: response.id,
+                            order_date: response.date_created,
+                            cashamount: this.cashAmount.toString(),
+                            changeamount: this.changeAmount.toString()
+                        }, orderdata);
+                    } else {
+                        $contentWrap.unblock();
+                    }
+                }).fail(data => {
+                    $contentWrap.unblock();
+                    alert(data.responseJSON.message);
+                });
+            }).fail(response => {
+                $contentWrap.unblock();
+                alert(response.responseJSON.message);
+            });
+        },
+
+        initPayment() {
+            this.showModal = true;
+            this.$store.dispatch('Order/setGatewayAction', this.availableGateways[0]);
+            this.selectedGateway = this.availableGateways[0].id;
+        },
+
+        backToSale() {
+            this.showModal = false;
+            this.showHelp = false;
+            // Remove gateway selections
+        },
+        isSelectGateway() {
+            return !(this.orderdata.payment_method == undefined || this.orderdata.payment_method == '');
+        },
+        getProductImage(product) {
+            return product.images.length > 0 ? product.images[0].woocommerce_thumbnail : wepos.placeholder_image;
+        },
+        getProductImageName(product) {
+            return product.images.length > 0 ? product.images[0].name : product.name;
+        },
+        setDiscount(value, type) {
+            this.$store.dispatch('Cart/addDiscountAction', { title: this.__('Discount', 'wepos'), value: value, type: type });
+        },
+        saveFee(key) {
+            this.$store.dispatch('Cart/saveFeeValueAction', { key: key, feeData: this.feeData });
+            this.feeData = {};
+        },
+        cancelEditFee(key) {
+            this.$store.dispatch('Cart/cancelSaveFeeValueAction', key);
+            this.feeData = {};
+        },
+        editFeeData(key) {
+            this.$store.dispatch('Cart/editFeeValueAction', key);
+            this.feeData = Object.assign({}, this.cartdata.fee_lines[key]);
+            this.$nextTick(() => {
+                jQuery(this.$refs.fee_name).focus();
+            });
+        },
+        setFee(value, type) {
+            this.$store.dispatch('Cart/addFeeAction', { title: this.__('Fee', 'wepos'), value: value, type: type });
+        },
+        removeFeeLine(key) {
+            this.$store.dispatch('Cart/removeFeeLineItemsAction', key);
+        },
+        fetchProducts() {
+            if (this.page == 1) {
+                this.productLoading = true;
+            }
+
+            if (this.totalPages >= this.page) {
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page).done((response, status, xhr) => {
+                    this.products = this.products.concat(response);
+                    this.page += 1;
+                    this.totalPages = parseInt(xhr.getResponseHeader('X-WP-TotalPages'));
+                    this.productLoading = false;
+                }).then((response, status, xhr) => {
+                    this.fetchProducts();
+                });
+            } else {
+                this.productLoading = false;
+            }
+        },
+
+        maybeRemoveDeletedProduct(cartData) {
+            return new Promise((resolve, reject) => {
+                if (!cartData) {
+                    return resolve(cartData);
+                }
+
+                if (!cartData.line_items || cartData.line_items.length < 1) {
+                    return resolve(cartData);
+                }
+
+                let productIds = cartData.line_items.map(lineItem => {
+                    return lineItem.product_id;
+                });
+
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/products?include=' + productIds.toString()).then(response => {
+                    let foundProducts = response.map(product => {
+                        return product.id;
+                    });
+
+                    cartData.line_items.forEach((product, key) => {
+                        if (!foundProducts.includes(product.product_id)) {
+                            cartData.line_items.splice(key, 1);
+                            localStorage.setItem('cartdata', JSON.stringify(cartData));
+                        }
+                    });
+
+                    return resolve(cartData);
+                }).fail(() => {
+                    return reject(cartData);
+                });
+            });
+        },
+
+        selectCustomer(customer) {
+            this.$store.dispatch('Order/setCustomerAction', customer);
+        },
+        selectVariationProduct(product) {
+            this.viewVariationPopover = true;
+            this.selectedVariationProduct = product;
+        },
+        addVariationProduct() {
+            var chosenVariationProduct = this.findMatchingVariations(this.selectedVariationProduct.variations, this.selectedAttribute);
+            var variationProduct = chosenVariationProduct[0];
+            variationProduct.parent_id = this.selectedVariationProduct.id;
+            variationProduct.type = this.selectedVariationProduct.type;
+            variationProduct.name = this.selectedVariationProduct.name;
+            variationProduct.type = this.selectedVariationProduct.type;
+            this.selectedAttribute = {};
+            this.attributeDisabled = true;
+            this.$store.dispatch('Cart/addToCartAction', variationProduct);
+        },
+        addToCart(product) {
+            this.$store.dispatch('Cart/addToCartAction', product);
+        },
+        toggleEditQuantity(product, key) {
+            this.$store.dispatch('Cart/toggleEditQuantityAction', key);
+        },
+        removeItem(key) {
+            this.$store.dispatch('Cart/removeCartItemAction', key);
+        },
+        addQuantity(item, key) {
+            this.$store.dispatch('Cart/addItemQuantityAction', key);
+        },
+        removeQuantity(item, key) {
+            this.$store.dispatch('Cart/removeItemQuantityAction', key);
+        },
+        fetchGateway() {
+            wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/payment/gateways').done(response => {
+                this.availableGateways = response;
+                this.emptyGatewayDiv = 4 - this.availableGateways.length % 4;
+            });
+        },
+        truncateTitle(text, length) {
+            return weLo_.truncate(text, { 'length': length });
+        },
+        unSanitizeString(str) {
+            return str.split('-').map(function capitalize(part) {
+                return part.charAt(0).toUpperCase() + part.slice(1);
+            }).join(' ');
+        },
+        fetchSettings() {
+            wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/settings').done(response => {
+                this.settings = response;
+                this.$store.dispatch('Cart/setSettingsAction', response);
+            });
+        },
+        fetchTaxes() {
+            wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/taxes').done(response => {
+                this.availableTax = response;
+                this.$store.dispatch('Cart/setAvailableTaxAction', response);
+            });
+        },
+        handleCategorySelect(selectedOption, id) {
+            if (selectedOption.id == '-1') {
+                this.$router.push({ name: 'Home' });
+            } else {
+                this.$router.push({ name: 'Home', query: { 'category': selectedOption.id } });
+            }
+        },
+        handleCategoryRemove(selectedOption, id) {
+            this.$router.push({ name: 'Home' });
+            this.selectedCategory = {
+                id: -1,
+                level: 0,
+                name: this.__('All categories', 'wepos'),
+                parent_id: null
+            };
+        },
+        fetchCategories() {
+            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/products/categories?hide_empty=true&_fields=id,name,parent_id&per_page=100').then(response => {
+                response.sort(function (a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+                var tree = function (response, root) {
+                    var r = [],
+                        o = {};
+                    response.forEach(function (a) {
+                        o[a.id] = { response: a, children: o[a.id] && o[a.id].children };
+                        if (a.parent_id === root) {
+                            r.push(o[a.id]);
+                        } else {
+                            o[a.parent_id] = o[a.parent_id] || {};
+                            o[a.parent_id].children = o[a.parent_id].children || [];
+                            o[a.parent_id].children.push(o[a.id]);
+                        }
+                    });
+                    return r;
+                }(response, null);
+
+                var selectedCat = {
+                    id: -1,
+                    level: 0,
+                    name: this.__('All categories', 'wepos'),
+                    parent_id: null
+                };
+                var sorted = tree.reduce(function traverse(level) {
+                    return function (r, a) {
+                        a.response.level = level;
+                        return r.concat(a.response, (a.children || []).reduce(traverse(level + 1), []));
+                    };
+                }(0), []);
+                this.categories = sorted;
+
+                this.categories.unshift(selectedCat);
+                this.selectedCategory = selectedCat;
+
+                if (this.$route.query.category !== undefined) {
+                    this.selectedCategory = weLo_.find(response, { id: parseInt(this.$route.query.category) });
+                }
+            });
+        },
+        filterProducts() {
+            this.products = this.products.filter(product => {
+                return weLo_.findIndex(product.categories, { id: this.$route.query.category }) > 0;
+            });
+        },
+
+        fetchTaxSettings() {
+            wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/settings/tax').done(response => {
+                this.taxSettings = response;
+            });
+        }
+    },
+
+    async created() {
+        this.fetchSettings();
+        this.fetchTaxes();
+        this.fetchProducts();
+        this.fetchGateway();
+        this.fetchCategories();
+        // this.fetchTaxSettings();
+
+        if (typeof localStorage != 'undefined') {
+            try {
+                var cartdata = JSON.parse(localStorage.getItem('cartdata'));
+                var orderdata = JSON.parse(localStorage.getItem('orderdata'));
+                cartdata = await this.maybeRemoveDeletedProduct(cartdata);
+                this.$store.dispatch('Cart/setCartDataAction', cartdata);
+                this.$store.dispatch('Order/setOrderDataAction', orderdata);
+            } catch (cartdata) {
+                var orderdata = JSON.parse(localStorage.getItem('orderdata'));
+                this.$store.dispatch('Cart/setCartDataAction', cartdata);
+                this.$store.dispatch('Order/setOrderDataAction', orderdata);
+            }
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (typeof localStorage != 'undefined') {
+                localStorage.setItem('cartdata', JSON.stringify(this.$store.state.Cart.cartdata));
+                localStorage.setItem('orderdata', JSON.stringify(this.$store.state.Order.orderdata));
+            }
+        }, false);
+    }
+});
+
+/***/ }),
+
+/***/ 64:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'Overlay',
+
+    props: {
+        show: {
+            type: Boolean
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 65:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_v_hotkey__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+// import Modal from './Modal.vue';
+
+
+
+let Modal = wepos_get_lib('Modal');
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'ProductInlineSearch',
+
+    props: {
+        products: {
+            type: Array,
+            default() {
+                return [];
+            }
+        },
+        settings: {
+            type: Object,
+            default() {
+                return {};
+            }
+        }
+    },
+
+    components: {
+        Modal,
+        KeyboardControl: __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__["a" /* default */]
+    },
+    data() {
+        return {
+            showResults: false,
+            showVariationModal: false,
+            mode: 'scan',
+            serachInput: '',
+            searchableProduct: [],
+            selectedVariationProduct: {},
+            attributeDisabled: true,
+            chosenAttribute: {}
+        };
+    },
+
+    computed: {
+        placeholder() {
+            return this.mode == 'scan' ? this.__('Scan your product', 'wepos') : this.__('Search product by typing', 'wepos');
+        },
+
+        hotkeys() {
+            return {
+                'f1': this.changeProductSearch,
+                'f2': this.changeScan,
+                'esc': this.searchClose
+            };
+        }
+    },
+
+    watch: {
+        chosenAttribute(newdata, olddata) {
+            if (Object.keys(newdata).length == this.selectedVariationProduct.attributes.length) {
+                this.attributeDisabled = false;
+            }
+        }
+    },
+
+    methods: {
+        changeScan(e) {
+            e.preventDefault();
+            this.changeMode('scan');
+        },
+
+        changeProductSearch(e) {
+            e.preventDefault();
+            this.changeMode('product');
+        },
+
+        searchClose() {
+            this.showResults = false;
+            this.showVariationModal = false;
+            this.changeMode('scan');
+            this.$refs.productSearch.blur();
+        },
+
+        selectedHandler(selectedIndex) {
+            var selectedProduct = this.searchableProduct[selectedIndex];
+            if (selectedProduct.type == 'simple') {
+                this.addToCartAction(selectedProduct);
+            } else {
+                this.selectVariation(selectedProduct);
+            }
+        },
+
+        onKeyDown() {
+            jQuery('.product-search-item.selected').next().children('a').focus();
+        },
+
+        onKeyUp() {
+            jQuery('.product-search-item.selected').prev().children('a').focus();
+        },
+
+        triggerFocus() {
+            this.showResults = true;
+            this.$emit('onfocus');
+        },
+
+        outside() {
+            this.showResults = false;
+            this.$emit('onblur');
+        },
+
+        changeMode(mode) {
+            this.mode = mode;
+            if (this.mode == 'scan') {
+                this.searchableProduct = [];
+                this.showResults = false;
+            }
+            this.$refs.productSearch.focus();
+        },
+
+        handleProductScan() {
+            if (this.mode == 'product') {
+                return;
+            }
+            var generalSettings = this.settings.wepos_general,
+                field = generalSettings.barcode_scanner_field == 'custom' ? 'barcode' : generalSettings.barcode_scanner_field,
+                selectedProduct = {},
+                filterProduct = this.products.filter(product => {
+                if (product.type == 'simple') {
+                    if (product[field].toString() == this.serachInput) {
+                        return true;
+                    }
+                }
+                if (product.type == 'variable') {
+                    var ifFound = false;
+                    if (product.variations.length > 0) {
+                        weLo_.forEach(product.variations, (item, key) => {
+                            if (item[field].toString() == this.serachInput) {
+                                ifFound = true;
+                            }
+                        });
+                    }
+
+                    if (ifFound) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            if (filterProduct.length > 0) {
+                filterProduct = filterProduct[0];
+
+                if (filterProduct.type == 'variable') {
+                    var variations = filterProduct.variations;
+                    var selectedVariationProduct = variations.filter(item => {
+                        if (item[field].toString() == this.serachInput) {
+                            return true;
+                        }
+                        return false;
+                    });
+                    selectedProduct = selectedVariationProduct[0];
+                    selectedProduct.parent_id = filterProduct.id;
+                    selectedProduct.type = filterProduct.type;
+                    selectedProduct.name = filterProduct.name;
+
+                    this.$emit('onProductAdded', selectedProduct);
+                } else {
+                    this.$emit('onProductAdded', filterProduct);
+                }
+            }
+
+            this.serachInput = '';
+        },
+
+        searchProduct(e) {
+            if (this.serachInput) {
+                if (this.mode == 'product') {
+                    this.searchableProduct = this.products.filter(product => {
+                        if (product.id.toString().indexOf(this.serachInput) != -1) {
+                            return true;
+                        } else if (product.name.toString().toLowerCase().indexOf(this.serachInput.toLowerCase()) != -1) {
+                            return true;
+                        } else if (product.sku.indexOf(this.serachInput) != -1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+            }
+        },
+
+        selectVariation(product) {
+            this.selectedVariationProduct = product;
+            this.showVariationModal = true;
+        },
+
+        addVariationProduct() {
+            var chosenVariationProduct = this.findMatchingVariations(this.selectedVariationProduct.variations, this.chosenAttribute);
+            var variationProduct = chosenVariationProduct[0];
+            variationProduct.parent_id = this.selectedVariationProduct.id;
+            variationProduct.type = this.selectedVariationProduct.type;
+            variationProduct.name = this.selectedVariationProduct.name;
+
+            this.$emit('onProductAdded', variationProduct);
+            this.showVariationModal = false;
+            this.chosenAttribute = {};
+        },
+
+        addToCartAction(product) {
+            this.$emit('onProductAdded', product);
+        }
+
+    },
+
+    mounted() {
+        this.$refs.productSearch.focus();
+    }
+});
+
+/***/ }),
+
+/***/ 66:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(67);
+/* unused harmony namespace reexport */
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+
+
+/* template */
+var __vue_template__ = null
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__["a" /* default */],
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "assets/src/frontend/components/KeyboardControl.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-28df4a5e", Component.options)
+  } else {
+    hotAPI.reload("data-v-28df4a5e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+
+/***/ 67:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  props: {
+    listLength: Number
+  },
+  data() {
+    return {
+      selectedIndex: 0
+    };
+  },
+  render(h) {
+    return h("ul", this.$scopedSlots.default({ selectedIndex: this.selectedIndex }));
+  },
+  methods: {
+    keyHandler(e) {
+      /**
+        38 - up
+        40 - down
+        9 - tab
+        13 - enter
+       */
+      const key = e.which || e.keyCode;
+
+      if (key === 38 || e.shiftKey && key === 9) {
+        this.handleKeyUp(e);
+        this.$emit('key-up');
+      } else if (key === 40 || key === 9) {
+        this.handleKeyDown(e);
+        this.$emit('key-down');
+      } else if (key === 13) {
+        this.handleEnter(e);
+      }
+    },
+    handleEnter(e) {
+      e.preventDefault();
+      this.$emit("selected", this.selectedIndex);
+    },
+    handleKeyUp(e) {
+      e.preventDefault();
+      if (this.selectedIndex <= 0) {
+        // If index is less than or equal to zero then set it to the last item index
+        this.selectedIndex = this.listLength - 1;
+      } else if (this.selectedIndex > 0 && this.selectedIndex <= this.listLength - 1) {
+        // If index is larger than zero and smaller or equal to last index then decrement
+        this.selectedIndex--;
+      }
+    },
+
+    handleKeyDown(e) {
+      e.preventDefault();
+      // Check if index is below 0
+      // This means that we did not start yet
+      if (this.selectedIndex < 0 || this.selectedIndex === this.listLength - 1) {
+        // Set the index to the first item
+        this.selectedIndex = 0;
+      } else if (this.selectedIndex >= 0 && this.selectedIndex < this.listLength - 1) {
+        this.selectedIndex++;
+      }
+    },
+    addKeyHandler(e) {
+      window.addEventListener("keydown", this.keyHandler);
+    },
+
+    removeKeyHandler() {
+      window.removeEventListener("keydown", this.keyHandler);
+    }
+  },
+  created() {
+    this.addKeyHandler();
+  },
+  destroyed() {
+    this.removeKeyHandler();
+  }
+});
+
+/***/ }),
+
+/***/ 68:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(66);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+// import Modal from './Modal.vue';
+
+let Modal = wepos_get_lib('Modal');
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'CustomerSearch',
+
+    components: {
+        Modal,
+        KeyboardControl: __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__["a" /* default */]
+    },
+
+    data() {
+        return {
+            submitDisable: false,
+            customers: [],
+            customer: {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: ''
+            },
+            showCustomerResults: false,
+            serachInput: '',
+            showNewCustomerModal: false,
+            stateList: [],
+            selectedState: null,
+            selectedCountry: null,
+            isDisabled: true
+        };
+    },
+    computed: {
+        hotkeys() {
+            return {
+                'f7': this.focusCustomerSearch,
+                'shift+f7': this.addNewCustomer,
+                'esc': this.searchClose
+            };
+        },
+        getCountryList() {
+            return Object.keys(wepos.countries).map(val => {
+                return {
+                    code: val,
+                    name: wepos.countries[val]
+                };
+            });
+        },
+        orderdata() {
+            return this.$store.state.Order.orderdata;
+        }
+    },
+
+    watch: {
+        customer: {
+            handler(val) {
+                this.isDisabled = true;
+                if (val.first_name !== undefined && val.first_name.trim() != '' && val.last_name !== undefined && val.last_name.trim() != '' && val.email !== undefined && val.email.trim() != '') {
+                    this.isDisabled = false;
+                }
+            },
+            deep: true
+        },
+
+        'orderdata.customer_id'(newVal) {
+            this.serachInput = newVal ? this.orderdata.billing.first_name + ' ' + this.orderdata.billing.last_name : '';
+        }
+
+    },
+
+    methods: {
+        focusCustomerSearch(e) {
+            e.preventDefault();
+            this.$refs.customerSearch.focus();
+        },
+        searchClose() {
+            this.showCustomerResults = false;
+            this.serachInput = '';
+            this.showNewCustomerModal = false;
+            this.$refs.customerSearch.blur();
+        },
+        addNewCustomer() {
+            this.showNewCustomerModal = true;
+        },
+        selectedHandler(selectedIndex) {
+            var selectedCustomer = this.customers[selectedIndex];
+            this.selectCustomer(selectedCustomer);
+        },
+        onKeyDown() {
+            jQuery('.customer-search-item.selected').next().children('a').focus();
+        },
+
+        onKeyUp() {
+            jQuery('.customer-search-item.selected').prev().children('a').focus();
+        },
+        triggerFocus() {
+            this.showCustomerResults = true;
+            this.$emit('onfocus');
+        },
+        onblur() {
+            this.showCustomerResults = false;
+            this.$emit('onblur');
+        },
+        closeNewCustomerModal() {
+            this.customer = {
+                email: '',
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                address_2: '',
+                country: '',
+                state: '',
+                postcode: '',
+                city: '',
+                phone: ''
+            };
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.showNewCustomerModal = false;
+        },
+        searchCustomer() {
+            if (this.serachInput) {
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/customers?search=' + this.serachInput).done(response => {
+                    this.customers = response;
+                });
+            } else {
+                this.$emit('onCustomerSelected', {});
+            }
+        },
+        selectCustomer(customer) {
+            this.$emit('onCustomerSelected', customer);
+            this.serachInput = customer.first_name + ' ' + customer.last_name;
+            this.showCustomerResults = false;
+        },
+        createCustomer() {
+            if (this.customer.email) {
+                var customerData = {
+                    email: this.customer.email,
+                    first_name: this.customer.first_name,
+                    last_name: this.customer.last_name,
+                    username: this.customer.email,
+                    password: this.generatePassword(20),
+                    billing: {
+                        first_name: this.customer.first_name,
+                        last_name: this.customer.last_name,
+                        address_1: this.customer.address_1,
+                        address_2: this.customer.address_2,
+                        country: this.selectedCountry !== null ? this.selectedCountry.code : '',
+                        state: this.selectedState !== null ? this.selectedState.code : this.customer.state,
+                        postcode: this.customer.postcode,
+                        city: this.customer.city,
+                        phone: this.customer.phone,
+                        email: this.customer.email
+                    }
+                };
+                var $contentWrap = jQuery('.wepos-new-customer-form');
+                $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
+
+                wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/customers', customerData).done(response => {
+                    this.serachInput = response.first_name + ' ' + response.last_name;
+                    this.$emit('onCustomerSelected', response);
+                    $contentWrap.unblock();
+                    this.closeNewCustomerModal();
+                }).fail(response => {
+                    $contentWrap.unblock();
+                    alert(response.responseJSON.message);
+                });
+            } else {
+                alert(this.__('Please enter an email address for customer', 'wepos'));
+            }
+        },
+        removeCountrySelect(selectedOption, id) {
+            this.selectedState = null;
+            this.selectedCountry = null;
+            this.stateList = [];
+            this.customer.country = '';
+            this.customer.state = '';
+        },
+
+        removeStateSelect(selectedOption, id) {
+            this.selectedState = null;
+            this.customer.state = '';
+        },
+        handleCountrySelect(selectedOption, id) {
+            var state = wepos.states[selectedOption.code] !== undefined ? wepos.states[selectedOption.code] : [];
+            var stateKeys = Object.keys(state);
+
+            if (stateKeys.length > 0) {
+                this.stateList = stateKeys.map(val => {
+                    return {
+                        code: val,
+                        name: state[val]
+                    };
+                });
+            } else {
+                this.stateList = state;
+                this.selectedState = null;
+            }
+        },
+        generatePassword(length) {
+            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                retVal = "";
+            for (var i = 0, n = charset.length; i < length; ++i) {
+                retVal += charset.charAt(Math.floor(Math.random() * n));
+            }
+            return retVal;
+        }
+    },
+    created() {
+        this.eventBus.$on('emptycart', orderdata => {
+            this.serachInput = '';
+        });
+
+        var orderdata = JSON.parse(localStorage.getItem('orderdata'));
+
+        if (orderdata.customer_id != 'undefined' && orderdata.customer_id != 0) {
+            this.serachInput = orderdata.billing.first_name + ' ' + orderdata.billing.last_name;
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 69:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(292);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    name: 'FeeKeypad',
+
+    components: {
+        keyboard: __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__["a" /* default */]
+    },
+    computed: {
+        hotkeys() {
+            var keymap = {
+                discount: {
+                    'f4': this.showFeeKeypad,
+                    'esc': this.hideFeeKepad
+                },
+                fee: {
+                    'f5': this.showFeeKeypad,
+                    'esc': this.hideFeeKepad
+                }
+            };
+            return keymap[this.shortKey];
+        }
+    },
+    props: {
+        name: {
+            type: String,
+            default: 'Fee'
+        },
+        className: {
+            type: String,
+            default: ''
+        },
+        shortKey: {
+            type: String,
+            default: ''
+        }
+    },
+    data() {
+        return {
+            input: '',
+            displayValue: '',
+            viewFeeKeypad: false
+        };
+    },
+    methods: {
+        hideFeeKepad(e) {
+            this.viewFeeKeypad = false;
+        },
+        layout() {
+            return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0' + wepos.currency_format_decimal_sep + '|{% ' + this.name + ':percent}{' + wepos.currency_format_symbol + ' ' + this.name + ':flat}';
+        },
+        percentFee(keyboard) {
+            this.$emit('inputfee', keyboard.value.toString(), 'percent');
+            this.viewFeeKeypad = false;
+            this.input = '';
+            this.displayValue = '';
+        },
+        flatFee(keyboard) {
+            this.$emit('inputfee', keyboard.value.toString(), 'flat');
+            this.viewFeeKeypad = false;
+            this.input = '';
+            this.displayValue = '';
+        },
+        change(value) {
+            if (!isNaN(value)) {
+                this.displayValue = value;
+                this.input = this.displayValue;
+            } else {
+                this.input = this.displayValue;
+                if (this.displayValue == '') {
+                    this.input = '';
+                }
+            }
+
+            jQuery(this.$refs.feeinput).focus();
+
+            if (this.input == '') {
+                jQuery(this.$refs.feeinput).focus();
+            }
+        },
+        inputChange() {
+            if (!isNaN(this.displayValue)) {
+                this.input = this.displayValue;
+            } else {
+                this.displayValue = this.input;
+            }
+
+            if (this.input == '') {
+                jQuery(this.$refs.feeinput).focus();
+            }
+        },
+        showFeeKeypad(e) {
+            e.preventDefault();
+            this.viewFeeKeypad = true;
+            setTimeout(() => {
+                jQuery(this.$refs.feeinput).focus();
+            }, 500);
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 70:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+const Tokens = {
+	// Sequences that no-one will ever put in their keyboards.
+	PIPE: '7440011c983cf39ae730b1f831e2922ac5a76910',
+	OPEN_BRACE: 'f630c4abcae620278f82e142a526ef325c2a773a',
+	CLOSE_BRACE: 'ad982c66898e02a5dab419ea7568421b03f68ee2'
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	name: 'keyboard',
+
+	props: {
+		value: {
+			type: String,
+			default: ''
+		},
+		layouts: {
+			type: [String, Array],
+			required: true
+		},
+		maxlength: {
+			type: Number,
+			default: 0,
+			validator: value => value >= 0
+		},
+		pattern: {
+			type: String,
+			default: null
+		}
+	},
+
+	data() {
+		return {
+			layout: 0
+		};
+	},
+
+	computed: {
+		/**
+   * Whether or not the keyboard input has hit its maximum length.
+   * @returns {Boolean}
+   */
+		full() {
+			return this.maxlength > 0 && this.value.length >= this.maxlength;
+		},
+
+		/**
+   * Whether or not the keyboard input is empty.
+   * @return {Boolean}
+   */
+		empty() {
+			return this.value.length === 0;
+		},
+
+		/**
+   * Returns the lines that make up a layout.
+   * @return {Array}
+   */
+		lines() {
+			let layout = (Array.isArray(this.layouts) ? this.layouts : [this.layouts])[this.layout];
+
+			return layout.replace('||', Tokens.PIPE).replace('{{', Tokens.OPEN_BRACE).replace('}}', Tokens.CLOSE_BRACE).split('|');
+		},
+
+		/**
+   * Returns an array of buttons to render in the component.
+   * @returns {Array[]}
+   */
+		buttons() {
+			return this.lines.map(line => {
+				// TODO: Could potentially rely on Object.values() here instead of being explicit.
+				let stream = line.match(new RegExp(`(${Tokens.OPEN_BRACE}|${Tokens.CLOSE_BRACE}|${Tokens.PIPE}|.)`, 'g'));
+
+				let buttons = [];
+				let token = null;
+
+				stream.forEach(char => {
+					if (char === '{') {
+						token = '';
+					} else if (char === '}') {
+						let command = token.split(':');
+						let text = command.length > 1 ? command[0] : '';
+						let action = command.length > 1 ? command[1] : command[0];
+						let args = command.length > 2 ? command[2] : null;
+						let method = null;
+
+						if (['append', 'backspace', 'space', 'clear', 'goto'].indexOf(action) >= 0) method = this[action].bind(this, args);else method = this.$emit.bind(this, action, this);
+
+						buttons.push({
+							type: 'action',
+							action: { name: action.replace(/\s+/g, '-').toLowerCase(), callable: method },
+							value: text,
+							args
+						});
+
+						token = null;
+					} else {
+						if (token !== null) {
+							token += char;
+						} else {
+							if (char === Tokens.PIPE) char = '|';
+							if (char === Tokens.OPEN_BRACE) char = '{';
+							if (char === Tokens.CLOSE_BRACE) char = '}';
+
+							buttons.push({
+								type: 'char',
+								action: { name: null, callable: this.append.bind(this, char) },
+								value: char,
+								args: null
+							});
+						}
+					}
+				});
+
+				return buttons;
+			});
+		},
+
+		/**
+   * Whether or not the current value matches the regex provided to pattern. Always
+   * returns true if no pattern was provided.
+   * @returns {Boolean}
+   */
+		valid() {
+			return !this.pattern || this.value.match(new RegExp(this.pattern));
+		}
+	},
+
+	methods: {
+		/**
+   * Mutates the keyboard value to a new value.
+   * @param {String} value The new value.
+   */
+		mutate(value) {
+			if (this.maxlength > 0) {
+				value = value.slice(0, this.maxlength);
+			}
+
+			this.$emit('input', value);
+		},
+
+		/**
+   * Appends a new value to the end of the current keyboard value.
+   * @param {String} char The character(s) to append.
+   */
+		append(char) {
+			this.mutate(this.value + char);
+		},
+
+		/**
+   * Remove the last character from the current keyboard value.
+   */
+		backspace() {
+			this.mutate(this.value.slice(0, this.value.length - 1));
+		},
+
+		/**
+   * Add one whitespace character to the current keyboard value.
+   */
+		space() {
+			this.append(' ');
+		},
+
+		/**
+   * Go to a new layout.
+   * @param {Number} The layout index.
+   */
+		goto(layout) {
+			if (Array.isArray(this.layouts)) {
+				if (layout >= 0 && layout < this.layouts.length) {
+					this.layout = layout;
+				} else {
+					throw new Error('The requested layout does not exist.');
+				}
+			} else {
+				throw new Error('A single non-array layout was provided.');
+			}
+		},
+
+		/**
+   * Clear the entire keyboard value.
+   */
+		clear() {
+			this.mutate('');
+		}
+	}
+});
+
+/***/ }),
+
+/***/ 72:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'ReceiptPrint',
+
+    methods: {
+        printReceipt() {
+            var self = this;
+
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 73:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'ReceiptPrintHtml',
+
+    props: {
+        printdata: {
+            type: Object,
+            default() {
+                return {};
+            }
+        },
+        settings: {
+            type: Object,
+            default() {
+                return {};
+            }
+        }
+    },
+    methods: {
+        formatDate(date) {
+            var date = new Date(date);
+            return date.toLocaleString();
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 74:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    data() {
+        return {
+            viewNotePopover: false,
+            customerNote: ''
+        };
+    },
+
+    computed: {
+        hotkeys() {
+            return {
+                'f6': this.openNote,
+                'esc': this.closeNote
+            };
+        }
+    },
+
+    methods: {
+        openNote(e) {
+            e.preventDefault();
+            this.viewNotePopover = true;
+            setTimeout(() => {
+                jQuery(this.$refs.customernote).focus();
+            }, 500);
+        },
+        closeNote() {
+            this.viewNotePopover = false;
+        },
+        addCustomerNote() {
+            this.$emit('addnote', this.customerNote);
+            this.viewNotePopover = false;
+            this.customerNote = '';
+        }
+    }
+});
+
 /***/ })
-]),[139]);
+
+},[273]);

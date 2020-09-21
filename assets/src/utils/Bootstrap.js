@@ -13,6 +13,9 @@ import Modal from './components/Modal.vue'
 import Switches from './components/Switches.vue'
 import "vue-multiselect/dist/vue-multiselect.min.css"
 
+import dayjs from 'dayjs';
+window.dayjs = dayjs;
+
 Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )
 Vue.component( 'v-popover', VPopover )

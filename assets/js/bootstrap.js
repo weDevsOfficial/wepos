@@ -365,7 +365,13 @@ var _Switches2 = _interopRequireDefault(_Switches);
 
 __webpack_require__(370);
 
+var _dayjs = __webpack_require__(400);
+
+var _dayjs2 = _interopRequireDefault(_dayjs);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.dayjs = _dayjs2.default;
 
 _vue2.default.directive('tooltip', _vTooltip.VTooltip);
 _vue2.default.directive('close-popover', _vTooltip.VClosePopover);

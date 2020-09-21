@@ -12,9 +12,6 @@ import Multiselect from 'vue-multiselect'
 import Modal from './components/Modal.vue'
 import Switches from './components/Switches.vue'
 import "vue-multiselect/dist/vue-multiselect.min.css"
-import moment from 'moment'
-
-window.moment = moment
 
 Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )

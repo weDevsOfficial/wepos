@@ -304,20 +304,11 @@
                                     </td>
                                     <td class="action"><span class="flaticon-cancel-music" @click.prevent="removeCustomerNote"></span></td>
                                 </tr>
-                                <template v-if="$store.getters['Cart/getTotal'] > 0">
-                                  <tr class="pay-now" @click="initPayment()">
-                                    <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
-                                    <td class="amount">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</td>
-                                    <td class="icon"><span class="flaticon-right-arrow"></span></td>
-                                  </tr>
-                                </template>
-                                <template v-else>
-                                  <tr class="pay-now disabled">
-                                    <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
-                                    <td class="amount">{{ formatPrice( 0 ) }}</td>
-                                    <td class="icon"><span class="flaticon-right-arrow"></span></td>
-                                  </tr>
-                                </template>
+                                <tr class="pay-now" @click="initPayment()">
+                                  <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
+                                  <td class="amount">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</td>
+                                  <td class="icon"><span class="flaticon-right-arrow"></span></td>
+                                </tr>
                             </tbody>
                         </table>
                     </form>
@@ -859,6 +850,10 @@ export default {
         },
 
         initPayment() {
+            if( this.$store.state.Cart.cartdata.line_items.length <= 0 ) {
+              return;
+            }
+
             this.showModal = true;
             this.$store.dispatch( 'Order/setGatewayAction', this.availableGateways[0] );
             this.selectedGateway = this.availableGateways[0].id;
@@ -2005,13 +2000,6 @@ export default {
                                     }
                                 }
                             }
-
-                            &.disabled {
-                              background: rgba(68, 184, 161, 0.5);
-                              color: #fff;
-                              cursor: no-drop;
-                            }
-
                         }
                     }
                 }

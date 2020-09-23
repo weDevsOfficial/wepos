@@ -12,6 +12,7 @@
     "zip": "node build/"
   },
   "dependencies": {
+    "@mathieustan/vue-datepicker": "^0.2.8",
     "@wordpress/hooks": "^2.0.5",
     "dayjs": "^1.8.36",
     "lodash": "^4.17.11",

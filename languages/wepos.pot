@@ -248,10 +248,6 @@ msgstr ""
 msgid "Add Customer"
 msgstr ""
 
-#: assets/js/frontend.min.js:1 assets/src/frontend/components/FeeKeypad.vue:4
-msgid "Add"
-msgstr ""
-
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:393
 #: assets/src/frontend/components/PrintReceipt.vue:5
 msgid "Print Receipt"

@@ -41,7 +41,6 @@ return [
 	__( 'Zip/Postal Code (optional)', 'wepos' ),
 	__( 'Phone (optional)', 'wepos' ),
 	__( 'Add Customer', 'wepos' ),
-	__( 'Add', 'wepos' ),
 	__( 'Print Receipt', 'wepos' ),
 	__( 'Order ID', 'wepos' ),
 	__( 'Order Date', 'wepos' ),

@@ -305,9 +305,9 @@
                                     <td class="action"><span class="flaticon-cancel-music" @click.prevent="removeCustomerNote"></span></td>
                                 </tr>
                                 <tr class="pay-now" @click="initPayment()">
-                                    <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
-                                    <td class="amount">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</td>
-                                    <td class="icon"><span class="flaticon-right-arrow"></span></td>
+                                  <td>{{ __( 'Pay Now', 'wepos' ) }}</td>
+                                  <td class="amount">{{ formatPrice( $store.getters['Cart/getTotal'] ) }}</td>
+                                  <td class="icon"><span class="flaticon-right-arrow"></span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -767,7 +767,11 @@ export default {
             this.emptyCart();
         },
         ableToProcess() {
-            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            if( this.selectedGateway === 'wepos_cash' ) {
+              return this.cashAmount >= this.$store.getters['Cart/getTotal'] && canProcess;
+            }
+            return canProcess;
         },
         processPayment(e) {
             e.preventDefault();
@@ -846,6 +850,10 @@ export default {
         },
 
         initPayment() {
+            if( this.$store.state.Cart.cartdata.line_items.length <= 0 ) {
+              return;
+            }
+
             this.showModal = true;
             this.$store.dispatch( 'Order/setGatewayAction', this.availableGateways[0] );
             this.selectedGateway = this.availableGateways[0].id;
@@ -1992,7 +2000,6 @@ export default {
                                     }
                                 }
                             }
-
                         }
                     }
                 }

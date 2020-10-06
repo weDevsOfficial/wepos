@@ -1156,3 +1156,153 @@ div:focus, span:focus, button:focus, input:focus {
     }
 }
 
+
+/* WePOS Mobile Styles */
+
+@media screen and (max-width: 950px) {
+  #wepos-main {
+    flex-direction: column;
+     .content-product {
+       margin-right: unset !important;
+      .items-wrapper.grid {
+        .item {
+          flex-grow: 1;
+          flex-basis: 25% !important;
+        }
+        margin: 0 !important;
+        width: calc(100vw - 10px);
+        height: unset !important;
+        min-height: 100vh;
+      }
+      .top-panel {
+        > * {
+          display: block !important;
+          float: none !important;
+        }
+        .search-bar {
+            width: 100% !important;
+            margin-bottom: 10px;
+            .search-box {
+              input#product-search {
+                padding-right: 10px !important;
+              }
+              .search-type {
+                display: none;
+              }
+              span.search-icon {
+                top: 5px !important;
+              }
+          }
+        }
+        .toggle-view {
+          display: none !important;
+        }
+        .category {
+          width: 100% !important;
+        }
+      }
+    }
+    .content-cart {
+      min-height: 200px;
+      margin-top: 10px;
+      .top-panel {
+        .customer-search-box span.add-new-customer {
+          top: 5px !important;
+        }
+      }
+      .cart-panel .cart-content {
+        table.cart-table {
+          // height: fit-content;
+          tbody tr td {
+            font-size: 10px !important;
+          }
+        }
+      }
+    }
+    .wepos-modal {
+      .wepos-modal-main.has-footer {
+        background-color: #fbfcfe;
+      }
+      .wepos-modal-content {
+        top: 2.5vh !important;
+        left: 5vw;
+        transform: none;
+        width: 88vw !important;
+        height: 90vw !important;
+      }
+      .wepos-new-customer-form .wepos-form {
+        display: flex;
+        flex-direction: column;
+      }
+      .wepos-form .form-row {
+        flex-direction: column !important;
+        &.col-2,
+        &.col-3 {
+          flex-direction: column !important;
+        }
+        input,
+        select {
+          &:active,
+          &:focus {
+            border-color: #a0a4a7;
+          }
+        }
+        .multiselect.wepos-multiselect.customer-country {
+          width: 100% !important;
+          height: 35px;
+          margin-bottom: 10px;
+        }
+        .wepos-multiselect .multiselect__tags {
+          height: 35px;
+        }
+      }
+      .wepos-checkout-wrapper {
+        flex-direction: column;
+        .right-content {
+          background-color: #fbfcfe;
+          .content {
+            .payment-option .payment-amount {
+              .input-part .input-wrap {
+                width: unset;
+              }
+              .change-money p {
+                line-height: 19px;
+              }
+            }
+            .payment-gateway label {
+              flex: 1 0 100%;
+              span.grid-placeholder:empty {
+                display: none;
+              }
+            }
+          }
+          .header,
+          .footer {
+            display: flex;
+            flex-direction: column;
+            a.back-btn {
+              margin-bottom: 10px;
+            }
+          }
+        }
+      }
+      footer {
+        bottom: unset !important;
+      }
+    }
+  }
+  .product-loading {
+    display: flex;
+    align-items: space-around;
+  }
+  .spinner {
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    top: 40%;
+    left: 45%;
+    transform: translate(-45%, -40%)
+  }
+}
+
+/* End WePOS Mobile Styles */

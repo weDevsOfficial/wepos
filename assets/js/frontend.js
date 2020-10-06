@@ -1755,7 +1755,7 @@ let Modal = wepos_get_lib('Modal');
         return {
             showResults: false,
             showVariationModal: false,
-            mode: 'scan',
+            mode: 'product',
             serachInput: '',
             searchableProduct: [],
             selectedVariationProduct: {},
@@ -4995,7 +4995,7 @@ var render = function() {
         },
         [
           _c("a", { attrs: { href: "#" }, on: { click: _vm.showFeeKeypad } }, [
-            _vm._v(_vm._s(_vm.__("Add", "wepos")) + " " + _vm._s(_vm.name))
+            _vm._v("+ " + _vm._s(_vm.name))
           ]),
           _vm._v(" "),
           _c(
@@ -6848,7 +6848,7 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("p", [
                                     _vm._v(
-                                      _vm._s(_vm.__("Empty Cart", "wepos"))
+                                      _vm._s(_vm.__("Cart Empty", "wepos"))
                                     )
                                   ])
                                 ])

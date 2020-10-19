@@ -1,0 +1,33 @@
+{
+  "name": "wedevs/wepos",
+  "description": "A beautiful and fast Point of Sale (POS) system for WooCommerce",
+  "type": "wordpress-plugin",
+  "license": "GPL2",
+  "authors": [
+    {
+      "name": "weDevs",
+      "email": "info@wedevs.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "appsero/client": "dev-master"
+  },
+  "require-dev": {
+    "wp-coding-standards/wpcs": "dev-master",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3"
+  },
+  "autoload" : {
+    "psr-4": {
+        "WeDevs\\WePOS\\": "includes/"
+    }
+  },
+  "scripts": {
+    "phpcs": [
+      "phpcs -p -s"
+    ],
+    "phpcbf": [
+      "phpcbf -p"
+    ]
+  }
+}

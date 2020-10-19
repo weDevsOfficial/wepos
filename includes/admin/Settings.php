@@ -1,5 +1,5 @@
 <?php
-namespace WePOS\Admin;
+namespace WeDevs\WePOS\Admin;
 
 /**
 * Admin Settings Class
@@ -200,4 +200,5 @@ class Settings {
     public function get_settings_fields() {
         return wepos_get_settings_fields();
     }
+
 }

@@ -1,5 +1,5 @@
 <?php
-namespace WePOS\Admin;
+namespace WeDevs\WePOS\Admin;
 
 /**
 * Admin product class

@@ -1,5 +1,5 @@
 <?php
-namespace WePOS;
+namespace WeDevs\WePOS;
 
 /**
  * Dokan base compability

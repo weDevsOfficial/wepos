@@ -1,5 +1,5 @@
 # wePOS - WooCommerce Point of Sale #
-**Contributors:** [tareq1988](https://profiles.wordpress.org/tareq1988), [wedevs](https://profiles.wordpress.org/wedevs), [sabbir1991](https://profiles.wordpress.org/sabbir1991), [nizamuddinbabu](https://profiles.wordpress.org/nizamuddinbabu)
+**Contributors:** [tareq1988](https://profiles.wordpress.org/tareq1988), [wedevs](https://profiles.wordpress.org/wedevs), [nizamuddinbabu](https://profiles.wordpress.org/nizamuddinbabu)
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4

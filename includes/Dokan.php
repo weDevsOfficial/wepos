@@ -51,10 +51,12 @@ class Dokan {
      * @return void
      */
     public function frontend_permissions( $valid ) {
-        if ( dokan_is_user_seller( dokan_get_current_user_id() ) ) {
-            if ( dokan_is_seller_enabled( dokan_get_current_user_id() ) ) {
+        if ( dokan_is_user_seller( get_current_user_id() ) ) {
+            if ( dokan_is_seller_enabled( get_current_user_id() ) ) {
                 return true;
             }
+        } else if ( current_user_can( 'cashier' ) ) {
+            return true;
         }
 
         return false;

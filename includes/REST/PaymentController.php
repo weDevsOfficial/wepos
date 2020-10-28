@@ -1,10 +1,10 @@
 <?php
-namespace WePOS\api;
+namespace WeDevs\WePOS\REST;
 
 /**
 * Payment API Controller
 */
-class Payment extends \WC_REST_Orders_Controller {
+class PaymentController extends \WC_REST_Orders_Controller {
 
     /**
      * Endpoint namespace
@@ -23,6 +23,8 @@ class Payment extends \WC_REST_Orders_Controller {
     /**
      * Register all routes releated with stores
      *
+     * @since 1.1.2
+     *
      * @return void
      */
     public function register_routes() {
@@ -30,6 +32,7 @@ class Payment extends \WC_REST_Orders_Controller {
             array(
                 'methods'  => \WP_REST_Server::READABLE,
                 'callback' => array( $this, 'get_avaible_gateways' ),
+                'permission_callback' => '__return_true',
                 'args'     => $this->get_collection_params()
             ),
         ) );
@@ -73,7 +76,7 @@ class Payment extends \WC_REST_Orders_Controller {
      * @return void
      */
     public function get_avaible_gateways( $request ) {
-        $available_gateways = \We_POS::init()->available_gateway();
+        $available_gateways = \WePOS::init()->available_gateway();
         $gateways = [];
 
         foreach ( $available_gateways as $class => $path ) {
@@ -91,7 +94,7 @@ class Payment extends \WC_REST_Orders_Controller {
      * @return void
      */
     public function process_payment( $request ) {
-        $available_gateways = \We_POS::init()->available_gateway();
+        $available_gateways = \WePOS::init()->available_gateway();
         $chosen_gateway = '';
 
         if ( empty( $request['id'] ) ) {

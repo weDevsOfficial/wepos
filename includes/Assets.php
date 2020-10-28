@@ -1,5 +1,5 @@
 <?php
-namespace WePOS;
+namespace WeDevs\WePOS;
 
 /**
  * Scripts and Styles Class

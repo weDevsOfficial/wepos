@@ -1,10 +1,10 @@
 <?php
-namespace WePOS\api;
+namespace WeDevs\WePOS\REST;
 
 /**
 * Payment API Controller
 */
-class Products extends \WC_REST_Products_Controller {
+class CustomerController extends \WC_REST_Customers_Controller {
 
     /**
      * Endpoint namespace
@@ -18,7 +18,7 @@ class Products extends \WC_REST_Products_Controller {
      *
      * @var string
      */
-    protected $base = 'products';
+    protected $base = 'customers';
 
     /**
      * Register the routes for taxes.
@@ -27,9 +27,31 @@ class Products extends \WC_REST_Products_Controller {
         register_rest_route( $this->namespace, '/' . $this->base, array(
             array(
                 'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array( $this, 'get_products' ),
-                'permission_callback' => array( $this, 'get_products_permissions_check' ),
+                'callback'            => array( $this, 'get_customers' ),
+                'permission_callback' => array( $this, 'get_customers_permissions_check' ),
                 'args'                => $this->get_collection_params(),
+            ),
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'create_customer' ),
+                'permission_callback' => array( $this, 'create_customer_permission_callback' ),
+                'args'                => array_merge( $this->get_endpoint_args_for_item_schema( \WP_REST_Server::CREATABLE ), array(
+                    'email' => array(
+                        'required' => true,
+                        'type'     => 'string',
+                        'description' => __( 'New user email address.', 'wepos' ),
+                    ),
+                    'username' => array(
+                        'required' => 'no' === get_option( 'woocommerce_registration_generate_username', 'yes' ),
+                        'description' => __( 'New user username.', 'wepos' ),
+                        'type'     => 'string',
+                    ),
+                    'password' => array(
+                        'required' => 'no' === get_option( 'woocommerce_registration_generate_password', 'no' ),
+                        'description' => __( 'New user password.', 'wepos' ),
+                        'type'     => 'string',
+                    ),
+                ) ),
             ),
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
@@ -57,7 +79,7 @@ class Products extends \WC_REST_Products_Controller {
      *
      * @return void
      */
-    public function get_products_permissions_check() {
+    public function get_customers_permissions_check() {
         if ( ! ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_rest_manager_permissions', false ) ) ) {
             return new \WP_Error( 'wepos_rest_cannot_batch', __( 'Sorry, you are not allowed view this resource.', 'wepos' ), array( 'status' => rest_authorization_required_code() ) );
         }
@@ -83,7 +105,7 @@ class Products extends \WC_REST_Products_Controller {
      *
      * @return void
      */
-    public function get_products( $request ) {
+    public function get_customers( $request ) {
         return $this->get_items( $request );
     }
 }

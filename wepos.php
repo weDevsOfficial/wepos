@@ -3,13 +3,13 @@
 Plugin Name: wePOS - Point Of Sale (POS) for WooCommerce
 Plugin URI: https://wedevs.com/wepos
 Description: A beautiful and fast Point of Sale (POS) system for WooCommerce
-Version: 1.1.1
+Version: 1.1.2
 Author: weDevs
 Author URI: https://wedevs.com/
 Text Domain: wepos
 Domain Path: /languages
 WC requires at least: 3.0
-WC tested up to: 3.8.1
+WC tested up to: 4.6
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
@@ -44,18 +44,18 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
- * We_POS class
+ * WePOS class
  *
- * @class We_POS The class that holds the entire We_POS plugin
+ * @class WePOS The class that holds the entire WePOS plugin
  */
-final class We_POS {
+final class WePOS {
 
     /**
      * Plugin version
      *
      * @var string
      */
-    public $version = '1.1.1';
+    public $version = '1.1.2';
 
     /**
      * Holds various class instances
@@ -65,12 +65,14 @@ final class We_POS {
     private $container = [];
 
     /**
-     * Constructor for the We_POS class
+     * Constructor for the WePOS class
      *
      * Sets up all the appropriate hooks and actions
      * within our plugin.
      */
     public function __construct() {
+        require_once __DIR__ . '/vendor/autoload.php';
+
         $this->define_constants();
 
         register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -138,7 +140,7 @@ final class We_POS {
      */
     public function available_gateway() {
         return apply_filters( 'wepos_register_gateway', [
-            'WePOS\gateways\Cash' => WEPOS_INCLUDES . '/gateways/class-cash-gateway.php'
+            'WeDevs\WePOS\Gateways\Cash' => WEPOS_INCLUDES . '/Gateways/Cash.php'
         ] );
     }
 
@@ -162,16 +164,16 @@ final class We_POS {
     }
 
     /**
-     * Initializes the We_POS() class
+     * Initializes the WePOS() class
      *
-     * Checks for an existing We_POS() instance
+     * Checks for an existing WePOS() instance
      * and if it doesn't find one, creates it.
      */
     public static function init() {
         static $instance = false;
 
         if ( ! $instance ) {
-            $instance = new We_POS();
+            $instance = new WePOS();
         }
 
         return $instance;
@@ -292,24 +294,6 @@ final class We_POS {
      */
     public function includes() {
         require_once WEPOS_INCLUDES . '/functions.php';
-        require_once WEPOS_INCLUDES . '/class-assets.php';
-
-        if ( $this->is_request( 'admin' ) ) {
-            require_once WEPOS_INCLUDES . '/admin/class-admin.php';
-            require_once WEPOS_INCLUDES . '/admin/class-settings.php';
-            require_once WEPOS_INCLUDES . '/admin/class-products.php';
-            require_once WEPOS_INCLUDES . '/admin/class-updates.php';
-        }
-
-        if ( $this->is_request( 'frontend' ) ) {
-            require_once WEPOS_INCLUDES . '/class-frontend.php';
-        }
-
-        if ( class_exists( 'WeDevs_Dokan' ) ) {
-            require_once WEPOS_INCLUDES . '/class-dokan.php';
-        }
-
-        require_once WEPOS_INCLUDES . '/class-rest-api.php';
     }
 
     /**
@@ -328,24 +312,22 @@ final class We_POS {
      * @return void
      */
     public function init_classes() {
-        if ( $this->is_request( 'admin' ) ) {
-            $this->container['admin'] = new WePOS\Admin\Admin();
-            $this->container['settings'] = new WePOS\Admin\Settings();
+        if ( is_admin() ) {
+            $this->container['admin']    = new WeDevs\WePOS\Admin\Admin();
+            $this->container['settings'] = new WeDevs\WePOS\Admin\Settings();
 
-            new WePOS\Admin\Products();
-            new WePOS\Admin\Updates();
-        }
-
-        if ( $this->is_request( 'frontend' ) ) {
-            $this->container['frontend'] = new WePOS\Frontend();
+            new WeDevs\WePOS\Admin\Products();
+            new WeDevs\WePOS\Admin\Updates();
+        } else {
+            $this->container['frontend'] = new WeDevs\WePOS\Frontend();
         }
 
         if ( class_exists( 'WeDevs_Dokan' ) ) {
-            $this->container['dokan'] = new WePOS\Dokan();
+            $this->container['dokan'] = new WeDevs\WePOS\Dokan();
         }
 
-        $this->container['rest'] = new WePOS\REST_API();
-        $this->container['assets'] = new WePOS\Assets();
+        $this->container['rest']   = new WeDevs\WePOS\REST\Manager();
+        $this->container['assets'] = new WeDevs\WePOS\Assets();
     }
 
     /**
@@ -355,29 +337,6 @@ final class We_POS {
      */
     public function localization_setup() {
         load_plugin_textdomain( 'wepos', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-    }
-
-    /**
-     * What type of request is this?
-     *
-     * @param  string $type admin, ajax, cron or frontend.
-     *
-     * @return bool
-     */
-    private function is_request( $type ) {
-        switch ( $type ) {
-            case 'admin' :
-                return is_admin();
-
-            case 'ajax' :
-                return defined( 'DOING_AJAX' );
-
-            case 'cron' :
-                return defined( 'DOING_CRON' );
-
-            case 'frontend' :
-                return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
-        }
     }
 
     /**
@@ -412,12 +371,6 @@ final class We_POS {
      * @return void
      */
     function appsero_init_tracker_wepos() {
-
-        if ( ! class_exists( 'Appsero\Client' ) ) {
-            require_once WEPOS_PATH . '/lib/appsero/src/Client.php';
-        }
-
-
         $client = new Appsero\Client( '48fa1273-3e91-4cd6-9c07-d18ad6bc2f54', 'wePos', __FILE__ );
 
         // Active insights
@@ -425,7 +378,6 @@ final class We_POS {
                 ->add_extra( function() {
                     $products = wc_get_products( [ 'fields' => 'ids', 'paginate' => true ] );
                     $orders   = wc_get_orders( [ 'fields' => 'ids', 'paginate' => true ] );
-
                     return [
                         'products' => $products->total,
                         'orders'   => $orders->total
@@ -465,6 +417,6 @@ final class We_POS {
         }
     }
 
-} // We_POS
+} // WePOS
 
-$wepos = We_POS::init();
+$wepos = WePOS::init();

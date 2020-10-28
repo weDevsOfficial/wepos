@@ -1291,7 +1291,11 @@ let Modal = wepos_get_lib('Modal');
             this.emptyCart();
         },
         ableToProcess() {
-            return this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
+            if (this.selectedGateway === 'wepos_cash') {
+                return this.cashAmount >= this.$store.getters['Cart/getTotal'] && canProcess;
+            }
+            return canProcess;
         },
         processPayment(e) {
             e.preventDefault();
@@ -1321,7 +1325,7 @@ let Modal = wepos_get_lib('Modal');
                 }]
             }, this.orderdata, this.cartdata);
 
-            var $contentWrap = jQuery('.wepos-checkout-wrapper .right-content').find('.content');
+            var $contentWrap = jQuery('.wepos-checkout-wrapper');
             $contentWrap.block({ message: null, overlayCSS: { background: '#fff url(' + wepos.ajax_loader + ') no-repeat center', opacity: 0.4 } });
 
             wepos.api.post(wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata).done(response => {
@@ -1349,6 +1353,7 @@ let Modal = wepos_get_lib('Modal');
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString()
                         }, orderdata);
+                        $contentWrap.unblock();
                     } else {
                         $contentWrap.unblock();
                     }
@@ -1363,6 +1368,10 @@ let Modal = wepos_get_lib('Modal');
         },
 
         initPayment() {
+            if (this.$store.state.Cart.cartdata.line_items.length <= 0) {
+                return;
+            }
+
             this.showModal = true;
             this.$store.dispatch('Order/setGatewayAction', this.availableGateways[0]);
             this.selectedGateway = this.availableGateways[0].id;

@@ -1,28 +1,29 @@
-# Copyright (C) 2019 weDevs
+# Copyright (C) 2020 weDevs
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.1.1\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2019-12-23 09:13:19+00:00\n"
+"POT-Creation-Date: 2020-10-28 07:55:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: wp-vue-i18n 1.1.3\n"
 
 #: assets/js/admin.js:122 assets/js/admin.js:369 assets/js/admin.js:461
-#: assets/js/admin.js:1429 assets/js/bootstrap.js:949
-#: assets/js/frontend.js:3155 assets/js/frontend.js:3337
-#: assets/js/frontend.js:3421 assets/js/frontend.js:3931
-#: assets/js/frontend.js:4971 assets/js/frontend.js:5138
-#: assets/js/frontend.js:5243 assets/js/frontend.js:5618
-#: assets/js/frontend.js:5729 assets/js/vendor.js:27230
-#: assets/js/vendor.js:27806 assets/js/vendor.js:27916
-#: assets/js/vendor.js:28036 assets/js/vendor.js:28058
-#: assets/js/vendor.js:28115
+#: assets/js/admin.js:1429 assets/js/bootstrap.js:966
+#: assets/js/frontend.js:3157 assets/js/frontend.js:3339
+#: assets/js/frontend.js:3423 assets/js/frontend.js:3933
+#: assets/js/frontend.js:4973 assets/js/frontend.js:5140
+#: assets/js/frontend.js:5245 assets/js/frontend.js:5620
+#: assets/js/frontend.js:5731 assets/js/vendor.js:17671
+#: assets/js/vendor.js:17771 assets/js/vendor.js:27663
+#: assets/js/vendor.js:28239 assets/js/vendor.js:28349
+#: assets/js/vendor.js:28469 assets/js/vendor.js:28491
+#: assets/js/vendor.js:28548
 msgid "div"
 msgstr ""
 
@@ -54,7 +55,7 @@ msgid "Active"
 msgstr ""
 
 #: assets/js/admin.min.js:1 assets/src/admin/components/Settings.vue:3
-#: includes/admin/class-admin.php:33
+#: includes/admin/Admin.php:33
 msgid "Settings"
 msgstr ""
 
@@ -79,62 +80,62 @@ msgstr ""
 msgid "Please select an image,"
 msgstr ""
 
-#: assets/js/bootstrap.js:858
+#: assets/js/bootstrap.js:875
 msgid "textarea"
 msgstr ""
 
-#: assets/js/bootstrap.js:1088
+#: assets/js/bootstrap.js:1105
 msgid "label"
 msgstr ""
 
-#: assets/js/frontend.js:1228 assets/js/frontend.js:1531
-#: assets/js/frontend.js:1559 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1229 assets/js/frontend.js:1532
+#: assets/js/frontend.js:1560 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:705
-#: assets/src/frontend/components/Home.vue:1020
-#: assets/src/frontend/components/Home.vue:1048
+#: assets/src/frontend/components/Home.vue:1029
+#: assets/src/frontend/components/Home.vue:1057
 msgid "All categories"
 msgstr ""
 
-#: assets/js/frontend.js:1385 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1386 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:261
 #: assets/src/frontend/components/Home.vue:456
-#: assets/src/frontend/components/Home.vue:868
+#: assets/src/frontend/components/Home.vue:877
 #: assets/src/frontend/components/printReceiptHtml.vue:43
 msgid "Discount"
 msgstr ""
 
-#: assets/js/frontend.js:1403 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1404 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:282
 #: assets/src/frontend/components/Home.vue:460
-#: assets/src/frontend/components/Home.vue:886
+#: assets/src/frontend/components/Home.vue:895
 #: assets/src/frontend/components/printReceiptHtml.vue:47
 msgid "Fee"
 msgstr ""
 
-#: assets/js/frontend.js:1769 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1770 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Scan your product"
 msgstr ""
 
-#: assets/js/frontend.js:1769 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1770 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Search product by typing"
 msgstr ""
 
-#: assets/js/frontend.js:2408 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:2409 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/CustomerSearch.vue:334
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4905
+#: assets/js/frontend.js:4907
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5532
+#: assets/js/frontend.js:5534
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:8404
+#: assets/js/frontend.js:8406
 msgid "td"
 msgstr ""
 
@@ -374,7 +375,6 @@ msgid "Apply"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:277
-#: lib/appsero/src/Insights.php:764
 msgid "Cancel"
 msgstr ""
 
@@ -465,8 +465,7 @@ msgid "No gateway found"
 msgstr ""
 
 #: assets/js/frontend.min.js:1 assets/src/frontend/components/Home.vue:510
-#: includes/gateways/class-cash-gateway.php:36
-#: includes/gateways/class-cash-gateway.php:58
+#: includes/Gateways/Cash.php:36 includes/Gateways/Cash.php:58
 msgid "Cash"
 msgstr ""
 
@@ -478,118 +477,157 @@ msgstr ""
 msgid "Back to Sale"
 msgstr ""
 
-#: includes/admin/class-admin.php:28
-msgid "WePOS"
-msgstr ""
-
-#: includes/admin/class-admin.php:38 includes/class-dokan.php:134
+#: includes/Dokan.php:134 includes/admin/Admin.php:38
 msgid "View POS"
 msgstr ""
 
-#: includes/admin/class-admin.php:113
-msgid "Is POS"
-msgstr ""
-
-#: includes/admin/class-products.php:38 includes/admin/class-products.php:69
-msgid "Barcode"
-msgstr ""
-
-#: includes/admin/class-products.php:41 includes/admin/class-products.php:72
-msgid "Enter your unique barcode number or text for this product"
-msgstr ""
-
-#: includes/admin/class-settings.php:33
-msgid "You have no permission to get settings value"
-msgstr ""
-
-#: includes/admin/class-settings.php:39 includes/admin/class-settings.php:66
-msgid "Invalid nonce"
-msgstr ""
-
-#: includes/admin/class-settings.php:61
-msgid "You are not authorized to perform this action."
-msgstr ""
-
-#: includes/admin/class-settings.php:72
-msgid "Setting not saved properly"
-msgstr ""
-
-#: includes/admin/class-settings.php:89
-msgid "Setting has been saved successfully."
-msgstr ""
-
-#: includes/admin/class-updates.php:73
-msgid "WePOS Data Update Required"
-msgstr ""
-
-#: includes/admin/class-updates.php:73
-msgid "We need to update your install to the latest version"
-msgstr ""
-
-#: includes/admin/class-updates.php:74
-msgid "Run the updater"
-msgstr ""
-
-#: includes/admin/class-updates.php:79
-msgid ""
-"It is strongly recommended that you backup your database before proceeding. "
-"Are you sure you wish to run the updater now?"
-msgstr ""
-
-#: includes/api/class-customers-controller.php:42
-msgid "New user email address."
-msgstr ""
-
-#: includes/api/class-customers-controller.php:46
-msgid "New user username."
-msgstr ""
-
-#: includes/api/class-customers-controller.php:51
-msgid "New user password."
-msgstr ""
-
-#: includes/api/class-customers-controller.php:69
-#: includes/api/class-customers-controller.php:84
-#: includes/api/class-products-controller.php:47
-#: includes/api/class-products-controller.php:62
-#: includes/api/class-tax-controller.php:46
-msgid "Sorry, you are not allowed view this resource."
-msgstr ""
-
-#: includes/api/class-payment-controller.php:62
-msgid "Sorry, you cannot access this resources."
-msgstr ""
-
-#: includes/api/class-payment-controller.php:98
-msgid "No order found"
-msgstr ""
-
-#: includes/api/class-payment-controller.php:110
-msgid "No payment gateway found for processing this payment"
-msgstr ""
-
-#: includes/class-dokan.php:154
+#: includes/Dokan.php:154
 msgid "Show POS menu"
 msgstr ""
 
-#: includes/class-dokan.php:155
+#: includes/Dokan.php:155
 msgid "Show POS menu in vendor dashboard"
 msgstr ""
 
-#: includes/class-dokan.php:159 includes/functions.php:185
+#: includes/Dokan.php:159 includes/functions.php:185
 msgid "Yes"
 msgstr ""
 
-#: includes/class-dokan.php:160 includes/functions.php:186
+#: includes/Dokan.php:160 includes/functions.php:186
 msgid "No"
 msgstr ""
 
-#: includes/class-frontend.php:107
+#: includes/Frontend.php:107
 msgid "Point of Sale"
 msgstr ""
 
-#: includes/class-rest-api.php:181
+#: includes/Gateways/Cash.php:37
+msgid "Have your customers pay with cash"
+msgstr ""
+
+#: includes/Gateways/Cash.php:48
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/Gateways/Cash.php:49
+msgid "Enable cash gateway"
+msgstr ""
+
+#: includes/Gateways/Cash.php:55
+msgid "Title"
+msgstr ""
+
+#: includes/Gateways/Cash.php:57
+msgid "Payment method description that the marchent see in pos checkout"
+msgstr ""
+
+#: includes/Gateways/Cash.php:62
+msgid "Description"
+msgstr ""
+
+#: includes/Gateways/Cash.php:64
+msgid "Payment method description that marchent see in pos checkout page"
+msgstr ""
+
+#: includes/Gateways/Cash.php:65
+msgid "Pay with cash"
+msgstr ""
+
+#: includes/Gateways/Cash.php:100
+msgid "Payment collected via cash"
+msgstr ""
+
+#: includes/Gateways/Cash.php:101
+msgid "Cash tendered amount: %1$s, Change amount: %2$s"
+msgstr ""
+
+#: includes/REST/CustomerController.php:42
+msgid "New user email address."
+msgstr ""
+
+#: includes/REST/CustomerController.php:46
+msgid "New user username."
+msgstr ""
+
+#: includes/REST/CustomerController.php:51
+msgid "New user password."
+msgstr ""
+
+#: includes/REST/CustomerController.php:69
+#: includes/REST/CustomerController.php:84
+#: includes/REST/ProductController.php:47
+#: includes/REST/SettingController.php:50 includes/REST/TaxController.php:46
+msgid "Sorry, you are not allowed view this resource."
+msgstr ""
+
+#: includes/REST/Manager.php:182
 msgid "The item %s already out of stock. Please remove this from cart"
+msgstr ""
+
+#: includes/REST/PaymentController.php:65
+msgid "Sorry, you cannot access this resources."
+msgstr ""
+
+#: includes/REST/PaymentController.php:101
+msgid "No order found"
+msgstr ""
+
+#: includes/REST/PaymentController.php:113
+msgid "No payment gateway found for processing this payment"
+msgstr ""
+
+#: includes/admin/Admin.php:28
+msgid "WePOS"
+msgstr ""
+
+#: includes/admin/Admin.php:113
+msgid "Is POS"
+msgstr ""
+
+#: includes/admin/Products.php:38 includes/admin/Products.php:69
+msgid "Barcode"
+msgstr ""
+
+#: includes/admin/Products.php:41 includes/admin/Products.php:72
+msgid "Enter your unique barcode number or text for this product"
+msgstr ""
+
+#: includes/admin/Settings.php:33
+msgid "You have no permission to get settings value"
+msgstr ""
+
+#: includes/admin/Settings.php:39 includes/admin/Settings.php:66
+msgid "Invalid nonce"
+msgstr ""
+
+#: includes/admin/Settings.php:61
+msgid "You are not authorized to perform this action."
+msgstr ""
+
+#: includes/admin/Settings.php:72
+msgid "Setting not saved properly"
+msgstr ""
+
+#: includes/admin/Settings.php:89
+msgid "Setting has been saved successfully."
+msgstr ""
+
+#: includes/admin/Updates.php:73
+msgid "WePOS Data Update Required"
+msgstr ""
+
+#: includes/admin/Updates.php:73
+msgid "We need to update your install to the latest version"
+msgstr ""
+
+#: includes/admin/Updates.php:74
+msgid "Run the updater"
+msgstr ""
+
+#: includes/admin/Updates.php:79
+msgid ""
+"It is strongly recommended that you backup your database before proceeding. "
+"Are you sure you wish to run the updater now?"
 msgstr ""
 
 #: includes/functions.php:132
@@ -652,76 +690,6 @@ msgstr ""
 
 #: includes/functions.php:215
 msgid "Thank you"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:37
-msgid "Have your customers pay with cash"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:48
-msgid "Enable/Disable"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:49
-msgid "Enable cash gateway"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:55
-msgid "Title"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:57
-msgid "Payment method description that the marchent see in pos checkout"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:62
-msgid "Description"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:64
-msgid "Payment method description that marchent see in pos checkout page"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:65
-msgid "Pay with cash"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:100
-msgid "Payment collected via cash"
-msgstr ""
-
-#: includes/gateways/class-cash-gateway.php:101
-msgid "Cash tendered amount: %1$s, Change amount: %2$s"
-msgstr ""
-
-#: lib/appsero/src/Insights.php:369
-msgid ""
-"Want to help make <strong>%1$s</strong> even more awesome? Allow %1$s to "
-"collect non-sensitive diagnostic data and usage information."
-msgstr ""
-
-#: lib/appsero/src/Insights.php:374
-msgid "what we collect"
-msgstr ""
-
-#: lib/appsero/src/Insights.php:381
-msgid "Allow"
-msgstr ""
-
-#: lib/appsero/src/Insights.php:382
-msgid "No thanks"
-msgstr ""
-
-#: lib/appsero/src/Insights.php:747
-msgid "If you have a moment, please let us know why you are deactivating:"
-msgstr ""
-
-#: lib/appsero/src/Insights.php:762
-msgid "I rather wouldn't say"
-msgstr ""
-
-#: lib/appsero/src/Insights.php:763
-msgid "Submit & Deactivate"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

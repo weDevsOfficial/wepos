@@ -29,6 +29,14 @@ config.codekit
 npm-debug.log
 testem.log
 
+# Compiled JS & CSS #
+#####################
+/assets/css/style.css
+/assets/css/style.css.map
+/assets/js/frontend.min.js
+/assets/js/vendor.js
+/languages/wepos.pot 
+
 # Compiled source #
 ###################
 *.com

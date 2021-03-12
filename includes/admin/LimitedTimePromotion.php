@@ -40,13 +40,13 @@ class LimitedTimePromotion {
 
         $notices = [
             [
-                'key'        => 'holiday-2020',
-                'start_date' => '2020-12-22 09:00:00 EST',
-                'end_date'   => '2021-01-08 23:59:00 EST',
-                'title'      => 'Enjoy Flat 50% OFF on wePOS Pro.',
-                'content'    => 'Get Your Holiday Deals Now',
-                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-holidays',
-            ]
+                'key'        => 'wepos-wedevs-birthday-2021',
+                'start_date' => '2021-03-15 00:01:00 EST',
+                'end_date'   => '2021-03-22 23:59:00 EST',
+                'title'      => "It's Our Birthday!",
+                'content'    => 'Enjoy Up To 45% OFF on wePOS Pro',
+                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-wedevs-birthday',
+            ],
         ];
 
         if ( empty( $notices ) ) {

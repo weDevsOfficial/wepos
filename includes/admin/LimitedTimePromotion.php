@@ -44,7 +44,7 @@ class LimitedTimePromotion {
                 'start_date' => '2021-03-15 00:01:00 EST',
                 'end_date'   => '2021-03-22 23:59:00 EST',
                 'title'      => "It's Our Birthday!",
-                'content'    => 'Enjoy Up To 45% OFF on wePOS Pro',
+                'content'    => 'Enjoy Flat 50% OFF on wePOS Pro',
                 'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-wedevs-birthday',
             ],
         ];

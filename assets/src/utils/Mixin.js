@@ -42,6 +42,19 @@ export default {
             );
         },
 
+        truncateNumber( value ) {
+            return parseFloat(
+                accounting.toFixed( value, wepos.currency_format_num_decimals )
+            );
+        },
+
+        unFormat( value ) {
+            if (value.indexOf(wepos.currency_format_decimal_sep) > -1) {
+                return accounting.unformat(value, wepos.currency_format_decimal_sep);
+            }
+            return accounting.unformat(value);
+        },
+
         findMatchingVariations( variations, attributes ) {
             var matching = [];
             for ( var i = 0; i < variations.length; i++ ) {

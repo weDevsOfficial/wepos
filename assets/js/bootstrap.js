@@ -317,11 +317,11 @@ var _vue = __webpack_require__(14);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueRouter = __webpack_require__(92);
+var _vueRouter = __webpack_require__(93);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _vuex = __webpack_require__(93);
+var _vuex = __webpack_require__(94);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
@@ -333,53 +333,52 @@ var _lodash = __webpack_require__(226);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Mixin = __webpack_require__(364);
+var _Mixin = __webpack_require__(366);
 
 var _Mixin2 = _interopRequireDefault(_Mixin);
 
-var _vueJsPopover = __webpack_require__(90);
+var _vueJsPopover = __webpack_require__(91);
 
 var _vueJsPopover2 = _interopRequireDefault(_vueJsPopover);
 
-var _TextEditor = __webpack_require__(366);
+var _TextEditor = __webpack_require__(368);
 
 var _TextEditor2 = _interopRequireDefault(_TextEditor);
 
-var _vTooltip = __webpack_require__(89);
+var _vTooltip = __webpack_require__(90);
 
 var _vHotkey = __webpack_require__(28);
 
 var _vHotkey2 = _interopRequireDefault(_vHotkey);
 
-var _vueMultiselect = __webpack_require__(91);
+var _vueMultiselect = __webpack_require__(92);
 
 var _vueMultiselect2 = _interopRequireDefault(_vueMultiselect);
 
-var _Modal = __webpack_require__(368);
+var _Modal = __webpack_require__(370);
 
 var _Modal2 = _interopRequireDefault(_Modal);
 
-var _Switches = __webpack_require__(371);
+var _Switches = __webpack_require__(373);
 
 var _Switches2 = _interopRequireDefault(_Switches);
 
-__webpack_require__(374);
+__webpack_require__(376);
 
 var _dayjs = __webpack_require__(33);
 
 var _dayjs2 = _interopRequireDefault(_dayjs);
 
-var _vueDatepicker = __webpack_require__(87);
+var _vueDatepicker = __webpack_require__(88);
 
 var _vueDatepicker2 = _interopRequireDefault(_vueDatepicker);
 
-__webpack_require__(377);
+__webpack_require__(379);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.dayjs = _dayjs2.default;
 
-_vue2.default.use(_vueDatepicker2.default);
 _vue2.default.use(_vueDatepicker2.default, {
     lang: 'en'
 });
@@ -561,15 +560,15 @@ var _findindex = __webpack_require__(229);
 
 var _findindex2 = _interopRequireDefault(_findindex);
 
-var _truncate = __webpack_require__(290);
+var _truncate = __webpack_require__(292);
 
 var _truncate2 = _interopRequireDefault(_truncate);
 
-var _includes = __webpack_require__(301);
+var _includes = __webpack_require__(303);
 
 var _includes2 = _interopRequireDefault(_includes);
 
-var _debounce = __webpack_require__(361);
+var _debounce = __webpack_require__(363);
 
 var _debounce2 = _interopRequireDefault(_debounce);
 
@@ -593,7 +592,7 @@ module.exports = window.wepos._;
 
 /***/ }),
 
-/***/ 364:
+/***/ 366:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -603,7 +602,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _i18n = __webpack_require__(365);
+var _i18n = __webpack_require__(367);
 
 exports.default = {
     methods: {
@@ -685,7 +684,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 365:
+/***/ 367:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -810,14 +809,14 @@ var sprintf = exports.sprintf = Jed.sprintf;
 
 /***/ }),
 
-/***/ 366:
+/***/ 368:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_TextEditor_vue__ = __webpack_require__(139);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(367);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1b8977ca_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_TextEditor_vue__ = __webpack_require__(369);
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -864,7 +863,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 367:
+/***/ 369:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -890,18 +889,18 @@ if (false) {
 
 /***/ }),
 
-/***/ 368:
+/***/ 370:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Modal_vue__ = __webpack_require__(140);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e7f44b2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(370);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e7f44b2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Modal_vue__ = __webpack_require__(372);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(369)
+  __webpack_require__(371)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -948,14 +947,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 369:
+/***/ 371:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 370:
+/***/ 372:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1029,18 +1028,18 @@ if (false) {
 
 /***/ }),
 
-/***/ 371:
+/***/ 373:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Switches_vue__ = __webpack_require__(141);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_71008314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Switches_vue__ = __webpack_require__(373);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_71008314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Switches_vue__ = __webpack_require__(375);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(372)
+  __webpack_require__(374)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -1087,14 +1086,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 372:
+/***/ 374:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 373:
+/***/ 375:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

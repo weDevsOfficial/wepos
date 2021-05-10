@@ -1,5 +1,5 @@
 <?php
-namespace WePOS\Admin;
+namespace WeDevs\WePOS\Admin;
 /**
  * Wepos Update class
  *

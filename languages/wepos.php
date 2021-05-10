@@ -93,4 +93,6 @@ return [
 	__( 'Cash', 'wepos' ),
 	__( 'Change money', 'wepos' ),
 	__( 'Back to Sale', 'wepos' ),
+	_( 'Height', '', '', '' ),
+	_( 'Width', '', '', '' ),
 ];

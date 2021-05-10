@@ -1,0 +1,18 @@
+{
+    "exclude": [
+        "README.md",
+        "appsero.json",
+        "composer.json",
+        "composer.lock",
+        ".gitignore",
+        "assets/src",
+        "config.json",
+        "package.json",
+        "package-lock.json",
+        "webpack.config.js",
+        ".editorconfig",
+        ".svnignore",
+        "bin",
+        "build"
+    ]
+}

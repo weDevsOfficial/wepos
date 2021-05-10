@@ -13,6 +13,15 @@ import Modal from './components/Modal.vue'
 import Switches from './components/Switches.vue'
 import "vue-multiselect/dist/vue-multiselect.min.css"
 
+import dayjs from 'dayjs';
+window.dayjs = dayjs;
+
+import VueDatePicker from '@mathieustan/vue-datepicker';
+import '@mathieustan/vue-datepicker/dist/vue-datepicker.min.css';
+Vue.use(VueDatePicker, {
+    lang: 'en'
+});
+
 Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )
 Vue.component( 'v-popover', VPopover )

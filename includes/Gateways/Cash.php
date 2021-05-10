@@ -1,5 +1,5 @@
 <?php
-namespace WePOS\gateways;
+namespace WeDevs\WePOS\Gateways;
 
 /**
 * Cash gateway payment for POS

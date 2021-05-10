@@ -1,13 +1,13 @@
 === wePOS - Point Of Sale (POS) for WooCommerce ===
-Contributors: tareq1988, wedevs, sabbir1991, nizamuddinbabu
+Contributors: tareq1988, wedevs, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.3.2
+Tested up to: 5.7.1
 WC requires at least: 3.0
-WC tested up to: 3.8.1
+WC tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: trunk
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,31 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.1.6 -> 08 May, 2021 =
+
+- **Enhancement:** Added limited promotion banner
+
+= v1.1.5 -> 15 March, 2021 =
+
+- **Enhancement:** Added limited promotion banner
+
+= v1.1.4 -> 21 December, 2020 =
+
+- **Enhancement:** Added limited promotion banner
+
+= v1.1.3 -> 23 November, 2020 =
+
+- **Enhancement:** Added limited promotion banner
+
+= v1.1.2 -> 28 October, 2020 =
+----------------------------
+- **Fix:** Permission callback warnings
+- **Fix:** Duplicate order get generated if pay now button pressed twice while doing payment.
+- **Fix:** While Dokan installed, login was redirecting back to account page.
+- **Feature:** Cash input checking and Validation for Cash payment
+- **Feature:** Cart data validation for payment for currently active cart tab
+- **Feature:** Dynamic Pay now button based on current cart tab
 
 = v1.1.1 -> 23 December, 2019 =
 ----------------------------

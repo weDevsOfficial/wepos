@@ -3,7 +3,7 @@
         <div class="content-product">
             <div class="top-panel wepos-clearfix">
                 <div class="search-bar">
-                    <product-search @onProductAdded="addToCart" :products="products" :settings="settings"></product-search>
+                    <product-search @onProductAdded="addToCart" :products="products" :settings="settings" :allProductsLoaded="allProductsLoaded"></product-search>
                 </div>
                 <div class="category">
                     <multiselect
@@ -41,6 +41,9 @@
                         <span class="toggle-icon grid-view flaticon-menu" @click="productView = 'grid'" :class="{ active: productView == 'grid'}"></span>
                     </div>
                 </div>
+                <div class="progress" v-show="!allProductsLoaded && page > 1">
+                    <progress v-bind:max="totalPages + 1" v-bind:value="page" />
+                </div>
             </div>
 
             <div class="breadcrumb" v-if="getBreadCrums.length > 0">
@@ -54,13 +57,13 @@
                 <span class="close-breadcrumb flaticon-cancel-music" @click.prevent="removeBreadcrums"></span>
             </div>
             <div class="items-wrapper" :class="productView" ref="items-wrapper">
-                <template v-if="!productLoading">
+                <template>
                     <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
                         <template v-if="product.type == 'simple'">
                             <div class="item-wrap" @click.prevnt="addToCart(product)">
                                 <div class="img">
                                     <!-- https://via.placeholder.com/138x90  -->
-                                    <img :src="getProductImage(product)" :alt="getProductImageName( product )">
+                                    <img :src="getProductImage(product)" :alt="getProductImageName( product )" loading="lazy">
                                 </div>
                                 <div class="title" v-if="productView=='grid'">
                                     {{ truncateTitle( product.name, 20 ) }}
@@ -88,7 +91,7 @@
                             <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
                                 <div class="item-wrap" @click="selectVariationProduct( product )">
                                     <div class="img">
-                                        <img :src="getProductImage(product)" :alt="getProductImageName( product )">
+                                        <img :src="getProductImage(product)" :alt="getProductImageName( product )" loading="lazy">
                                     </div>
                                     <div class="title" v-if="productView=='grid'">
                                         {{ truncateTitle( product.name, 20 ) }}
@@ -565,6 +568,7 @@ import CustomerNote from './CustomerNote.vue';
 
 let Modal = wepos_get_lib( 'Modal' );
 
+
 export default {
 
     name: 'Home',
@@ -578,7 +582,7 @@ export default {
         FeeKeypad,
         PrintReceipt,
         PrintReceiptHtml,
-        CustomerNote
+        CustomerNote,
     },
 
     data () {
@@ -587,6 +591,7 @@ export default {
             showQucikMenu: false,
             productView: 'grid',
             productLoading: false,
+            allProductsLoaded: false,
             viewVariationPopover: false,
             showModal: false,
             showPaymentReceipt: false,
@@ -624,6 +629,10 @@ export default {
         }
     },
     computed: {
+        // allProductsLoaded() {
+        //     // console.log( this.page, this.totalPages );
+        //     return this.page > this.totalPages;
+        // },
         cartdata() {
             return this.$store.state.Cart.cartdata;
         },
@@ -900,17 +909,29 @@ export default {
             this.$store.dispatch( 'Cart/removeFeeLineItemsAction', key );
         },
         fetchProducts() {
+
             if ( this.page == 1 ) {
                 this.productLoading = true;
             }
 
             if ( ( this.totalPages >= this.page ) ) {
+                this.allProductsLoaded = false;
                 wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page )
                 .done( ( response, status, xhr ) => {
                     this.products = this.products.concat( response );
-                    this.page += 1;
                     this.totalPages = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
+
+                    if (this.totalPages == this.page) {
+                        this.allProductsLoaded = true;
+                        // this.$emit( 'allProductsLoaded' );
+                        // console.log(2);
+                        this.eventBus.$emit( 'allProductsLoaded' );
+                    }
+
+                    this.page += 1;
+
                     this.productLoading = false;
+
                 }).then( ( response, status, xhr ) => {
                     this.fetchProducts();
                 });
@@ -1123,6 +1144,12 @@ export default {
 
 <style lang="less">
 
+html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior-y: none;
+}
+
 #wepos-main {
     padding: 20px;
     display: flex;
@@ -1134,6 +1161,7 @@ export default {
         .top-panel {
             // display: flex;
             margin-bottom: 20px;
+            position: relative;
 
             .search-bar {
                 width: 56%;
@@ -1202,10 +1230,15 @@ export default {
                             margin-left: -2px;
                             color: #BDC0C9;
                             line-height: 14px;
+                            cursor: pointer;
 
-                            &.active {
+
+                            &.active:not(.disabled) {
                                 background: #3B80F4;
                                 color: #fff;
+                            }
+                            &.disabled {
+                                cursor: not-allowed;
                             }
                             &:first-child {
                                 border-left: 1px solid #E9EBED;
@@ -1380,6 +1413,32 @@ export default {
                         margin-right: -4px;
                         border-right: none;
                     }
+                }
+            }
+
+            .progress {
+                position: absolute;
+                width: 100%;
+                top: -20px;
+
+                progress[value] {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    border: 0;
+                    background-color: transparent;
+                    width: 100%;
+                    height: 5px;
+                }
+                progress[value]::-webkit-progress-bar {
+                    background-color: transparent;
+                }
+                progress[value]::-webkit-progress-value {
+                    cursor: wait;
+                    background-color: #3B80F4 !important;
+                }
+                progress[value]::-moz-progress-bar {
+                    cursor: wait;
+                    background-color: #3B80F4 !important;
                 }
             }
         }

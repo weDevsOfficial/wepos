@@ -63,7 +63,7 @@
                             <div class="item-wrap" @click.prevnt="addToCart(product)">
                                 <div class="img">
                                     <!-- https://via.placeholder.com/138x90  -->
-                                    <img width="147"  height="150" :src="getProductImage(product)" :alt="getProductImageName( product )" loading="lazy">
+                                    <img :src="getProductImage(product)" :alt="getProductImageName( product )" loading="lazy">
                                 </div>
                                 <div class="title" v-if="productView=='grid'">
                                     {{ truncateTitle( product.name, 20 ) }}
@@ -91,7 +91,7 @@
                             <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
                                 <div class="item-wrap" @click="selectVariationProduct( product )">
                                     <div class="img">
-                                        <img width="147"  height="150"  :src="getProductImage(product)" :alt="getProductImageName( product )" loading="lazy">
+                                        <img :src="getProductImage(product)" :alt="getProductImageName( product )" loading="lazy">
                                     </div>
                                     <div class="title" v-if="productView=='grid'">
                                         {{ truncateTitle( product.name, 20 ) }}

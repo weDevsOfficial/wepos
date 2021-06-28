@@ -1,12 +1,12 @@
 <template>
     <div class="search-box" v-click-outside="outside">
         <form action="" autocomplete="off" @submit.prevent="handleProductScan">
-            <input type="text" ref="productSearch" name="search" id="product-search" v-model="searchInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
+            <input type="text" ref="productSearch" autofocus="autofocus" autocomplete="off" name="search" id="product-search" v-model="searchInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
             <div class="search-type" v-hotkey="hotkeys">
-                <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
-                <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
+                <a :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
+                <a :class="{ active: mode == 'scan', disabled: !allProductsLoaded }" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
             </div>
             <div class="search-result" v-show="showResults && mode=='product'">
                 <div v-if="searchableProduct.length">
@@ -84,6 +84,12 @@ export default {
     name: 'ProductInlineSearch',
 
     props: {
+        allProductsLoaded: {
+            type: Boolean,
+            default() {
+                return false;
+            }
+        },
         products: {
             type: Array,
             default() {
@@ -192,7 +198,7 @@ export default {
         },
 
         handleProductScan() {
-            if ( this.mode == 'product' ) {
+            if ( this.mode == 'product' || !this.allProductsLoaded ) {
                 return;
             }
             var generalSettings = this.settings.wepos_general,

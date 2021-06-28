@@ -1,11 +1,11 @@
 <template>
     <div class="search-box" v-click-outside="outside">
         <form action="" autocomplete="off" @submit.prevent="handleProductScan">
-            <input type="text" ref="productSearch" autofocus="autofocus" autocomplete="off" name="search" id="product-search" v-model="searchInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
+            <input type="text" ref="productSearch" autocomplete="off" name="search" id="product-search" v-model="searchInput" :disabled="!allProductsLoaded" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
             <div class="search-type" v-hotkey="hotkeys">
-                <a :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
+                <a :class="{ active: mode == 'product', disabled: !allProductsLoaded }" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
                 <a :class="{ active: mode == 'scan', disabled: !allProductsLoaded }" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
             </div>
             <div class="search-result" v-show="showResults && mode=='product'">
@@ -291,12 +291,19 @@ export default {
 
         addToCartAction( product ) {
             this.$emit( 'onProductAdded', product );
+        },
+
+        focusProductSearch() {
+            this.$refs.productSearch.focus();
+            var ps = this.$refs.productSearch;
+            setTimeout(function() { ps.focus(); }, 100);
         }
 
     },
 
     mounted() {
-        this.$refs.productSearch.focus();
+        // this.$refs.productSearch.focus();
+        this.eventBus.$on('allProductsLoaded', this.focusProductSearch)
     }
 };
 

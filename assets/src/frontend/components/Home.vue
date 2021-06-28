@@ -919,13 +919,17 @@ export default {
                 wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page )
                 .done( ( response, status, xhr ) => {
                     this.products = this.products.concat( response );
+                    this.totalPages = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
 
                     if (this.totalPages == this.page) {
-                        this.allProductsLoaded = true
+                        this.allProductsLoaded = true;
+                        // this.$emit( 'allProductsLoaded' );
+                        // console.log(2);
+                        this.eventBus.$emit( 'allProductsLoaded' );
                     }
 
                     this.page += 1;
-                    this.totalPages = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
+
                     this.productLoading = false;
 
                 }).then( ( response, status, xhr ) => {
@@ -1227,7 +1231,6 @@ html, body {
                             color: #BDC0C9;
                             line-height: 14px;
                             cursor: pointer;
-
 
                             &.active:not(.disabled) {
                                 background: #3B80F4;

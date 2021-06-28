@@ -1,12 +1,12 @@
 <template>
     <div class="search-box" v-click-outside="outside">
         <form action="" autocomplete="off" @submit.prevent="handleProductScan">
-            <input type="text" ref="productSearch" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
+            <input type="text" ref="productSearch" autofocus="autofocus" autocomplete="off" name="search" id="product-search" v-model="searchInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
             <div class="search-type" v-hotkey="hotkeys">
-                <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
-                <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
+                <a :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
+                <a :class="{ active: mode == 'scan', disabled: !allProductsLoaded }" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
             </div>
             <div class="search-result" v-show="showResults && mode=='product'">
                 <div v-if="searchableProduct.length">
@@ -84,6 +84,12 @@ export default {
     name: 'ProductInlineSearch',
 
     props: {
+        allProductsLoaded: {
+            type: Boolean,
+            default() {
+                return false;
+            }
+        },
         products: {
             type: Array,
             default() {
@@ -107,7 +113,7 @@ export default {
             showResults: false,
             showVariationModal: false,
             mode: 'scan',
-            serachInput: '',
+            searchInput: '',
             searchableProduct: [],
             selectedVariationProduct: {},
             attributeDisabled: true,
@@ -192,7 +198,7 @@ export default {
         },
 
         handleProductScan() {
-            if ( this.mode == 'product' ) {
+            if ( this.mode == 'product' || !this.allProductsLoaded ) {
                 return;
             }
             var generalSettings = this.settings.wepos_general,
@@ -200,7 +206,7 @@ export default {
                 selectedProduct = {},
                 filterProduct = this.products.filter( (product) => {
                     if ( product.type == 'simple' ) {
-                        if ( product[field].toString() == this.serachInput ) {
+                        if ( product[field].toString() == this.searchInput ) {
                             return true;
                         }
                     }
@@ -208,7 +214,7 @@ export default {
                         var ifFound = false;
                         if ( product.variations.length > 0 ) {
                             weLo_.forEach( product.variations, ( item, key ) => {
-                                if ( item[field].toString() == this.serachInput ) {
+                                if ( item[field].toString() == this.searchInput ) {
                                     ifFound = true;
                                 }
                             } );
@@ -227,7 +233,7 @@ export default {
                 if ( filterProduct.type == 'variable' ) {
                     var variations = filterProduct.variations;
                     var selectedVariationProduct = variations.filter( (item) => {
-                        if ( item[field].toString() == this.serachInput ) {
+                        if ( item[field].toString() == this.searchInput ) {
                             return true;
                         }
                         return false;
@@ -243,22 +249,24 @@ export default {
                 }
             }
 
-            this.serachInput = '';
+            this.searchInput = '';
         },
 
         searchProduct(e) {
-            if ( this.serachInput ) {
+            if ( this.searchInput ) {
                 if ( this.mode == 'product' ) {
+                    var search = this.searchInput.toLowerCase();
                     this.searchableProduct = this.products.filter( (product) => {
-                        if ( product.id.toString().indexOf( this.serachInput ) != -1 ) {
+                        if ( product.id.toString().indexOf( this.searchInput ) > -1 ) {
                             return true;
-                        } else if ( product.name.toString().toLowerCase().indexOf( this.serachInput.toLowerCase() ) != -1 ) {
+                        } else if ( product.name.toString().toLowerCase().indexOf( search ) > -1 ) {
                             return true
-                        } else if ( product.sku.indexOf( this.serachInput ) != -1 ) {
+                        } else if ( product.sku.indexOf( this.searchInput ) > -1 ) {
                             return true
-                        } else {
-                            return false;
+                        } else if ( product.categories.map(p => p.name.toString().toLowerCase()).join(' ').toString().indexOf( search ) > -1 ) {
+                            return true
                         }
+                        return false;
                     } );
                 }
             }

@@ -1767,7 +1767,7 @@ let Modal = wepos_get_lib('Modal');
             showResults: false,
             showVariationModal: false,
             mode: 'scan',
-            serachInput: '',
+            searchInput: '',
             searchableProduct: [],
             selectedVariationProduct: {},
             attributeDisabled: true,
@@ -1860,7 +1860,7 @@ let Modal = wepos_get_lib('Modal');
                 selectedProduct = {},
                 filterProduct = this.products.filter(product => {
                 if (product.type == 'simple') {
-                    if (product[field].toString() == this.serachInput) {
+                    if (product[field].toString() == this.searchInput) {
                         return true;
                     }
                 }
@@ -1868,7 +1868,7 @@ let Modal = wepos_get_lib('Modal');
                     var ifFound = false;
                     if (product.variations.length > 0) {
                         weLo_.forEach(product.variations, (item, key) => {
-                            if (item[field].toString() == this.serachInput) {
+                            if (item[field].toString() == this.searchInput) {
                                 ifFound = true;
                             }
                         });
@@ -1887,7 +1887,7 @@ let Modal = wepos_get_lib('Modal');
                 if (filterProduct.type == 'variable') {
                     var variations = filterProduct.variations;
                     var selectedVariationProduct = variations.filter(item => {
-                        if (item[field].toString() == this.serachInput) {
+                        if (item[field].toString() == this.searchInput) {
                             return true;
                         }
                         return false;
@@ -1903,22 +1903,24 @@ let Modal = wepos_get_lib('Modal');
                 }
             }
 
-            this.serachInput = '';
+            this.searchInput = '';
         },
 
         searchProduct(e) {
-            if (this.serachInput) {
+            if (this.searchInput) {
                 if (this.mode == 'product') {
+                    var search = this.searchInput.toLowerCase();
                     this.searchableProduct = this.products.filter(product => {
-                        if (product.id.toString().indexOf(this.serachInput) != -1) {
+                        if (product.id.toString().indexOf(this.searchInput) > -1) {
                             return true;
-                        } else if (product.name.toString().toLowerCase().indexOf(this.serachInput.toLowerCase()) != -1) {
+                        } else if (product.name.toString().toLowerCase().indexOf(search) > -1) {
                             return true;
-                        } else if (product.sku.indexOf(this.serachInput) != -1) {
+                        } else if (product.sku.indexOf(this.searchInput) > -1) {
                             return true;
-                        } else {
-                            return false;
+                        } else if (product.categories.map(p => p.name.toString().toLowerCase()).join(' ').toString().indexOf(search) > -1) {
+                            return true;
                         }
+                        return false;
                     });
                 }
             }
@@ -3459,8 +3461,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.serachInput,
-                expression: "serachInput"
+                value: _vm.searchInput,
+                expression: "searchInput"
               }
             ],
             ref: "productSearch",
@@ -3470,7 +3472,7 @@ var render = function() {
               id: "product-search",
               placeholder: _vm.placeholder
             },
-            domProps: { value: _vm.serachInput },
+            domProps: { value: _vm.searchInput },
             on: {
               focus: function($event) {
                 $event.preventDefault()
@@ -3484,7 +3486,7 @@ var render = function() {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.serachInput = $event.target.value
+                _vm.searchInput = $event.target.value
               }
             }
           }),

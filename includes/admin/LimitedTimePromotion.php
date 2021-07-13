@@ -40,12 +40,12 @@ class LimitedTimePromotion {
 
         $notices = [
             [
-                'key'        => 'wepos-wedevs-eid-2021',
-                'start_date' => '2021-05-11 00:09:00 EST',
-                'end_date'   => '2021-05-24 23:00:00 EST',
-                'title'      => 'Eid Mubarak! Stay Safe & Spread Happiness.',
+                'key'        => 'wepos-summer-sale-2021',
+                'start_date' => '2021-07-16 00:09:00 EST',
+                'end_date'   => '2021-07-26 23:00:00 EST',
+                'title'      => 'Summer Sale! Chill out with weDevs.',
                 'content'    => 'Enjoy Flat 50% OFF on wePOS Pro.',
-                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-eidoffer2021',
+                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-summer-sale2021',
             ],
         ];
 

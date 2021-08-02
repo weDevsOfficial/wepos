@@ -3,11 +3,11 @@ Contributors: tareq1988, wedevs, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.7.1
+Tested up to: 5.7.2
 WC requires at least: 3.0
-WC tested up to: 5.2.2
+WC tested up to: 5.4.1
 Requires PHP: 5.6
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,10 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.1.7 -> 13 July, 2021 =
+
+- **Enhancement:** Added summer sale 2021 limited promotion banner
 
 = v1.1.6 -> 08 May, 2021 =
 

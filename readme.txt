@@ -60,7 +60,7 @@ No FAQ
 
 == Changelog ==
 
-= v1.1.9 -> 19 October, 2021 =
+= v1.1.8 -> 19 October, 2021 =
 
 - **Enhancement:** Added halloween sale 2021 limited promotion banner
 

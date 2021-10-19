@@ -3,11 +3,11 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 5.6
+**Tested up to:** 5.8.1
 **WC requires at least:** 3.0
-**WC tested up to:** 4.8
+**WC tested up to:** 5.8.0
 **Requires PHP:** 5.6
-**Stable tag:** 1.1.4
+**Stable tag:** 1.1.8
 **License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 

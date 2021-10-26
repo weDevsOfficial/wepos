@@ -122,6 +122,7 @@ export default {
     }
 
     .wepos-checkout-print-wrapper {
+        color: #181818;
         display: inline-block !important;
     }
 

@@ -2233,4 +2233,19 @@ export default {
 
     }
 }
+
+/* Media queries */
+@media screen and (max-width: 768px) {
+    #wepos-main {
+        display: table-row;
+
+        .content-cart {
+            .cart-panel .cart-content table.cart-table {
+                height: fit-content;
+            }
+
+            min-height: 200px;
+        }
+    }
+}
 </style>

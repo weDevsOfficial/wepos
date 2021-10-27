@@ -123,6 +123,7 @@ export default {
 
     .wepos-checkout-print-wrapper {
         color: #181818;
+        font-family: monospace, monospace;
         display: inline-block !important;
     }
 

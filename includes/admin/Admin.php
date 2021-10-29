@@ -8,7 +8,6 @@ class Admin {
 
     public function __construct() {
         add_action( 'admin_menu', [ $this, 'admin_menu' ] );
-        add_action( 'woocommerce_payment_gateways', [ $this, 'payment_gateways' ] );
         add_filter( 'manage_edit-shop_order_columns', [ $this, 'add_pos_order_column' ], 10 );
         add_action( 'manage_shop_order_posts_custom_column', [ $this, 'render_is_pos_order_content' ], 10, 2);
         add_action( 'admin_print_styles', [ $this, 'add_pos_column_style' ] );
@@ -47,19 +46,6 @@ class Admin {
         }
 
         add_action( 'load-' . $hook, [ $this, 'init_hooks' ] );
-    }
-
-    /**
-    * Add POS gateways
-    *
-    * @param $gateways
-    *
-    * @return array
-    */
-    public function payment_gateways( $gateways ) {
-        $available_gateway = \WePOS::init()->available_gateway();
-        // else add default POS gateways
-        return array_merge( $gateways, apply_filters( 'wepos_payment_gateway', array_keys( $available_gateway ) ) );
     }
 
 

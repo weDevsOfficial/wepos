@@ -82,28 +82,15 @@ final class WePOS {
 
         add_action( 'init', [ $this, 'add_rewrite_rules' ] );
         add_filter( 'query_vars', [ $this, 'register_query_var' ] );
-        add_action( 'plugins_loaded', [ $this, 'init_gateways' ], 11, 1 );
 
         add_action( 'woocommerce_loaded', [ $this, 'init_plugin' ] );
         add_action( 'woocommerce_init', [ $this, 'on_wc_init' ] );
 
+        // Payment gateway manager
+        $this->container['gateway'] = new \WeDevs\WePOS\Gateways\Manager();
+
         // Handle Appsero tracker
         $this->appsero_init_tracker_wepos();
-    }
-
-    /**
-     * Is WC active
-     *
-     * @since 1.0.8
-     *
-     * @return bool
-     */
-    public function is_wc_active() {
-        if (in_array('woocommerce/woocommerce.php', apply_filters('wepos_active_plugins', get_option('active_plugins')))) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -131,38 +118,6 @@ final class WePOS {
         $vars[] = 'wepos';
 
         return $vars;
-    }
-
-    /**
-     * Available Gateway
-     *
-     * @since 1.0.0
-     *
-     * @return array
-     */
-    public function available_gateway() {
-        return apply_filters( 'wepos_register_gateway', [
-            'WeDevs\WePOS\Gateways\Cash' => WEPOS_INCLUDES . '/Gateways/Cash.php'
-        ] );
-    }
-
-    /**
-     * Initialize all gateways
-     *
-     * @since 1.0.0
-     *
-     * @return void
-     */
-    public function init_gateways() {
-        if ( ! $this->is_wc_active() ) {
-            return;
-        }
-
-        $gateways = $this->available_gateway();
-
-        foreach ( $gateways as $class => $path ) {
-            require_once $path;
-        }
     }
 
     /**

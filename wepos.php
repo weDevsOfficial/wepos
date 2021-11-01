@@ -83,6 +83,11 @@ final class WePOS {
         add_action( 'init', [ $this, 'add_rewrite_rules' ] );
         add_filter( 'query_vars', [ $this, 'register_query_var' ] );
 
+        add_action( 'plugins_loaded', [ $this, 'woocommerce_not_loaded' ], 11 );
+
+        // Admin notice for WooCommerce dependency
+        add_action( 'admin_notices', [ $this, 'render_woocommerce_dependency_notice' ] );
+
         add_action( 'woocommerce_loaded', [ $this, 'init_plugin' ] );
         add_action( 'woocommerce_init', [ $this, 'on_wc_init' ] );
 
@@ -91,6 +96,79 @@ final class WePOS {
 
         // Handle Appsero tracker
         $this->appsero_init_tracker_wepos();
+    }
+
+    /**
+     * Missing WooCommerce notice
+     *
+     * @since 1.1.9
+     *
+     * @return void
+     */
+    public function render_woocommerce_dependency_notice() {
+        // Check wooCommerce is available and active
+        $has_woocommerce = $this->has_woocommerce();
+
+        // Check if woocommerce installed
+        $woocommerce_installed = $this->is_woocommerce_installed();
+
+        if ( ( ! $has_woocommerce || ! $woocommerce_installed ) && current_user_can( 'activate_plugins' ) ) {
+            wepos_get_template(
+                'woocommerce-dependency-notice.php',
+                [
+                    'has_woocommerce'       => $has_woocommerce,
+                    'woocommerce_installed' => $woocommerce_installed,
+                ]
+            );
+        }
+    }
+
+    /**
+     * Handles scenarios when WooCommerce is not active
+     *
+     * @since 1.1.9
+     *
+     * @return void
+     */
+    public function woocommerce_not_loaded() {
+        if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
+            return;
+        }
+
+        require_once WEPOS_INCLUDES . '/functions.php';
+    }
+
+    /**
+     * Check whether woocommerce is installed and active
+     *
+     * @since 1.1.9
+     *
+     * @return bool
+     */
+    public function has_woocommerce() {
+        return class_exists( 'WooCommerce' );
+    }
+
+    /**
+     * Check whether woocommerce is installed
+     *
+     * @since 1.1.9
+     *
+     * @return bool
+     */
+    public function is_woocommerce_installed() {
+        return in_array( 'woocommerce/woocommerce.php', array_keys( get_plugins() ), true );
+    }
+
+    /**
+     * Get the template path.
+     *
+     * @since 1.1.9
+     *
+     * @return string
+     */
+    public function template_path() {
+        return apply_filters( 'wepos_template_path', 'wepos/' );
     }
 
     /**
@@ -198,13 +276,6 @@ final class WePOS {
      * @return void
      */
     public function activate() {
-        if ( ! function_exists( 'WC' ) ) {
-            require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-            deactivate_plugins( plugin_basename( __FILE__ ) );
-
-            wp_die( '<div class="error"><p>' . sprintf( wp_kses_post( '<b>WePOS</b> requires <a href="%s">WooCommerce</a> to be installed & activated! Go back your <a href="%s">Plugin page</a>', 'wepos' ), 'https://wordpress.org/plugins/woocommerce/', esc_url( admin_url( 'plugins.php' ) ) ) . '</p></div>' );
-        }
-
         $installed = get_option( 'we_pos_installed' );
 
         if ( ! $installed ) {
@@ -383,5 +454,10 @@ final class WePOS {
     }
 } // WePOS
 
+function wepos() {
+    return WePOS::init();
+}
+
 // Kick off plugin
-$wepos = WePOS::init();
+wepos();
+

@@ -305,8 +305,6 @@ function wepos_get_template( $template_name, $args = [], $template_path = '', $d
     $located = wepos_locate_template( $template_name, $template_path, $default_path );
 
     if ( ! file_exists( $located ) ) {
-        _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', esc_html( $located ) ), '2.1' );
-
         return;
     }
 

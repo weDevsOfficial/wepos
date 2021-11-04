@@ -39,7 +39,8 @@ class TaxController extends \WC_REST_Taxes_V2_Controller {
      *
      * @since 1.0.2
      *
-     * @return void
+     * @return bool|\WP_Error
+     *
      */
     public function get_taxes_permissions_check() {
         if ( ! ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_rest_manager_permissions', false ) ) ) {

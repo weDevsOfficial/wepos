@@ -23,7 +23,7 @@ class PaymentController extends \WC_REST_Orders_Controller {
     protected $base = 'payment';
 
     /**
-     * Register all routes releated with stores
+     * Register all routes related with payment
      *
      * @since 1.1.2
      *
@@ -54,7 +54,8 @@ class PaymentController extends \WC_REST_Orders_Controller {
      *
      * @since 1.0.2
      *
-     * @return void
+     * @return bool|WP_Error
+     *
      */
     public function payment_permissions_check() {
         $hasPermission = true;

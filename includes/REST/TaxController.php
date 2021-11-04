@@ -2,7 +2,7 @@
 namespace WeDevs\WePOS\REST;
 
 /**
-* Payment API Controller
+* Tax API Controller
 */
 class TaxController extends \WC_REST_Taxes_V2_Controller {
 
@@ -56,7 +56,8 @@ class TaxController extends \WC_REST_Taxes_V2_Controller {
      *
      * @since 1.0.0
      *
-     * @return void
+     * @return \WP_Error|\WP_REST_Response
+     *
      */
     public function get_taxes( $request ) {
         return $this->get_items( $request );

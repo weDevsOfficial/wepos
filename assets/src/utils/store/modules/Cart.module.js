@@ -84,6 +84,9 @@ export default {
         getTotal( state, getters ) {
             return getters.getOrderTotal-getters.getTotalDiscount;
         },
+        getSettings( state, getters ) {
+            return state.settings;
+        }
     },
     mutations: {
         setSettings( state, settings ) {

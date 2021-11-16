@@ -1,6 +1,10 @@
 <?php
 /**
- * Admin View: Dep notice
+ * Admin View: Dependency notice
+ *
+ * @since 1.1.9
+ *
+ * @package WePOS
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;

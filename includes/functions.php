@@ -146,7 +146,7 @@ function wepos_get_post_type( $post_type ) {
  *
  * @since 1.0.0
  *
- * @return void
+ * @return array
  */
 function wepos_get_settings_sections() {
     $sections = [
@@ -170,7 +170,7 @@ function wepos_get_settings_sections() {
  *
  * @since 1.0.0
  *
- * @return void
+ * @return array
  */
 function wepos_get_settings_fields() {
     $settings_fields = [

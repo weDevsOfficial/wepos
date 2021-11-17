@@ -11,7 +11,7 @@ namespace WeDevs\WePOS\Admin;
 class Settings {
 
     /**
-     * Load autometically when class initiate
+     * Settings constructor
      *
      * @since 1.0.0
      */
@@ -170,14 +170,6 @@ class Settings {
 
         return $data;
     }
-
-     /**
-     * Get all settings Sections
-     *
-     * @since 1.0
-     *
-     * @return array
-     */
 
     /**
      * Get setting sections

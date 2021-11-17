@@ -9,7 +9,7 @@ namespace WeDevs\WePOS\Admin;
 class Products {
 
     /**
-     * Load autometically when class initiate
+     * Product Constructor
      *
      * @since 1.0.0
      */

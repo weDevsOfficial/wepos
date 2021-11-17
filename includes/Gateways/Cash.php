@@ -89,7 +89,10 @@ class Cash extends \WC_Payment_Gateway {
      * Process the payment and return the result.
      *
      * @param int $order_id Order ID.
+     *
      * @return array
+     *
+     * @throws \WC_Data_Exception
      */
     public function process_payment( $order_id ) {
         $order = wc_get_order( $order_id );

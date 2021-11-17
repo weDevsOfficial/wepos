@@ -30,7 +30,7 @@ class Manager {
             return;
         }
 
-        $gateways = self::available_gateway();
+        $gateways = $this->available_gateway();
 
         foreach ( $gateways as $class => $path ) {
             require_once $path;
@@ -63,7 +63,7 @@ class Manager {
      * @return array
      */
     public function payment_gateways( $gateways ) {
-        $available_gateway = self::available_gateway();
+        $available_gateway = $this->available_gateway();
 
         // else add default POS gateways
         return array_merge( $gateways, apply_filters( 'wepos_payment_gateway', array_keys( $available_gateway ) ) );
@@ -77,7 +77,7 @@ class Manager {
      *
      * @return array
      */
-    public static function available_gateway() {
+    public function available_gateway() {
         return apply_filters( 'wepos_register_gateway', [
             'WeDevs\WePOS\Gateways\Cash' => WEPOS_INCLUDES . '/Gateways/Cash.php'
         ] );

@@ -1,8 +1,6 @@
 <?php
 namespace WeDevs\WePOS\REST;
 
-use \WeDevs\WePOS\Gateways\Manager as GatewayManager;
-
 /**
 * Payment API Controller
 */
@@ -97,7 +95,7 @@ class PaymentController extends \WC_REST_Orders_Controller {
      * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
      */
     public function process_payment( $request ) {
-        $available_gateways = GatewayManager::available_gateway();
+        $available_gateways = wepos()->gateways->available_gateway();
         $chosen_gateway = '';
 
         if ( empty( $request['id'] ) ) {

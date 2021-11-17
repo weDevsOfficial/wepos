@@ -9,70 +9,70 @@
         <div class="content">
             <table class="sale-summary">
                 <tbody>
-                    <tr v-for="item in printdata.line_items">
-                        <td class="name">
-                            {{ item.name }}
-                            <div class="attribute" v-if="item.attribute.length > 0">
-                                <ul>
-                                    <li v-for="attribute_item in item.attribute"><span class="attr_name">{{ attribute_item.name }}</span>: <span class="attr_value">{{ attribute_item.option }}</span></li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td class="quantity">{{ item.quantity }}</td>
-                        <td class="price">
-                            <template v-if="item.on_sale">
-                                <span class="regular-price">{{ formatPrice( item.quantity*item.regular_price ) }}</span>
-                                <span class="sale-price">{{ formatPrice( item.quantity*item.sale_price ) }}</span>
-                            </template>
-                            <template v-else>
-                                <span class="sale-price">{{ formatPrice( item.quantity*item.regular_price ) }}</span>
-                            </template>
-                        </td>
-                    </tr>
-                    <tr class="cart-meta-data">
-                        <td colspan="2" class="name">
-                            {{ __( 'Subtotal', 'wepos' ) }}
-                            <span class="metadata" v-if="settings.woo_tax.wc_tax_display_cart == 'incl'">
-                                {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
-                            </span>
-                        </td>
-                        <td class="price">{{ formatPrice( printdata.subtotal ) }}</td>
-                    </tr>
-                    <tr v-for="(fee,key) in printdata.fee_lines" class="cart-meta-data">
-                        <template v-if="fee.type=='discount'">
-                            <td colspan="2" class="name">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
-                            <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                <tr v-for="item in printdata.line_items">
+                    <td class="name">
+                        {{ item.name }}
+                        <div class="attribute" v-if="item.attribute.length > 0">
+                            <ul>
+                                <li v-for="attribute_item in item.attribute"><span class="attr_name">{{ attribute_item.name }}</span>: <span class="attr_value">{{ attribute_item.option }}</span></li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td class="quantity">{{ item.quantity }}</td>
+                    <td class="price">
+                        <template v-if="item.on_sale">
+                            <span class="regular-price">{{ formatPrice( item.quantity*item.regular_price ) }}</span>
+                            <span class="sale-price">{{ formatPrice( item.quantity*item.sale_price ) }}</span>
                         </template>
                         <template v-else>
-                            <td colspan="2" class="name">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
-                            <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                            <span class="sale-price">{{ formatPrice( item.quantity*item.regular_price ) }}</span>
                         </template>
-                    </tr>
-                    <tr v-if="printdata.taxtotal">
-                        <td colspan="2" class="name">{{ __( 'Tax', 'wepos' ) }}</td>
-                        <td class="price">{{ formatPrice(printdata.taxtotal) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="name">{{ __( 'Order Total', 'wepos' ) }}</td>
-                        <td class="price">{{ formatPrice(printdata.ordertotal) }}</td>
-                    </tr>
-                    <tr class="divider">
-                        <td colspan="3"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">{{ __( 'Payment method', 'wepos' ) }}</td>
-                        <td class="price">{{ printdata.gateway.title || '' }}</td>
-                    </tr>
-                    <template v-if="printdata.gateway.id='wepos_cash'">
-                        <tr>
-                            <td colspan="2">{{ __( 'Cash Given', 'wepos' ) }}</td>
-                            <td class="price">{{ formatPrice( printdata.cashamount ) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">{{ __( 'Change Money', 'wepos' ) }}</td>
-                            <td class="price">{{ formatPrice( printdata.changeamount ) }}</td>
-                        </tr>
+                    </td>
+                </tr>
+                <tr class="cart-meta-data">
+                    <td colspan="2" class="name">
+                        {{ __( 'Subtotal', 'wepos' ) }}
+                        <span class="metadata" v-if="settings.woo_tax.wc_tax_display_cart == 'incl'">
+                                {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
+                            </span>
+                    </td>
+                    <td class="price">{{ formatPrice( printdata.subtotal ) }}</td>
+                </tr>
+                <tr v-for="(fee,key) in printdata.fee_lines" class="cart-meta-data">
+                    <template v-if="fee.type=='discount'">
+                        <td colspan="2" class="name">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                        <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                     </template>
+                    <template v-else>
+                        <td colspan="2" class="name">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                        <td class="price">-{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                    </template>
+                </tr>
+                <tr v-if="printdata.taxtotal">
+                    <td colspan="2" class="name">{{ __( 'Tax', 'wepos' ) }}</td>
+                    <td class="price">{{ formatPrice(printdata.taxtotal) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="name">{{ __( 'Order Total', 'wepos' ) }}</td>
+                    <td class="price">{{ formatPrice(printdata.ordertotal) }}</td>
+                </tr>
+                <tr class="divider">
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">{{ __( 'Payment method', 'wepos' ) }}</td>
+                    <td class="price">{{ printdata.gateway.title || '' }}</td>
+                </tr>
+                <template v-if="printdata.gateway.id='wepos_cash'">
+                    <tr>
+                        <td colspan="2">{{ __( 'Cash Given', 'wepos' ) }}</td>
+                        <td class="price">{{ formatPrice( printdata.cashamount ) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{ __( 'Change Money', 'wepos' ) }}</td>
+                        <td class="price">{{ formatPrice( printdata.changeamount ) }}</td>
+                    </tr>
+                </template>
                 </tbody>
             </table>
         </div>

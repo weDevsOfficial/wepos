@@ -91,8 +91,6 @@ final class WePOS {
         add_action( 'woocommerce_loaded', [ $this, 'init_plugin' ] );
         add_action( 'woocommerce_init', [ $this, 'on_wc_init' ] );
 
-        // Payment gateway manager
-        $this->container['gateway'] = new \WeDevs\WePOS\Gateways\Manager();
 
         // Handle Appsero tracker
         $this->appsero_init_tracker_wepos();
@@ -109,17 +107,15 @@ final class WePOS {
         // Check wooCommerce is available and active
         $has_woocommerce = $this->has_woocommerce();
 
+        if ( $has_woocommerce ) {
+            return;
+        }
+
         // Check if woocommerce installed
         $woocommerce_installed = $this->is_woocommerce_installed();
 
-        if ( ( ! $has_woocommerce || ! $woocommerce_installed ) && current_user_can( 'activate_plugins' ) ) {
-            wepos_get_template(
-                'woocommerce-dependency-notice.php',
-                [
-                    'has_woocommerce'       => $has_woocommerce,
-                    'woocommerce_installed' => $woocommerce_installed,
-                ]
-            );
+        if (  current_user_can( 'activate_plugins' ) ) {
+            require_once WEPOS_PATH . '/templates/woocommerce-dependency-notice.php';
         }
     }
 
@@ -363,6 +359,9 @@ final class WePOS {
 
         $this->container['rest']   = new WeDevs\WePOS\REST\Manager();
         $this->container['assets'] = new WeDevs\WePOS\Assets();
+
+        // Payment gateway manager
+        $this->container['gateways'] = new \WeDevs\WePOS\Gateways\Manager();
     }
 
     /**

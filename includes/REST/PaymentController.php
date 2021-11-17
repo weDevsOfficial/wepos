@@ -79,7 +79,7 @@ class PaymentController extends \WC_REST_Orders_Controller {
      * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
      */
     public function get_available_gateways( $request ) {
-        $available_gateways = GatewayManager::available_gateway();
+        $available_gateways = wepos()->gateways->available_gateway();
         $gateways = [];
 
         foreach ( $available_gateways as $class => $path ) {

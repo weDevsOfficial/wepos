@@ -3,9 +3,9 @@ Contributors: tareq1988, wedevs, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.8.1
+Tested up to: 5.8.2
 WC requires at least: 3.0
-WC tested up to: 5.8.0
+WC tested up to: 5.9.0
 Requires PHP: 5.6
 Stable tag: 1.1.9
 License: GPLv2 or later
@@ -59,6 +59,22 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.1.9 -> 19 November, 2021 =
+
+- **Feature:** Admin dependency notice for WooCommerce
+- **Feature:** Support for other decimal separator character
+
+- **Enhancement:** Black friday 2021 promotion
+- **Enhancement:** Tab view responsiveness support for POS cart content
+- **Enhancement:** Support for Composer 2
+- **Enhancement:** Codebase optimization and restructure
+
+- **Fix:** The price rounding does not work for discounts
+- **Fix:** Fixed an issue where POS admin panel does not have the correct font family
+- **Fix:** Thermal printer text is unclear for receipt
+- **Fix:** Product Tax is not showing properly on the receipt
+- **Fix:** NPM vulnerabilities
 
 = v1.1.8 -> 19 October, 2021 =
 

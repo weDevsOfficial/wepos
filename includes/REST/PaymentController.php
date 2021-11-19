@@ -21,7 +21,7 @@ class PaymentController extends \WC_REST_Orders_Controller {
     protected $base = 'payment';
 
     /**
-     * Register all routes releated with stores
+     * Register all routes related with payment
      *
      * @since 1.1.2
      *
@@ -31,7 +31,7 @@ class PaymentController extends \WC_REST_Orders_Controller {
         register_rest_route( $this->namespace, '/' . $this->base . '/gateways', array(
             array(
                 'methods'  => \WP_REST_Server::READABLE,
-                'callback' => array( $this, 'get_avaible_gateways' ),
+                'callback' => array( $this, 'get_available_gateways' ),
                 'permission_callback' => '__return_true',
                 'args'     => $this->get_collection_params()
             ),
@@ -52,7 +52,8 @@ class PaymentController extends \WC_REST_Orders_Controller {
      *
      * @since 1.0.2
      *
-     * @return void
+     * @return bool|WP_Error
+     *
      */
     public function payment_permissions_check() {
         $hasPermission = true;
@@ -73,10 +74,10 @@ class PaymentController extends \WC_REST_Orders_Controller {
      *
      * @since 1.0.0
      *
-     * @return void
+     * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
      */
-    public function get_avaible_gateways( $request ) {
-        $available_gateways = \WePOS::init()->available_gateway();
+    public function get_available_gateways( $request ) {
+        $available_gateways = wepos()->gateways->available_gateway();
         $gateways = [];
 
         foreach ( $available_gateways as $class => $path ) {
@@ -91,10 +92,10 @@ class PaymentController extends \WC_REST_Orders_Controller {
      *
      * @since 1.0.0
      *
-     * @return void
+     * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
      */
     public function process_payment( $request ) {
-        $available_gateways = \WePOS::init()->available_gateway();
+        $available_gateways = wepos()->gateways->available_gateway();
         $chosen_gateway = '';
 
         if ( empty( $request['id'] ) ) {

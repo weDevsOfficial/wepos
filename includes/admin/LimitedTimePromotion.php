@@ -38,14 +38,19 @@ class LimitedTimePromotion {
             return;
         }
 
+        // Show only on plugin pages
+        if ( ! isset( $_GET['page'] ) || 0 !== strpos( sanitize_text_field( wp_unslash( $_GET['page'] ) ), 'wepos' ) ) {
+            return;
+        }
+
         $notices = [
             [
-                'key'        => 'wepos-halloween20212021',
-                'start_date' => '2021-10-21 00:09:00 EST',
-                'end_date'   => '2021-10-31 00:09:00 EST',
-                'title'      => 'Get Yourself a Spooky Delight !',
-                'content'    => 'Get Flat 50% OFF on wePOS Pro.',
-                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-halloween20212021',
+                'key'        => 'wepos-bfcm2021',
+                'start_date' => '2021-11-19 09:00:00 EST',
+                'end_date'   => '2021-11-30 23:00:00 EST',
+                'title'      => 'Irresistible Black Friday & Cyber Monday Deals.',
+                'content'    => 'Enjoy Flat 50% OFF on wePOS Pro.',
+                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-BFCM2021',
             ],
         ];
 

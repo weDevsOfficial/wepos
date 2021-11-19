@@ -15,7 +15,7 @@
   },
   "require-dev": {
     "wp-coding-standards/wpcs": "dev-master",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3"
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
   },
   "autoload" : {
     "psr-4": {

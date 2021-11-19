@@ -50,7 +50,7 @@ class Frontend {
      *
      * @since 1.0.0
      *
-     * @return void
+     * @return bool
      */
     public function remove_admin_bar( $show ) {
         if ( wepos_is_frontend() ) {
@@ -87,7 +87,7 @@ class Frontend {
     /**
      * Enqueue all scripts
      *
-     * @return [type] [description]
+     * @return void
      */
     public function enqueue_scripts() {
         if ( wepos_is_frontend() ) {

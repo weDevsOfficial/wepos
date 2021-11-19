@@ -2,7 +2,7 @@
 namespace WeDevs\WePOS\REST;
 
 /**
-* Payment API Controller
+* Customer API Controller
 */
 class CustomerController extends \WC_REST_Customers_Controller {
 
@@ -21,7 +21,7 @@ class CustomerController extends \WC_REST_Customers_Controller {
     protected $base = 'customers';
 
     /**
-     * Register the routes for taxes.
+     * Register the routes for customers.
      */
     public function register_routes() {
         register_rest_route( $this->namespace, '/' . $this->base, array(
@@ -58,11 +58,11 @@ class CustomerController extends \WC_REST_Customers_Controller {
     }
 
     /**
-     * Get taxes permission checking
+     * Get customers permission checking
      *
      * @since 1.0.2
      *
-     * @return void
+     * @return bool|\WP_Error
      */
     public function create_customer_permission_callback() {
         if ( ! ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_rest_manager_permissions', false ) ) ) {
@@ -73,11 +73,12 @@ class CustomerController extends \WC_REST_Customers_Controller {
     }
 
     /**
-     * Get taxes permission checking
+     * Get customers permission checking
      *
      * @since 1.0.2
      *
-     * @return void
+     * @return bool|\WP_Error
+     *
      */
     public function get_customers_permissions_check() {
         if ( ! ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_rest_manager_permissions', false ) ) ) {
@@ -92,7 +93,7 @@ class CustomerController extends \WC_REST_Customers_Controller {
      *
      * @since 1.0.5
      *
-     * @return void
+     * @return \WP_Error|\WP_REST_Response
      */
     public function create_customer( $request ) {
         return $this->create_item( $request );
@@ -103,7 +104,7 @@ class CustomerController extends \WC_REST_Customers_Controller {
      *
      * @since 1.0.5
      *
-     * @return void
+     * @return \WP_Error|\WP_REST_Response
      */
     public function get_customers( $request ) {
         return $this->get_items( $request );

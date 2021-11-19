@@ -653,7 +653,7 @@ export default {
             }
         },
         changeAmount() {
-            var returnMoney = this.cashAmount-this.$store.getters['Cart/getTotal'];
+            var returnMoney = this.unFormat(this.cashAmount) - this.$store.getters['Cart/getTotal'];
             return returnMoney > 0 ? returnMoney: 0;
         },
         getBreadCrums() {
@@ -769,7 +769,9 @@ export default {
         ableToProcess() {
             let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
             if( this.selectedGateway === 'wepos_cash' ) {
-              return this.cashAmount >= this.$store.getters['Cart/getTotal'] && canProcess;
+                return this.unFormat(this.cashAmount)
+                    >= this.truncateNumber(this.$store.getters['Cart/getTotal'])
+                    && canProcess;
             }
             return canProcess;
         },
@@ -2231,6 +2233,21 @@ export default {
             }
         }
 
+    }
+}
+
+/* Media queries */
+@media screen and (max-width: 768px) {
+    #wepos-main {
+        display: table-row;
+
+        .content-cart {
+            .cart-panel .cart-content table.cart-table {
+                height: fit-content;
+            }
+
+            min-height: 200px;
+        }
     }
 }
 </style>

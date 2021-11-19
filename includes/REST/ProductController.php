@@ -2,7 +2,7 @@
 namespace WeDevs\WePOS\REST;
 
 /**
-* Payment API Controller
+* Product API Controller
 */
 class ProductController extends \WC_REST_Products_Controller {
 
@@ -21,7 +21,7 @@ class ProductController extends \WC_REST_Products_Controller {
     protected $base = 'products';
 
     /**
-     * Register the routes for taxes.
+     * Register the routes for products.
      */
     public function register_routes() {
         register_rest_route( $this->namespace, '/' . $this->base, array(
@@ -36,11 +36,11 @@ class ProductController extends \WC_REST_Products_Controller {
     }
 
     /**
-     * Get taxes permission checking
+     * Get product permission checking
      *
      * @since 1.0.2
      *
-     * @return void
+     * @return bool|\WP_Error
      */
     public function get_products_permissions_check() {
         if ( ! ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_rest_manager_permissions', false ) ) ) {
@@ -51,11 +51,11 @@ class ProductController extends \WC_REST_Products_Controller {
     }
 
     /**
-     * Get customers
+     * Get products
      *
      * @since 1.0.5
      *
-     * @return void
+     * @return \WP_Error|\WP_REST_Response
      */
     public function get_products( $request ) {
         return $this->get_items( $request );

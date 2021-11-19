@@ -131,6 +131,9 @@ exports.default = {
         },
         getTotal: function getTotal(state, getters) {
             return getters.getOrderTotal - getters.getTotalDiscount;
+        },
+        getSettings: function getSettings(state, getters) {
+            return state.settings;
         }
     },
     mutations: {
@@ -1178,7 +1181,7 @@ let Modal = wepos_get_lib('Modal');
             }
         },
         changeAmount() {
-            var returnMoney = this.cashAmount - this.$store.getters['Cart/getTotal'];
+            var returnMoney = this.unFormat(this.cashAmount) - this.$store.getters['Cart/getTotal'];
             return returnMoney > 0 ? returnMoney : 0;
         },
         getBreadCrums() {
@@ -1294,7 +1297,7 @@ let Modal = wepos_get_lib('Modal');
         ableToProcess() {
             let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
             if (this.selectedGateway === 'wepos_cash') {
-                return this.cashAmount >= this.$store.getters['Cart/getTotal'] && canProcess;
+                return this.unFormat(this.cashAmount) >= this.truncateNumber(this.$store.getters['Cart/getTotal']) && canProcess;
             }
             return canProcess;
         },

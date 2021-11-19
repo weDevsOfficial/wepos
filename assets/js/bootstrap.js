@@ -631,6 +631,15 @@ exports.default = {
         formatNumber: function formatNumber(value) {
             return accounting.formatNumber(value, wepos.currency_format_num_decimals, wepos.currency_format_thousand_sep, wepos.currency_format_decimal_sep);
         },
+        truncateNumber: function truncateNumber(value) {
+            return parseFloat(accounting.toFixed(value, wepos.currency_format_num_decimals));
+        },
+        unFormat: function unFormat(value) {
+            if (value.indexOf(wepos.currency_format_decimal_sep) > -1) {
+                return accounting.unformat(value, wepos.currency_format_decimal_sep);
+            }
+            return accounting.unformat(value);
+        },
         findMatchingVariations: function findMatchingVariations(variations, attributes) {
             var matching = [];
             for (var i = 0; i < variations.length; i++) {

@@ -7,7 +7,7 @@ Tested up to: 5.8.2
 WC requires at least: 3.0
 WC tested up to: 5.9.0
 Requires PHP: 5.6
-Stable tag: 1.1.9
+Stable tag: 1.1.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,7 +60,7 @@ No FAQ
 
 == Changelog ==
 
-= v1.1.9 -> 19 November, 2021 =
+= v1.1.10 -> 19 November, 2021 =
 
 - **Feature:** Admin dependency notice for WooCommerce
 - **Feature:** Support for other decimal separator character

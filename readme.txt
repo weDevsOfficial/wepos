@@ -7,7 +7,7 @@ Tested up to: 5.8.2
 WC requires at least: 3.0
 WC tested up to: 5.9.0
 Requires PHP: 5.6
-Stable tag: 1.1.10
+Stable tag: 1.1.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,10 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.1.11 -> 19 November, 2021 =
+
+- **Fix:** PSR-4 class autoloading for Admin namespace
 
 = v1.1.10 -> 19 November, 2021 =
 

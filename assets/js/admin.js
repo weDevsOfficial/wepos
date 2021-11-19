@@ -1787,6 +1787,9 @@ exports.default = {
         },
         getTotal: function getTotal(state, getters) {
             return getters.getOrderTotal - getters.getTotalDiscount;
+        },
+        getSettings: function getSettings(state, getters) {
+            return state.settings;
         }
     },
     mutations: {

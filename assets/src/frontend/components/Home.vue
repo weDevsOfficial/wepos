@@ -960,8 +960,16 @@ export default {
             this.selectedVariationProduct = product;
         },
         addVariationProduct() {
-            var chosenVariationProduct = this.findMatchingVariations( this.selectedVariationProduct.variations, this.selectedAttribute );
-            var variationProduct       = chosenVariationProduct[0];
+            let chosenVariationProduct = this.findMatchingVariations( this.selectedVariationProduct.variations, this.selectedAttribute );
+            let variationProduct       = chosenVariationProduct[0];
+
+            if ( ! this.hasStock( variationProduct ) ) {
+                this.weposToast( {
+                    title: this.__( 'This product is out of stock.', 'wepos' ),
+                    type: 'error',
+                });
+            }
+
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type      = this.selectedVariationProduct.type;
             variationProduct.name      = this.selectedVariationProduct.name;
@@ -1505,7 +1513,8 @@ export default {
                     }
 
                     .disabled {
-                        opacity: 0.5;
+                        border: 1px solid #ffcbcb;
+                        opacity: 0.4;
                         cursor: not-allowed;
                     }
                 }

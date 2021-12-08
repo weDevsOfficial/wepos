@@ -141,6 +141,18 @@ export default {
                     break;
             }
         },
+
+        hasStock( product, productCartQty = 0 ) {
+            if ( ! product.manage_stock ) {
+                return 'outofstock' !== product.stock_status;
+            }
+
+            if ( product.backorders_allowed ) {
+                return true;
+            }
+
+            return product.stock_quantity > productCartQty;
+        },
     },
 
     computed: {

@@ -56,15 +56,13 @@
             <div class="items-wrapper" :class="productView" ref="items-wrapper">
                 <template v-if="!productLoading">
                     <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
-                        <template v-if="product.type == 'simple'">
-                            <div class="item-wrap" @click.prevnt="addToCart(product)">
+                        <template v-if="product.type === 'simple'">
+                            <div class="item-wrap" :class="{ 'disabled': ! hasStock( product ) }" @click.prevent="addToCart(product)">
                                 <div class="img">
-                                    <!-- https://via.placeholder.com/138x90  -->
                                     <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                 </div>
-                                <div class="title" v-if="productView=='grid'">
+                                <div class="title" v-if="productView === 'grid'">
                                     {{ truncateTitle( product.name, 20 ) }}
-
                                 </div>
                                 <div class="title" v-else>
                                     <div class="product-name">{{ product.name }}</div>
@@ -84,13 +82,13 @@
                             </div>
                         </template>
 
-                        <template v-if="product.type == 'variable'">
+                        <template v-if="product.type === 'variable'">
                             <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
                                 <div class="item-wrap" @click="selectVariationProduct( product )">
                                     <div class="img">
                                         <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                     </div>
-                                    <div class="title" v-if="productView=='grid'">
+                                    <div class="title" v-if="productView === 'grid'">
                                         {{ truncateTitle( product.name, 20 ) }}
                                     </div>
                                     <div class="title" v-else>
@@ -973,6 +971,14 @@ export default {
             this.$store.dispatch( 'Cart/addToCartAction', variationProduct );
         },
         addToCart( product ) {
+            if ( ! this.hasStock( product ) ) {
+                this.weposToast( {
+                    title: this.__( 'Product is out of stock!', 'wepos-pro' ),
+                    type: 'error',
+                } );
+                return;
+            }
+
             this.$store.dispatch( 'Cart/addToCartAction', product );
         },
         toggleEditQuantity( product, key ) {
@@ -1496,6 +1502,11 @@ export default {
                                 visibility: visible;
                             }
                         }
+                    }
+
+                    .disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
                     }
                 }
             }

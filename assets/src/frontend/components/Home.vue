@@ -529,7 +529,7 @@
 
                         <div class="footer wepos-clearfix">
                             <a href="#" class="back-btn wepos-left" @click.prevent="backToSale()">{{ __( 'Back to Sale', 'wepos' ) }}</a>
-                            <button class="process-checkout-btn wepos-right" @click.prevent="processPayment" :disabled="!ableToProcess()">{{ __( 'Process Payment', 'wepos' ) }}</button>
+                            <button class="process-checkout-btn wepos-right" @click.prevent="processPayment" :disabled="! $store.getters['Order/getCanProcessPayment']">{{ __( 'Process Payment', 'wepos' ) }}</button>
                         </div>
                     </div>
                 </div>
@@ -710,7 +710,11 @@ export default {
         'selectedGateway'( newdata, olddata ) {
             var gateway = weLo_.find( this.availableGateways, { 'id' : newdata } );
             this.$store.dispatch( 'Order/setGatewayAction', gateway );
-        }
+        },
+
+        cashAmount( newdata, olddata ) {
+            this.ableToProcess();
+        },
     },
 
     methods: {
@@ -767,11 +771,12 @@ export default {
         ableToProcess() {
             let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
             if( this.selectedGateway === 'wepos_cash' ) {
-                return this.unFormat(this.cashAmount)
-                    >= this.truncateNumber(this.$store.getters['Cart/getTotal'])
+                canProcess = this.formatNumber(this.cashAmount)
+                    >= this.formatNumber(this.$store.getters['Cart/getTotal'])
                     && canProcess;
             }
-            return canProcess;
+
+            this.$store.dispatch( 'Order/setCanProcessPaymentAction', canProcess );
         },
         processPayment(e) {
             e.preventDefault();

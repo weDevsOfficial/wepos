@@ -88,6 +88,7 @@ export default {
 
         weposConfirmAlert( { title = '', text = '' } ) {
             return this.$swal.fire( {
+                icon: 'warning',
                 title: title,
                 text: text,
                 type: 'warning',

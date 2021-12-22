@@ -770,17 +770,20 @@ export default {
         },
         ableToProcess() {
             let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
+
             if( this.selectedGateway === 'wepos_cash' ) {
-                canProcess = this.formatNumber(this.cashAmount)
-                    >= this.formatNumber(this.$store.getters['Cart/getTotal'])
+                 canProcess = this.unFormat(this.cashAmount)
+                    >= this.truncateNumber(this.$store.getters['Cart/getTotal'])
                     && canProcess;
             }
+
+            console.log( canProcess );
 
             this.$store.dispatch( 'Order/setCanProcessPaymentAction', canProcess );
         },
         processPayment(e) {
             e.preventDefault();
-            if ( ! this.ableToProcess() ) {
+            if ( ! this.$store.getters['Order/getCanProcessPayment'] ) {
                 return;
             }
             var self = this,

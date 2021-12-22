@@ -45,12 +45,12 @@ class LimitedTimePromotion {
 
         $notices = [
             [
-                'key'        => 'wepos-holidaysale2021',
-                'start_date' => '2021-12-24 09:00:00 EST',
-                'end_date'   => '2022-01-12 23:00:00 EST',
-                'title'      => 'Happy Holidays. Let The Festivities Begin.',
-                'content'    => 'Enjoy Flat 50 OFF on wePOS Pro.',
-                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-holidaysale2021',
+                'key'        => 'wepos-bfcm2021',
+                'start_date' => '2021-11-19 09:00:00 EST',
+                'end_date'   => '2021-11-30 23:00:00 EST',
+                'title'      => 'Irresistible Black Friday & Cyber Monday Deals.',
+                'content'    => 'Enjoy Flat 50% OFF on wePOS Pro.',
+                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-BFCM2021',
             ],
         ];
 

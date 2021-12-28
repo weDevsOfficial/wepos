@@ -972,7 +972,7 @@ export default {
             let variationProduct       = chosenVariationProduct[0];
 
             if ( ! this.hasStock( variationProduct ) ) {
-                this.weposToast( {
+                this.toast( {
                     title: this.__( 'This product is out of stock.', 'wepos' ),
                     type: 'error',
                 });
@@ -988,7 +988,7 @@ export default {
         },
         addToCart( product ) {
             if ( ! this.hasStock( product ) ) {
-                this.weposToast( {
+                this.toast( {
                     title: this.__( 'Product is out of stock!', 'wepos-pro' ),
                     type: 'error',
                 } );

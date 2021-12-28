@@ -86,7 +86,7 @@ export default {
             return match;
         },
 
-        weposConfirmAlert( { title = '', text = '' } ) {
+        confirmAlert( { title = '', text = '' } ) {
             return this.$swal.fire( {
                 icon: 'warning',
                 title: title,
@@ -99,7 +99,7 @@ export default {
             } );
         },
 
-         weposToast( { title, type = '', position = '' } ) {
+         toast( { title, type = '', position = '' } ) {
             const toast = this.$swal.mixin({
                 toast: true,
                 position: 'top-right',

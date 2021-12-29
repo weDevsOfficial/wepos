@@ -8,9 +8,14 @@ export default {
             customer_note: '',
             payment_method: '',
             payment_method_title: '',
-        }
+        },
+        canProcessPayment: false,
     },
-    getters: {},
+    getters: {
+        getCanProcessPayment: state => {
+            return state.canProcessPayment;
+        },
+    },
     mutations: {
         setOrderData( state, orderdata ) {
             if ( weLo_.isEmpty( orderdata ) ) {
@@ -61,7 +66,11 @@ export default {
         setGateway( state, gateway ) {
             state.orderdata.payment_method       = gateway.id;
             state.orderdata.payment_method_title = gateway.title;
-        }
+        },
+
+        setCanProcessPayment( state, canProcessPayment ) {
+            state.canProcessPayment = canProcessPayment;
+        },
     },
     actions: {
         setOrderDataAction( context, orderdata ) {
@@ -86,6 +95,10 @@ export default {
 
         setGatewayAction( context, gateway ) {
             context.commit( 'setGateway', gateway );
-        }
+        },
+
+        setCanProcessPaymentAction( context, canProcessPayment ) {
+            context.commit( 'setCanProcessPayment', canProcessPayment );
+        },
     }
 };

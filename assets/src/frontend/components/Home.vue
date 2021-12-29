@@ -56,15 +56,13 @@
             <div class="items-wrapper" :class="productView" ref="items-wrapper">
                 <template v-if="!productLoading">
                     <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
-                        <template v-if="product.type == 'simple'">
-                            <div class="item-wrap" @click.prevnt="addToCart(product)">
+                        <template v-if="product.type === 'simple'">
+                            <div class="item-wrap" :class="{ 'disabled': ! hasStock( product ) }" @click.prevent="addToCart(product)">
                                 <div class="img">
-                                    <!-- https://via.placeholder.com/138x90  -->
                                     <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                 </div>
-                                <div class="title" v-if="productView=='grid'">
+                                <div class="title" v-if="productView === 'grid'">
                                     {{ truncateTitle( product.name, 20 ) }}
-
                                 </div>
                                 <div class="title" v-else>
                                     <div class="product-name">{{ product.name }}</div>
@@ -84,13 +82,13 @@
                             </div>
                         </template>
 
-                        <template v-if="product.type == 'variable'">
+                        <template v-if="product.type === 'variable'">
                             <v-popover offset="10" popover-base-class="product-variation tooltip popover" placement="left-end">
                                 <div class="item-wrap" @click="selectVariationProduct( product )">
                                     <div class="img">
                                         <img :src="getProductImage(product)" :alt="getProductImageName( product )">
                                     </div>
-                                    <div class="title" v-if="productView=='grid'">
+                                    <div class="title" v-if="productView === 'grid'">
                                         {{ truncateTitle( product.name, 20 ) }}
                                     </div>
                                     <div class="title" v-else>
@@ -531,7 +529,7 @@
 
                         <div class="footer wepos-clearfix">
                             <a href="#" class="back-btn wepos-left" @click.prevent="backToSale()">{{ __( 'Back to Sale', 'wepos' ) }}</a>
-                            <button class="process-checkout-btn wepos-right" @click.prevent="processPayment" :disabled="!ableToProcess()">{{ __( 'Process Payment', 'wepos' ) }}</button>
+                            <button class="process-checkout-btn wepos-right" @click.prevent="processPayment" :disabled="! $store.getters['Order/getCanProcessPayment']">{{ __( 'Process Payment', 'wepos' ) }}</button>
                         </div>
                     </div>
                 </div>
@@ -712,7 +710,11 @@ export default {
         'selectedGateway'( newdata, olddata ) {
             var gateway = weLo_.find( this.availableGateways, { 'id' : newdata } );
             this.$store.dispatch( 'Order/setGatewayAction', gateway );
-        }
+        },
+
+        cashAmount( newdata, olddata ) {
+            this.ableToProcess();
+        },
     },
 
     methods: {
@@ -768,16 +770,20 @@ export default {
         },
         ableToProcess() {
             let canProcess = this.cartdata.line_items.length > 0 && this.isSelectGateway();
+
             if( this.selectedGateway === 'wepos_cash' ) {
-                return this.unFormat(this.cashAmount)
+                 canProcess = this.unFormat(this.cashAmount)
                     >= this.truncateNumber(this.$store.getters['Cart/getTotal'])
                     && canProcess;
             }
-            return canProcess;
+
+            console.log( canProcess );
+
+            this.$store.dispatch( 'Order/setCanProcessPaymentAction', canProcess );
         },
         processPayment(e) {
             e.preventDefault();
-            if ( ! this.ableToProcess() ) {
+            if ( ! this.$store.getters['Order/getCanProcessPayment'] ) {
                 return;
             }
             var self = this,
@@ -962,8 +968,16 @@ export default {
             this.selectedVariationProduct = product;
         },
         addVariationProduct() {
-            var chosenVariationProduct = this.findMatchingVariations( this.selectedVariationProduct.variations, this.selectedAttribute );
-            var variationProduct       = chosenVariationProduct[0];
+            let chosenVariationProduct = this.findMatchingVariations( this.selectedVariationProduct.variations, this.selectedAttribute );
+            let variationProduct       = chosenVariationProduct[0];
+
+            if ( ! this.hasStock( variationProduct ) ) {
+                this.toast( {
+                    title: this.__( 'This product is out of stock.', 'wepos' ),
+                    type: 'error',
+                });
+            }
+
             variationProduct.parent_id = this.selectedVariationProduct.id;
             variationProduct.type      = this.selectedVariationProduct.type;
             variationProduct.name      = this.selectedVariationProduct.name;
@@ -973,6 +987,14 @@ export default {
             this.$store.dispatch( 'Cart/addToCartAction', variationProduct );
         },
         addToCart( product ) {
+            if ( ! this.hasStock( product ) ) {
+                this.toast( {
+                    title: this.__( 'Product is out of stock!', 'wepos-pro' ),
+                    type: 'error',
+                } );
+                return;
+            }
+
             this.$store.dispatch( 'Cart/addToCartAction', product );
         },
         toggleEditQuantity( product, key ) {
@@ -1496,6 +1518,12 @@ export default {
                                 visibility: visible;
                             }
                         }
+                    }
+
+                    .disabled {
+                        border: 1px solid #ffcbcb;
+                        opacity: 0.4;
+                        cursor: not-allowed;
                     }
                 }
             }

@@ -680,13 +680,14 @@ exports.default = {
             }
             return match;
         },
-        weposConfirmAlert: function weposConfirmAlert(_ref) {
+        confirmAlert: function confirmAlert(_ref) {
             var _ref$title = _ref.title,
                 title = _ref$title === undefined ? '' : _ref$title,
                 _ref$text = _ref.text,
                 text = _ref$text === undefined ? '' : _ref$text;
 
             return this.$swal.fire({
+                icon: 'warning',
                 title: title,
                 text: text,
                 type: 'warning',
@@ -696,7 +697,7 @@ exports.default = {
                 confirmButtonText: this.__('Confirm', 'wepos')
             });
         },
-        weposToast: function weposToast(_ref2) {
+        toast: function toast(_ref2) {
             var title = _ref2.title,
                 _ref2$type = _ref2.type,
                 type = _ref2$type === undefined ? '' : _ref2$type,
@@ -707,7 +708,7 @@ exports.default = {
                 toast: true,
                 position: 'top-right',
                 showConfirmButton: false,
-                timer: 1500,
+                timer: 2000,
                 timerProgressBar: true,
                 animation: true
             });
@@ -744,6 +745,19 @@ exports.default = {
                     });
                     break;
             }
+        },
+        hasStock: function hasStock(product) {
+            var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            if (!product.manage_stock) {
+                return 'outofstock' !== product.stock_status;
+            }
+
+            if (product.backorders_allowed) {
+                return true;
+            }
+
+            return product.stock_quantity > productCartQty;
         }
     },
 

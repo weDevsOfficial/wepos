@@ -16,6 +16,12 @@ import "vue-multiselect/dist/vue-multiselect.min.css"
 import dayjs from 'dayjs';
 window.dayjs = dayjs;
 
+// Vue Sweet Alert
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+Vue.use(VueSweetalert2);
+
 import VueDatePicker from '@mathieustan/vue-datepicker';
 import '@mathieustan/vue-datepicker/dist/vue-datepicker.min.css';
 Vue.use(VueDatePicker, {

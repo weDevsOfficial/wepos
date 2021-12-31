@@ -3,21 +3,21 @@ body {
     padding: 0;
     background-color: #F0F2F4;
     font-size: 14px;
-    font-family: "-apple-system, BlinkMacSystemFont, San Francisco, Ubuntu, Helvetica Neue, Helvetica, Roboto, Lato, Noto, Segoe UI, Arial", sans-serif;
+    font-family: -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 [v-cloak] {
-  display: none;
+    display: none;
 }
 
 .wepos-clearfix:before,
 .wepos-clearfix:after {
-  display: table;
-  content: " ";
+    display: table;
+    content: " ";
 }
 
 .wepos-clearfix:after {
-  clear: both;
+    clear: both;
 }
 
 .wepos-right {
@@ -85,41 +85,41 @@ body {
 
 .spinner.spinner-loading {
 
-  @keyframes scale-2 {
-    0% {
-      transform: scale(0);
-      opacity: 0;
+    @keyframes scale-2 {
+        0% {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        50% {
+            transform: scale(0.7);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 0;
+        }
     }
 
-    50% {
-      transform: scale(0.7);
-      opacity: 1;
+    &:before {
+        width: 117px;
+        height: 117px;
+        border-color: #3b80f4;
+        top: 0px;
+        left: 0px;
+        animation: scale-2 1s linear 0s infinite;
     }
 
-    100% {
-      transform: scale(1);
-      opacity: 0;
+    &:after {
+        width: 117px;
+        height: 117px;
+        border-color: #3b80f4;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        animation: scale-2 1s linear 0.5s infinite;
     }
-  }
-
-  &:before {
-    width: 117px;
-    height: 117px;
-    border-color: #3b80f4;
-    top: 0px;
-    left: 0px;
-    animation: scale-2 1s linear 0s infinite;
-  }
-
-  &:after {
-    width: 117px;
-    height: 117px;
-    border-color: #3b80f4;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    animation: scale-2 1s linear 0.5s infinite;
-  }
 }
 
 .lds-ripple {
@@ -242,15 +242,15 @@ body {
 }
 
 .list-item {
-  display: inline-block;
-  margin-right: 10px;
+    display: inline-block;
+    margin-right: 10px;
 }
 .list-enter-active, .list-leave-active {
-  transition: all 1s;
+    transition: all 1s;
 }
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  transform: translateY(30px);
+    opacity: 0;
+    transform: translateY(30px);
 }
 
 .wepos-zindex {
@@ -794,110 +794,111 @@ div:focus, span:focus, button:focus, input:focus {
 }
 
 .tooltip {
-  display: block !important;
-  z-index: 10000;
+    display: block !important;
+    z-index: 100;
 
-  .tooltip-inner {
-    background: black;
-    color: white;
-    border-radius: 16px;
-    max-width: 300px;
-  }
-
-  .tooltip-arrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    position: absolute;
-    margin: 5px;
-    border-color: black;
-    z-index: 1;
-  }
-
-  &[x-placement^="top"] {
-    margin-bottom: 5px;
+    .tooltip-inner {
+        background: black;
+        color: white;
+        border-radius: 16px;
+        max-width: 300px;
+    }
 
     .tooltip-arrow {
-      border-width: 5px 5px 0 5px;
-      border-left-color: transparent !important;
-      border-right-color: transparent !important;
-      border-bottom-color: transparent !important;
-      bottom: -5px;
-      left: calc(50% - 5px);
-      margin-top: 0;
-      margin-bottom: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        position: absolute;
+        margin: 5px;
+        border-color: black;
+        z-index: 1;
     }
-  }
 
-  &[x-placement^="bottom"] {
-    margin-top: 5px;
+    &[x-placement^="top"] {
+        margin-bottom: 5px;
 
-    .tooltip-arrow {
-      border-width: 0 5px 5px 5px;
-      border-left-color: transparent !important;
-      border-right-color: transparent !important;
-      border-top-color: transparent !important;
-      top: -5px;
-      left: calc(50% - 5px);
-      margin-top: 0;
-      margin-bottom: 0;
+        .tooltip-arrow {
+            border-width: 5px 5px 0 5px;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            bottom: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
     }
-  }
 
-  &[x-placement^="right"] {
-    margin-left: 5px;
+    &[x-placement^="bottom"] {
+        margin-top: 5px;
 
-    .tooltip-arrow {
-      border-width: 5px 5px 5px 0;
-      border-left-color: transparent !important;
-      border-top-color: transparent !important;
-      border-bottom-color: transparent !important;
-      left: -5px;
-      top: calc(50% - 5px);
-      margin-left: 0;
-      margin-right: 0;
+        .tooltip-arrow {
+            border-width: 0 5px 5px 5px;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-top-color: transparent !important;
+            top: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
     }
-  }
 
-  &[x-placement^="left"] {
-    margin-right: 5px;
+    &[x-placement^="right"] {
+        margin-left: 5px;
 
-    .tooltip-arrow {
-      border-width: 5px 0 5px 5px;
-      border-top-color: transparent !important;
-      border-right-color: transparent !important;
-      border-bottom-color: transparent !important;
-      right: -5px;
-      top: calc(50% - 5px);
-      margin-left: 0;
-      margin-right: 0;
+        .tooltip-arrow {
+            border-width: 5px 5px 5px 0;
+            border-left-color: transparent !important;
+            border-top-color: transparent !important;
+            border-bottom-color: transparent !important;
+            left: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
     }
-  }
 
-  &.popover {
-    color: #f9f9f9;
-    .popover-inner {
-      background: #fff;
-      color: #212121;
-      border-radius: 5px;
-      box-shadow: 0 5px 30px rgba(0,0,0, .1);
+    &[x-placement^="left"] {
+        margin-right: 5px;
+
+        .tooltip-arrow {
+            border-width: 5px 0 5px 5px;
+            border-top-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            right: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
     }
-    .popover-arrow {
-      border-color: #f9f9f9;
+
+    &.popover {
+        color: #f9f9f9;
+        .popover-inner {
+            height: auto;
+            background: #fff;
+            color: #212121;
+            border-radius: 5px;
+            box-shadow: 0 5px 30px rgba(0,0,0, .1);
+        }
+        .popover-arrow {
+            border-color: #f9f9f9;
+        }
     }
-  }
 
-  &[aria-hidden='true'] {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .15s, visibility .15s;
-  }
+    &[aria-hidden='true'] {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity .15s, visibility .15s;
+    }
 
-  &[aria-hidden='false'] {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity .15s;
-  }
+    &[aria-hidden='false'] {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity .15s;
+    }
 }
 
 .wepos-multiselect {
@@ -946,7 +947,7 @@ div:focus, span:focus, button:focus, input:focus {
 
     }
 
-     &.multiselect--active {
+    &.multiselect--active {
         .multiselect__input {
             width: 100% !important;
             font-size: 13px;
@@ -1010,7 +1011,7 @@ div:focus, span:focus, button:focus, input:focus {
     min-height: 360px;
     background: #000;
     opacity: 0.2;
-    z-index: 99999;
+    z-index: 200;
 }
 
 .wepos-modal {
@@ -1106,24 +1107,24 @@ div:focus, span:focus, button:focus, input:focus {
     }
 }
 
- .switch {
+.switch {
     position: relative;
     display: inline-block;
     width: 38px;
     height: 20px;
     input {
-       display: none;
-       &:checked + .slider {
+        display: none;
+        &:checked + .slider {
             background-color: #3B80F4;
             &:before {
                 -webkit-transform: translateX(17px);
                 -ms-transform: translateX(17px);
                 transform: translateX(17px);
             }
-       }
-       &:focus + .slider {
+        }
+        &:focus + .slider {
             box-shadow: 0 0 1px #2196F3;
-       }
+        }
     }
     .slider {
         position: absolute;

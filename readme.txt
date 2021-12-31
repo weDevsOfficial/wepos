@@ -5,9 +5,9 @@ Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of
 Requires at least: 4.4
 Tested up to: 5.8.2
 WC requires at least: 3.0
-WC tested up to: 5.9.0
+WC tested up to: 6.0.0
 Requires PHP: 5.6
-Stable tag: 1.1.11
+Stable tag: 1.1.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,18 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.1.12 -> 31st December, 2021 =
+- **Feature:** Stock support for the pos product, out-of-stock products will be shown but can not be added into the cart
+
+- **Enhancement:** Codebase optimization & various page i18n support
+
+- **Fix:** Z index mismatch for components, some components were not displaying properly with modal
+- **Fix:** Variation product's all variations can not be seen
+- **Fix:** Variation products attributes UX issue
+- **Fix:** Double payment can be done by double-clicking the process payment button
+- **Fix:** You already logged in to any other counter or outlet
+- **Fix:** Product images not shown on POS
 
 = v1.1.11 -> 19 November, 2021 =
 

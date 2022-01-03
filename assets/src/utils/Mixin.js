@@ -86,6 +86,74 @@ export default {
             return match;
         },
 
+        confirmAlert( { title = '', text = '' } ) {
+            return this.$swal.fire( {
+                icon: 'warning',
+                title: title,
+                text: text,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b80f4',
+                cancelButtonColor: '#e34d4d',
+                confirmButtonText: this.__( 'Confirm', 'wepos' ),
+            } );
+        },
+
+         toast( { title, type = '', position = '' } ) {
+            const toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                animation: true,
+            });
+
+            switch ( type ) {
+                case 'success':
+                    toast.fire( {
+                        icon: 'success',
+                        title: title
+                    } );
+                    break;
+                case 'error':
+                    toast.fire( {
+                        icon: 'error',
+                        title: title
+                    } );
+                    break;
+                case 'warning':
+                    toast.fire( {
+                        icon: 'warning',
+                        title: title
+                    } );
+                    break;
+                case 'info':
+                    toast.fire( {
+                        icon: 'info',
+                        title: title
+                    } );
+                    break;
+                default:
+                    toast.fire( {
+                        icon: 'success',
+                        title: title
+                    } );
+                    break;
+            }
+        },
+
+        hasStock( product, productCartQty = 0 ) {
+            if ( ! product.manage_stock ) {
+                return 'outofstock' !== product.stock_status;
+            }
+
+            if ( product.backorders_allowed ) {
+                return true;
+            }
+
+            return product.stock_quantity > productCartQty;
+        },
     },
 
     computed: {

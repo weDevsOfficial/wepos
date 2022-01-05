@@ -117,7 +117,7 @@ class Frontend {
     /**
      * Adds view pos menu to my account page.
      *
-     * @since WEPOS_SINCE
+     * @since  WEPOS_SINCE
      *
      * @param  $menu_links
      *

@@ -117,7 +117,9 @@ class Frontend {
     /**
      * Adds view pos menu to my account page.
      *
-     * @param $menu_links
+     * @since WEPOS_SINCE
+     *
+     * @param  $menu_links
      *
      * @return array
      */
@@ -129,10 +131,12 @@ class Frontend {
     /**
      * Handles view pos menu endpoint.
      *
-     * @param $url
-     * @param $endpoint
-     * @param $value
-     * @param $permalink
+     * @since WEPOS_SINCE
+     *
+     * @param  $url
+     * @param  $endpoint
+     * @param  $value
+     * @param  $permalink
      *
      * @return string
      */

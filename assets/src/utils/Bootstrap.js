@@ -84,7 +84,10 @@ window.wepos.libs['EventBus']   = EventBus;
 window.wepos.libs['Modal']      = Modal;
 window.wepos.libs['Switches']   = Switches;
 
-window.wepos.hooks = ( wp && wp.hooks ) ? wp.hooks : window.wepos.wpPackages.hooks;
+// WordPress Hooks
+import { createHooks } from '@wordpress/hooks';
+
+window.wepos.hooks = createHooks();
 
 wepos.addFilter = ( hookName, namespace, component, priority = 10 ) => {
     wepos.hooks.addFilter(hookName, namespace, (components) => {

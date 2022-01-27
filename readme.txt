@@ -3,11 +3,11 @@ Contributors: tareq1988, wedevs, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.8.2
+Tested up to: 5.9
 WC requires at least: 3.0
-WC tested up to: 6.0.0
+WC tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 1.1.12
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,10 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.2.0 -> 27th January, 2022 =
+- **Compatibility:** Compatibility for WordPress 5.9
+- **Fix:** Fixed an issue where wePOS frontend is not loading
 
 = v1.1.12 -> 31st December, 2021 =
 - **Feature:** Stock support for the pos product, out-of-stock products will be shown but can not be added into the cart

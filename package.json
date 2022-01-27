@@ -1,6 +1,6 @@
 {
   "name": "wepos",
-  "version": "1.1.12",
+  "version": "1.2.0",
   "description": "Point of Sale plugin for WooCommerce",
   "author": "weDevs <info@wedevs.com>",
   "license": "GPLv2",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@mathieustan/vue-datepicker": "^0.2.8",
-    "@wordpress/hooks": "^2.0.5",
+    "@wordpress/hooks": "^2.12.3",
     "dayjs": "^1.8.36",
     "lodash": "^4.17.21",
     "v-hotkey": "^0.3.0",

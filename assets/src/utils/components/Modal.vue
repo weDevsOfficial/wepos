@@ -68,6 +68,10 @@ export default {
 
         };
     },
+
+    mounted() {
+        this.$emit( 'open' );
+    }
 };
 </script>
 

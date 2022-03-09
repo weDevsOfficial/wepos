@@ -403,7 +403,7 @@
             </template>
         </modal>
 
-        <modal v-if="showModal" @open="focusCashInput()" @close="backToSale()" width="98%" height="95vh">
+        <modal v-if="showModal" @open="focusCashInput()" @close="backToSale()" @enterpressed="processPayment()" width="98%" height="95vh">
             <template slot="body">
                 <div class="wepos-checkout-wrapper">
                     <div class="left-content">
@@ -782,7 +782,6 @@ export default {
             this.$store.dispatch( 'Order/setCanProcessPaymentAction', canProcess );
         },
         processPayment(e) {
-            e.preventDefault();
             if ( ! this.$store.getters['Order/getCanProcessPayment'] ) {
                 return;
             }

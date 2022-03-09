@@ -75,7 +75,7 @@ export default {
 
             document.addEventListener("keypress", function(evt) {
                 if ("Enter" === evt.code) {
-                    self.$emit('enterpressed', evt);
+                    self.$emit( 'enterpressed' );
                 }
             });
         }

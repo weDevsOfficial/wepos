@@ -19,8 +19,21 @@ export default {
             setTimeout( () => {
                 window.print();
             }, 500);
-        }
-    }
+        },
+        handlePrintReceiptSubmit() {
+            let self = this;
+
+            document.addEventListener("keypress", function(evt) {
+                if ("Enter" === evt.code) {
+                    self.printReceipt();
+                }
+            });
+        },
+    },
+
+    mounted() {
+        this.handlePrintReceiptSubmit();
+    },
 };
 
 </script>

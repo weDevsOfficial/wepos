@@ -74,7 +74,7 @@ export default {
             let self = this;
 
             document.addEventListener("keypress", function(evt) {
-                if ("Enter" === evt.key) {
+                if ("Enter" === evt.code) {
                     self.$emit('enterpressed', evt);
                 }
             });

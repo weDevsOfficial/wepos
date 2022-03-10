@@ -324,7 +324,6 @@
 
                     <div class="print-section">
                         <print-receipt></print-receipt>
-                        <PrintRawReceipt :print-data="printdata" />
                         <button class="new-sale-btn" @click.prevent="createNewSale()">
                             <span class="icon flaticon-add"></span>
                             <span class="label">{{ __( 'New Sale', 'wepos' ) }}</span>
@@ -561,7 +560,6 @@ import MugenScroll from 'vue-mugen-scroll';
 import PrintReceipt from './PrintReceipt.vue';
 import PrintReceiptHtml from './PrintReceiptHtml.vue';
 import CustomerNote from './CustomerNote.vue';
-import PrintRawReceipt from "./PrintRawReceipt.vue";
 
 let Modal = wepos_get_lib( 'Modal' );
 

@@ -568,7 +568,6 @@ export default {
     name: 'Home',
 
     components : {
-        PrintRawReceipt,
         ProductSearch,
         CustomerSearch,
         Overlay,

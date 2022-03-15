@@ -43,16 +43,8 @@ class LimitedTimePromotion {
             return;
         }
 
-        $notices = [
-            [
-                'key'        => 'wepos-bfcm2021',
-                'start_date' => '2021-11-19 09:00:00 EST',
-                'end_date'   => '2021-11-30 23:00:00 EST',
-                'title'      => 'Irresistible Black Friday & Cyber Monday Deals.',
-                'content'    => 'Enjoy Flat 50% OFF on wePOS Pro.',
-                'link'       => 'https://wedevs.com/wepos/pricing?utm_medium=text&utm_source=wordpress-wepos-BFCM2021',
-            ],
-        ];
+        $remote_promotion = new RemotePromotion();
+        $notices = $remote_promotion->get_data();
 
         if ( empty( $notices ) ) {
             return;

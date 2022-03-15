@@ -2,6 +2,9 @@
 
 namespace WeDevs\WePOS\Admin;
 
+/**
+ * Remote Promotion class
+ */
 class RemotePromotion {
 
 	/**
@@ -32,21 +35,21 @@ class RemotePromotion {
 	 */
 	protected $cache_time;
 
-    /**
-     * RemotePromotion Constructor.
-     *
-     * @var string
-     */
-    public function __construct() {
-        $this->url          = 'https://raw.githubusercontent.com/weDevsOfficial/wepos-utils/master/promotion/data.json';
-        $this->request_args = array(
-            'sslverify' => true,
-            'timeout'   => 120,
-        );
+	/**
+	 * RemotePromotion Constructor.
+	 *
+	 * @var string
+	 */
+	public function __construct() {
+		$this->url          = 'https://raw.githubusercontent.com/weDevsOfficial/wepos-utils/master/promotion/data.json';
+		$this->request_args = array(
+			'sslverify' => true,
+			'timeout'   => 120,
+		);
 
-        $this->cache_key  = '_wepos_remote_promotions';
-        $this->cache_time = HOUR_IN_SECONDS;
-    }
+		$this->cache_key  = '_wepos_remote_promotions';
+		$this->cache_time = HOUR_IN_SECONDS;
+	}
 
 	/**
 	 * @return string
@@ -113,7 +116,7 @@ class RemotePromotion {
 		// Get the cached data.
 		$data = get_transient( $this->cache_key );
 
-		if ( false === $data ) {
+		if ( empty( $data ) ) {
 			$response = wp_remote_get( $this->url, $this->request_args );
 
 			if ( ! is_wp_error( $response ) ) {

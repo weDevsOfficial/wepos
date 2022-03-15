@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.2.0\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2022-01-27 09:48:00+00:00\n"
+"POT-Creation-Date: 2022-03-15 09:51:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -512,15 +512,15 @@ msgstr ""
 msgid "Is POS"
 msgstr ""
 
-#: includes/Admin/LimitedTimePromotion.php:85
+#: includes/Admin/LimitedTimePromotion.php:77
 msgid "Get Deals &rarr;"
 msgstr ""
 
-#: includes/Admin/LimitedTimePromotion.php:170
+#: includes/Admin/LimitedTimePromotion.php:162
 msgid "You have no permission to do that"
 msgstr ""
 
-#: includes/Admin/LimitedTimePromotion.php:174 includes/Admin/Settings.php:39
+#: includes/Admin/LimitedTimePromotion.php:166 includes/Admin/Settings.php:39
 #: includes/Admin/Settings.php:66
 msgid "Invalid nonce"
 msgstr ""

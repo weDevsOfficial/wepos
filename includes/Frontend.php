@@ -124,7 +124,11 @@ class Frontend {
      * @return array
      */
     public function add_my_account_view_pos_menu( $menu_links ) {
-        $menu_links['view-wepos'] = __( 'View POS', 'wepos' );
+        $logout_index = array_search( "customer-logout", array_keys( $menu_links ) );
+
+        $menu_links = array_slice( $menu_links, 0, $logout_index, true ) +
+                      [ "view-wepos" => __( 'View POS', 'wepos' ) ] +
+                      array_slice( $menu_links, $logout_index, count( $menu_links ) - 1, true );
         return $menu_links;
     }
 

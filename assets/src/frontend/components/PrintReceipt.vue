@@ -14,26 +14,29 @@ export default {
 
     methods: {
         printReceipt() {
-            var self = this;
-
             setTimeout( () => {
                 window.print();
             }, 500);
         },
-        handlePrintReceiptSubmit() {
+        handlePrintingPopup(evt) {
             let self = this;
 
-            document.addEventListener("keypress", function(evt) {
-                if ("Enter" === evt.code) {
-                    self.printReceipt();
-                }
-            });
+            if ( ( "Enter" === evt.code ) && self.$store.getters['Order/getCanProcessPayment'] ) {
+                self.printReceipt();
+            }
+        },
+        handlePrintReceiptSubmit() {
+            document.addEventListener( "keypress", this.handlePrintingPopup );
         },
     },
 
     mounted() {
         this.handlePrintReceiptSubmit();
     },
+
+    destroyed() {
+        document.removeEventListener( "keypress", this.handlePrintingPopup );
+    }
 };
 
 </script>

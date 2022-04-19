@@ -8,17 +8,29 @@
 </template>
 
 <script>
+import qz from 'qz-tray';
 
 export default {
     name: 'ReceiptPrint',
 
     methods: {
         printReceipt() {
-            var self = this;
-
-            setTimeout( () => {
-                window.print();
-            }, 500);
+            qz.websocket.connect().then(async function () {
+                const config = qz.configs.create(await qz.printers.getDefault(), {
+                    margins: 0.1,
+                    size: { width: 80 },
+                    units: 'mm'
+                });
+                const data = [{
+                    type: 'pixel',
+                    format: 'html',
+                    flavor: 'plain',
+                    data: document.getElementsByClassName('wepos-checkout-print-wrapper')[0].innerHTML
+                }];
+                qz.print(config, data).catch(function (e) {
+                    console.error(e);
+                });
+            });
         }
     }
 };

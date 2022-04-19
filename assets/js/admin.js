@@ -1,24 +1,596 @@
 pluginWebpack([1],{
 
-/***/ 178:
+/***/ 116:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'App'
+});
+
+/***/ }),
+
+/***/ 117:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(261);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    name: 'Settings',
+
+    components: {
+        Fields: __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__["a" /* default */]
+    },
+
+    data() {
+        return {
+            isSaved: false,
+            showLoading: false,
+            isUpdated: false,
+            isLoaded: false,
+            message: '',
+            currentTab: null,
+            settingSections: [],
+            settingFields: {},
+            settingValues: {}
+        };
+    },
+
+    methods: {
+        changeTab(section) {
+            var activetab = '';
+            this.currentTab = section.id;
+
+            if (typeof localStorage != 'undefined') {
+                localStorage.setItem("activetab", this.currentTab);
+            }
+        },
+
+        showSectionTitle(index) {
+            return window.weLo_.findIndex(this.settingSections, { id: index }).title;
+        },
+
+        fetchSettingValues() {
+            var self = this,
+                data = {
+                action: 'wepos_get_setting_values',
+                nonce: wepos.nonce
+            };
+
+            self.showLoading = true;
+
+            jQuery.post(wepos.ajaxurl, data, function (resp) {
+                if (resp.success) {
+
+                    Object.keys(self.settingFields).forEach(function (section, index) {
+                        Object.keys(self.settingFields[section]).forEach(function (field, i) {
+
+                            if (!self.settingValues[section]) {
+                                self.settingValues[section] = {};
+                            }
+
+                            if (typeof resp.data[section][field] === 'undefined') {
+                                if (typeof self.settingFields[section][field].default === 'undefined') {
+                                    self.settingValues[section][field] = '';
+                                } else {
+                                    self.settingValues[section][field] = self.settingFields[section][field].default;
+                                }
+                            } else {
+                                self.settingValues[section][field] = resp.data[section][field];
+                            }
+                        });
+                    });
+
+                    self.settingValues = jQuery.extend({}, self.settingValues);
+
+                    self.showLoading = false;
+                    self.isLoaded = true;
+                }
+            });
+        },
+
+        showMedia(data, $event) {
+            var self = this;
+
+            var file_frame = wp.media.frames.file_frame = wp.media({
+                title: this.__('Choose your file', 'wepos'),
+                button: {
+                    text: this.__('Select', 'wepos')
+                },
+                multiple: false
+            });
+
+            file_frame.on('select', function () {
+                var attachment = file_frame.state().get('selection').first().toJSON();
+                self.settingValues[data.sectionId][data.name] = attachment.url;
+            });
+
+            file_frame.open();
+        },
+
+        saveSettings(fieldData, section) {
+            var self = this,
+                data = {
+                action: 'wepos_save_settings',
+                nonce: wepos.nonce,
+                settingsData: fieldData,
+                section: section
+            };
+            self.showLoading = true;
+
+            jQuery.post(wepos.ajaxurl, data).done(function (response) {
+                var settings = response.data.settings;
+                self.isSaved = true;
+                self.isUpdated = true;
+                self.message = response.data.message;
+                self.settingValues[settings.name] = settings.value;
+            }).fail(function (jqXHR) {
+                var messages = jqXHR.responseJSON.data.map(function (error) {
+                    return error.message;
+                });
+
+                alert(messages.join(' '));
+            }).always(function () {
+                self.showLoading = false;
+            });
+        }
+    },
+
+    created() {
+        this.fetchSettingValues();
+
+        this.currentTab = 'wepos_general';
+        if (typeof localStorage != 'undefined') {
+            this.currentTab = localStorage.getItem("activetab") ? localStorage.getItem("activetab") : 'wepos_general';
+        }
+
+        this.settingSections = wepos.settings_sections;
+        this.settingFields = wepos.settings_fields;
+    }
+});
+
+/***/ }),
+
+/***/ 118:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(263);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+let TextEditor = wepos_get_lib('TextEditor');
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'Fields',
+
+    components: {
+        colorPicker: __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__["a" /* default */],
+        TextEditor
+    },
+
+    data() {
+        return {
+            repeatableItem: {}
+        };
+    },
+
+    props: ['id', 'fieldData', 'sectionId', 'fieldValue'],
+
+    methods: {
+        containCommonFields(type) {
+            return window.weLo_.includes([undefined, 'text', 'email', 'url', 'phone'], type);
+        },
+
+        addItem(type, name) {
+            this.fieldValue[name] = this.fieldValue[name] || [];
+
+            if (typeof this.repeatableItem[name] == 'undefined' || !this.repeatableItem[name]) {
+                return;
+            }
+
+            this.fieldValue[name].push({
+                id: this.repeatableItem[name].trim().replace(/\s+/g, '_').toLowerCase(),
+                value: this.repeatableItem[name]
+            });
+            this.repeatableItem[name] = '';
+        },
+
+        removeItem(optionVal, name) {
+            this.fieldValue[name].splice(optionVal, 1);
+        }
+    }
+
+});
+
+/***/ }),
+
+/***/ 119:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(265);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    components: {
+        Sketch: __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__["a" /* default */]
+    },
+
+    props: {
+        value: {
+            type: String,
+            required: true,
+            default: ''
+        },
+
+        format: {
+            type: String,
+            required: false,
+            default: 'hex',
+            validator(type) {
+                return ['hsl', 'hex', 'rgba', 'hsv'].indexOf(type) !== -1;
+            }
+        },
+
+        presetColors: {
+            type: Array,
+            required: false,
+            default() {
+                return ['#000', '#fff', '#d33', '#d93', '#ee2', '#81d742', '#1e73be', '#8224e3'];
+            }
+        },
+
+        disableAlpha: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+
+        disableFields: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
+    },
+
+    data() {
+        return {
+            showColorPicker: false
+        };
+    },
+
+    methods: {
+        updateColor(colors) {
+            let color = '';
+
+            if (colors[this.format]) {
+                color = colors[this.format];
+            }
+
+            this.$emit('input', color);
+        },
+
+        toggleColorPicker() {
+            this.showColorPicker = !this.showColorPicker;
+        },
+
+        setHexColor(color) {
+            this.updateColor({
+                hex: color
+            });
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 254:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(179);
+var _App = __webpack_require__(255);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(182);
+var _router = __webpack_require__(258);
 
 var _router2 = _interopRequireDefault(_router);
 
-var _store = __webpack_require__(29);
+var _store = __webpack_require__(52);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _adminMenuFix = __webpack_require__(213);
+var _adminMenuFix = __webpack_require__(289);
 
 var _adminMenuFix2 = _interopRequireDefault(_adminMenuFix);
 
@@ -46,20 +618,20 @@ new Vue({
 
 /***/ }),
 
-/***/ 179:
+/***/ 255:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(116);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(181);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6bc4b6d8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(257);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(180)
+  __webpack_require__(256)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -104,14 +676,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 180:
+/***/ 256:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 181:
+/***/ 257:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -134,7 +706,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 182:
+/***/ 258:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -144,7 +716,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Settings = __webpack_require__(183);
+var _Settings = __webpack_require__(259);
 
 var _Settings2 = _interopRequireDefault(_Settings);
 
@@ -165,20 +737,20 @@ exports.default = new Router({
 
 /***/ }),
 
-/***/ 183:
+/***/ 259:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Settings_vue__ = __webpack_require__(117);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ba26873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Settings_vue__ = __webpack_require__(288);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(184)
+  __webpack_require__(260)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -223,26 +795,26 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 184:
+/***/ 260:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 185:
+/***/ 261:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Fields_vue__ = __webpack_require__(118);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8543ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Fields_vue__ = __webpack_require__(287);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(186)
+  __webpack_require__(262)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -287,26 +859,26 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 186:
+/***/ 262:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 187:
+/***/ 263:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ColorPicker_vue__ = __webpack_require__(119);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_267901b1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ColorPicker_vue__ = __webpack_require__(286);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(188)
+  __webpack_require__(264)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -351,14 +923,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 188:
+/***/ 264:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 210:
+/***/ 286:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -450,7 +1022,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 211:
+/***/ 287:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1418,7 +1990,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 212:
+/***/ 288:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1608,7 +2180,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 213:
+/***/ 289:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1654,7 +2226,7 @@ exports.default = menuFix;
 
 /***/ }),
 
-/***/ 29:
+/***/ 52:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1664,11 +2236,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Cart = __webpack_require__(30);
+var _Cart = __webpack_require__(53);
 
 var _Cart2 = _interopRequireDefault(_Cart);
 
-var _Order = __webpack_require__(32);
+var _Order = __webpack_require__(55);
 
 var _Order2 = _interopRequireDefault(_Order);
 
@@ -1688,7 +2260,7 @@ exports.default = new Vuex.Store({
 
 /***/ }),
 
-/***/ 30:
+/***/ 53:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1698,7 +2270,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _helper = __webpack_require__(31);
+var _helper = __webpack_require__(54);
 
 var _helper2 = _interopRequireDefault(_helper);
 
@@ -2004,7 +2576,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 31:
+/***/ 54:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2031,7 +2603,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 32:
+/***/ 55:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2133,578 +2705,6 @@ exports.default = {
     }
 };
 
-/***/ }),
-
-/***/ 78:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'App'
-});
-
-/***/ }),
-
-/***/ 79:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__ = __webpack_require__(185);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-    name: 'Settings',
-
-    components: {
-        Fields: __WEBPACK_IMPORTED_MODULE_0_admin_components_Fields_vue__["a" /* default */]
-    },
-
-    data() {
-        return {
-            isSaved: false,
-            showLoading: false,
-            isUpdated: false,
-            isLoaded: false,
-            message: '',
-            currentTab: null,
-            settingSections: [],
-            settingFields: {},
-            settingValues: {}
-        };
-    },
-
-    methods: {
-        changeTab(section) {
-            var activetab = '';
-            this.currentTab = section.id;
-
-            if (typeof localStorage != 'undefined') {
-                localStorage.setItem("activetab", this.currentTab);
-            }
-        },
-
-        showSectionTitle(index) {
-            return window.weLo_.findIndex(this.settingSections, { id: index }).title;
-        },
-
-        fetchSettingValues() {
-            var self = this,
-                data = {
-                action: 'wepos_get_setting_values',
-                nonce: wepos.nonce
-            };
-
-            self.showLoading = true;
-
-            jQuery.post(wepos.ajaxurl, data, function (resp) {
-                if (resp.success) {
-
-                    Object.keys(self.settingFields).forEach(function (section, index) {
-                        Object.keys(self.settingFields[section]).forEach(function (field, i) {
-
-                            if (!self.settingValues[section]) {
-                                self.settingValues[section] = {};
-                            }
-
-                            if (typeof resp.data[section][field] === 'undefined') {
-                                if (typeof self.settingFields[section][field].default === 'undefined') {
-                                    self.settingValues[section][field] = '';
-                                } else {
-                                    self.settingValues[section][field] = self.settingFields[section][field].default;
-                                }
-                            } else {
-                                self.settingValues[section][field] = resp.data[section][field];
-                            }
-                        });
-                    });
-
-                    self.settingValues = jQuery.extend({}, self.settingValues);
-
-                    self.showLoading = false;
-                    self.isLoaded = true;
-                }
-            });
-        },
-
-        showMedia(data, $event) {
-            var self = this;
-
-            var file_frame = wp.media.frames.file_frame = wp.media({
-                title: this.__('Choose your file', 'wepos'),
-                button: {
-                    text: this.__('Select', 'wepos')
-                },
-                multiple: false
-            });
-
-            file_frame.on('select', function () {
-                var attachment = file_frame.state().get('selection').first().toJSON();
-                self.settingValues[data.sectionId][data.name] = attachment.url;
-            });
-
-            file_frame.open();
-        },
-
-        saveSettings(fieldData, section) {
-            var self = this,
-                data = {
-                action: 'wepos_save_settings',
-                nonce: wepos.nonce,
-                settingsData: fieldData,
-                section: section
-            };
-            self.showLoading = true;
-
-            jQuery.post(wepos.ajaxurl, data).done(function (response) {
-                var settings = response.data.settings;
-                self.isSaved = true;
-                self.isUpdated = true;
-                self.message = response.data.message;
-                self.settingValues[settings.name] = settings.value;
-            }).fail(function (jqXHR) {
-                var messages = jqXHR.responseJSON.data.map(function (error) {
-                    return error.message;
-                });
-
-                alert(messages.join(' '));
-            }).always(function () {
-                self.showLoading = false;
-            });
-        }
-    },
-
-    created() {
-        this.fetchSettingValues();
-
-        this.currentTab = 'wepos_general';
-        if (typeof localStorage != 'undefined') {
-            this.currentTab = localStorage.getItem("activetab") ? localStorage.getItem("activetab") : 'wepos_general';
-        }
-
-        this.settingSections = wepos.settings_sections;
-        this.settingFields = wepos.settings_fields;
-    }
-});
-
-/***/ }),
-
-/***/ 80:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__ = __webpack_require__(187);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-let TextEditor = wepos_get_lib('TextEditor');
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'Fields',
-
-    components: {
-        colorPicker: __WEBPACK_IMPORTED_MODULE_0_admin_components_ColorPicker_vue__["a" /* default */],
-        TextEditor
-    },
-
-    data() {
-        return {
-            repeatableItem: {}
-        };
-    },
-
-    props: ['id', 'fieldData', 'sectionId', 'fieldValue'],
-
-    methods: {
-        containCommonFields(type) {
-            return window.weLo_.includes([undefined, 'text', 'email', 'url', 'phone'], type);
-        },
-
-        addItem(type, name) {
-            this.fieldValue[name] = this.fieldValue[name] || [];
-
-            if (typeof this.repeatableItem[name] == 'undefined' || !this.repeatableItem[name]) {
-                return;
-            }
-
-            this.fieldValue[name].push({
-                id: this.repeatableItem[name].trim().replace(/\s+/g, '_').toLowerCase(),
-                value: this.repeatableItem[name]
-            });
-            this.repeatableItem[name] = '';
-        },
-
-        removeItem(optionVal, name) {
-            this.fieldValue[name].splice(optionVal, 1);
-        }
-    }
-
-});
-
-/***/ }),
-
-/***/ 81:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__ = __webpack_require__(189);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    components: {
-        Sketch: __WEBPACK_IMPORTED_MODULE_0_vue_color_src_components_Sketch_vue__["a" /* default */]
-    },
-
-    props: {
-        value: {
-            type: String,
-            required: true,
-            default: ''
-        },
-
-        format: {
-            type: String,
-            required: false,
-            default: 'hex',
-            validator(type) {
-                return ['hsl', 'hex', 'rgba', 'hsv'].indexOf(type) !== -1;
-            }
-        },
-
-        presetColors: {
-            type: Array,
-            required: false,
-            default() {
-                return ['#000', '#fff', '#d33', '#d93', '#ee2', '#81d742', '#1e73be', '#8224e3'];
-            }
-        },
-
-        disableAlpha: {
-            type: Boolean,
-            required: false,
-            default: true
-        },
-
-        disableFields: {
-            type: Boolean,
-            required: false,
-            default: true
-        }
-    },
-
-    data() {
-        return {
-            showColorPicker: false
-        };
-    },
-
-    methods: {
-        updateColor(colors) {
-            let color = '';
-
-            if (colors[this.format]) {
-                color = colors[this.format];
-            }
-
-            this.$emit('input', color);
-        },
-
-        toggleColorPicker() {
-            this.showColorPicker = !this.showColorPicker;
-        },
-
-        setHexColor(color) {
-            this.updateColor({
-                hex: color
-            });
-        }
-    }
-});
-
 /***/ })
 
-},[178]);
+},[254]);

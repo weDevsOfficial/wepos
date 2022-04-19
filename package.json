@@ -16,6 +16,8 @@
     "@wordpress/hooks": "^2.12.3",
     "dayjs": "^1.8.36",
     "lodash": "^4.17.21",
+    "qz-tray": "^2.2.1",
+    "sha": "^3.0.0",
     "v-hotkey": "^0.3.0",
     "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.5.2",
@@ -24,7 +26,8 @@
     "vue-multiselect": "^2.1.3",
     "vue-router": "^3.0.1",
     "vue-sweetalert2": "^5.0.2",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "ws": "^8.5.0"
   },
   "devDependencies": {
     "archiver": "^3.0.0",

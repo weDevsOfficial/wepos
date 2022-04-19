@@ -1,514 +1,6 @@
-pluginWebpack([0],Array(29).concat([
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
+pluginWebpack([0],{
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _Cart = __webpack_require__(30);
-
-var _Cart2 = _interopRequireDefault(_Cart);
-
-var _Order = __webpack_require__(32);
-
-var _Order2 = _interopRequireDefault(_Order);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Vue = wepos_get_lib('Vue');
-var Vuex = wepos_get_lib('Vuex');
-
-Vue.use(Vuex);
-
-exports.default = new Vuex.Store({
-    modules: {
-        Cart: _Cart2.default,
-        Order: _Order2.default
-    }
-});
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _helper = __webpack_require__(31);
-
-var _helper2 = _interopRequireDefault(_helper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    namespaced: true,
-    state: {
-        settings: {},
-        availableTax: {},
-        cartdata: {
-            line_items: [],
-            fee_lines: []
-        }
-    },
-    getters: {
-        getSubtotal: function getSubtotal(state) {
-            var subtotal = 0;
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                if (item.on_sale) {
-                    subtotal += item.quantity * item.sale_price;
-                } else {
-                    subtotal += item.quantity * item.regular_price;
-                }
-            });
-
-            return subtotal;
-        },
-        getTotalFee: function getTotalFee(state) {
-            var fee = 0;
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    fee += Math.abs(item.total);
-                }
-            });
-            return fee;
-        },
-        getTotalDiscount: function getTotalDiscount(state) {
-            var discount = 0;
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'discount') {
-                    discount += Number(Math.abs(item.total));
-                }
-            });
-
-            return discount;
-        },
-        getTotalLineTax: function getTotalLineTax(state) {
-            var self = this,
-                taxLineTotal = 0;
-
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
-            });
-
-            return taxLineTotal;
-        },
-        getTotalTax: function getTotalTax(state) {
-            var self = this,
-                taxLineTotal = 0,
-                taxFeeTotal = 0;
-            weLo_.forEach(state.cartdata.line_items, function (item, key) {
-                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
-            });
-
-            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
-                taxLineTotal = 0;
-            }
-
-            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                if (item.type == 'fee') {
-                    if (item.tax_status == 'taxable') {
-                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
-                        if (taxClass !== undefined) {
-                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
-                        }
-                    }
-                }
-            });
-
-            return taxLineTotal + taxFeeTotal;
-        },
-        getOrderTotal: function getOrderTotal(state, getters) {
-            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
-        },
-        getTotal: function getTotal(state, getters) {
-            return getters.getOrderTotal - getters.getTotalDiscount;
-        },
-        getSettings: function getSettings(state, getters) {
-            return state.settings;
-        }
-    },
-    mutations: {
-        setSettings: function setSettings(state, settings) {
-            state.settings = settings;
-        },
-        setAvailableTax: function setAvailableTax(state, availableTax) {
-            state.availableTax = availableTax;
-        },
-        setCartData: function setCartData(state, cartdata) {
-            if (weLo_.isEmpty(cartdata)) {
-                state.cartdata = {
-                    line_items: [],
-                    fee_lines: []
-                };
-            } else {
-                state.cartdata = Object.assign({}, cartdata);
-            }
-        },
-        addToCartItem: function addToCartItem(state, product) {
-            var cartObject = {};
-            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
-            cartObject.name = product.name;
-            cartObject.quantity = 1;
-            cartObject.regular_price = product.regular_display_price;
-            cartObject.sale_price = product.sales_display_price;
-            cartObject.on_sale = product.on_sale;
-            cartObject.attribute = product.attributes;
-            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
-            cartObject.editQuantity = false;
-            cartObject.type = product.type;
-            cartObject.tax_amount = product.tax_amount;
-            cartObject.manage_stock = product.manage_stock;
-            cartObject.stock_status = product.stock_status;
-            cartObject.backorders_allowed = product.backorders_allowed;
-            cartObject.stock_quantity = product.stock_quantity;
-
-            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
-
-            if (index < 0) {
-                if (_helper2.default.hasStock(product)) {
-                    state.cartdata.line_items.push(cartObject);
-                }
-            } else {
-                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
-                    state.cartdata.line_items[index].quantity += 1;
-                }
-            }
-        },
-        removeCartItem: function removeCartItem(state, itemKey) {
-            state.cartdata.line_items.splice(itemKey, 1);
-        },
-        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
-            var item = state.cartdata.line_items[itemKey];
-            if (_helper2.default.hasStock(item, item.quantity)) {
-                state.cartdata.line_items[itemKey].quantity++;
-            }
-        },
-        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
-            var item = state.cartdata.line_items[itemKey];
-            if (item.quantity <= 1) {
-                state.cartdata.line_items[itemKey].quantity = 1;
-            } else {
-                state.cartdata.line_items[itemKey].quantity--;
-            }
-        },
-        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
-            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
-        },
-        addDiscount: function addDiscount(state, discountData) {
-            state.cartdata.fee_lines.push({
-                name: discountData.title,
-                type: 'discount',
-                value: discountData.value.toString(),
-                isEdit: false,
-                discount_type: discountData.type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-        },
-        addFee: function addFee(state, feeData) {
-            state.cartdata.fee_lines.push({
-                name: feeData.title,
-                type: 'fee',
-                value: feeData.value.toString(),
-                isEdit: false,
-                fee_type: feeData.type,
-                tax_status: 'none',
-                tax_class: '',
-                total: 0
-            });
-        },
-        saveFeeValue: function saveFeeValue(state, item) {
-            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
-            state.cartdata.fee_lines[item.key].isEdit = false;
-        },
-        editFeeValue: function editFeeValue(state, itemKey) {
-            state.cartdata.fee_lines[itemKey].isEdit = true;
-        },
-        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
-            state.cartdata.fee_lines[itemKey].isEdit = false;
-        },
-        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
-            state.cartdata.fee_lines.splice(itemKey, 1);
-        },
-        emptyCart: function emptyCart(state) {
-            state.cartdata = {
-                line_items: [],
-                fee_lines: []
-            };
-        },
-        calculateDiscount: function calculateDiscount(state, payload) {
-            if (state.cartdata.fee_lines.length > 0) {
-                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                    if (item.type == "discount") {
-                        if (item.discount_type == 'percent') {
-                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
-                        } else {
-                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
-                        }
-                    }
-                });
-            }
-        },
-        calculateFee: function calculateFee(state, payload) {
-            if (state.cartdata.fee_lines.length > 0) {
-                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
-                    if (item.type == 'fee') {
-                        if (item.fee_type == 'percent') {
-                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
-                        } else {
-                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
-                        }
-                    }
-                });
-            }
-        }
-    },
-    actions: {
-        setSettingsAction: function setSettingsAction(context, settings) {
-            context.commit('setSettings', settings);
-        },
-        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
-            context.commit('setAvailableTax', availableTax);
-        },
-        setCartDataAction: function setCartDataAction(context, cartdata) {
-            context.commit('setCartData', cartdata);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addToCartAction: function addToCartAction(context, product) {
-            context.commit('addToCartItem', product);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeCartItemAction: function removeCartItemAction(context, itemKey) {
-            context.commit('removeCartItem', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
-            context.commit('addCartItemQuantity', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
-            context.commit('removeCartItemQuantity', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
-            context.commit('toggleEditQuantity', itemKey);
-        },
-        addDiscountAction: function addDiscountAction(context, discountData) {
-            context.commit('addDiscount', discountData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        addFeeAction: function addFeeAction(context, feeData) {
-            context.commit('addFee', feeData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
-            context.commit('removeFeeLineItems', itemKey);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
-            context.commit('saveFeeValue', feeData);
-            context.commit('calculateDiscount', context.getters);
-            context.commit('calculateFee', context.getters);
-        },
-        editFeeValueAction: function editFeeValueAction(context, itemKey) {
-            context.commit('editFeeValue', itemKey);
-        },
-        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
-            context.commit('cancelSaveFeeValue', itemKey);
-        },
-        emptyCartAction: function emptyCartAction(context) {
-            context.commit('emptyCart');
-        },
-        calculateDiscount: function calculateDiscount(context) {
-            context.commit('calculateDiscount', context.getters);
-        },
-        calculateFee: function calculateFee(context) {
-            context.commit('calculateFee', context.getters);
-        }
-    }
-};
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    hasStock: function hasStock(product) {
-        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-        if (!product.manage_stock) {
-            return 'outofstock' == product.stock_status ? false : true;
-        } else {
-            if (product.backorders_allowed) {
-                return true;
-            } else {
-                return product.stock_quantity > productCartQty;
-            }
-        }
-    }
-};
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    namespaced: true,
-    state: {
-        orderdata: {
-            billing: {},
-            shipping: {},
-            customer_id: 0,
-            customer_note: '',
-            payment_method: '',
-            payment_method_title: ''
-        },
-        canProcessPayment: false
-    },
-    getters: {
-        getCanProcessPayment: function getCanProcessPayment(state) {
-            return state.canProcessPayment;
-        }
-    },
-    mutations: {
-        setOrderData: function setOrderData(state, orderdata) {
-            if (weLo_.isEmpty(orderdata)) {
-                state.orderdata = {
-                    billing: {},
-                    shipping: {},
-                    customer_id: 0,
-                    customer_note: '',
-                    payment_method: '',
-                    payment_method_title: ''
-                };
-            } else {
-                state.orderdata = orderdata;
-            }
-        },
-        setCustomer: function setCustomer(state, customer) {
-            if (Object.keys(customer).length > 0) {
-                state.orderdata.billing = customer.billing;
-                state.orderdata.shipping = customer.shipping;
-                state.orderdata.customer_id = customer.id;
-            } else {
-                state.orderdata.billing = {};
-                state.orderdata.shipping = {};
-                state.orderdata.customer_id = 0;
-            }
-        },
-        emptyOrderdata: function emptyOrderdata(state) {
-            state.orderdata = {
-                billing: {},
-                shipping: {},
-                customer_id: 0,
-                customer_note: '',
-                payment_method: '',
-                payment_method_title: ''
-            };
-        },
-        setCustomerNote: function setCustomerNote(state, note) {
-            state.orderdata.customer_note = note.trim();
-        },
-        removeCustomerNote: function removeCustomerNote(state) {
-            state.orderdata.customer_note = '';
-        },
-        setGateway: function setGateway(state, gateway) {
-            state.orderdata.payment_method = gateway.id;
-            state.orderdata.payment_method_title = gateway.title;
-        },
-        setCanProcessPayment: function setCanProcessPayment(state, canProcessPayment) {
-            state.canProcessPayment = canProcessPayment;
-        }
-    },
-    actions: {
-        setOrderDataAction: function setOrderDataAction(context, orderdata) {
-            context.commit('setOrderData', orderdata);
-        },
-        setCustomerAction: function setCustomerAction(context, customer) {
-            context.commit('setCustomer', customer);
-        },
-        emptyOrderdataAction: function emptyOrderdataAction(context) {
-            context.commit('emptyOrderdata');
-        },
-        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
-            context.commit('setCustomerNote', note);
-        },
-        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
-            context.commit('removeCustomerNote');
-        },
-        setGatewayAction: function setGatewayAction(context, gateway) {
-            context.commit('setGateway', gateway);
-        },
-        setCanProcessPaymentAction: function setCanProcessPaymentAction(context, canProcessPayment) {
-            context.commit('setCanProcessPayment', canProcessPayment);
-        }
-    }
-};
-
-/***/ }),
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */
+/***/ 103:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -525,19 +17,21 @@ exports.default = {
 });
 
 /***/ }),
-/* 66 */
+
+/***/ 104:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(152);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(155);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(161);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FeeKeypad_vue__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__ = __webpack_require__(112);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_vue_mugen_scroll__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(171);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PrintReceipt_vue__ = __webpack_require__(244);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__PrintReceiptHtml_vue__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CustomerNote_vue__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__PrintRawReceipt_vue__ = __webpack_require__(586);
 //
 //
 //
@@ -1090,6 +584,8 @@ exports.default = {
 //
 //
 //
+//
+
 
 
 
@@ -1108,6 +604,7 @@ let Modal = wepos_get_lib('Modal');
     name: 'Home',
 
     components: {
+        PrintRawReceipt: __WEBPACK_IMPORTED_MODULE_8__PrintRawReceipt_vue__["a" /* default */],
         ProductSearch: __WEBPACK_IMPORTED_MODULE_1__ProductSearch_vue__["a" /* default */],
         CustomerSearch: __WEBPACK_IMPORTED_MODULE_2__CustomerSearch_vue__["a" /* default */],
         Overlay: __WEBPACK_IMPORTED_MODULE_0__Overlay_vue__["a" /* default */],
@@ -1668,7 +1165,8 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 67 */
+
+/***/ 105:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1688,12 +1186,13 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 68 */
+
+/***/ 106:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(69);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_hotkey___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_v_hotkey__);
 //
 //
@@ -1990,14 +1489,15 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 69 */
+
+/***/ 107:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_KeyboardControl_vue__ = __webpack_require__(108);
 /* unused harmony namespace reexport */
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -2041,7 +1541,8 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 70 */
+
+/***/ 108:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2121,11 +1622,12 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 71 */
+
+/***/ 109:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__KeyboardControl_vue__ = __webpack_require__(107);
 //
 //
 //
@@ -2507,11 +2009,12 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 72 */
+
+/***/ 110:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Keyboard_vue__ = __webpack_require__(239);
 //
 //
 //
@@ -2630,7 +2133,8 @@ let Modal = wepos_get_lib('Modal');
 });
 
 /***/ }),
-/* 73 */
+
+/***/ 111:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2823,11 +2327,13 @@ const Tokens = {
 });
 
 /***/ }),
-/* 74 */,
-/* 75 */
+
+/***/ 113:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_qz_tray__ = __webpack_require__(307);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_qz_tray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_qz_tray__);
 //
 //
 //
@@ -2837,6 +2343,7 @@ const Tokens = {
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -2844,17 +2351,33 @@ const Tokens = {
 
     methods: {
         printReceipt() {
-            var self = this;
+            // var self = this;
+            //
+            // setTimeout( () => {
+            //     window.print();
+            // }, 500);
 
-            setTimeout(() => {
-                window.print();
-            }, 500);
+            __WEBPACK_IMPORTED_MODULE_0_qz_tray___default.a.websocket.connect().then(async function () {
+                const config = __WEBPACK_IMPORTED_MODULE_0_qz_tray___default.a.configs.create((await __WEBPACK_IMPORTED_MODULE_0_qz_tray___default.a.printers.getDefault()), {
+                    margins: { left: 0.1, bottom: 0.1 }
+                });
+                const data = [{
+                    type: 'pixel',
+                    format: 'html',
+                    flavor: 'plain', // or 'plain' if the data is raw HTML
+                    data: document.getElementsByClassName('wepos-checkout-print-wrapper')[0].innerHTML
+                }];
+                __WEBPACK_IMPORTED_MODULE_0_qz_tray___default.a.print(config, data).catch(function (e) {
+                    console.error(e);
+                });
+            });
         }
     }
 });
 
 /***/ }),
-/* 76 */
+
+/***/ 114:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2967,7 +2490,8 @@ const Tokens = {
 });
 
 /***/ }),
-/* 77 */
+
+/***/ 115:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3024,88 +2548,22 @@ const Tokens = {
 });
 
 /***/ }),
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */,
-/* 95 */,
-/* 96 */,
-/* 97 */,
-/* 98 */,
-/* 99 */,
-/* 100 */,
-/* 101 */,
-/* 102 */,
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */,
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */,
-/* 114 */,
-/* 115 */,
-/* 116 */,
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */,
-/* 128 */,
-/* 129 */,
-/* 130 */,
-/* 131 */,
-/* 132 */,
-/* 133 */,
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */,
-/* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */,
-/* 145 */
+
+/***/ 221:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(146);
+var _App = __webpack_require__(222);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(149);
+var _router = __webpack_require__(225);
 
 var _router2 = _interopRequireDefault(_router);
 
-var _store = __webpack_require__(29);
+var _store = __webpack_require__(52);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -3130,20 +2588,21 @@ new Vue({
 });
 
 /***/ }),
-/* 146 */
+
+/***/ 222:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(103);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_152fd186_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(224);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(147)
+  __webpack_require__(223)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -3187,13 +2646,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 147 */
+
+/***/ 223:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 148 */
+
+/***/ 224:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3220,7 +2681,8 @@ if (false) {
 }
 
 /***/ }),
-/* 149 */
+
+/***/ 225:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3230,7 +2692,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Home = __webpack_require__(150);
+var _Home = __webpack_require__(226);
 
 var _Home2 = _interopRequireDefault(_Home);
 
@@ -3250,20 +2712,21 @@ exports.default = new Router({
 });
 
 /***/ }),
-/* 150 */
+
+/***/ 226:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Home_vue__ = __webpack_require__(104);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(177);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76253014_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Home_vue__ = __webpack_require__(253);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(151)
+  __webpack_require__(227)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -3307,25 +2770,27 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 151 */
+
+/***/ 227:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 152 */
+
+/***/ 228:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Overlay_vue__ = __webpack_require__(105);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(154);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7b9b24aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Overlay_vue__ = __webpack_require__(230);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(153)
+  __webpack_require__(229)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -3369,13 +2834,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 153 */
+
+/***/ 229:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 154 */
+
+/***/ 230:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3397,19 +2864,20 @@ if (false) {
 }
 
 /***/ }),
-/* 155 */
+
+/***/ 231:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ProductSearch_vue__ = __webpack_require__(106);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_64fc4f12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ProductSearch_vue__ = __webpack_require__(233);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(156)
+  __webpack_require__(232)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -3453,13 +2921,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 156 */
+
+/***/ 232:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 157 */
+
+/***/ 233:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3907,19 +3377,20 @@ if (false) {
 }
 
 /***/ }),
-/* 158 */
+
+/***/ 234:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerSearch_vue__ = __webpack_require__(109);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_414ef29b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerSearch_vue__ = __webpack_require__(236);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(159)
+  __webpack_require__(235)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -3963,13 +3434,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 159 */
+
+/***/ 235:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 160 */
+
+/***/ 236:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4819,19 +4292,20 @@ if (false) {
 }
 
 /***/ }),
-/* 161 */
+
+/***/ 237:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_FeeKeypad_vue__ = __webpack_require__(110);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0bc4dc95_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_FeeKeypad_vue__ = __webpack_require__(242);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(162)
+  __webpack_require__(238)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -4875,25 +4349,27 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 162 */
+
+/***/ 238:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 163 */
+
+/***/ 239:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Keyboard_vue__ = __webpack_require__(111);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fbb6d6c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Keyboard_vue__ = __webpack_require__(241);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(164)
+  __webpack_require__(240)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -4937,13 +4413,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 164 */
+
+/***/ 240:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 165 */
+
+/***/ 241:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5009,7 +4487,8 @@ if (false) {
 }
 
 /***/ }),
-/* 166 */
+
+/***/ 242:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5113,20 +4592,20 @@ if (false) {
 }
 
 /***/ }),
-/* 167 */,
-/* 168 */
+
+/***/ 244:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceipt_vue__ = __webpack_require__(113);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_11ba6300_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceipt_vue__ = __webpack_require__(246);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(169)
+  __webpack_require__(245)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -5170,13 +4649,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 169 */
+
+/***/ 245:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 170 */
+
+/***/ 246:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5218,19 +4699,20 @@ if (false) {
 }
 
 /***/ }),
-/* 171 */
+
+/***/ 247:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintReceiptHtml_vue__ = __webpack_require__(114);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2db58d4b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintReceiptHtml_vue__ = __webpack_require__(249);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(172)
+  __webpack_require__(248)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -5274,13 +4756,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 172 */
+
+/***/ 248:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 173 */
+
+/***/ 249:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5594,19 +5078,20 @@ if (false) {
 }
 
 /***/ }),
-/* 174 */
+
+/***/ 250:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerNote_vue__ = __webpack_require__(115);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(176);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4073e2a5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerNote_vue__ = __webpack_require__(252);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(175)
+  __webpack_require__(251)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 
 
@@ -5650,13 +5135,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 175 */
+
+/***/ 251:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 176 */
+
+/***/ 252:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5767,7 +5254,8 @@ if (false) {
 }
 
 /***/ }),
-/* 177 */
+
+/***/ 253:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7647,6 +7135,10 @@ var render = function() {
                     [
                       _c("print-receipt"),
                       _vm._v(" "),
+                      _c("PrintRawReceipt", {
+                        attrs: { "print-data": _vm.printdata }
+                      }),
+                      _vm._v(" "),
                       _c(
                         "button",
                         {
@@ -8462,5 +7954,668 @@ if (false) {
   }
 }
 
+/***/ }),
+
+/***/ 52:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Cart = __webpack_require__(53);
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+var _Order = __webpack_require__(55);
+
+var _Order2 = _interopRequireDefault(_Order);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Vue = wepos_get_lib('Vue');
+var Vuex = wepos_get_lib('Vuex');
+
+Vue.use(Vuex);
+
+exports.default = new Vuex.Store({
+    modules: {
+        Cart: _Cart2.default,
+        Order: _Order2.default
+    }
+});
+
+/***/ }),
+
+/***/ 53:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _helper = __webpack_require__(54);
+
+var _helper2 = _interopRequireDefault(_helper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    namespaced: true,
+    state: {
+        settings: {},
+        availableTax: {},
+        cartdata: {
+            line_items: [],
+            fee_lines: []
+        }
+    },
+    getters: {
+        getSubtotal: function getSubtotal(state) {
+            var subtotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                if (item.on_sale) {
+                    subtotal += item.quantity * item.sale_price;
+                } else {
+                    subtotal += item.quantity * item.regular_price;
+                }
+            });
+
+            return subtotal;
+        },
+        getTotalFee: function getTotalFee(state) {
+            var fee = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    fee += Math.abs(item.total);
+                }
+            });
+            return fee;
+        },
+        getTotalDiscount: function getTotalDiscount(state) {
+            var discount = 0;
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'discount') {
+                    discount += Number(Math.abs(item.total));
+                }
+            });
+
+            return discount;
+        },
+        getTotalLineTax: function getTotalLineTax(state) {
+            var self = this,
+                taxLineTotal = 0;
+
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            return taxLineTotal;
+        },
+        getTotalTax: function getTotalTax(state) {
+            var self = this,
+                taxLineTotal = 0,
+                taxFeeTotal = 0;
+            weLo_.forEach(state.cartdata.line_items, function (item, key) {
+                taxLineTotal += Math.abs(item.tax_amount * item.quantity);
+            });
+
+            if (state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl') {
+                taxLineTotal = 0;
+            }
+
+            weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                if (item.type == 'fee') {
+                    if (item.tax_status == 'taxable') {
+                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                        var taxClass = weLo_.find(state.availableTax, { 'class': itemTaxClass.toString() });
+                        if (taxClass !== undefined) {
+                            taxFeeTotal += Math.abs(item.total) * Math.abs(taxClass.rate) / 100;
+                        }
+                    }
+                }
+            });
+
+            return taxLineTotal + taxFeeTotal;
+        },
+        getOrderTotal: function getOrderTotal(state, getters) {
+            return getters.getSubtotal + getters.getTotalFee + getters.getTotalTax;
+        },
+        getTotal: function getTotal(state, getters) {
+            return getters.getOrderTotal - getters.getTotalDiscount;
+        },
+        getSettings: function getSettings(state, getters) {
+            return state.settings;
+        }
+    },
+    mutations: {
+        setSettings: function setSettings(state, settings) {
+            state.settings = settings;
+        },
+        setAvailableTax: function setAvailableTax(state, availableTax) {
+            state.availableTax = availableTax;
+        },
+        setCartData: function setCartData(state, cartdata) {
+            if (weLo_.isEmpty(cartdata)) {
+                state.cartdata = {
+                    line_items: [],
+                    fee_lines: []
+                };
+            } else {
+                state.cartdata = Object.assign({}, cartdata);
+            }
+        },
+        addToCartItem: function addToCartItem(state, product) {
+            var cartObject = {};
+            cartObject.product_id = product.parent_id === 0 ? product.id : product.parent_id;
+            cartObject.name = product.name;
+            cartObject.quantity = 1;
+            cartObject.regular_price = product.regular_display_price;
+            cartObject.sale_price = product.sales_display_price;
+            cartObject.on_sale = product.on_sale;
+            cartObject.attribute = product.attributes;
+            cartObject.variation_id = product.parent_id !== 0 ? product.id : 0;
+            cartObject.editQuantity = false;
+            cartObject.type = product.type;
+            cartObject.tax_amount = product.tax_amount;
+            cartObject.manage_stock = product.manage_stock;
+            cartObject.stock_status = product.stock_status;
+            cartObject.backorders_allowed = product.backorders_allowed;
+            cartObject.stock_quantity = product.stock_quantity;
+
+            var index = weLo_.findIndex(state.cartdata.line_items, { product_id: cartObject.product_id, variation_id: cartObject.variation_id });
+
+            if (index < 0) {
+                if (_helper2.default.hasStock(product)) {
+                    state.cartdata.line_items.push(cartObject);
+                }
+            } else {
+                if (_helper2.default.hasStock(product, state.cartdata.line_items[index].quantity)) {
+                    state.cartdata.line_items[index].quantity += 1;
+                }
+            }
+        },
+        removeCartItem: function removeCartItem(state, itemKey) {
+            state.cartdata.line_items.splice(itemKey, 1);
+        },
+        addCartItemQuantity: function addCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (_helper2.default.hasStock(item, item.quantity)) {
+                state.cartdata.line_items[itemKey].quantity++;
+            }
+        },
+        removeCartItemQuantity: function removeCartItemQuantity(state, itemKey) {
+            var item = state.cartdata.line_items[itemKey];
+            if (item.quantity <= 1) {
+                state.cartdata.line_items[itemKey].quantity = 1;
+            } else {
+                state.cartdata.line_items[itemKey].quantity--;
+            }
+        },
+        toggleEditQuantity: function toggleEditQuantity(state, itemKey) {
+            state.cartdata.line_items[itemKey].editQuantity = !state.cartdata.line_items[itemKey].editQuantity;
+        },
+        addDiscount: function addDiscount(state, discountData) {
+            state.cartdata.fee_lines.push({
+                name: discountData.title,
+                type: 'discount',
+                value: discountData.value.toString(),
+                isEdit: false,
+                discount_type: discountData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        addFee: function addFee(state, feeData) {
+            state.cartdata.fee_lines.push({
+                name: feeData.title,
+                type: 'fee',
+                value: feeData.value.toString(),
+                isEdit: false,
+                fee_type: feeData.type,
+                tax_status: 'none',
+                tax_class: '',
+                total: 0
+            });
+        },
+        saveFeeValue: function saveFeeValue(state, item) {
+            state.cartdata.fee_lines.splice(item.key, 1, item.feeData);
+            state.cartdata.fee_lines[item.key].isEdit = false;
+        },
+        editFeeValue: function editFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = true;
+        },
+        cancelSaveFeeValue: function cancelSaveFeeValue(state, itemKey) {
+            state.cartdata.fee_lines[itemKey].isEdit = false;
+        },
+        removeFeeLineItems: function removeFeeLineItems(state, itemKey) {
+            state.cartdata.fee_lines.splice(itemKey, 1);
+        },
+        emptyCart: function emptyCart(state) {
+            state.cartdata = {
+                line_items: [],
+                fee_lines: []
+            };
+        },
+        calculateDiscount: function calculateDiscount(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == "discount") {
+                        if (item.discount_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = '-' + payload.getSubtotal * Math.abs(item.value) / 100;
+                        } else {
+                            state.cartdata.fee_lines[key].total = '-' + Math.abs(item.value);
+                        }
+                    }
+                });
+            }
+        },
+        calculateFee: function calculateFee(state, payload) {
+            if (state.cartdata.fee_lines.length > 0) {
+                weLo_.forEach(state.cartdata.fee_lines, function (item, key) {
+                    if (item.type == 'fee') {
+                        if (item.fee_type == 'percent') {
+                            state.cartdata.fee_lines[key].total = (payload.getSubtotal * Math.abs(item.value) / 100).toString();
+                        } else {
+                            state.cartdata.fee_lines[key].total = Math.abs(item.value).toString();
+                        }
+                    }
+                });
+            }
+        }
+    },
+    actions: {
+        setSettingsAction: function setSettingsAction(context, settings) {
+            context.commit('setSettings', settings);
+        },
+        setAvailableTaxAction: function setAvailableTaxAction(context, availableTax) {
+            context.commit('setAvailableTax', availableTax);
+        },
+        setCartDataAction: function setCartDataAction(context, cartdata) {
+            context.commit('setCartData', cartdata);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addToCartAction: function addToCartAction(context, product) {
+            context.commit('addToCartItem', product);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeCartItemAction: function removeCartItemAction(context, itemKey) {
+            context.commit('removeCartItem', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addItemQuantityAction: function addItemQuantityAction(context, itemKey) {
+            context.commit('addCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeItemQuantityAction: function removeItemQuantityAction(context, itemKey) {
+            context.commit('removeCartItemQuantity', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        toggleEditQuantityAction: function toggleEditQuantityAction(context, itemKey) {
+            context.commit('toggleEditQuantity', itemKey);
+        },
+        addDiscountAction: function addDiscountAction(context, discountData) {
+            context.commit('addDiscount', discountData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        addFeeAction: function addFeeAction(context, feeData) {
+            context.commit('addFee', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        removeFeeLineItemsAction: function removeFeeLineItemsAction(context, itemKey) {
+            context.commit('removeFeeLineItems', itemKey);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        saveFeeValueAction: function saveFeeValueAction(context, feeData) {
+            context.commit('saveFeeValue', feeData);
+            context.commit('calculateDiscount', context.getters);
+            context.commit('calculateFee', context.getters);
+        },
+        editFeeValueAction: function editFeeValueAction(context, itemKey) {
+            context.commit('editFeeValue', itemKey);
+        },
+        cancelSaveFeeValueAction: function cancelSaveFeeValueAction(context, itemKey) {
+            context.commit('cancelSaveFeeValue', itemKey);
+        },
+        emptyCartAction: function emptyCartAction(context) {
+            context.commit('emptyCart');
+        },
+        calculateDiscount: function calculateDiscount(context) {
+            context.commit('calculateDiscount', context.getters);
+        },
+        calculateFee: function calculateFee(context) {
+            context.commit('calculateFee', context.getters);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 54:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    hasStock: function hasStock(product) {
+        var productCartQty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        if (!product.manage_stock) {
+            return 'outofstock' == product.stock_status ? false : true;
+        } else {
+            if (product.backorders_allowed) {
+                return true;
+            } else {
+                return product.stock_quantity > productCartQty;
+            }
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 55:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    namespaced: true,
+    state: {
+        orderdata: {
+            billing: {},
+            shipping: {},
+            customer_id: 0,
+            customer_note: '',
+            payment_method: '',
+            payment_method_title: ''
+        },
+        canProcessPayment: false
+    },
+    getters: {
+        getCanProcessPayment: function getCanProcessPayment(state) {
+            return state.canProcessPayment;
+        }
+    },
+    mutations: {
+        setOrderData: function setOrderData(state, orderdata) {
+            if (weLo_.isEmpty(orderdata)) {
+                state.orderdata = {
+                    billing: {},
+                    shipping: {},
+                    customer_id: 0,
+                    customer_note: '',
+                    payment_method: '',
+                    payment_method_title: ''
+                };
+            } else {
+                state.orderdata = orderdata;
+            }
+        },
+        setCustomer: function setCustomer(state, customer) {
+            if (Object.keys(customer).length > 0) {
+                state.orderdata.billing = customer.billing;
+                state.orderdata.shipping = customer.shipping;
+                state.orderdata.customer_id = customer.id;
+            } else {
+                state.orderdata.billing = {};
+                state.orderdata.shipping = {};
+                state.orderdata.customer_id = 0;
+            }
+        },
+        emptyOrderdata: function emptyOrderdata(state) {
+            state.orderdata = {
+                billing: {},
+                shipping: {},
+                customer_id: 0,
+                customer_note: '',
+                payment_method: '',
+                payment_method_title: ''
+            };
+        },
+        setCustomerNote: function setCustomerNote(state, note) {
+            state.orderdata.customer_note = note.trim();
+        },
+        removeCustomerNote: function removeCustomerNote(state) {
+            state.orderdata.customer_note = '';
+        },
+        setGateway: function setGateway(state, gateway) {
+            state.orderdata.payment_method = gateway.id;
+            state.orderdata.payment_method_title = gateway.title;
+        },
+        setCanProcessPayment: function setCanProcessPayment(state, canProcessPayment) {
+            state.canProcessPayment = canProcessPayment;
+        }
+    },
+    actions: {
+        setOrderDataAction: function setOrderDataAction(context, orderdata) {
+            context.commit('setOrderData', orderdata);
+        },
+        setCustomerAction: function setCustomerAction(context, customer) {
+            context.commit('setCustomer', customer);
+        },
+        emptyOrderdataAction: function emptyOrderdataAction(context) {
+            context.commit('emptyOrderdata');
+        },
+        setCustomerNoteAction: function setCustomerNoteAction(context, note) {
+            context.commit('setCustomerNote', note);
+        },
+        removeCustomerNoteAction: function removeCustomerNoteAction(context) {
+            context.commit('removeCustomerNote');
+        },
+        setGatewayAction: function setGatewayAction(context, gateway) {
+            context.commit('setGateway', gateway);
+        },
+        setCanProcessPaymentAction: function setCanProcessPaymentAction(context, canProcessPayment) {
+            context.commit('setCanProcessPayment', canProcessPayment);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ 585:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    name: 'PrintRawReceipt',
+
+    data() {
+        return {
+            isPrinting: false
+        };
+    },
+
+    props: {
+        printData: {
+            type: Object,
+            required: true
+        }
+    },
+
+    methods: {
+        printRawReceipt() {
+            this.isPrinting = true;
+            console.log(this.printData);
+        }
+    }
+});
+
+/***/ }),
+
+/***/ 586:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintRawReceipt_vue__ = __webpack_require__(585);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d882f150_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintRawReceipt_vue__ = __webpack_require__(588);
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(587)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PrintRawReceipt_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d882f150_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PrintRawReceipt_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "assets/src/frontend/components/PrintRawReceipt.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-d882f150", Component.options)
+  } else {
+    hotAPI.reload("data-v-d882f150", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+
+/***/ 587:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 588:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "wepos-print-raw-receipt" } }, [
+    _c(
+      "button",
+      {
+        staticClass: "print-btn",
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            _vm.printRawReceipt()
+          }
+        }
+      },
+      [
+        _c("span", { staticClass: "icon flaticon-printer" }),
+        _vm._v(" "),
+        _c("span", { staticClass: "label" }, [
+          _vm._v(_vm._s(_vm.__("Print Raw", "wepos")))
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _vm.isPrinting
+      ? _c("div", [
+          _c("div", { staticClass: "order-info" }, [
+            _c("span", { staticClass: "wepos-left" }, [
+              _c("strong", [
+                _vm._v(
+                  _vm._s(_vm.__("Order ID", "wepos")) +
+                    ": #" +
+                    _vm._s(_vm.printdata.order_id)
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "wepos-right" }, [
+              _c("strong", [
+                _vm._v(
+                  _vm._s(_vm.__("Order Date", "wepos")) +
+                    ": " +
+                    _vm._s(_vm.formatDate(_vm.printdata.order_date))
+                )
+              ])
+            ])
+          ])
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-d882f150", esExports)
+  }
+}
+
 /***/ })
-]),[145]);
+
+},[221]);

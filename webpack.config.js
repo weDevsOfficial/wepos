@@ -100,7 +100,9 @@ module.exports = {
         chunkFilename: 'chunks/[chunkhash].js',
         jsonpFunction: 'pluginWebpack'
     },
-
+    node: {
+        fs: 'empty'
+    },
     resolve: {
         alias: {
             'vue$': 'vue/dist/vue.esm.js',

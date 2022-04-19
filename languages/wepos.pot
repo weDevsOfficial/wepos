@@ -1,29 +1,29 @@
-# Copyright (C) 2021 weDevs
+# Copyright (C) 2022 weDevs
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.1.12\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2021-12-31 04:24:55+00:00\n"
+"POT-Creation-Date: 2022-03-15 09:51:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2021-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2022-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: wp-vue-i18n 1.1.3\n"
 
 #: assets/js/admin.js:122 assets/js/admin.js:369 assets/js/admin.js:461
-#: assets/js/admin.js:1429 assets/js/bootstrap.js:1064
-#: assets/js/frontend.js:3202 assets/js/frontend.js:3384
-#: assets/js/frontend.js:3468 assets/js/frontend.js:3978
-#: assets/js/frontend.js:5018 assets/js/frontend.js:5185
-#: assets/js/frontend.js:5290 assets/js/frontend.js:5665
-#: assets/js/frontend.js:5776 assets/js/vendor.js:18115
-#: assets/js/vendor.js:18215 assets/js/vendor.js:27665
-#: assets/js/vendor.js:28241 assets/js/vendor.js:28351
-#: assets/js/vendor.js:28471 assets/js/vendor.js:28493
-#: assets/js/vendor.js:28550
+#: assets/js/admin.js:1429 assets/js/bootstrap.js:1069
+#: assets/js/frontend.js:3204 assets/js/frontend.js:3386
+#: assets/js/frontend.js:3470 assets/js/frontend.js:3980
+#: assets/js/frontend.js:5020 assets/js/frontend.js:5187
+#: assets/js/frontend.js:5292 assets/js/frontend.js:5667
+#: assets/js/frontend.js:5778 assets/js/vendor.js:18166
+#: assets/js/vendor.js:18266 assets/js/vendor.js:27716
+#: assets/js/vendor.js:28292 assets/js/vendor.js:28402
+#: assets/js/vendor.js:28522 assets/js/vendor.js:28544
+#: assets/js/vendor.js:28601
 msgid "div"
 msgstr ""
 
@@ -80,28 +80,28 @@ msgstr ""
 msgid "Please select an image,"
 msgstr ""
 
-#: assets/js/bootstrap.js:697 assets/js/bootstrap.min.js:1
+#: assets/js/bootstrap.js:702 assets/js/bootstrap.min.js:1
 #: assets/src/utils/Mixin.js:98
 msgid "Confirm"
 msgstr ""
 
-#: assets/js/bootstrap.js:973
+#: assets/js/bootstrap.js:978
 msgid "textarea"
 msgstr ""
 
-#: assets/js/bootstrap.js:1203
+#: assets/js/bootstrap.js:1208
 msgid "label"
 msgstr ""
 
-#: assets/js/frontend.js:1242 assets/js/frontend.js:1578
-#: assets/js/frontend.js:1606 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1243 assets/js/frontend.js:1579
+#: assets/js/frontend.js:1607 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:703
 #: assets/src/frontend/components/Home.vue:1053
 #: assets/src/frontend/components/Home.vue:1081
 msgid "All categories"
 msgstr ""
 
-#: assets/js/frontend.js:1416 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1417 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:259
 #: assets/src/frontend/components/Home.vue:454
 #: assets/src/frontend/components/Home.vue:885
@@ -109,7 +109,7 @@ msgstr ""
 msgid "Discount"
 msgstr ""
 
-#: assets/js/frontend.js:1434 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1435 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:280
 #: assets/src/frontend/components/Home.vue:458
 #: assets/src/frontend/components/Home.vue:903
@@ -117,40 +117,40 @@ msgstr ""
 msgid "Fee"
 msgstr ""
 
-#: assets/js/frontend.js:1504 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1505 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:976
 msgid "This product is out of stock."
 msgstr ""
 
-#: assets/js/frontend.js:1520 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1521 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:992
 msgid "Product is out of stock!"
 msgstr ""
 
-#: assets/js/frontend.js:1816 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1817 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Scan your product"
 msgstr ""
 
-#: assets/js/frontend.js:1816 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:1817 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/ProductSearch.vue:120
 msgid "Search product by typing"
 msgstr ""
 
-#: assets/js/frontend.js:2455 assets/js/frontend.min.js:1
+#: assets/js/frontend.js:2456 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/CustomerSearch.vue:334
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4952
+#: assets/js/frontend.js:4954
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5579
+#: assets/js/frontend.js:5581
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:8448
+#: assets/js/frontend.js:8450
 msgid "td"
 msgstr ""
 
@@ -512,15 +512,15 @@ msgstr ""
 msgid "Is POS"
 msgstr ""
 
-#: includes/Admin/LimitedTimePromotion.php:85
+#: includes/Admin/LimitedTimePromotion.php:77
 msgid "Get Deals &rarr;"
 msgstr ""
 
-#: includes/Admin/LimitedTimePromotion.php:170
+#: includes/Admin/LimitedTimePromotion.php:162
 msgid "You have no permission to do that"
 msgstr ""
 
-#: includes/Admin/LimitedTimePromotion.php:174 includes/Admin/Settings.php:39
+#: includes/Admin/LimitedTimePromotion.php:166 includes/Admin/Settings.php:39
 #: includes/Admin/Settings.php:66
 msgid "Invalid nonce"
 msgstr ""

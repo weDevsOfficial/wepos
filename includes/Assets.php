@@ -222,7 +222,9 @@ class Assets {
             'countries'                    => WC()->countries->get_countries(),
             'states'                       => WC()->countries->get_states(),
             'current_user_id'              => get_current_user_id(),
-            'home_url'                     => home_url()
+            'home_url'                     => home_url(),
+            'wp_date_format'               => get_option( 'date_format' ),
+            'wp_time_format'               => get_option( 'time_format' ),
         ] );
 
         wp_localize_script( 'wepos-vendor', 'wepos', $localize_data );

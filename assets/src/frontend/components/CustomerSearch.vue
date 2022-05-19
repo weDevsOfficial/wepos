@@ -28,7 +28,7 @@
             <span class="add-new-customer flaticon-add" @click.prevent="addNewCustomer()"></span>
             <div class="search-result" v-show="showCustomerResults">
                 <div v-if="customers.length">
-                    <keyboard-control :listLength="customers.length" @selected="selectedHandler" @key-down="onKeyDown" @key-up="onKeyUp">
+                    <keyboard-control :listLength="customers.length" @key-down="onKeyDown" @key-up="onKeyUp">
                         <template slot-scope="{selectedIndex}">
                             <li v-for="(customer, index) in customers" class="customer-search-item" :class="{'selected': index === selectedIndex}" :key="index">
                                 <a href="#" class="wepos-clearfix" @click="selectCustomer( customer )">
@@ -244,10 +244,6 @@ export default {
         },
         addNewCustomer() {
             this.showNewCustomerModal = true;
-        },
-        selectedHandler(selectedIndex) {
-            var selectedCustomer = this.customers[selectedIndex];
-            this.selectCustomer( selectedCustomer );
         },
         onKeyDown() {
             jQuery('.customer-search-item.selected').next().children('a').focus();

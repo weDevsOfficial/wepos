@@ -3,11 +3,11 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 5.9.2
+**Tested up to:** 5.9.3
 **WC requires at least:** 3.0
-**WC tested up to:** 6.3.1
+**WC tested up to:** 6.5.1
 **Requires PHP:** 5.6
-**Stable tag:** 1.2.1
+**Stable tag:** 1.2.2
 **License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,12 +60,61 @@ No FAQ
 
 ## Changelog ##
 
-### v1.1.4 -> 21 December, 2020 ###
+### v1.2.2 -> 19 May, 2022 ###
+- **Enhancement:** Added keyboard accessibility support to the payment and print receipt options
+- **Fix:** Scrollbar broken style issue on frontend view
+- **Fix:** Customer selection dropdown selecting wrong customer by pressing enter/return key on frontend
+- **Fix:** Pressing enter/return key results product addition to the cart, even the product search dropdown closed on frontend
 
+### v1.2.1 -> 15 March, 2022 ###
+- **Feature:** Remote promotion notice
+
+### v1.2.0 -> 27 January, 2022 ###
+- **Compatibility:** Compatibility for WordPress 5.9
+- **Fix:** Fixed an issue where wePOS frontend is not loading
+
+### v1.1.12 -> 31 December, 2021 ###
+- **Feature:** Stock support for the pos product, out-of-stock products will be shown but can not be added into the cart
+- **Enhancement:** Codebase optimization & various page i18n support
+- **Fix:** Z index mismatch for components, some components were not displaying properly with modal
+- **Fix:** Variation product's all variations can not be seen
+- **Fix:** Variation products attributes UX issue
+- **Fix:** Double payment can be done by double-clicking the process payment button
+- **Fix:** You already logged in to any other counter or outlet
+- **Fix:** Product images not shown on POS
+
+### v1.1.11 -> 19 November, 2021 ###
+- **Enhancement:** PSR-4 class autoloading for Admin namespace
+
+### v1.1.10 -> 19 November, 2021 ###
+- **Feature:** Admin dependency notice for WooCommerce
+- **Feature:** Support for other decimal separator character
+- **Enhancement:** Black friday 2021 promotion
+- **Enhancement:** Tab view responsiveness support for POS cart content
+- **Enhancement:** Support for Composer 2
+- **Enhancement:** Codebase optimization and restructure
+- **Fix:** The price rounding does not work for discounts
+- **Fix:** Fixed an issue where POS admin panel does not have the correct font family
+- **Fix:** Thermal printer text is unclear for receipt
+- **Fix:** Product Tax is not showing properly on the receipt
+- **Fix:** NPM vulnerabilities
+
+### v1.1.8 -> 19 October, 2021 ###
+- **Enhancement:** Added halloween sale 2021 limited promotion banner
+
+### v1.1.7 -> 13 July, 2021 ###
+- **Enhancement:** Added summer sale 2021 limited promotion banner
+
+### v1.1.6 -> 08 May, 2021 ###
+- **Enhancement:** Added limited promotion banner
+
+### v1.1.5 -> 15 March, 2021 ###
+- **Enhancement:** Added limited promotion banner
+
+### v1.1.4 -> 21 December, 2020 ###
 - **Enhancement:** Added limited promotion banner
 
 ### v1.1.3 -> 23 November, 2020 ###
-
 - **Enhancement:** Added limited promotion banner
 
 ### v1.1.2 -> 28 October, 2020 ###

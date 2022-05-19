@@ -68,6 +68,23 @@ export default {
 
         };
     },
+
+    methods: {
+        handleModalSubmit() {
+            let self = this;
+
+            document.addEventListener("keypress", function(evt) {
+                if ("Enter" === evt.code) {
+                    self.$emit( 'enterpressed' );
+                }
+            });
+        }
+    },
+
+    mounted() {
+        this.$emit( 'open' );
+        this.handleModalSubmit();
+    }
 };
 </script>
 

@@ -30,13 +30,7 @@ export default {
       } else if (key === 40 || key === 9) {
         this.handleKeyDown(e);
         this.$emit('key-down');
-      } else if (key === 13) {
-        this.handleEnter(e);
       }
-    },
-    handleEnter(e) {
-      e.preventDefault();
-      this.$emit("selected", this.selectedIndex);
     },
     handleKeyUp(e) {
       e.preventDefault();

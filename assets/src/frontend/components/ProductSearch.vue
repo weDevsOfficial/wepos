@@ -10,7 +10,7 @@
             </div>
             <div class="search-result" v-show="showResults && mode=='product'">
                 <div v-if="searchableProduct.length">
-                    <keyboard-control :listLength="searchableProduct.length" @selected="selectedHandler" @key-down="onKeyDown" @key-up="onKeyUp">
+                    <keyboard-control :listLength="searchableProduct.length" @key-down="onKeyDown" @key-up="onKeyUp">
                         <template slot-scope="{selectedIndex}">
                             <li v-for="(product, index) in searchableProduct" class="product-search-item" :class="{'selected': index === selectedIndex}" :key="index">
                                 <template v-if="product.type == 'simple'">
@@ -153,15 +153,6 @@ export default {
             this.showVariationModal = false;
             this.changeMode('scan');
             this.$refs.productSearch.blur();
-        },
-
-        selectedHandler(selectedIndex) {
-            var selectedProduct = this.searchableProduct[selectedIndex];
-            if ( selectedProduct.type =='simple' ) {
-                this.addToCartAction( selectedProduct );
-            } else {
-                this.selectVariation( selectedProduct );
-            }
         },
 
         onKeyDown() {

@@ -1320,7 +1320,6 @@ let Modal = wepos_get_lib('Modal');
             this.$store.dispatch('Order/setCanProcessPaymentAction', canProcess);
         },
         processPayment(e) {
-            e.preventDefault();
             if (!this.$store.getters['Order/getCanProcessPayment']) {
                 return;
             }
@@ -1633,6 +1632,11 @@ let Modal = wepos_get_lib('Modal');
             wepos.api.get(wepos.rest.root + wepos.rest.wcversion + '/settings/tax').done(response => {
                 this.taxSettings = response;
             });
+        },
+
+        focusCashInput() {
+            let inputCashAmount = document.querySelector('#input-cash-amount');
+            inputCashAmount.focus();
         }
     },
 
@@ -1852,15 +1856,6 @@ let Modal = wepos_get_lib('Modal');
             this.$refs.productSearch.blur();
         },
 
-        selectedHandler(selectedIndex) {
-            var selectedProduct = this.searchableProduct[selectedIndex];
-            if (selectedProduct.type == 'simple') {
-                this.addToCartAction(selectedProduct);
-            } else {
-                this.selectVariation(selectedProduct);
-            }
-        },
-
         onKeyDown() {
             jQuery('.product-search-item.selected').next().children('a').focus();
         },
@@ -2074,13 +2069,7 @@ if (false) {(function () {
       } else if (key === 40 || key === 9) {
         this.handleKeyDown(e);
         this.$emit('key-down');
-      } else if (key === 13) {
-        this.handleEnter(e);
       }
-    },
-    handleEnter(e) {
-      e.preventDefault();
-      this.$emit("selected", this.selectedIndex);
     },
     handleKeyUp(e) {
       e.preventDefault();
@@ -2368,10 +2357,6 @@ let Modal = wepos_get_lib('Modal');
         },
         addNewCustomer() {
             this.showNewCustomerModal = true;
-        },
-        selectedHandler(selectedIndex) {
-            var selectedCustomer = this.customers[selectedIndex];
-            this.selectCustomer(selectedCustomer);
         },
         onKeyDown() {
             jQuery('.customer-search-item.selected').next().children('a').focus();
@@ -2844,12 +2829,28 @@ const Tokens = {
 
     methods: {
         printReceipt() {
-            var self = this;
-
             setTimeout(() => {
                 window.print();
             }, 500);
+        },
+        handlePrintingPopup(evt) {
+            let self = this;
+
+            if ("Enter" === evt.code && self.$store.getters['Order/getCanProcessPayment']) {
+                self.printReceipt();
+            }
+        },
+        handlePrintReceiptSubmit() {
+            document.addEventListener("keypress", this.handlePrintingPopup);
         }
+    },
+
+    mounted() {
+        this.handlePrintReceiptSubmit();
+    },
+
+    destroyed() {
+        document.removeEventListener("keypress", this.handlePrintingPopup);
     }
 });
 
@@ -3607,7 +3608,6 @@ var render = function() {
                       _c("keyboard-control", {
                         attrs: { listLength: _vm.searchableProduct.length },
                         on: {
-                          selected: _vm.selectedHandler,
                           "key-down": _vm.onKeyDown,
                           "key-up": _vm.onKeyUp
                         },
@@ -4206,11 +4206,7 @@ var render = function() {
                   [
                     _c("keyboard-control", {
                       attrs: { listLength: _vm.customers.length },
-                      on: {
-                        selected: _vm.selectedHandler,
-                        "key-down": _vm.onKeyDown,
-                        "key-up": _vm.onKeyUp
-                      },
+                      on: { "key-down": _vm.onKeyDown, "key-up": _vm.onKeyUp },
                       scopedSlots: _vm._u([
                         {
                           key: "default",
@@ -7858,8 +7854,14 @@ var render = function() {
             {
               attrs: { width: "98%", height: "95vh" },
               on: {
+                open: function($event) {
+                  _vm.focusCashInput()
+                },
                 close: function($event) {
                   _vm.backToSale()
+                },
+                enterpressed: function($event) {
+                  _vm.processPayment()
                 }
               }
             },
@@ -8323,7 +8325,10 @@ var render = function() {
                                               }
                                             ],
                                             ref: "cashamount",
-                                            attrs: { type: "text" },
+                                            attrs: {
+                                              id: "input-cash-amount",
+                                              type: "text"
+                                            },
                                             domProps: { value: _vm.cashAmount },
                                             on: {
                                               input: function($event) {

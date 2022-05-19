@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.2.1\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2022-03-15 09:51:09+00:00\n"
+"POT-Creation-Date: 2022-05-19 10:27:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -96,15 +96,15 @@ msgstr ""
 #: assets/js/frontend.js:1243 assets/js/frontend.js:1579
 #: assets/js/frontend.js:1607 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:703
-#: assets/src/frontend/components/Home.vue:1053
-#: assets/src/frontend/components/Home.vue:1081
+#: assets/src/frontend/components/Home.vue:1052
+#: assets/src/frontend/components/Home.vue:1080
 msgid "All categories"
 msgstr ""
 
 #: assets/js/frontend.js:1417 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:259
 #: assets/src/frontend/components/Home.vue:454
-#: assets/src/frontend/components/Home.vue:885
+#: assets/src/frontend/components/Home.vue:884
 #: assets/src/frontend/components/PrintReceiptHtml.vue:43
 msgid "Discount"
 msgstr ""
@@ -112,18 +112,18 @@ msgstr ""
 #: assets/js/frontend.js:1435 assets/js/frontend.min.js:1
 #: assets/src/frontend/components/Home.vue:280
 #: assets/src/frontend/components/Home.vue:458
-#: assets/src/frontend/components/Home.vue:903
+#: assets/src/frontend/components/Home.vue:902
 #: assets/src/frontend/components/PrintReceiptHtml.vue:47
 msgid "Fee"
 msgstr ""
 
 #: assets/js/frontend.js:1505 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:976
+#: assets/src/frontend/components/Home.vue:975
 msgid "This product is out of stock."
 msgstr ""
 
 #: assets/js/frontend.js:1521 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/Home.vue:992
+#: assets/src/frontend/components/Home.vue:991
 msgid "Product is out of stock!"
 msgstr ""
 
@@ -138,7 +138,7 @@ msgid "Search product by typing"
 msgstr ""
 
 #: assets/js/frontend.js:2456 assets/js/frontend.min.js:1
-#: assets/src/frontend/components/CustomerSearch.vue:334
+#: assets/src/frontend/components/CustomerSearch.vue:330
 msgid "Please enter an email address for customer"
 msgstr ""
 

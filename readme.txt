@@ -3,11 +3,11 @@ Contributors: tareq1988, wedevs, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 Requires at least: 4.4
-Tested up to: 5.9.3
+Tested up to: 6.0
 WC requires at least: 3.0
 WC tested up to: 6.5.1
 Requires PHP: 5.6
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,9 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.2.3 -> 3rd June, 2022 =
+- **Compatibility:** Compatibility for WordPress 6.0
 
 = v1.2.2 -> 19th May, 2022 =
 - **Enhancement:** Added keyboard accessibility support to the payment and print receipt options

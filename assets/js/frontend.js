@@ -3127,6 +3127,10 @@ new Vue({
     },
     created: function created() {
         this.setLocaleData(wepos.i18n['wepos']);
+
+        if (wepos.i18n['wepos-pro']) {
+            this.setLocaleData(wepos.i18n['wepos-pro']);
+        }
     }
 });
 

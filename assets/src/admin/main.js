@@ -14,7 +14,11 @@ new Vue({
     store,
     render: h => h(App),
     created() {
-        this.setLocaleData( wepos.i18n['wepos'] )
+        this.setLocaleData( wepos.i18n['wepos'] );
+
+        if ( wepos.i18n['wepos-pro'] ) {
+            this.setLocaleData( wepos.i18n['wepos-pro'] );
+        }
     }
 });
 

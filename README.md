@@ -5,9 +5,9 @@
 **Requires at least:** 4.4
 **Tested up to:** 6.0
 **WC requires at least:** 3.0
-**WC tested up to:** 6.5.1
+**WC tested up to:** 6.6.1
 **Requires PHP:** 5.6
-**Stable tag:** 1.2.3
+**Stable tag:** 1.2.4
 **License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,9 @@ No FAQ
 9. Admin Dashboard Settings
 
 ## Changelog ##
+
+### v1.2.4 -> 28 June, 2022 ###
+- **Fix:** Localization issue on changing site language
 
 ### v1.2.3 -> 03 June, 2022 ###
 - **Compatibility:** Compatibility for WordPress 6.0

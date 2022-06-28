@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.2.3\n"
+"Project-Id-Version: wePOS - Point Of Sale (POS) for WooCommerce 1.2.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wepos\n"
-"POT-Creation-Date: 2022-06-03 09:58:21+00:00\n"
+"POT-Creation-Date: 2022-06-28 05:27:26+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,13 +13,13 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: wp-vue-i18n 1.1.3\n"
 
-#: assets/js/admin.js:122 assets/js/admin.js:369 assets/js/admin.js:461
-#: assets/js/admin.js:1429 assets/js/bootstrap.js:1086
-#: assets/js/frontend.js:3205 assets/js/frontend.js:3387
-#: assets/js/frontend.js:3471 assets/js/frontend.js:3980
-#: assets/js/frontend.js:5016 assets/js/frontend.js:5183
-#: assets/js/frontend.js:5288 assets/js/frontend.js:5663
-#: assets/js/frontend.js:5774 assets/js/vendor.js:18166
+#: assets/js/admin.js:126 assets/js/admin.js:373 assets/js/admin.js:465
+#: assets/js/admin.js:1433 assets/js/bootstrap.js:1086
+#: assets/js/frontend.js:3209 assets/js/frontend.js:3391
+#: assets/js/frontend.js:3475 assets/js/frontend.js:3984
+#: assets/js/frontend.js:5020 assets/js/frontend.js:5187
+#: assets/js/frontend.js:5292 assets/js/frontend.js:5667
+#: assets/js/frontend.js:5778 assets/js/vendor.js:18166
 #: assets/js/vendor.js:18266 assets/js/vendor.js:27716
 #: assets/js/vendor.js:28292 assets/js/vendor.js:28402
 #: assets/js/vendor.js:28522 assets/js/vendor.js:28544
@@ -27,12 +27,12 @@ msgstr ""
 msgid "div"
 msgstr ""
 
-#: assets/js/admin.js:2293 assets/js/admin.min.js:1
+#: assets/js/admin.js:2297 assets/js/admin.min.js:1
 #: assets/src/admin/components/Settings.vue:134
 msgid "Choose your file"
 msgstr ""
 
-#: assets/js/admin.js:2295 assets/js/admin.min.js:1
+#: assets/js/admin.js:2299 assets/js/admin.min.js:1
 #: assets/src/admin/components/Fields.vue:171
 #: assets/src/admin/components/Settings.vue:136
 msgid "Select"
@@ -142,15 +142,15 @@ msgstr ""
 msgid "Please enter an email address for customer"
 msgstr ""
 
-#: assets/js/frontend.js:4950
+#: assets/js/frontend.js:4954
 msgid "aside"
 msgstr ""
 
-#: assets/js/frontend.js:5577
+#: assets/js/frontend.js:5581
 msgid "tr"
 msgstr ""
 
-#: assets/js/frontend.js:8455
+#: assets/js/frontend.js:8459
 msgid "td"
 msgstr ""
 

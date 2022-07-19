@@ -290,10 +290,11 @@
                                     <td class="action"></td>
                                 </tr>
                                 <tr class="cart-action">
-                                    <td colspan="3">
+                                     <td colspan="4">
                                         <fee-keypad @inputfee="setDiscount" :name="__( 'Discount', 'wepos' )" short-key="discount"></fee-keypad>
                                         <fee-keypad @inputfee="setFee" :name="__( 'Fee', 'wepos' )" short-key="fee"></fee-keypad>
                                         <customer-note @addnote="addCustomerNote" v-if="orderdata.customer_note == ''"></customer-note>
+                                        <open-till @opentill="openTill"></open-till>
                                     </td>
                                 </tr>
                                 <tr class="note" v-if="orderdata.customer_note">
@@ -560,6 +561,7 @@ import MugenScroll from 'vue-mugen-scroll';
 import PrintReceipt from './PrintReceipt.vue';
 import PrintReceiptHtml from './PrintReceiptHtml.vue';
 import CustomerNote from './CustomerNote.vue';
+import OpenTill from "./OpenTill.vue";
 
 let Modal = wepos_get_lib( 'Modal' );
 
@@ -576,7 +578,8 @@ export default {
         FeeKeypad,
         PrintReceipt,
         PrintReceiptHtml,
-        CustomerNote
+        CustomerNote,
+        OpenTill
     },
 
     data () {
@@ -731,6 +734,9 @@ export default {
         },
         addCustomerNote( note ) {
             this.$store.dispatch( 'Order/setCustomerNoteAction', note );
+        },
+        openTill(  ) {
+            console.log("Till open called")
         },
         removeCustomerNote() {
             this.$store.dispatch( 'Order/removeCustomerNoteAction' );

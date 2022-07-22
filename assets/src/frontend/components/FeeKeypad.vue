@@ -78,15 +78,14 @@ export default {
             this.displayValue='';
         },
         change(value){
-            if ( !isNaN(value) ) {
-                this.displayValue = value;
-                this.input = this.displayValue;
-            } else {
-                this.input = this.displayValue;
-                if ( this.displayValue == '' ) {
-                    this.input = '';
-                }
+            let displayValue  = value.replace( ".", wepos.currency_format_decimal_sep );
+            let originalValue = value.replace( wepos.currency_format_decimal_sep, "." );
+
+            if ( ! isNaN( originalValue ) ) {
+                this.displayValue = displayValue;
             }
+
+            this.input = originalValue;
 
             jQuery( this.$refs.feeinput ).focus();
 

@@ -905,7 +905,7 @@ export default {
             this.$store.dispatch( 'Cart/removeFeeLineItemsAction', key );
         },
         getDiscountAmount( fee ) {
-            return fee.discount_type == 'percent' ? this.formatNumber( fee.value ) + '%' : this.formatPrice( fee.value );
+            return fee.discount_type === 'percent' || fee.fee_type === 'percent' ? this.formatNumber( fee.value ) + '%' : this.formatPrice( fee.total );
         },
         fetchProducts() {
             if ( this.page == 1 ) {

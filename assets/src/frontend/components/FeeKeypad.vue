@@ -4,9 +4,9 @@
             <a href="#" @click="showFeeKeypad">{{ __( 'Add', 'wepos' ) }} {{ name }}</a>
             <template slot="popover">
                 <form>
-                    <input type="text" v-model="displayValue" ref="feeinput" @keyup="inputChange">
+                    <input type="text" v-model="displayValue" ref="feeinput">
                 </form>
-                <keyboard v-model="input" :layouts="layout()" @percent="percentFee" @flat="flatFee" @input="change"/>
+                <keyboard v-model="displayValue" :layouts="layout()" @percent="percentFee" @flat="flatFee"/>
             </template>
         </v-popover>
     </div>
@@ -58,6 +58,11 @@ export default {
             viewFeeKeypad: false
         };
     },
+    watch: {
+        displayValue( newValue, oldValue ) {
+            this.inputChange();
+        }
+    },
     methods: {
         hideFeeKepad(e) {
             this.viewFeeKeypad = false;
@@ -65,46 +70,42 @@ export default {
         layout() {
             return '123|456|789|{<span class="keypord-icon flaticon-backspace"></span>:backspace}0'+wepos.currency_format_decimal_sep+'|{% '+this.name+':percent}{'+ wepos.currency_format_symbol + ' '+ this.name+':flat}';
         },
-        percentFee( keyboard ) {
-            this.$emit( 'inputfee', keyboard.value.toString(), 'percent' );
+        percentFee() {
+            this.$emit( 'inputfee', this.input, 'percent' );
             this.viewFeeKeypad = false;
             this.input='';
             this.displayValue='';
         },
-        flatFee( keyboard ) {
-            this.$emit( 'inputfee', keyboard.value.toString(), 'flat' );
+        flatFee() {
+            this.$emit( 'inputfee', this.input, 'flat' );
             this.viewFeeKeypad = false;
             this.input='';
             this.displayValue='';
-        },
-        change( value ){
-            let displayValue, inputValue;
-            displayValue = inputValue = value;
-
-            if ( "." !== wepos.currency_format_decimal_sep ) {
-                displayValue = value.replace( ".", wepos.currency_format_decimal_sep );
-                inputValue   = value.replace( wepos.currency_format_decimal_sep, "." )
-            }
-
-            this.displayValue = displayValue;
-            this.input        = inputValue;
-
-            jQuery( this.$refs.feeinput ).focus();
-
-            if ( this.input == '' ) {
-                jQuery( this.$refs.feeinput ).focus();
-            }
         },
         inputChange() {
-            if ( !isNaN( this.displayValue ) ) {
-                this.input = this.displayValue;
+            if ( this.isValidAmount( this.displayValue ) ) {
+                this.input = this.getFormattedValue( this.displayValue, wepos.currency_format_decimal_sep, "." );
             } else {
-                this.displayValue = this.input;
+                this.displayValue = this.getFormattedValue( this.input, ".", wepos.currency_format_decimal_sep );
             }
 
-            if ( this.input == '' ) {
-                jQuery( this.$refs.feeinput ).focus();
+            jQuery( this.$refs.feeinput ).focus();
+        },
+        getFormattedValue( value, charFrom, charTo ) {
+            let formattedValue = value;
+
+            if ( "." !== wepos.currency_format_decimal_sep ) {
+                formattedValue = value.replace( charFrom, charTo );
             }
+
+            return formattedValue;
+        },
+        isValidAmount( amount ) {
+            const decimalSep   = wepos.currency_format_decimal_sep;
+            const allowedChars = "^[0-9]*[" + decimalSep + "]{0,1}[0-9]*$";
+            const regexPattern = new RegExp( allowedChars, "gi" );
+
+            return amount.match( regexPattern );
         },
         showFeeKeypad(e) {
             e.preventDefault();

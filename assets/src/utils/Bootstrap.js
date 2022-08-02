@@ -12,6 +12,7 @@ import Multiselect from 'vue-multiselect'
 import Modal from './components/Modal.vue'
 import Switches from './components/Switches.vue'
 import "vue-multiselect/dist/vue-multiselect.min.css"
+import * as VueChartJS from 'vue-chartjs'
 
 import * as Date_Helper from './date-helper';
 window.Date_Helper = Date_Helper;
@@ -90,6 +91,7 @@ window.wepos.libs['EventBus']        = EventBus;
 window.wepos.libs['Modal']           = Modal;
 window.wepos.libs['Switches']        = Switches;
 window.wepos.libs['DateRangePicker'] = DateRangePicker;
+window.wepos.libs['VueChartJS']      = VueChartJS;
 
 // WordPress Hooks
 import { createHooks } from '@wordpress/hooks';

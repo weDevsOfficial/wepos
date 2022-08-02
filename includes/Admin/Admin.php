@@ -69,10 +69,12 @@ class Admin {
         wp_enqueue_style( 'wepos-tinymce' );
         wp_enqueue_style( 'wepos-style' );
         wp_enqueue_style( 'wepos-admin' );
+        wp_enqueue_style( 'wepos-select2' );
 
         wp_enqueue_script( 'wepos-tinymce-plugin' );
         wp_enqueue_script( 'wepos-vendor' );
         wp_enqueue_script( 'wepos-blockui' );
+        wp_enqueue_script( 'wepos-select2' );
 
         wp_enqueue_script( 'wepos-bootstrap' );
         do_action( 'wepos_load_admin_scripts' );

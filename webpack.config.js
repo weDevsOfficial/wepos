@@ -32,7 +32,9 @@ module.exports = ( env, argv ) => {
             filename: appName,
             chunkFilename: 'chunks/[chunkhash].js',
         },
-
+        // performance: {
+        //     hints: false,
+        // },
         resolve: {
             alias: {
                 'vue$': 'vue/dist/vue.esm.js',

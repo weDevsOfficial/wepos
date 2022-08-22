@@ -6,9 +6,9 @@
   "license": "GPLv2",
   "private": true,
   "scripts": {
-    "dev": "webpack --mode development --progress --watch",
-    "dev:build": "webpack --mode development --progress",
-    "build": "webpack --mode production --progress && wpvuei18n makepot",
+    "dev": "webpack --mode=development --progress --watch",
+    "dev:build": "webpack --mode=development --progress",
+    "build": "webpack --mode=production --progress && wpvuei18n makepot",
     "zip": "./bin/zip.sh"
   },
   "dependencies": {
@@ -32,9 +32,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.18.9",
     "@wordpress/babel-preset-default": "^6.16.0",
     "archiver": "^3.1.1",
-    "assets-webpack-plugin": "^7.1.1",
     "babel-loader": "^8.2.5",
-    "browser-sync": "^2.27.10",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^4.0.0",
     "file-loader": "^6.2.0",

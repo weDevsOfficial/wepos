@@ -31,12 +31,7 @@ module.exports = ( env, argv ) => {
         output: {
             path: exportPath,
             filename: appName,
-            chunkFilename: 'chunks/[chunkhash].js',
         },
-
-        // performance: {
-        //     hints: false,
-        // },
 
         resolve: {
             alias: {
@@ -68,7 +63,7 @@ module.exports = ( env, argv ) => {
         module: {
             rules: [
                 {
-                    test: /\.js$/,
+                    test: /\.(js|jsx|ts)$/,
                     exclude: /node_modules/,
                     use: {
                         loader: 'babel-loader',
@@ -82,30 +77,22 @@ module.exports = ( env, argv ) => {
                     }
                 },
                 {
-                    test: /\.less$/,
+                    test: /\.(le|c)ss$/,
                     use: [
-                        // compiles Less to CSS
                         MiniCssExtractPlugin.loader,
                         "css-loader",
                         "less-loader",
                     ],
                 },
                 {
-                    test: /\.css$/i,
-                    use: [
-                        MiniCssExtractPlugin.loader,
-                        "css-loader"
-                    ],
-                },
-                {
                     test: /\.(png|woff|woff2|eot|ttf|svg)$/,
                     use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            outputPath: 'fonts',
+                        {
+                            loader: 'file-loader',
+                            options: {
+                                outputPath: 'fonts',
+                            },
                         },
-                    },
                     ],
                 }
             ]

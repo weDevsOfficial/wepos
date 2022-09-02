@@ -912,7 +912,7 @@ export default {
             if ( ( this.totalPages >= this.page ) ) {
                 wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/products?status=publish&per_page=30&page=' + this.page )
                 .done( ( response, status, xhr ) => {
-                    this.products = this.products.concat( response );
+                    this.appendProducts( response );
                     this.page += 1;
                     this.totalPages = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
                     this.productLoading = false;
@@ -923,7 +923,26 @@ export default {
                 this.productLoading = false;
             }
         },
+        appendProducts( products ) {
+            products.forEach( product => {
+                if ( "variable" === product.type && this.isAllVariationsDisabled( product ) ) {
+                    return;
+                }
 
+                this.products = this.products.concat(product);
+            });
+        },
+        isAllVariationsDisabled( product ) {
+            let isDisabled = true;
+
+            product.attributes.forEach( attribute => {
+                if ( true === attribute.variation ) {
+                    isDisabled = false;
+                }
+            } );
+
+            return isDisabled;
+        },
         maybeRemoveDeletedProduct( cartData ) {
             return new Promise( ( resolve, reject ) => {
                 if ( ! cartData ) {

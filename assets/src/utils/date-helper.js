@@ -23,18 +23,12 @@ export function wepos_get_dayjs_date_format( dateFormat = wepos.wp_date_format )
         y: 'YY'
     }
 
-    let i = 0;
-    let char = '';
     let dayJsDateFormat = '';
 
-    for ( i = 0; i < dateFormat.length; i++ ) {
+    for ( let i = 0; i < dateFormat.length; i++ ) {
         char = dateFormat[i];
 
-        if ( char in formatMap ) {
-            dayJsDateFormat += formatMap[char];
-        } else {
-            dayJsDateFormat += char;
-        }
+        dayJsDateFormat += formatMap[char] ? formatMap[char] : char;
     }
 
     return dayJsDateFormat;
@@ -43,7 +37,7 @@ export function wepos_get_dayjs_date_format( dateFormat = wepos.wp_date_format )
 /**
  * Get date range picker supported date format.
  *
- * @since 1.2.2
+ * @since WEPOS_LITE_SINCE
  *
  * @param {string} dateFormat The date format to convert
  *
@@ -65,18 +59,12 @@ export function wepos_get_daterange_picker_date_format( dateFormat = wepos.wp_da
         y: 'yy'
     }
 
-    let i = 0;
-    let char = '';
     let dateRangePickerFormat = '';
 
-    for ( i = 0; i < dateFormat.length; i++ ) {
+    for ( let i = 0; i < dateFormat.length; i++ ) {
         char = dateFormat[i];
 
-        if ( char in formatMap ) {
-            dateRangePickerFormat += formatMap[char];
-        } else {
-            dateRangePickerFormat += char;
-        }
+        dateRangePickerFormat += formatMap[char] ? formatMap[char] : char;
     }
 
     return dateRangePickerFormat;

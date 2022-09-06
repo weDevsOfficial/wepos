@@ -139,6 +139,7 @@ class Assets {
      * @return array
      */
     public function get_styles() {
+        $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
         $styles = [
             'wepos-flaticon' => [
@@ -148,13 +149,16 @@ class Assets {
                 'src' =>  WEPOS_ASSETS . '/css/fonts.css'
             ],
             'wepos-style' => [
-                'src' =>  WEPOS_ASSETS . '/css/style.css'
+                'src' =>  WEPOS_ASSETS . '/css/style' . $prefix . '.css'
+            ],
+            'wepos-bootstrap' => [
+                'src' =>  WEPOS_ASSETS . '/css/bootstrap' . $prefix . '.css'
             ],
             'wepos-frontend' => [
-                'src' =>  WEPOS_ASSETS . '/css/frontend.css'
+                'src' =>  WEPOS_ASSETS . '/css/frontend' . $prefix . '.css'
             ],
             'wepos-admin' => [
-                'src' =>  WEPOS_ASSETS . '/css/admin.css'
+                'src' =>  WEPOS_ASSETS . '/css/admin' . $prefix . '.css'
             ],
             'wepos-tinymce' => [
                 'src'     => site_url( '/wp-includes/css/editor.css' ),
@@ -172,6 +176,7 @@ class Assets {
             wp_enqueue_style( 'wepos-flaticon' );
             wp_enqueue_style( 'wepos-font' );
             wp_enqueue_style( 'wepos-style' );
+            wp_enqueue_style( 'wepos-bootstrap' );
             wp_enqueue_style( 'wepos-frontend' );
 
             // Load scripts

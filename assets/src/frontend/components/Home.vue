@@ -929,7 +929,7 @@ export default {
                     return;
                 }
 
-                this.products = this.products.concat(product);
+                this.products = this.products.concat( product );
             });
         },
         isAllVariationsDisabled( product ) {

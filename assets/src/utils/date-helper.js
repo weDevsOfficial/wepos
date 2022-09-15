@@ -26,7 +26,7 @@ export function wepos_get_dayjs_date_format( dateFormat = wepos.wp_date_format )
     let dayJsDateFormat = '';
 
     for ( let i = 0; i < dateFormat.length; i++ ) {
-        char = dateFormat[i];
+        const char = dateFormat[i];
 
         dayJsDateFormat += formatMap[char] ? formatMap[char] : char;
     }
@@ -62,7 +62,7 @@ export function wepos_get_daterange_picker_date_format( dateFormat = wepos.wp_da
     let dateRangePickerFormat = '';
 
     for ( let i = 0; i < dateFormat.length; i++ ) {
-        char = dateFormat[i];
+        const char = dateFormat[i];
 
         dateRangePickerFormat += formatMap[char] ? formatMap[char] : char;
     }

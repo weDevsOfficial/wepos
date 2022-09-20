@@ -921,6 +921,9 @@ export default {
                 });
             } else {
                 this.productLoading = false;
+
+                wepos.productIndexedDb.createProductsDB();
+                wepos.productIndexedDb.insertProducts( this.products );
             }
         },
 

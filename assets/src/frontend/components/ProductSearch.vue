@@ -240,17 +240,25 @@ export default {
         searchProduct(e) {
             if ( this.serachInput ) {
                 if ( this.mode == 'product' ) {
-                    this.searchableProduct = this.products.filter( (product) => {
-                        if ( product.id.toString().indexOf( this.serachInput ) != -1 ) {
-                            return true;
-                        } else if ( product.name.toString().toLowerCase().indexOf( this.serachInput.toLowerCase() ) != -1 ) {
-                            return true
-                        } else if ( product.sku.indexOf( this.serachInput ) != -1 ) {
-                            return true
-                        } else {
-                            return false;
-                        }
-                    } );
+                    // this.searchableProduct = this.products.filter( (product) => {
+                    //     if ( product.id.toString().indexOf( this.serachInput ) != -1 ) {
+                    //         return true;
+                    //     } else if ( product.name.toString().toLowerCase().indexOf( this.serachInput.toLowerCase() ) != -1 ) {
+                    //         return true
+                    //     } else if ( product.sku.indexOf( this.serachInput ) != -1 ) {
+                    //         return true
+                    //     } else {
+                    //         return false;
+                    //     }
+                    // } );
+
+                    wepos.productIndexedDb.getProductsBySearchKeyword( this.serachInput ).then( response => {
+                        console.log(response);
+                        this.searchableProduct = response;
+                    }).catch( error => {
+                        console.log(error);
+                    });
+
                 }
             }
         },

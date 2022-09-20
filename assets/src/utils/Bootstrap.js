@@ -12,6 +12,7 @@ import Multiselect from 'vue-multiselect'
 import Modal from './components/Modal.vue'
 import Switches from './components/Switches.vue'
 import "vue-multiselect/dist/vue-multiselect.min.css"
+import productIndexedDb from "../utils/productIndexedDb"
 
 import dayjs from 'dayjs';
 window.dayjs = dayjs;
@@ -83,6 +84,7 @@ window.wepos.libs['TextEditor'] = TextEditor;
 window.wepos.libs['EventBus']   = EventBus;
 window.wepos.libs['Modal']      = Modal;
 window.wepos.libs['Switches']   = Switches;
+window.wepos.productIndexedDb   = productIndexedDb;
 
 // WordPress Hooks
 import { createHooks } from '@wordpress/hooks';

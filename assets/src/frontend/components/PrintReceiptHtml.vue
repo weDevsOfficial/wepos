@@ -149,6 +149,7 @@ export default {
         }
 
         .content {
+            padding: 10px;
             table.sale-summary {
                 width: 100%;
                 border-collapse: collapse;

@@ -112,6 +112,10 @@ export default {
 [v-cloak] {display: none}
 
 @media print {
+    @page {
+        margin: 0.5cm;
+    }
+
     body * {
         visibility: hidden;
     }
@@ -122,7 +126,7 @@ export default {
     }
 
     .wepos-checkout-print-wrapper {
-        color: #181818;
+        color: #000;
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         display: inline-block !important;
     }
@@ -150,6 +154,7 @@ export default {
 
         .content {
             padding: 10px;
+
             table.sale-summary {
                 width: 100%;
                 border-collapse: collapse;
@@ -182,6 +187,7 @@ export default {
                             }
                             &.quantity {
                                 width: 12%;
+                                text-align: center;
                                 color: #758598;
                             }
                             &.price {

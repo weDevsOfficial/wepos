@@ -362,6 +362,9 @@ final class WePOS {
 
         // Payment gateway manager
         $this->container['gateways'] = new \WeDevs\WePOS\Gateways\Manager();
+
+        // Temp
+        new WeDevs\WePOS\ProductsLog();
     }
 
     /**

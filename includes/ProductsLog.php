@@ -1,7 +1,7 @@
 <?php
 namespace WeDevs\WePOS;
 
-// don't call the file directly.
+// Don't call the file directly.
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -42,10 +42,47 @@ class ProductsLog {
 
         add_action( 'woocommerce_new_product', [ $this, 'insert_product_log_data' ], 10, 2 );
         add_action( 'woocommerce_update_product', [ $this, 'insert_product_log_data' ], 10, 2 );
+        $this->insert_product_log_counter( 4 );
     }
 
     /**
-     * Product log data inserter function.
+     * Get product logs.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @param array $args
+     *
+     * @return bool|array|\WP_Error
+     */
+    public function get_product_logs( $args = [] ) {
+        global $wpdb;
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            return false;
+        }
+
+        $defaults = [
+            'limit'  => 20,
+            'offset' => 0,
+        ];
+
+        $args            = wp_parse_args( $args, $defaults );
+        $where_condition = $this->generate_where_condition( $args );
+        $limit_condition = $this->generate_limit_condition( $args );
+        $query_args      = array_merge( $where_condition['args'], $limit_condition['args'] );
+
+        $product_logs_query = $wpdb->prepare(
+            "SELECT * FROM {$this->table_product_logs}
+            {$where_condition['clause']}
+            {$limit_condition['clause']}",
+            $query_args
+        );
+
+        return $wpdb->get_results( $product_logs_query );
+    }
+
+    /**
+     * Insert product log.
      *
      * @since WEPOS_LITE_SINCE
      *
@@ -54,18 +91,19 @@ class ProductsLog {
      *
      * @return void|\WP_Error
      */
-    public function insert_product_log_data( $product_id, $product ) {
+    public function insert_product_log( $product_id, $product ) {
         global $wpdb;
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            return false;
+        }
 
         // if ( ! current_user_can( 'cashier' ) ) {
         // 	return;
         // }
 
-        $wpdb->delete(
-            $this->table_product_logs,
-            [ 'product_id' => $product_id ],
-            [ '%d']
-        );
+        // Delete existing log for this product, if had any.
+        $this->delete_product_log( $product_id );
 
         $log_data = [
             'product_id'     => $product_id,
@@ -97,7 +135,7 @@ class ProductsLog {
     }
 
     /**
-     * Product log counter data inserter function.
+     * Insert product log counter.
      *
      * @since WEPOS_LITE_SINCE
      *
@@ -105,16 +143,20 @@ class ProductsLog {
      *
      * @return int|\WP_Error
      */
-    public function insert_product_log_counter_data( $product_log_id = 0 ) {
+    public function insert_product_log_counter( $args = [] ) {
         global $wpdb;
 
-        if ( empty( $product_log_id ) ) {
-            return;
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            return false;
         }
 
         // if ( ! current_user_can( 'cashier' ) ) {
         // 	return;
         // }
+
+        if ( empty( $args['product_log_id'] ) ) {
+            return false;
+        }
 
         $userinfo   = wp_get_current_user();
 
@@ -122,13 +164,12 @@ class ProductsLog {
             $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}wepos_login WHERE user_id=%d AND `is_logged_in`='1'",
                 $userinfo->ID
-            ),
-            ARRAY_A
+            )
         );
 
         $counter_data = [
-            'product_log_id' => $product_log_id,
-            'counter_id'     => $login_data['counter_id'],
+            'product_log_id' => $args['product_log_id'],
+            'counter_id'     => $login_data->counter_id,
         ];
 
         $counter_inserted = $wpdb->insert(
@@ -148,7 +189,7 @@ class ProductsLog {
     }
 
     /**
-     * Product log counter counts updater function.
+     * Update product log counter counts.
      *
      * @since WEPOS_LITE_SINCE
      *
@@ -156,17 +197,21 @@ class ProductsLog {
      *
      * @return bool|\WP_Error
      */
-    public function update_product_log_counter_counts( $product_log_id = 0 ) {
+    public function update_product_log_counter_counts( $args = [] ) {
         global $wpdb;
 
-        if ( empty( $product_log_id ) ) {
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            return false;
+        }
+
+        if ( empty( $args['product_log_id'] ) ) {
             return false;
         }
 
         $counts_updated = $wpdb->query(
             $wpdb->prepare(
                 "UPDATE {$this->table_product_logs} SET counter_counts = counter_counts + 1 WHERE id = %d",
-                $product_log_id
+                $args['product_log_id']
             )
         );
 
@@ -178,7 +223,7 @@ class ProductsLog {
     }
 
     /**
-     * Product log data remover function.
+     * Delete product log.
      *
      * @since WEPOS_LITE_SINCE
      *
@@ -186,8 +231,12 @@ class ProductsLog {
      *
      * @return bool|\WP_Error
      */
-    public function delete_product_log_data( $product_id = 0 ) {
+    public function delete_product_log( $product_id = 0 ) {
         global $wpdb;
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            return false;
+        }
 
         if ( empty( $product_id ) ) {
             return false;
@@ -207,26 +256,45 @@ class ProductsLog {
     }
 
     /**
-     * Product log data getter function.
+     * Generate where condition.
      *
      * @since WEPOS_LITE_SINCE
      *
-     * @param int $counter_id
+     * @param array $args
      *
-     * @return bool|array|\WP_Error
+     * @return array $where_condition
      */
-    public function get_product_logs( $counter_id = 0 ) {
-        global $wpdb;
+    public function generate_where_condition( $args ) {
+        $where_condition['clause'] = ' WHERE %d = %d';
+        $where_condition['args']   = [ 1, 1 ];
 
-        if ( empty( $counter_id ) ) {
-            return false;
+        if ( ! empty( $args['counter_id'] ) ) {
+            $where_condition['clause'] .= " AND id NOT IN( SELECT product_log_id FROM {$this->table_product_log_counters} WHERE counter_id = %d)";
+            $where_condition['args'][] = $args['counter_id'];
         }
 
-        $product_logs_query = $wpdb->prepare(
-            "SELECT * FROM {$this->table_product_logs} WHERE id NOT IN( SELECT product_log_id FROM {$this->wepos_product_log_counters} WHERE counter_id = %d);",
-            $counter_id
-        );
+        return $where_condition;
+    }
 
-        return $wpdb->get_results( $product_logs_query, ARRAY_A );
+    /**
+     * Generate limit condition.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @param array $args
+     *
+     * @return array $limit_condition
+     */
+    public function generate_limit_condition( $args ) {
+        $limit_condition['clause'] = '';
+        $limit_condition['args']   = [];
+
+        if ( ! empty( $args['limit'] ) && isset( $args['offset'] ) ) {
+            $limit_condition['clause'] .= ' LIMIT %d OFFSET %d';
+            $limit_condition['args'][] = $args['limit'];
+            $limit_condition['args'][] = $args['offset'];
+        }
+
+        return $limit_condition;
     }
 }

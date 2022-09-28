@@ -357,14 +357,12 @@ final class WePOS {
             $this->container['dokan'] = new WeDevs\WePOS\Dokan();
         }
 
-        $this->container['rest']   = new WeDevs\WePOS\REST\Manager();
-        $this->container['assets'] = new WeDevs\WePOS\Assets();
+        $this->container['rest']         = new WeDevs\WePOS\REST\Manager();
+        $this->container['assets']       = new WeDevs\WePOS\Assets();
+        $this->container['products_log'] = new WeDevs\WePOS\ProductsLog();
 
         // Payment gateway manager
         $this->container['gateways'] = new \WeDevs\WePOS\Gateways\Manager();
-
-        // Temp
-        new WeDevs\WePOS\ProductsLog();
     }
 
     /**

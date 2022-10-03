@@ -197,9 +197,12 @@ class ProductsLog {
             )
         );
 
+        // Default counter number will be 1 if not wePOS Pro not installed.
+        $counter_id = ! empty( $login_data ) ? $login_data->counter_id : 1;
+
         $counter_data = [
             'product_log_id' => $args['product_log_id'],
-            'counter_id'     => $login_data->counter_id,
+            'counter_id'     => $counter_id,
         ];
 
         $counter_inserted = $wpdb->insert(

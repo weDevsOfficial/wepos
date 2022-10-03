@@ -190,11 +190,11 @@ class ProductsLogController extends \WP_REST_Controller {
 
         $response = wepos()->products_log->update_product_log_counter_counts( $params );
 
-		if ( is_wp_error( $response ) ) {
-			return new \WP_Error( $response->get_error_code(), $response->get_error_message(), $response->get_error_data() );
-		}
+        if ( is_wp_error( $response ) ) {
+            return new \WP_Error( $response->get_error_code(), $response->get_error_message(), $response->get_error_data() );
+        }
 
-		return rest_ensure_response( $response );
+        return rest_ensure_response( $response );
     }
 
     /**
@@ -211,11 +211,11 @@ class ProductsLogController extends \WP_REST_Controller {
 
         $response = wepos()->products_log->insert_product_log_counter( $params );
 
-		if ( is_wp_error( $response ) ) {
-			return new \WP_Error( $response->get_error_code(), $response->get_error_message(), $response->get_error_data() );
-		}
+        if ( is_wp_error( $response ) ) {
+            return new \WP_Error( $response->get_error_code(), $response->get_error_message(), $response->get_error_data() );
+        }
 
-		return rest_ensure_response( $response );
+        return rest_ensure_response( $response );
     }
 
     /**

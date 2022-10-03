@@ -40,9 +40,8 @@ class ProductsLog {
         $this->table_product_logs         = "{$wpdb->prefix}wepos_product_logs";
         $this->table_product_log_counters = "{$wpdb->prefix}wepos_product_log_counters";
 
-        add_action( 'woocommerce_new_product', [ $this, 'insert_product_log_data' ], 10, 2 );
-        add_action( 'woocommerce_update_product', [ $this, 'insert_product_log_data' ], 10, 2 );
-        $this->insert_product_log_counter( 4 );
+        add_action( 'woocommerce_new_product', [ $this, 'insert_product_log' ], 10, 2 );
+        add_action( 'woocommerce_update_product', [ $this, 'insert_product_log' ], 10, 2 );
     }
 
     /**
@@ -57,9 +56,9 @@ class ProductsLog {
     public function get_product_logs( $args = [] ) {
         global $wpdb;
 
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            return false;
-        }
+        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
+        //     return false;
+        // }
 
         $defaults = [
             'limit'  => 20,
@@ -82,6 +81,37 @@ class ProductsLog {
     }
 
     /**
+     * Get product logs count.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @param array $args
+     *
+     * @return bool|int|\WP_Error
+     */
+    public function get_product_logs_count( $args = [] ) {
+        global $wpdb;
+
+        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
+        //     return false;
+        // }
+
+        if ( empty( $args ) ) {
+            return 0;
+        }
+
+        $where_condition = $this->generate_where_condition( $args );
+
+        $product_logs_query = $wpdb->prepare(
+            "SELECT COUNT(id) FROM {$this->table_product_logs}
+            {$where_condition['clause']}",
+            $where_condition['args']
+        );
+
+        return $wpdb->get_var( $product_logs_query );
+    }
+
+    /**
      * Insert product log.
      *
      * @since WEPOS_LITE_SINCE
@@ -94,9 +124,9 @@ class ProductsLog {
     public function insert_product_log( $product_id, $product ) {
         global $wpdb;
 
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            return false;
-        }
+        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
+        //     return false;
+        // }
 
         // if ( ! current_user_can( 'cashier' ) ) {
         // 	return;
@@ -146,9 +176,9 @@ class ProductsLog {
     public function insert_product_log_counter( $args = [] ) {
         global $wpdb;
 
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            return false;
-        }
+        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
+        //     return false;
+        // }
 
         // if ( ! current_user_can( 'cashier' ) ) {
         // 	return;
@@ -200,9 +230,9 @@ class ProductsLog {
     public function update_product_log_counter_counts( $args = [] ) {
         global $wpdb;
 
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            return false;
-        }
+        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
+        //     return false;
+        // }
 
         if ( empty( $args['product_log_id'] ) ) {
             return false;
@@ -234,9 +264,9 @@ class ProductsLog {
     public function delete_product_log( $product_id = 0 ) {
         global $wpdb;
 
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            return false;
-        }
+        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
+        //     return false;
+        // }
 
         if ( empty( $product_id ) ) {
             return false;

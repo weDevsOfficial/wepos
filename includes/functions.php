@@ -284,3 +284,33 @@ function wepos_get_product_price( $product ) {
 
     return apply_filters( 'woocommerce_cart_product_subtotal', $product_subtotal, $product, $quantity, $this );
 }
+
+/**
+ * Get cashier data by user id.
+ *
+ * @param int $user_id
+ *
+ * @return bool|array|\WP_Error
+ */
+function wepos_get_cashier_data_by_user_id( $user_id = 0 ) {
+    global $wpdb;
+
+    $user_data = get_userdata( $user_id );
+    
+    if ( empty( $user_data ) || empty( array_intersect( [ 'administrator', 'cashier' ], $user_data->roles ) ) ) {
+        return [];
+    }
+
+    $cashier_data = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT user_id, outlet_id, counter_id, is_logged_in FROM {$wpdb->prefix}wepos_login WHERE user_id=%d AND `is_logged_in`='1'",
+            $user_id
+        )
+    );
+
+    if ( empty( $cashier_data ) ) {
+        return [];
+    }
+
+    return $cashier_data;
+}

@@ -53,6 +53,7 @@
                 </ul>
                 <span class="close-breadcrumb flaticon-cancel-music" @click.prevent="removeBreadcrums"></span>
             </div>
+            <button id="products-refresh-btn" @click.prevent="refreshProducts">{{ __( 'Refresh Products', 'wepos' ) }}</button>
             <div class="items-wrapper" :class="productView" ref="items-wrapper">
                 <template v-if="!productLoading">
                     <div class="item" v-if="getFilteredProduct.length > 0" v-for="product in getFilteredProduct">
@@ -592,6 +593,9 @@ export default {
             filteredProducts: [],
             totalPages: 1,
             page: 1,
+            productLogsTotalPage: 1,
+            productLogsPage: 1,
+            productLogsLoading: false,
             showOverlay: false,
             selectedVariationProduct: {},
             attributeDisabled: true,
@@ -920,11 +924,60 @@ export default {
                     this.fetchProducts();
                 });
             } else {
-                this.productLoading = false;
-
-                wepos.productIndexedDb.createProductsDB();
                 wepos.productIndexedDb.insertProducts( this.products );
+                this.productLoading = false;
             }
+        },
+        refreshProducts() {
+            this.fetchProductLogs( wepos.current_cashier.counter_id );
+
+        },
+        fetchProductLogs( counterId ) {
+            if ( 1 === this.productLogsPage ) {
+                this.productLogsLoading = true;
+            }
+
+            if ( this.productLogsTotalPage >= this.productLogsPage ) {
+                wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/product/logs?counter_id=' + counterId + '&per_page=2&page=' + this.productLogsPage )
+                .done( ( response, status, xhr ) => {
+                    this.productLogsTotalPage = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
+
+                    response.forEach( productLog => {
+                        wepos.productIndexedDb.updateProduct( {
+                            id: productLog.product_id,
+                            title: productLog.product_title,
+                            type: productLog.product_type,
+                            sku: productLog.product_sku,
+                            price: productLog.product_price,
+                            stock: productLog.product_stock,
+                        } );
+
+                        this.insertProductLogCounterData( productLog.id );
+                        this.incrementProductLogCounterCount( productLog.id );
+                    } );
+                } ).then( ( response, status, xhr ) => {
+                    this.productLogsPage++;
+                    this.fetchProductLogs( counterId );
+                });
+            } else {
+                this.productLogsLoading = false;
+            }
+        },
+        insertProductLogCounterData( product_log_id ) {
+            wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/product/logs/counter/create?product_log_id=' + product_log_id )
+            .done( ( response, status, xhr ) => {
+                console.log(response);
+            }).fail(response => {
+                // alert(response.responseJSON.message);
+            });
+        },
+        incrementProductLogCounterCount( product_log_id ) {
+            wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/product/logs?product_log_id=' + product_log_id )
+            .done( ( response, status, xhr ) => {
+                console.log(response);
+            }).fail(response => {
+                // alert(response.responseJSON.message);
+            });
         },
 
         maybeRemoveDeletedProduct( cartData ) {
@@ -1116,6 +1169,15 @@ export default {
             let inputCashAmount = document.querySelector('#input-cash-amount');
             inputCashAmount.focus();
         },
+    },
+
+    async beforeCreate() {
+        const dbName = 'ProductsDB';
+        const isExistsProductsDB = (await window.indexedDB.databases()).map(db => db.name).includes(dbName);
+
+        if ( ! isExistsProductsDB ) {
+            wepos.productIndexedDb.createProductsDB();
+        }
     },
 
     async created() {

@@ -165,7 +165,13 @@ class ProductsLogController extends \WP_REST_Controller {
             }
         }
 
+        $total_logs  = wepos()->products_log->get_product_logs_count( $args );
+        $total_pages = ceil( $total_logs / $args['limit'] );
+
         $response = rest_ensure_response( $data_objects );
+
+        $response->header( 'X-WP-Total', intval( $total_logs ) );
+        $response->header( 'X-WP-TotalPages', intval( $total_pages ) );
 
         return $response;
     }

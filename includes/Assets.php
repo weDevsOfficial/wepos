@@ -222,6 +222,7 @@ class Assets {
             'countries'                    => WC()->countries->get_countries(),
             'states'                       => WC()->countries->get_states(),
             'current_user_id'              => get_current_user_id(),
+            'current_cashier'              => wepos_get_cashier_data_by_user_id( get_current_user_id() ),
             'home_url'                     => home_url()
         ] );
 

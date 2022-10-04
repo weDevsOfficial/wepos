@@ -15,6 +15,7 @@ class Updates {
     private static $updates = [
         '1.0.2'    => 'upgrade-1.0.2.php',
         '1.0.4'    => 'upgrade-1.0.4.php',
+        '1.2.5'    => 'upgrade-1.2.5.php',
     ];
 
     /**

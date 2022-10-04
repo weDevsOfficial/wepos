@@ -57,9 +57,9 @@ class ProductsLog {
     public function get_product_logs( $args = [] ) {
         global $wpdb;
 
-        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
-        //     return false;
-        // }
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
+            return false;
+        }
 
         $defaults = [
             'limit'  => 20,
@@ -93,9 +93,9 @@ class ProductsLog {
     public function get_product_logs_count( $args = [] ) {
         global $wpdb;
 
-        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
-        //     return false;
-        // }
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
+            return false;
+        }
 
         if ( empty( $args ) ) {
             return 0;
@@ -125,13 +125,9 @@ class ProductsLog {
     public function insert_product_log( $product_id, $product ) {
         global $wpdb;
 
-        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
-        //     return false;
-        // }
-
-        // if ( ! current_user_can( 'cashier' ) ) {
-        // 	return;
-        // }
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
+            return false;
+        }
 
         // Delete existing log for this product, if had any.
         $this->delete_product_log( $product_id );
@@ -177,13 +173,9 @@ class ProductsLog {
     public function insert_product_log_counter( $args = [] ) {
         global $wpdb;
 
-        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
-        //     return false;
-        // }
-
-        // if ( ! current_user_can( 'cashier' ) ) {
-        // 	return;
-        // }
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
+            return false;
+        }
 
         if ( empty( $args['product_log_id'] ) ) {
             return false;
@@ -198,7 +190,7 @@ class ProductsLog {
             )
         );
 
-        // Default counter number will be 1 if not wePOS Pro not installed.
+        // Default counter number will be 1 if wePOS Pro not installed.
         $counter_id = ! empty( $login_data ) ? $login_data->counter_id : 1;
 
         $counter_data = [
@@ -234,9 +226,9 @@ class ProductsLog {
     public function update_product_log_counter_counts( $args = [] ) {
         global $wpdb;
 
-        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
-        //     return false;
-        // }
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
+            return false;
+        }
 
         if ( empty( $args['product_log_id'] ) ) {
             return false;
@@ -268,9 +260,9 @@ class ProductsLog {
     public function delete_product_log( $args = [] ) {
         global $wpdb;
 
-        // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
-        //     return false;
-        // }
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
+            return false;
+        }
 
         $where_condition = $this->generate_where_condition( $args );
 
@@ -348,6 +340,8 @@ class ProductsLog {
     public function delete_product_logs_by_checking_counter_count() {
         $counter_count = wepos_get_counters( [ 'count' => true ] );
 
-        $this->delete_product_log( [ 'counter_counts' => $counter_count['total_count'] ] );
+        $this->delete_product_log( [
+            'counter_counts' => $counter_count['total_count']
+        ] );
     }
 }

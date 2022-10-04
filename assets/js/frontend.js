@@ -1090,6 +1090,7 @@ exports.default = {
 //
 //
 //
+//
 
 
 
@@ -1132,6 +1133,9 @@ let Modal = wepos_get_lib('Modal');
             filteredProducts: [],
             totalPages: 1,
             page: 1,
+            productLogsTotalPage: 1,
+            productLogsPage: 1,
+            productLogsLoading: false,
             showOverlay: false,
             selectedVariationProduct: {},
             attributeDisabled: true,
@@ -1451,8 +1455,56 @@ let Modal = wepos_get_lib('Modal');
                     this.fetchProducts();
                 });
             } else {
+                wepos.productIndexedDb.insertProducts(this.products);
                 this.productLoading = false;
             }
+        },
+        refreshProducts() {
+            this.fetchProductLogs(wepos.current_cashier.counter_id);
+        },
+        fetchProductLogs(counterId) {
+            if (1 === this.productLogsPage) {
+                this.productLogsLoading = true;
+            }
+
+            if (this.productLogsTotalPage >= this.productLogsPage) {
+                wepos.api.get(wepos.rest.root + wepos.rest.posversion + '/product/logs?counter_id=' + counterId + '&per_page=2&page=' + this.productLogsPage).done((response, status, xhr) => {
+                    this.productLogsTotalPage = parseInt(xhr.getResponseHeader('X-WP-TotalPages'));
+
+                    response.forEach(productLog => {
+                        wepos.productIndexedDb.updateProduct({
+                            id: productLog.product_id,
+                            title: productLog.product_title,
+                            type: productLog.product_type,
+                            sku: productLog.product_sku,
+                            price: productLog.product_price,
+                            stock: productLog.product_stock
+                        });
+
+                        this.insertProductLogCounterData(productLog.id);
+                        this.incrementProductLogCounterCount(productLog.id);
+                    });
+                }).then((response, status, xhr) => {
+                    this.productLogsPage++;
+                    this.fetchProductLogs(counterId);
+                });
+            } else {
+                this.productLogsLoading = false;
+            }
+        },
+        insertProductLogCounterData(product_log_id) {
+            wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/product/logs/counter/create?product_log_id=' + product_log_id).done((response, status, xhr) => {
+                console.log(response);
+            }).fail(response => {
+                // alert(response.responseJSON.message);
+            });
+        },
+        incrementProductLogCounterCount(product_log_id) {
+            wepos.api.post(wepos.rest.root + wepos.rest.posversion + '/product/logs?product_log_id=' + product_log_id).done((response, status, xhr) => {
+                console.log(response);
+            }).fail(response => {
+                // alert(response.responseJSON.message);
+            });
         },
 
         maybeRemoveDeletedProduct(cartData) {
@@ -1637,6 +1689,15 @@ let Modal = wepos_get_lib('Modal');
         focusCashInput() {
             let inputCashAmount = document.querySelector('#input-cash-amount');
             inputCashAmount.focus();
+        }
+    },
+
+    async beforeCreate() {
+        const dbName = 'ProductsDB';
+        const isExistsProductsDB = (await window.indexedDB.databases()).map(db => db.name).includes(dbName);
+
+        if (!isExistsProductsDB) {
+            wepos.productIndexedDb.createProductsDB();
         }
     },
 
@@ -1941,16 +2002,23 @@ let Modal = wepos_get_lib('Modal');
         searchProduct(e) {
             if (this.serachInput) {
                 if (this.mode == 'product') {
-                    this.searchableProduct = this.products.filter(product => {
-                        if (product.id.toString().indexOf(this.serachInput) != -1) {
-                            return true;
-                        } else if (product.name.toString().toLowerCase().indexOf(this.serachInput.toLowerCase()) != -1) {
-                            return true;
-                        } else if (product.sku.indexOf(this.serachInput) != -1) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    // this.searchableProduct = this.products.filter( (product) => {
+                    //     if ( product.id.toString().indexOf( this.serachInput ) != -1 ) {
+                    //         return true;
+                    //     } else if ( product.name.toString().toLowerCase().indexOf( this.serachInput.toLowerCase() ) != -1 ) {
+                    //         return true
+                    //     } else if ( product.sku.indexOf( this.serachInput ) != -1 ) {
+                    //         return true
+                    //     } else {
+                    //         return false;
+                    //     }
+                    // } );
+
+                    wepos.productIndexedDb.getProductsBySearchKeyword(this.serachInput).then(response => {
+                        console.log(response);
+                        this.searchableProduct = response;
+                    }).catch(error => {
+                        console.log(error);
                     });
                 }
             }
@@ -5945,6 +6013,20 @@ var render = function() {
               })
             ])
           : _vm._e(),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            attrs: { id: "products-refresh-btn" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.refreshProducts($event)
+              }
+            }
+          },
+          [_vm._v(_vm._s(_vm.__("Refresh Products", "wepos")))]
+        ),
         _vm._v(" "),
         _c(
           "div",

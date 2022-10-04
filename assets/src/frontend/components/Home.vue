@@ -930,7 +930,6 @@ export default {
         },
         refreshProducts() {
             this.fetchProductLogs( wepos.current_cashier.counter_id );
-
         },
         fetchProductLogs( counterId ) {
             if ( 1 === this.productLogsPage ) {

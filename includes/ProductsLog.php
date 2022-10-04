@@ -42,6 +42,7 @@ class ProductsLog {
 
         add_action( 'woocommerce_new_product', [ $this, 'insert_product_log' ], 10, 2 );
         add_action( 'woocommerce_update_product', [ $this, 'insert_product_log' ], 10, 2 );
+        add_action( 'wepos_product_log_cron_hook', [ $this, 'delete_product_logs_by_checking_counter_count' ] );
     }
 
     /**
@@ -264,21 +265,22 @@ class ProductsLog {
      *
      * @return bool|\WP_Error
      */
-    public function delete_product_log( $product_id = 0 ) {
+    public function delete_product_log( $args = [] ) {
         global $wpdb;
 
         // if ( ! current_user_can( 'manage_woocommerce' ) || ! current_user_can( 'cashier' ) ) {
         //     return false;
         // }
 
-        if ( empty( $product_id ) ) {
-            return false;
-        }
+        $where_condition = $this->generate_where_condition( $args );
 
-        $log_deleted =  $wpdb->delete(
-            $this->table_product_logs,
-            [ 'product_id' => $product_id ],
-            [ '%d']
+
+        $log_deleted = $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM {$this->table_product_logs}
+                {$where_condition['clause']}",
+                $where_condition['args']
+            )
         );
 
         if ( ! $log_deleted ) {
@@ -306,6 +308,11 @@ class ProductsLog {
             $where_condition['args'][] = $args['counter_id'];
         }
 
+        if ( ! empty( $args['counter_counts'] ) ) {
+            $where_condition['clause'] .= " AND counter_counts >= %d";
+            $where_condition['args'][] = $args['counter_counts'];
+        }
+
         return $where_condition;
     }
 
@@ -329,5 +336,18 @@ class ProductsLog {
         }
 
         return $limit_condition;
+    }
+
+    /**
+     * Delete product logs by checking counter count.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @return void
+     */
+    public function delete_product_logs_by_checking_counter_count() {
+        $counter_count = wepos_get_counters( [ 'count' => true ] );
+
+        $this->delete_product_log( [ 'counter_counts' => $counter_count['total_count'] ] );
     }
 }

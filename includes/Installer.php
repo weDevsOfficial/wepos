@@ -20,16 +20,15 @@ class Installer {
     public function run() {
         $this->add_installation_data();
         $this->create_tables();
-        $this->register_cron_schedules();
     }
 
     /**
-    * Add installation data.
-    *
-    * @since WEPOS_LITE_SINCE
-    *
-    * @return void
-    */
+     * Add installation data.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @return void
+     */
     public function add_installation_data() {
         $installed = get_option( 'we_pos_installed' );
 
@@ -92,19 +91,6 @@ class Installer {
 
         foreach ( $tables as $key => $table ) {
             dbDelta( $table );
-        }
-    }
-
-    /**
-    * Register cron schedules.
-    *
-    * @since WEPOS_LITE_SINCE
-    *
-    * @return void
-    */
-    public function register_cron_schedules() {
-        if ( ! wp_next_scheduled( 'wepos_product_log_cron_hook' ) ) {
-            wp_schedule_event( time(), 'daily', 'wepos_product_log_cron_hook' );
         }
     }
 }

@@ -42,7 +42,7 @@ class ProductsLog {
 
         add_action( 'woocommerce_new_product', [ $this, 'insert_product_log' ], 10, 2 );
         add_action( 'woocommerce_update_product', [ $this, 'insert_product_log' ], 10, 2 );
-        add_action( 'wepos_product_log_cron_hook', [ $this, 'delete_product_logs_by_checking_counter_count' ] );
+        add_action( 'wepos_product_log_cleaner_action_schedule', [ $this, 'delete_product_logs_by_checking_counter_count' ] );
     }
 
     /**
@@ -283,6 +283,21 @@ class ProductsLog {
     }
 
     /**
+     * Delete product logs by checking counter count.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @return void
+     */
+    public function delete_product_logs_by_checking_counter_count() {
+        $counter_count = wepos_get_counters( [ 'count' => true ] );
+
+        $this->delete_product_log( [
+            'counter_counts' => $counter_count['total_count']
+        ] );
+    }
+
+    /**
      * Generate where condition.
      *
      * @since WEPOS_LITE_SINCE
@@ -328,20 +343,5 @@ class ProductsLog {
         }
 
         return $limit_condition;
-    }
-
-    /**
-     * Delete product logs by checking counter count.
-     *
-     * @since WEPOS_LITE_SINCE
-     *
-     * @return void
-     */
-    public function delete_product_logs_by_checking_counter_count() {
-        $counter_count = wepos_get_counters( [ 'count' => true ] );
-
-        $this->delete_product_log( [
-            'counter_counts' => $counter_count['total_count']
-        ] );
     }
 }

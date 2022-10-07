@@ -382,10 +382,6 @@ var _Switches2 = _interopRequireDefault(_Switches);
 
 __webpack_require__(384);
 
-var _productIndexedDb = __webpack_require__(387);
-
-var _productIndexedDb2 = _interopRequireDefault(_productIndexedDb);
-
 var _dayjs = __webpack_require__(33);
 
 var _dayjs2 = _interopRequireDefault(_dayjs);
@@ -394,13 +390,13 @@ var _vueSweetalert = __webpack_require__(96);
 
 var _vueSweetalert2 = _interopRequireDefault(_vueSweetalert);
 
-__webpack_require__(388);
+__webpack_require__(387);
 
 var _vueDatepicker = __webpack_require__(89);
 
 var _vueDatepicker2 = _interopRequireDefault(_vueDatepicker);
 
-__webpack_require__(390);
+__webpack_require__(389);
 
 var _hooks = __webpack_require__(34);
 
@@ -474,7 +470,6 @@ window.wepos.libs['TextEditor'] = _TextEditor2.default;
 window.wepos.libs['EventBus'] = EventBus;
 window.wepos.libs['Modal'] = _Modal2.default;
 window.wepos.libs['Switches'] = _Switches2.default;
-window.wepos.productIndexedDb = _productIndexedDb2.default;
 
 // WordPress Hooks
 
@@ -1248,249 +1243,6 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-71008314", esExports)
   }
 }
-
-/***/ }),
-
-/***/ 387:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    createProductsDB: function createProductsDB() {
-        var db = void 0;
-        var request = indexedDB.open("ProductsDB", 1);
-
-        request.onerror = function (event) {
-            console.error("An error occurred with IndexedDB");
-            console.error(event);
-        };
-
-        // This method is only invoked after changing IndexedDB version.
-        request.onupgradeneeded = function (event) {
-            db = event.target.result;
-            var objectStore = db.createObjectStore("ProductsDB", { keyPath: "id" });
-
-            objectStore.createIndex("title", "title", { unique: false });
-            objectStore.createIndex("type", "type", { unique: false });
-            objectStore.createIndex("sku", "sku", { unique: false });
-            objectStore.createIndex("price", "price", { unique: false });
-            objectStore.createIndex("stock", "stock", { unique: false });
-        };
-    },
-    insertProduct: function insertProduct() {
-        var product = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-        var db = void 0;
-        var request = indexedDB.open("ProductsDB", 1);
-
-        request.onerror = function (event) {
-            console.error("An error occurred with IndexedDB");
-            console.error(event);
-        };
-
-        request.onsuccess = function (event) {
-            db = event.target.result;
-
-            db.onerror = function (event) {
-                // Generic error handler for all errors targeted at this database's requests.
-                console.error("Database error: " + event.target.error.code + " - " + event.target.error.message);
-            };
-
-            var transaction = db.transaction(["ProductsDB"], "readwrite");
-            var objectStore = transaction.objectStore("ProductsDB");
-
-            objectStore.add({
-                id: product.id,
-                title: product.name,
-                type: product.type,
-                sku: product.sku,
-                price: product.price,
-                stock: product.stock_quantity
-            });
-        };
-    },
-    insertProducts: function insertProducts() {
-        var products = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-
-        var db = void 0;
-        var request = indexedDB.open("ProductsDB", 1);
-
-        request.onerror = function (event) {
-            console.error("An error occurred with IndexedDB");
-            console.error(event);
-        };
-
-        request.onsuccess = function (event) {
-            db = event.target.result;
-
-            db.onerror = function (event) {
-                // Generic error handler for all errors targeted at this database's requests.
-                console.error("Database error: " + event.target.error.code + " - " + event.target.error.message);
-            };
-
-            var transaction = db.transaction(["ProductsDB"], "readwrite");
-            var objectStore = transaction.objectStore("ProductsDB");
-
-            products.forEach(function (product) {
-                objectStore.add({
-                    id: product.id,
-                    title: product.name,
-                    type: product.type,
-                    sku: product.sku,
-                    price: product.price,
-                    stock: product.stock_quantity
-                });
-            });
-        };
-    },
-    getAllProducts: function getAllProducts() {
-        return new Promise(function (resolve, reject) {
-            var db = void 0;
-            var request = indexedDB.open("ProductsDB", 1);
-
-            request.onerror = function (event) {
-                console.error("An error occurred with IndexedDB");
-                console.error(event);
-            };
-
-            request.onsuccess = function (event) {
-                db = event.target.result;
-
-                db.onerror = function (event) {
-                    // Generic error handler for all errors targeted at this database's requests.
-                    console.error("Database error: " + event.target.error.code + " - " + event.target.error.message);
-                };
-
-                var transaction = db.transaction(["ProductsDB"], "readwrite");
-                var objectStore = transaction.objectStore("ProductsDB");
-
-                objectStore.getAll().onsuccess = function (event) {
-                    resolve(event.target.result);
-                };
-            };
-        });
-    },
-    getProductsBySearchKeyword: function getProductsBySearchKeyword() {
-        var searchKeyword = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-
-        return new Promise(function (resolve, reject) {
-            var db = void 0;
-            var request = indexedDB.open("ProductsDB", 1);
-
-            request.onerror = function (event) {
-                console.error("An error occurred with IndexedDB");
-                console.error(event);
-
-                reject(event);
-            };
-
-            request.onsuccess = function (event) {
-                db = event.target.result;
-
-                db.onerror = function (event) {
-                    // Generic error handler for all errors targeted at this database's requests.
-                    // console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
-                    reject("Database error: " + event.target.error.code + " - " + event.target.error.message);
-                };
-
-                var transaction = db.transaction(["ProductsDB"], "readwrite");
-                var objectStore = transaction.objectStore("ProductsDB");
-
-                var condition = new RegExp(searchKeyword);
-
-                objectStore.getAll().onsuccess = function (event) {
-                    var products = event.target.result;
-
-                    var result = products.filter(function (product) {
-                        return condition.test(product.title) || condition.test(product.id) || condition.test(product.sku);
-                    });
-
-                    resolve(result);
-                };
-            };
-        });
-    },
-    updateProduct: function updateProduct(product) {
-        return new Promise(function (resolve, reject) {
-            var db = void 0;
-            var request = indexedDB.open("ProductsDB", 1);
-
-            request.onerror = function (event) {
-                console.error("An error occurred with IndexedDB");
-                console.error(event);
-
-                reject(event);
-            };
-
-            request.onsuccess = function (event) {
-                db = event.target.result;
-
-                db.onerror = function (event) {
-                    // Generic error handler for all errors targeted at this database's requests.
-                    console.error("Database error: " + event.target.error.code + " - " + event.target.error.message);
-                };
-
-                var transaction = db.transaction(["ProductsDB"], "readwrite");
-                var objectStore = transaction.objectStore("ProductsDB");
-
-                objectStore.put(product).onsuccess = function (event) {
-                    resolve(event.target.result);
-                };
-            };
-        });
-    },
-    deleteProductById: function deleteProductById(id) {
-        var db = void 0;
-        var request = indexedDB.open("ProductsDB", 1);
-
-        request.onerror = function (event) {
-            console.error("An error occurred with IndexedDB");
-            console.error(event);
-        };
-
-        request.onsuccess = function (event) {
-            db = event.target.result;
-
-            db.onerror = function (event) {
-                // Generic error handler for all errors targeted at this database's requests.
-                console.error("Database error: " + event.target.error.code + " - " + event.target.error.message);
-            };
-
-            var transaction = db.transaction(["ProductsDB"], "readwrite");
-            var objectStore = transaction.objectStore("ProductsDB");
-
-            objectStore.delete(id);
-        };
-    },
-    deleteAllProducts: function deleteAllProducts() {
-        var db = void 0;
-        var request = indexedDB.open("ProductsDB", 1);
-
-        request.onerror = function (event) {
-            console.error("An error occurred with IndexedDB");
-            console.error(event);
-        };
-
-        request.onsuccess = function (event) {
-            db = event.target.result;
-
-            db.onerror = function (event) {
-                // Generic error handler for all errors targeted at this database's requests.
-                console.error("Database error: " + event.target.error.code + " - " + event.target.error.message);
-            };
-
-            var transaction = db.transaction(["ProductsDB"], "readwrite");
-            var objectStore = transaction.objectStore("ProductsDB");
-
-            objectStore.clear();
-        };
-    }
-};
 
 /***/ })
 

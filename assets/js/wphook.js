@@ -1,6 +1,6 @@
 pluginWebpack([4],{
 
-/***/ 392:
+/***/ 391:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14,4 +14,4 @@ window.wepos.wpPackages = {
 
 /***/ })
 
-},[392]);
+},[391]);

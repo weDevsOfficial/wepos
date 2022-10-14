@@ -296,7 +296,7 @@ function wepos_get_cashier_data_by_user_id( $user_id = 0 ) {
     global $wpdb;
 
     $user_data = get_userdata( $user_id );
-    
+
     if ( empty( $user_data ) || empty( array_intersect( [ 'administrator', 'cashier' ], $user_data->roles ) ) ) {
         return [];
     }

@@ -28,48 +28,16 @@ class ProductsLogController extends \WP_REST_Controller {
      * @return void
      */
     public function register_routes() {
-        register_rest_route( $this->namespace, '/' . $this->base, [
+        register_rest_route( $this->namespace, '/' . $this->base. '/(?P<id>[\d]+)', [
             [
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => [ $this, 'get_items' ],
                 'permission_callback' => [ $this, 'get_items_permission' ],
-                'args'                => $this->get_collection_params(),
             ],
             [
                 'methods'             => \WP_REST_Server::EDITABLE,
-                'callback'            => [ $this, 'update_item' ],
-                'permission_callback' => [ $this, 'update_item_permission' ],
-                'args'                => [
-                    'product_log_id' => [
-                        'description' => __( 'ID of the product log.', 'wepos-pro' ),
-                        'type'        => 'integer',
-                        'context'     => [ 'view', 'edit' ],
-                        'required'    => true,
-                        'arg_options' => [
-                            'sanitize_callback' => 'absint',
-                        ],
-                    ],
-                ],
-            ],
-            'schema' => [ $this, 'get_item_schema' ],
-        ] );
-
-        register_rest_route( $this->namespace, '/' . $this->base . '/counter/create', [
-            [
-                'methods'             => \WP_REST_Server::CREATABLE,
-                'callback'            => [ $this, 'create_item' ],
-                'permission_callback' => [ $this, 'create_item_permission' ],
-                'args'                => [
-                    'product_log_id' => [
-                        'description' => __( 'ID of the product log.', 'wepos-pro' ),
-                        'type'        => 'integer',
-                        'context'     => [ 'view', 'edit' ],
-                        'required'    => true,
-                        'arg_options' => [
-                            'sanitize_callback' => 'absint',
-                        ],
-                    ],
-                ],
+                'callback'            => [ $this, 'update_items' ],
+                'permission_callback' => [ $this, 'update_items_permission' ],
             ],
             'schema' => [ $this, 'get_item_schema' ],
         ] );
@@ -93,19 +61,6 @@ class ProductsLogController extends \WP_REST_Controller {
     }
 
     /**
-     * Create item permission check.
-     *
-     * @since WEPOS_LITE_SINCE
-     *
-     * @param $request
-     *
-     * @return bool
-     */
-    public function create_item_permission( $request ) {
-        return $this->get_items_permission( $request );
-    }
-
-    /**
      * Update item permission check.
      *
      * @since WEPOS_LITE_SINCE
@@ -114,7 +69,7 @@ class ProductsLogController extends \WP_REST_Controller {
      *
      * @return bool
      */
-    public function update_item_permission( $request ) {
+    public function update_items_permission( $request ) {
         return $this->get_items_permission( $request );
     }
 
@@ -128,21 +83,9 @@ class ProductsLogController extends \WP_REST_Controller {
      * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
      */
     public function get_items( $request ) {
-        $params = $this->get_collection_params();
+        $args['counter_id'] = $request['id'];
 
-        foreach ( $params as $key => $value ) {
-            if ( isset( $request[$key] ) && ( '' !== $request[$key] ) ) {
-                $args[$key] = $request[$key];
-            }
-        }
-
-        // Set 'limit' and 'offset'.
-        $args['limit']  = $args['per_page'];
-        $args['offset'] = ( $args['page'] - 1 ) * $args['limit'];
-
-        // Unset 'per_page' and 'page'.
-        unset( $args['per_page'] );
-        unset( $args['page'] );
+        $request->set_query_params( [ 'context' => 'view' ] );
 
         $product_logs = wepos()->products_log->get_product_logs( $args );
         $data_objects = [];
@@ -165,13 +108,9 @@ class ProductsLogController extends \WP_REST_Controller {
             }
         }
 
-        $total_logs  = wepos()->products_log->get_product_logs_count( $args );
-        $total_pages = ceil( $total_logs / $args['limit'] );
-
         $response = rest_ensure_response( $data_objects );
 
-        $response->header( 'X-WP-Total', intval( $total_logs ) );
-        $response->header( 'X-WP-TotalPages', intval( $total_pages ) );
+        $response->header( 'X-WP-Total', intval( count( $product_logs ) ) );
 
         return $response;
     }
@@ -185,57 +124,17 @@ class ProductsLogController extends \WP_REST_Controller {
      *
      * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
      */
-    public function update_item( $request ) {
-        $params = $request->get_params();
+    public function update_items( $request ) {
+        $args['counter_id'] = $request['id'];
 
-        $response = wepos()->products_log->update_product_log_counter_counts( $params );
+        $request->set_query_params( [ 'context' => 'edit' ] );
 
-        if ( is_wp_error( $response ) ) {
-            return new \WP_Error( $response->get_error_code(), $response->get_error_message(), $response->get_error_data() );
-        }
+        $products_log_data = wepos()->products_log->handle_product_logs_data( $args );
 
-        return rest_ensure_response( $response );
-    }
+        $response    = $this->prepare_item_for_response( $products_log_data, $request );
+        $data_object = $this->prepare_response_for_collection( $response );
 
-    /**
-     * Create product log counter item.
-     *
-     * @since WEPOS_LITE_SINCE
-     *
-     * @param \WP_Rest_Request $request
-     *
-     * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
-     */
-    public function create_item( $request ) {
-        $params = $request->get_params();
-
-        $response = wepos()->products_log->insert_product_log_counter( $params );
-
-        if ( is_wp_error( $response ) ) {
-            return new \WP_Error( $response->get_error_code(), $response->get_error_message(), $response->get_error_data() );
-        }
-
-        return rest_ensure_response( $response );
-    }
-
-    /**
-     * Retrieves the query params for collections.
-     *
-     * @since WEPOS_LITE_SINCE
-     *
-     * @return array $params
-     */
-    public function get_collection_params() {
-        $params = parent::get_collection_params();
-
-        $params['counter_id'] = [
-            'description'       => __( 'Counter id to be returned in result set.', 'wepos' ),
-            'type'              => 'integer',
-            'sanitize_callback' => 'absint',
-            'validate_callback' => 'rest_validate_request_arg',
-        ];
-
-        return $params;
+        return rest_ensure_response( $data_object );
     }
 
     /**
@@ -280,6 +179,18 @@ class ProductsLogController extends \WP_REST_Controller {
 
         if ( in_array( 'counter_counts', $fields, true ) ) {
             $data['counter_counts'] = intval( $item['counter_counts'] );
+        }
+
+        if ( in_array( 'counter_inserted', $fields, true ) ) {
+            $data['counter_inserted'] = boolval( $item['counter_inserted'] );
+        }
+
+        if ( in_array( 'counter_counts_updated', $fields, true ) ) {
+            $data['counter_counts_updated'] = boolval( $item['counter_counts_updated'] );
+        }
+
+        if ( in_array( 'logs_deleted', $fields, true ) ) {
+            $data['logs_deleted'] = boolval( $item['logs_deleted'] );
         }
 
         $context  = ! empty( $request['context'] ) ? $request['context'] : 'view';
@@ -376,6 +287,33 @@ class ProductsLogController extends \WP_REST_Controller {
                     'required'    => true,
                     'arg_options' => [
                         'sanitize_callback' => 'absint',
+                    ],
+                ],
+                'counter_inserted' => [
+                    'description' => __( 'If the product counter data inserted.', 'wepos' ),
+                    'type'        => 'boolean',
+                    'context'     => [ 'edit' ],
+                    'required'    => true,
+                    'arg_options' => [
+                        'sanitize_callback' => 'boolval',
+                    ],
+                ],
+                'counter_counts_updated' => [
+                    'description' => __( 'If the product counter counts updated.', 'wepos' ),
+                    'type'        => 'boolean',
+                    'context'     => [ 'edit' ],
+                    'required'    => true,
+                    'arg_options' => [
+                        'sanitize_callback' => 'boolval',
+                    ],
+                ],
+                'logs_deleted' => [
+                    'description' => __( 'If the unnecessary product logs deleted.', 'wepos' ),
+                    'type'        => 'boolean',
+                    'context'     => [ 'edit' ],
+                    'required'    => true,
+                    'arg_options' => [
+                        'sanitize_callback' => 'boolval',
                     ],
                 ],
             ],

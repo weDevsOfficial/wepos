@@ -593,8 +593,6 @@ export default {
             filteredProducts: [],
             totalPages: 1,
             page: 1,
-            productLogsTotalPage: 1,
-            productLogsPage: 1,
             productLogsLoading: false,
             showOverlay: false,
             selectedVariationProduct: {},
@@ -932,51 +930,35 @@ export default {
             this.fetchProductLogs( wepos.current_cashier.counter_id );
         },
         fetchProductLogs( counterId ) {
-            if ( 1 === this.productLogsPage ) {
-                this.productLogsLoading = true;
-            }
+            this.productLogsLoading = true;
 
-            if ( this.productLogsTotalPage >= this.productLogsPage ) {
-                wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/product/logs?counter_id=' + counterId + '&per_page=2&page=' + this.productLogsPage )
-                .done( ( response, status, xhr ) => {
-                    this.productLogsTotalPage = parseInt( xhr.getResponseHeader('X-WP-TotalPages') );
-
-                    response.forEach( productLog => {
-                        wepos.productIndexedDb.updateProduct( {
-                            id: productLog.product_id,
-                            title: productLog.product_title,
-                            type: productLog.product_type,
-                            sku: productLog.product_sku,
-                            price: productLog.product_price,
-                            stock: productLog.product_stock,
-                        } );
-
-                        this.insertProductLogCounterData( productLog.id );
-                        this.incrementProductLogCounterCount( productLog.id );
-                    } );
-                } ).then( ( response, status, xhr ) => {
-                    this.productLogsPage++;
-                    this.fetchProductLogs( counterId );
-                });
-            } else {
+            wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/product/logs/' + counterId )
+            .done( ( response, status, xhr ) => {
+                if ( response.length > 0 ) {
+                    this.updateProductsToIndexedDb( response );
+                    this.updateProductLogsData( counterId );
+                }
+            } ).then( ( response, status, xhr ) => {
                 this.productLogsLoading = false;
-            }
-        },
-        insertProductLogCounterData( product_log_id ) {
-            wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/product/logs/counter/create?product_log_id=' + product_log_id )
-            .done( ( response, status, xhr ) => {
-                console.log(response);
-            }).fail(response => {
-                // alert(response.responseJSON.message);
             });
         },
-        incrementProductLogCounterCount( product_log_id ) {
-            wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/product/logs?product_log_id=' + product_log_id )
-            .done( ( response, status, xhr ) => {
-                console.log(response);
-            }).fail(response => {
-                // alert(response.responseJSON.message);
-            });
+        updateProductsToIndexedDb( productLogs ) {
+            productLogs.forEach( productLog => {
+                wepos.productIndexedDb.updateProduct( {
+                    id: productLog.product_id,
+                    title: productLog.product_title,
+                    type: productLog.product_type,
+                    sku: productLog.product_sku,
+                    price: productLog.product_price,
+                    stock: productLog.product_stock,
+                } );
+            } );
+        },
+        updateProductLogsData( counterId ) {
+            wepos.api.put( wepos.rest.root + wepos.rest.posversion + '/product/logs/' + counterId )
+            .fail( response => {
+                alert( response.status + ' : ' + response.responseJSON.message );
+            } );
         },
 
         maybeRemoveDeletedProduct( cartData ) {

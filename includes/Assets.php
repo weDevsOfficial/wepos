@@ -179,6 +179,7 @@ class Assets {
             wp_enqueue_script( 'wepos-accounting' );
             wp_enqueue_script( 'wepos-vendor' );
             wp_enqueue_script( 'wepos-bootstrap' );
+            wp_enqueue_script( 'heartbeat' );
 
             do_action( 'wepos_load_forntend_scripts' );
 

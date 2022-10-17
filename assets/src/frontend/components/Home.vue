@@ -935,30 +935,12 @@ export default {
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/product/logs/' + counterId )
             .done( ( response, status, xhr ) => {
                 if ( response.length > 0 ) {
-                    this.updateProductsToIndexedDb( response );
-                    this.updateProductLogsData( counterId );
+                    wepos.productLogs.updateProductsToIndexedDb( response );
+                    wepos.productLogs.updateProductLogsData( counterId );
                 }
             } ).then( ( response, status, xhr ) => {
                 this.productLogsLoading = false;
             });
-        },
-        updateProductsToIndexedDb( productLogs ) {
-            productLogs.forEach( productLog => {
-                wepos.productIndexedDb.updateProduct( {
-                    id: productLog.product_id,
-                    title: productLog.product_title,
-                    type: productLog.product_type,
-                    sku: productLog.product_sku,
-                    price: productLog.product_price,
-                    stock: productLog.product_stock,
-                } );
-            } );
-        },
-        updateProductLogsData( counterId ) {
-            wepos.api.put( wepos.rest.root + wepos.rest.posversion + '/product/logs/' + counterId )
-            .fail( response => {
-                alert( response.status + ' : ' + response.responseJSON.message );
-            } );
         },
 
         maybeRemoveDeletedProduct( cartData ) {

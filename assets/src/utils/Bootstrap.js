@@ -13,6 +13,7 @@ import Modal from './components/Modal.vue'
 import Switches from './components/Switches.vue'
 import "vue-multiselect/dist/vue-multiselect.min.css"
 import productIndexedDb from "../utils/productIndexedDb"
+import productLogs from "../utils/productLogs"
 
 import dayjs from 'dayjs';
 window.dayjs = dayjs;
@@ -85,6 +86,7 @@ window.wepos.libs['EventBus']   = EventBus;
 window.wepos.libs['Modal']      = Modal;
 window.wepos.libs['Switches']   = Switches;
 window.wepos.productIndexedDb   = productIndexedDb;
+window.wepos.productLogs        = productLogs;
 
 // WordPress Hooks
 import { createHooks } from '@wordpress/hooks';
@@ -97,3 +99,24 @@ wepos.addFilter = ( hookName, namespace, component, priority = 10 ) => {
         return components;
     }, priority );
 };
+
+// Product logs synchronization over Heartbeat API.
+jQuery(document).ready( function($) {
+    let counterId = wepos.current_cashier.counter_id;
+
+    jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+        // Add current counter id to Heartbeat data.
+        data.wepos_counter_id = counterId;
+    });
+
+    jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
+        // Check for product logs data.
+        if ( ! data.product_logs || 0 === data.product_logs.length ) {
+            return;
+        }
+
+        // Update products to Indexed DB and database.
+        wepos.productLogs.updateProductsToIndexedDb( data.product_logs );
+        wepos.productLogs.updateProductLogsData( counterId );
+    });
+});

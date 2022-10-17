@@ -1,6 +1,5 @@
 export default {
     updateProductsToIndexedDb( productLogs ) {
-        console.log(productLogs);
         productLogs.forEach( productLog => {
             wepos.productIndexedDb.updateProduct( {
                 id: productLog.product_id,
@@ -14,7 +13,6 @@ export default {
     },
 
     updateProductLogsData( counterId ) {
-        console.log(counterId);
         wepos.api.put( wepos.rest.root + wepos.rest.posversion + '/product/logs/' + counterId )
         .fail( response => {
             alert( response.status + ' : ' + response.responseJSON.message );

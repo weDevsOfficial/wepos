@@ -930,6 +930,11 @@ export default {
             this.fetchProductLogs( wepos.current_cashier.counter_id );
         },
         fetchProductLogs( counterId ) {
+            let fetchingToast = {
+                title: '',
+                type: ''
+            }
+
             this.productLogsLoading = true;
 
             wepos.api.get( wepos.rest.root + wepos.rest.posversion + '/product/logs/' + counterId )
@@ -937,10 +942,21 @@ export default {
                 if ( response.length > 0 ) {
                     wepos.productLogs.updateProductsToIndexedDb( response );
                     wepos.productLogs.updateProductLogsData( counterId );
+
+                    fetchingToast.type  = 'success';
+                    fetchingToast.title = this.__( 'Products synchronized successfully!', 'wepos' );
+                } else {
+                    fetchingToast.type  = 'info';
+                    fetchingToast.title = this.__( 'Products already synchronized!', 'wepos' );
                 }
+            } ).fail( ( response, status, xhr ) => {
+                fetchingToast.type  = 'error';
+                fetchingToast.title = this.__( 'Products synchronization failed!', 'wepos' );
             } ).then( ( response, status, xhr ) => {
                 this.productLogsLoading = false;
-            });
+
+                this.toast( fetchingToast );
+            } );
         },
 
         maybeRemoveDeletedProduct( cartData ) {

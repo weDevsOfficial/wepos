@@ -686,6 +686,9 @@ export default {
                 }
             }
             return [];
+        },
+        productsStorageUpdatedOn() {
+            return localStorage.getItem( 'productsStorageUpdatedOn' );
         }
     },
 
@@ -924,10 +927,25 @@ export default {
                 }).then( ( response, status, xhr ) => {
                     this.fetchProducts();
                 });
-            } else {
+            } else if ( this.isProductsStorageUpdateRequired() ) {
+                // Remove existing products from the IndexedDB storage.
+                wepos.productIndexedDb.deleteAllProducts();
+
+                // Insert products to the IndexedDB storage.
                 wepos.productIndexedDb.insertProducts( this.products );
-                this.productLoading = false;
+
+                // Store products IndexedDB updating time to Local Storage.
+                localStorage.setItem( 'productsStorageUpdatedOn', dayjs().unix() );
             }
+
+            this.productLoading = false;
+        },
+        isProductsStorageUpdateRequired() {
+            if ( ! this.productsStorageUpdatedOn || this.productsStorageUpdatedOn < dayjs().subtract( 7, 'days' ).unix() ) {
+                return true;
+            }
+
+            return false;
         },
         refreshProducts() {
             this.fetchProductLogs( wepos.current_cashier.counter_id );

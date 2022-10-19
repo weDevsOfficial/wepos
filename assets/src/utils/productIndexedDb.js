@@ -13,7 +13,7 @@ export default {
             db = event.target.result;
             const objectStore = db.createObjectStore( "ProductsDB", { keyPath: "id" } );
 
-            objectStore.createIndex( "title", "title", { unique: false } );
+            objectStore.createIndex( "name", "name", { unique: false } );
             objectStore.createIndex( "type", "type", { unique: false } );
             objectStore.createIndex( "sku", "sku", { unique: false } );
             objectStore.createIndex( "price", "price", { unique: false } );
@@ -43,7 +43,7 @@ export default {
 
             objectStore.add( {
                 id: product.id,
-                title: product.name,
+                name: product.name,
                 type: product.type,
                 sku: product.sku,
                 price: product.price,
@@ -75,7 +75,7 @@ export default {
             products.forEach( ( product ) => {
                 objectStore.add( {
                     id: product.id,
-                    title: product.name,
+                    name: product.name,
                     type: product.type,
                     sku: product.sku,
                     price: product.price,
@@ -143,7 +143,7 @@ export default {
                     let products = event.target.result;
 
                     let result = products.filter( ( product ) => {
-                        return condition.test( product.title ) || condition.test( product.id ) || condition.test( product.sku );
+                        return condition.test( product.name ) || condition.test( product.id ) || condition.test( product.sku );
                     } );
 
                     resolve( result );

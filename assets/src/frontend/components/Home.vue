@@ -35,9 +35,14 @@
                     </multiselect>
                 </div>
                 <div class="refresh-products">
-                    <span class="refresh-icon list-view" :class="{ active: productLogsLoading }" @click.prevent="refreshProducts">
-                        <svg xmlns="http://www.w3.org/2000/svg" data-name="Isolation Mode" viewBox="0 0 24 24" width="14" height="14"><path d="M12 2.99a9.03 9.03 0 0 1 6.36 2.65l-2.37 2.37h5.83a1.15 1.15 0 0 0 1.14-1.14V1.04l-2.49 2.49A11.98 11.98 0 0 0 0 12h2.99A9.02 9.02 0 0 1 12 2.99ZM21.01 12a9 9 0 0 1-15.37 6.36l2.37-2.37H2a.96.96 0 0 0-.95.95v6.02l2.49-2.49A11.98 11.98 0 0 0 24 12Z"/></svg>
-                    </span>
+                    <v-popover popover-base-class="refresh-products-tooltip-wrapper tooltip popover" placement="auto" trigger="hover">
+                        <span class="refresh-icon list-view" :class="{ active: productLogsLoading }" @click.prevent="refreshProducts">
+                            <svg xmlns="http://www.w3.org/2000/svg" data-name="Isolation Mode" viewBox="0 0 24 24" width="14" height="14"><path d="M12 2.99a9.03 9.03 0 0 1 6.36 2.65l-2.37 2.37h5.83a1.15 1.15 0 0 0 1.14-1.14V1.04l-2.49 2.49A11.98 11.98 0 0 0 0 12h2.99A9.02 9.02 0 0 1 12 2.99ZM21.01 12a9 9 0 0 1-15.37 6.36l2.37-2.37H2a.96.96 0 0 0-.95.95v6.02l2.49-2.49A11.98 11.98 0 0 0 24 12Z"/></svg>
+                        </span>
+                        <template slot="popover">
+                            <span class="refresh-products-tooltip-text">{{ __( 'Refresh Products', 'wepos' ) }}</span>
+                        </template>
+                    </v-popover>
                 </div>
                 <div class="toggle-view">
                     <div class="product-toggle">
@@ -1453,11 +1458,12 @@ export default {
 
             }
             .refresh-products {
-                width: 4%;
                 float: left;
-                text-align: right;
+                margin-right: -5px;
+                width: 4.5%;
 
                 .refresh-icon {
+                    box-sizing: border-box;
                     padding: 9px 10px 7px;
                     background: #fff;
                     display: inline-block;

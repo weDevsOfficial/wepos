@@ -37,10 +37,9 @@ class Ajax {
         if ( empty( $counter_id ) ) {
             return $response;
         }
-
-        $product_logs = wepos()->products_log->get_product_logs( [ 'counter_id' => $counter_id ] );
-
-        $response['product_logs'] = $product_logs;
+        
+        $response['product_logs']       = wepos()->products_log->get_product_logs( [ 'counter_id' => $counter_id ] );
+        $response['heartbeat_interval'] = 15;
 
         return $response;
     }

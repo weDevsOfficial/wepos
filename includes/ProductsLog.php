@@ -46,23 +46,18 @@ class ProductsLog {
     public function __construct() {
         global $wpdb;
 
-        $userinfo   = wp_get_current_user();
+        $userinfo     = wp_get_current_user();
+        $cashier_data = wepos_get_cashier_data_by_user_id( $userinfo->ID );
 
-        $login_data = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}wepos_login WHERE user_id=%d AND `is_logged_in`='1'",
-                $userinfo->ID
-            )
-        );
+        // Default counter number will be 1 if wePOS Pro not installed.
+        $this->counter_id = isset( $cashier_data->counter_id ) ? $cashier_data->counter_id : 1;
 
         $this->table_product_logs         = "{$wpdb->prefix}wepos_product_logs";
         $this->table_product_log_counters = "{$wpdb->prefix}wepos_product_log_counters";
 
-        // Default counter number will be 1 if wePOS Pro not installed.
-        $this->counter_id = ! empty( $login_data ) ? $login_data->counter_id : 1;
-
         add_action( 'woocommerce_new_product', [ $this, 'insert_product_log' ], 10, 2 );
         add_action( 'woocommerce_update_product', [ $this, 'insert_product_log' ], 10, 2 );
+        add_action( 'wepos_rest_counter_deleted', [ $this, 'decrement_all_product_logs_counter_counts' ] );
         add_action( 'wepos_product_log_cleaner_action_schedule', [ $this, 'delete_product_logs_by_checking_counter_count' ] );
     }
 
@@ -168,7 +163,7 @@ class ProductsLog {
 
         $product_logs_status = [
             'counter_inserted'       => $this->insert_product_log_counters( $args ),
-            'counter_counts_updated' => $this->update_product_log_counter_counts( $args ),
+            'counter_counts_updated' => $this->increment_product_log_counter_counts( $args ),
             'logs_deleted'           => $this->delete_product_logs_by_checking_counter_count(),
         ];
 
@@ -193,7 +188,7 @@ class ProductsLog {
         }
 
         // Delete existing log for this product, if had any.
-        $this->delete_product_log( $product_id );
+        $this->delete_product_log( [ 'product_id' => $product_id ] );
 
         $log_data = [
             'product_id'     => $product_id,
@@ -298,7 +293,7 @@ class ProductsLog {
     }
 
     /**
-     * Update product log counter count.
+     * Increment product log counter count.
      *
      * @since WEPOS_LITE_SINCE
      *
@@ -306,7 +301,7 @@ class ProductsLog {
      *
      * @return bool|\WP_Error
      */
-    public function update_product_log_counter_count( $args = [] ) {
+    public function increment_product_log_counter_count( $args = [] ) {
         global $wpdb;
 
         if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
@@ -332,7 +327,7 @@ class ProductsLog {
     }
 
     /**
-     * Update product log counter counts.
+     * Increment product log counter counts.
      *
      * @since WEPOS_LITE_SINCE
      *
@@ -340,7 +335,7 @@ class ProductsLog {
      *
      * @return bool|int|\WP_Error
      */
-    public function update_product_log_counter_counts( $args = [] ) {
+    public function increment_product_log_counter_counts( $args = [] ) {
         global $wpdb;
 
         if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
@@ -355,11 +350,34 @@ class ProductsLog {
 
         return $wpdb->query(
             $wpdb->prepare(
-                "UPDATE wp_wepos_product_logs
+                "UPDATE {$this->table_product_logs}
                 SET counter_counts = counter_counts + 1
                 {$where_condition['clause']};",
                 $where_condition['args']
             )
+        );
+    }
+
+    /**
+     * Decrement all product logs counter counts.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @param array $product_log_ids
+     *
+     * @return bool|int|\WP_Error
+     */
+    public function decrement_all_product_logs_counter_counts() {
+        global $wpdb;
+
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
+            return false;
+        }
+
+        return $wpdb->query(
+            "UPDATE {$this->table_product_logs}
+            SET counter_counts = counter_counts - 1
+            WHERE counter_counts > 0;"
         );
     }
 
@@ -458,6 +476,11 @@ class ProductsLog {
         if ( ! empty( $args['counter_counts'] ) ) {
             $where_condition['clause'] .= " AND counter_counts >= %d";
             $where_condition['args'][] = $args['counter_counts'];
+        }
+
+        if ( ! empty( $args['product_id'] ) ) {
+            $where_condition['clause'] .= " AND product_id = %d";
+            $where_condition['args'][] = $args['product_id'];
         }
 
         if ( ! empty( $args['product_log_ids'] ) ) {

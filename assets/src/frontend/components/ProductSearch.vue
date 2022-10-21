@@ -1,7 +1,7 @@
 <template>
     <div class="search-box" v-click-outside="outside">
         <form action="" autocomplete="off" @submit.prevent="handleProductScan">
-            <input type="text" ref="productSearch" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
+            <input type="text" ref="productSearch" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProducts">
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
             <div class="search-type" v-hotkey="hotkeys">
@@ -237,33 +237,24 @@ export default {
             this.serachInput = '';
         },
 
-        searchProduct(e) {
-            if ( this.serachInput ) {
-                if ( this.mode == 'product' ) {
-                    // this.searchableProduct = this.products.filter( (product) => {
-                    //     if ( product.id.toString().indexOf( this.serachInput ) != -1 ) {
-                    //         return true;
-                    //     } else if ( product.name.toString().toLowerCase().indexOf( this.serachInput.toLowerCase() ) != -1 ) {
-                    //         return true
-                    //     } else if ( product.sku.indexOf( this.serachInput ) != -1 ) {
-                    //         return true
-                    //     } else {
-                    //         return false;
-                    //     }
-                    // } );
-
-                    wepos.productIndexedDb.getProductsBySearchKeyword( this.serachInput ).then( response => {
-                        console.log(response);
-                        this.searchableProduct = response;
-                    }).catch( error => {
-                        console.log(error);
-                    });
-
-                }
+        searchProducts( e ) {
+            if ( ! this.serachInput || 'prsearchProductsoduct' !== this.mode ) {
+                return;
             }
+
+            wepos.productIndexedDb.getProductsBySearchKeyword( this.serachInput ).then( response => {
+                const resultProductIds = this.getProductIds( response );
+
+                this.searchableProduct = this.products.filter( product => {
+                    if ( resultProductIds.includes( product.id ) ) {
+                        return true;
+                    }
+                } );
+            } );
         },
 
         selectVariation( product ) {
+            console.log(product);
             this.selectedVariationProduct = product;
             this.showVariationModal = true;
         },
@@ -282,8 +273,17 @@ export default {
 
         addToCartAction( product ) {
             this.$emit( 'onProductAdded', product );
-        }
+        },
 
+        getProductIds( products = [] ) {
+            const productIds = [];
+
+            products.forEach( product => {
+                productIds.push( product.id );
+            } );
+
+            return productIds;
+        },
     },
 
     mounted() {

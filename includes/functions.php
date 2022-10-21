@@ -290,7 +290,7 @@ function wepos_get_product_price( $product ) {
  *
  * @param int $user_id
  *
- * @return bool|array|\WP_Error
+ * @return array|\WP_Error
  */
 function wepos_get_cashier_data_by_user_id( $user_id = 0 ) {
     global $wpdb;

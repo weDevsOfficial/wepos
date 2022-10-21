@@ -58,7 +58,6 @@ class ProductsLog {
         add_action( 'woocommerce_new_product', [ $this, 'insert_product_log' ], 10, 2 );
         add_action( 'woocommerce_update_product', [ $this, 'insert_product_log' ], 10, 2 );
         add_action( 'wepos_rest_counter_deleted', [ $this, 'decrement_all_product_logs_counter_counts' ] );
-        add_action( 'wepos_product_log_cleaner_action_schedule', [ $this, 'delete_product_logs_by_checking_counter_count' ] );
     }
 
     /**

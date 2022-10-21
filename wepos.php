@@ -316,9 +316,8 @@ final class WePOS {
      */
     public function init_classes() {
         if ( is_admin() ) {
-            $this->container['admin']            = new WeDevs\WePOS\Admin\Admin();
-            $this->container['settings']         = new WeDevs\WePOS\Admin\Settings();
-            $this->container['action_scheduler'] = new WeDevs\WePOS\Admin\ActionScheduler();
+            $this->container['admin']    = new WeDevs\WePOS\Admin\Admin();
+            $this->container['settings'] = new WeDevs\WePOS\Admin\Settings();
 
             new WeDevs\WePOS\Admin\Products();
             new WeDevs\WePOS\Admin\Updates();

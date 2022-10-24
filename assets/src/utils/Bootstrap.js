@@ -101,7 +101,7 @@ wepos.addFilter = ( hookName, namespace, component, priority = 10 ) => {
 };
 
 // Product logs synchronization over Heartbeat API.
-jQuery(document).ready( function($) {
+jQuery( document ).ready( function($) {
     let counterId = wepos.current_cashier.counter_id;
 
     jQuery( document ).on( 'heartbeat-send', function ( event, data ) {

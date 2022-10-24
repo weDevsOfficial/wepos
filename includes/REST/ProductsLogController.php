@@ -61,7 +61,7 @@ class ProductsLogController extends \WP_REST_Controller {
     }
 
     /**
-     * Update item permission check.
+     * Update items permission check.
      *
      * @since WEPOS_LITE_SINCE
      *

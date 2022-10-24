@@ -238,15 +238,16 @@ export default {
         },
 
         searchProducts( e ) {
-            if ( ! this.serachInput || 'prsearchProductsoduct' !== this.mode ) {
+            if ( 'product' !== this.mode || ! this.serachInput ) {
                 return;
             }
 
             wepos.productIndexedDb.getProductsBySearchKeyword( this.serachInput ).then( response => {
-                const resultProductIds = this.getProductIds( response );
+                const eligibleProducts   = this.filterEligibleProducts( response );
+                const eligibleProductIds = this.getProductIds( eligibleProducts );
 
                 this.searchableProduct = this.products.filter( product => {
-                    if ( resultProductIds.includes( product.id ) ) {
+                    if ( eligibleProductIds.includes( product.id ) ) {
                         return true;
                     }
                 } );
@@ -254,9 +255,8 @@ export default {
         },
 
         selectVariation( product ) {
-            console.log(product);
             this.selectedVariationProduct = product;
-            this.showVariationModal = true;
+            this.showVariationModal       = true;
         },
 
         addVariationProduct() {
@@ -273,6 +273,22 @@ export default {
 
         addToCartAction( product ) {
             this.$emit( 'onProductAdded', product );
+        },
+
+        filterEligibleProducts( products = [] ) {
+            const eligibleProducts = products.filter( product => {
+                if ( null !== product.stock && 0 === Number( product.stock ) ) {
+                    return false;
+                }
+
+                if ( 0 === Number( product.price ) ) {
+                    return false;
+                }
+
+                return true;
+            } );
+
+            return eligibleProducts;
         },
 
         getProductIds( products = [] ) {

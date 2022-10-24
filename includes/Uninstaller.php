@@ -19,7 +19,6 @@ class Uninstaller {
      */
     public function run() {
         $this->remove_capabilities();
-        $this->deregister_action_schedulers();
     }
 
     /**
@@ -33,7 +32,7 @@ class Uninstaller {
         $users_query = new \WP_User_Query( [
             'role__in' => [ 'seller', 'vendor_staff' ]
         ] );
-        
+
         $users = $users_query->get_results();
 
         if ( count( $users ) > 0 ) {
@@ -42,16 +41,5 @@ class Uninstaller {
                 $user->remove_cap( 'list_users' );
             }
         }
-    }
-
-    /**
-     * Deregister action schedulers.
-     *
-     * @since WEPOS_LITE_SINCE
-     *
-     * @return void
-     */
-    public function deregister_action_schedulers() {
-        wepos()->action_scheduler->deregister_product_log_clean_action_scheduler();
     }
 }

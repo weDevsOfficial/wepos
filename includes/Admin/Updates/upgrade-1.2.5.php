@@ -9,7 +9,6 @@
  */
 function wepos_1_2_5_updates() {
     wepos_create_product_log_tables();
-    wepos_register_product_log_cron_schedules();
 }
 
 /**
@@ -44,7 +43,7 @@ function wepos_create_product_log_tables() {
             `counter_id` bigint unsigned NOT NULL,
             PRIMARY KEY (`id`),
         FOREIGN KEY (product_log_id) REFERENCES wp_wepos_product_logs (id) ON DELETE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;",
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;",
     ];
 
     // Include 'upgrade.php' if not included earlier.
@@ -55,19 +54,6 @@ function wepos_create_product_log_tables() {
     // Create tables through looping.
     foreach ( $tables as $key => $table ) {
         dbDelta( $table );
-    }
-}
-
-/**
-* Register product log cron schedules.
-*
-* @since WEPOS_LITE_SINCE
-*
-* @return void
-*/
-function wepos_register_product_log_cron_schedules() {
-    if ( ! wp_next_scheduled( 'wepos_product_log_cron_hook' ) ) {
-        wp_schedule_event( time(), 'daily', 'wepos_product_log_cron_hook' );
     }
 }
 

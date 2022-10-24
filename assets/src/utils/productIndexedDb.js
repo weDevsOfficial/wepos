@@ -137,7 +137,7 @@ export default {
                 const transaction = db.transaction( ["ProductsDB"], "readwrite" );
                 const objectStore = transaction.objectStore( "ProductsDB" );
 
-                let condition = new RegExp( searchKeyword );
+                let condition = new RegExp( searchKeyword, 'i' );
 
                 objectStore.getAll().onsuccess = ( event ) => {
                     let products = event.target.result;

@@ -77,7 +77,7 @@ class ProductsLog {
         }
 
         $defaults = [
-            'counter_id'  => $this->counter_id,
+            'counter_id' => $this->counter_id,
         ];
 
         $args            = wp_parse_args( $args, $defaults );
@@ -231,11 +231,11 @@ class ProductsLog {
         global $wpdb;
 
         if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'cashier' ) ) {
-            return false;
+            return 0;
         }
 
         if ( empty( $args['product_log_id'] ) ) {
-            return false;
+            return 0;
         }
 
         $counter_data = [

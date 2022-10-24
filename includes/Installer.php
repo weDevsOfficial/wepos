@@ -86,7 +86,7 @@ class Installer {
                 `counter_id` bigint unsigned NOT NULL,
                 PRIMARY KEY (`id`),
             FOREIGN KEY (product_log_id) REFERENCES wp_wepos_product_logs (id) ON DELETE CASCADE
-            ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;",
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;",
         ];
 
         foreach ( $tables as $key => $table ) {

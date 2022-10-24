@@ -1176,8 +1176,8 @@ export default {
     },
 
     async beforeCreate() {
-        const dbName = 'ProductsDB';
-        const isExistsProductsDB = (await window.indexedDB.databases()).map(db => db.name).includes(dbName);
+        const dbName             = 'ProductsDB';
+        const isExistsProductsDB = ( await window.indexedDB.databases() ).map( db => db.name ).includes( dbName );
 
         if ( ! isExistsProductsDB ) {
             wepos.productIndexedDb.createProductsDB();

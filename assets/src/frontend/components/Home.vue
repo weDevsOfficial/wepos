@@ -256,7 +256,7 @@
                                 <template v-if="cartdata.fee_lines.length > 0">
                                     <tr class="cart-meta-data" v-for="(fee,key) in cartdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
-                                            <td class="label">{{ __( 'Discount', 'wepos' ) }} <span class="name">{{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                                            <td class="label">{{ __( 'Discount', 'wepos' ) }} <span class="name">{{ getDiscountAmount( fee ) }}</span></td>
                                             <td class="price">&minus;{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                             <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                         </template>
@@ -277,7 +277,7 @@
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
                                             <template v-else>
-                                                <td class="label" @dblclick.prevent="editFeeData(key)">{{ __( 'Fee', 'wepos' ) }} <span class="name">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></td>
+                                                <td class="label" @dblclick.prevent="editFeeData(key)">{{ __( 'Fee', 'wepos' ) }} <span class="name">{{ fee.name }} {{ getDiscountAmount( fee ) }}</span></td>
                                                 <td class="price">{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                                                 <td class="action"><span class="flaticon-cancel-music" @click="removeFeeLine(key)"></span></td>
                                             </template>
@@ -451,11 +451,11 @@
                                 <template v-if="cartdata.fee_lines.length > 0">
                                     <li class="wepos-clearfix" v-for="(fee,key) in cartdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
-                                            <span class="wepos-left">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.discount_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
+                                            <span class="wepos-left">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ getDiscountAmount( fee ) }}</span></span>
                                             <span class="wepos-right">-{{ formatPrice( Math.abs( fee.total ) ) }}</span>
                                         </template>
                                         <template v-else>
-                                            <span class="wepos-left">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ fee.fee_type == 'percent' ? fee.value + '%' : formatPrice( fee.value ) }}</span></span>
+                                            <span class="wepos-left">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ getDiscountAmount( fee ) }}</span></span>
                                             <span class="wepos-right">{{ formatPrice( fee.total ) }}</span>
                                         </template>
                                     </li>
@@ -903,6 +903,9 @@ export default {
         },
         removeFeeLine( key ) {
             this.$store.dispatch( 'Cart/removeFeeLineItemsAction', key );
+        },
+        getDiscountAmount( fee ) {
+            return fee.discount_type === 'percent' || fee.fee_type === 'percent' ? this.formatNumber( fee.value ) + '%' : this.formatPrice( fee.total );
         },
         fetchProducts() {
             if ( this.page == 1 ) {

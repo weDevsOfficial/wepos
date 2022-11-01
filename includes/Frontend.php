@@ -14,6 +14,10 @@ class Frontend {
         add_action( 'template_redirect', [ $this, 'rewrite_templates' ], 1 );
         add_filter( 'show_admin_bar', [ $this, 'remove_admin_bar' ] );
         add_filter( 'document_title_parts', [ $this, 'render_page_title' ], 20 );
+
+        // Show 'View POS' menu on my account page
+        add_filter ( 'woocommerce_account_menu_items', [ $this, 'add_my_account_view_pos_menu' ], 20, 1 );
+        add_filter( 'woocommerce_get_endpoint_url', [ $this, 'view_pos_menu_endpoint' ] , 10, 4 );
     }
 
     /**
@@ -108,6 +112,44 @@ class Frontend {
         }
 
         return $title;
+    }
+
+    /**
+     * Adds view pos menu to my account page.
+     *
+     * @since  WEPOS_SINCE
+     *
+     * @param  $menu_links
+     *
+     * @return array
+     */
+    public function add_my_account_view_pos_menu( $menu_links ) {
+        $logout_index = array_search( "customer-logout", array_keys( $menu_links ) );
+
+        $menu_links = array_slice( $menu_links, 0, $logout_index, true ) +
+                      [ "view-wepos" => __( 'View POS', 'wepos' ) ] +
+                      array_slice( $menu_links, $logout_index, count( $menu_links ) - 1, true );
+        return $menu_links;
+    }
+
+    /**
+     * Handles view pos menu endpoint.
+     *
+     * @since WEPOS_SINCE
+     *
+     * @param  $url
+     * @param  $endpoint
+     * @param  $value
+     * @param  $permalink
+     *
+     * @return string
+     */
+    public function view_pos_menu_endpoint( $url, $endpoint, $value, $permalink ) {
+        if ( 'view-wepos' === $endpoint ) {
+            $url = untrailingslashit( get_site_url() ) . '/wepos/#';
+        }
+
+        return $url;
     }
 
 }

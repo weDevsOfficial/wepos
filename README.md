@@ -3,11 +3,11 @@
 **Donate Link:** http://tareq.co/donate/
 **Tags:** WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
 **Requires at least:** 4.4
-**Tested up to:** 6.0
+**Tested up to:** 6.0.3
 **WC requires at least:** 3.0
-**WC tested up to:** 6.6.1
+**WC tested up to:** 7.0.0
 **Requires PHP:** 5.6
-**Stable tag:** 1.2.4
+**Stable tag:** 1.2.5
 **License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,14 @@ No FAQ
 9. Admin Dashboard Settings
 
 ## Changelog ##
+
+### v1.2.5 -> 02 November, 2022 ###
+- **Feature:** "View POS" menu on "My Account" page
+- **Enhancement:** Added all decimal separator support as per wooCommerce settings to put a discount or adding a fee from POS frontend
+- **Enhancement:** Updated webpack to v5
+- **Fix:** Broken layout on smaller width print receipt
+- **Fix:** Variable product visible on POS frontend even no attributes used
+- **Chore:** Variable replace automation
 
 ### v1.2.4 -> 28 June, 2022 ###
 - **Fix:** Localization issue on changing site language

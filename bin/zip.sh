@@ -39,7 +39,7 @@ mkdir -p "$BUILD_DIR"
 # npm install
 
 status "Generating build... 👷‍♀️"
-npm run dev-build
+npm run dev:build
 npm run build
 
 # Copy all files

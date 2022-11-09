@@ -1,18 +1,15 @@
 const webpack = require('webpack');
 const path = require('path');
 const package = require('./package.json');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
-const BrowserSyncPlugin = require( 'browser-sync-webpack-plugin' );
-
-const config = require( './config.json' );
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 
 const vendorPackages = Object.keys(package.dependencies);
 vendorPackages.splice(vendorPackages.indexOf('lodash'), 1);
 
 // Naming and path settings
-var appName = 'app';
 var entryPoint = {
     frontend: './assets/src/frontend/main.js',
     admin: './assets/src/admin/main.js',
@@ -24,143 +21,91 @@ var entryPoint = {
 
 var exportPath = path.resolve(__dirname, './assets/js');
 
-// Enviroment flag
-var plugins = [];
-var env = process.env.WEBPACK_ENV;
+module.exports = ( env, argv ) => {
+    let appName = argv.mode === 'development' ? '[name].js' : '[name].min.js';
+    let appNameCss = argv.mode === 'development' ? '../css/[name].css' : '../css/[name].min.css';
 
-function isProduction() {
-    return process.env.WEBPACK_ENV === 'production';
-}
+    return {
+        entry: entryPoint,
 
-// extract css into its own file
-const extractCss = new ExtractTextPlugin({
-    filename: "../css/[name].css",
-});
-
-plugins.push( extractCss );
-
-// Extract all 3rd party modules into a separate 'vendor' chunk
-plugins.push(new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    minChunks: ({ resource }) => /node_modules/.test(resource),
-}));
-
-// plugins.push(new BrowserSyncPlugin( {
-//     proxy: {
-//         target: config.proxyURL
-//     },
-//     files: [
-//         '**/*.php'
-//     ],
-//     cors: true,
-//     reloadDelay: 0
-// } ));
-
-// Generate a 'manifest' chunk to be inlined in the HTML template
-// plugins.push(new webpack.optimize.CommonsChunkPlugin('manifest'));
-
-// Compress extracted CSS. We are using this plugin so that possible
-// duplicated CSS from different components can be deduped.
-plugins.push(new OptimizeCSSPlugin({
-    cssProcessorOptions: {
-        safe: true,
-        map: {
-            inline: false
-        }
-    }
-}));
-
-// Differ settings based on production flag
-if ( isProduction() ) {
-
-    plugins.push(new UglifyJsPlugin({
-        sourceMap: true,
-    }));
-
-    plugins.push(new webpack.DefinePlugin({
-        'process.env': {
-            NODE_ENV: JSON.stringify(env)
-        }
-    }));
-
-    appName = '[name].min.js';
-} else {
-    appName = '[name].js';
-}
-
-plugins.push(new webpack.ProvidePlugin({
-    _: '_'
-}));
-
-module.exports = {
-    entry: entryPoint,
-    output: {
-        path: exportPath,
-        filename: appName,
-        chunkFilename: 'chunks/[chunkhash].js',
-        jsonpFunction: 'pluginWebpack'
-    },
-
-    resolve: {
-        alias: {
-            'vue$': 'vue/dist/vue.esm.js',
-            '@': path.resolve('./assets/src/'),
-            'frontend': path.resolve('./assets/src/frontend/'),
-            'admin': path.resolve('./assets/src/admin/'),
+        output: {
+            path: exportPath,
+            filename: appName,
         },
-        modules: [
-            path.resolve('./node_modules'),
-            path.resolve(path.join(__dirname, 'assets/src/')),
-        ]
-    },
 
-    externals: {
-        _: 'window.wepos._'
-    },
-
-    plugins,
-    module: {
-    rules: [
-        {
-            test: /\.js$/,
-            exclude: /(node_modules|bower_components)/,
-            loader: 'babel-loader',
-            query: {
-                presets: ['es2015']
+        resolve: {
+            alias: {
+                'vue$': 'vue/dist/vue.esm.js',
+                '@': path.resolve('./assets/src/'),
+                'frontend': path.resolve('./assets/src/frontend/'),
+                'admin': path.resolve('./assets/src/admin/'),
             }
         },
-        {
-            test: /\.vue$/,
-            loader: 'vue-loader',
-            options: {
-                extractCSS: true
-            }
+
+        externals: {
+            _: 'window.wepos._'
         },
-        {
-            test: /\.less$/,
-            use: extractCss.extract({
-                use: [{
-                    loader: "css-loader"
-                }, {
-                    loader: "less-loader"
-                }]
+
+        plugins: [
+            new MiniCssExtractPlugin(
+                {
+                    filename: ( { chunk } ) => {
+                        return appNameCss;
+                    },
+                }
+            ),
+            new VueLoaderPlugin(),
+            new webpack.ProvidePlugin({
+                _: '_'
             })
-        },
-        {
-            test: /\.css$/,
-            use: [ 'style-loader', 'css-loader' ]
-        },
-        {
-            test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-            use: [
-              {
-                loader: 'file-loader',
-                options: {
-                    outputPath: 'fonts',
+        ],
+
+        module: {
+            rules: [
+                {
+                    test: /\.(js|jsx|ts)$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                    },
                 },
-              },
+                {
+                    test: /\.vue$/,
+                    loader: 'vue-loader',
+                    options: {
+                        extractCSS: true
+                    }
+                },
+                {
+                    test: /\.(le|c)ss$/,
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        "css-loader",
+                        "less-loader",
+                    ],
+                },
+                {
+                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                    use: [
+                        {
+                            loader: 'file-loader',
+                            options: {
+                                outputPath: 'fonts',
+                            },
+                        },
+                    ],
+                }
+            ]
+        },
+
+        optimization: {
+            minimize: true,
+            minimizer: [
+                new TerserPlugin({
+                    extractComments: false
+                }),
+                new CssMinimizerPlugin()
             ],
-        }
-    ]
-    },
+        },
+    }
 }

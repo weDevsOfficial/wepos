@@ -18,6 +18,9 @@ class Frontend {
         // Show 'View POS' menu on my account page
         add_filter ( 'woocommerce_account_menu_items', [ $this, 'add_my_account_view_pos_menu' ], 20, 1 );
         add_filter( 'woocommerce_get_endpoint_url', [ $this, 'view_pos_menu_endpoint' ] , 10, 4 );
+
+        // Manipulate WooCommerce Order Data.
+        add_action( 'woocommerce_payment_complete', [ $this, 'set_order_created_via_wepos' ], 10, 1 );
     }
 
     /**
@@ -152,4 +155,22 @@ class Frontend {
         return $url;
     }
 
+    /**
+     * Set order created via wepos.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @param int $order_id
+     *
+     * @return void|\WP_ERROR
+     */
+    public function set_order_created_via_wepos( $order_id ) {
+        $order = wc_get_order( $order_id );
+
+        if ( ! $order instanceof \WC_Order ) {
+            return;
+        }
+
+        $order->set_created_via( 'wepos' );
+    }
 }

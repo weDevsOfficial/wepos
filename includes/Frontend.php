@@ -20,7 +20,7 @@ class Frontend {
         add_filter( 'woocommerce_get_endpoint_url', [ $this, 'view_pos_menu_endpoint' ] , 10, 4 );
 
         // Manipulate WooCommerce Order Data.
-        add_action( 'woocommerce_payment_complete', [ $this, 'set_order_created_via_wepos' ], 10, 1 );
+        add_action( 'woocommerce_new_order', [ $this, 'set_order_created_via_wepos' ], 10, 2 );
     }
 
     /**
@@ -164,9 +164,7 @@ class Frontend {
      *
      * @return void|\WP_ERROR
      */
-    public function set_order_created_via_wepos( $order_id ) {
-        $order = wc_get_order( $order_id );
-
+    public function set_order_created_via_wepos( $order_id, $order ) {
         if ( ! $order instanceof \WC_Order ) {
             return;
         }

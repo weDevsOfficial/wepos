@@ -1,13 +1,16 @@
 <?php
+
 namespace WeDevs\WePOS;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
-* Common Class.
-*/
+ * Common Class.
+ *
+ * Class for doing generic common operations from both frontend and backend.
+ *
+ * @since WEPOS_LITE_SINCE
+ */
 class Common {
 
     /**
@@ -35,10 +38,10 @@ class Common {
      *
      * @since WEPOS_LITE_SINCE
      *
-     * @param int    $order_id
-     * @param object $order
+     * @param int       $order_id The order ID.
+     * @param \WC_Order $order    The order object.
      *
-     * @return void|\WP_ERROR
+     * @return void|\WP_Error
      */
     public function set_order_created_via_wepos( $order_id, $order ) {
         if ( ! $order instanceof \WC_Order ) {

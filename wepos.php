@@ -357,6 +357,7 @@ final class WePOS {
             $this->container['dokan'] = new WeDevs\WePOS\Dokan();
         }
 
+        $this->container['common'] = new WeDevs\WePOS\Common();
         $this->container['rest']   = new WeDevs\WePOS\REST\Manager();
         $this->container['assets'] = new WeDevs\WePOS\Assets();
 

@@ -20,7 +20,6 @@ class Common {
         $this->init_hooks();
     }
 
-
     /**
      * Init hooks method.
      *

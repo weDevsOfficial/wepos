@@ -14,7 +14,7 @@ export function wepos_get_dayjs_date_format( dateFormat = wepos.wp_date_format )
         D: 'ddd',
         j: 'D',
         // Month
-        F: 'MMMM',
+        F: 'MMM',
         m: 'MM',
         M: 'MMM',
         n: 'M',

@@ -151,5 +151,4 @@ class Frontend {
 
         return $url;
     }
-
 }

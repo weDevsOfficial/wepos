@@ -229,6 +229,7 @@ class Assets {
             'currency_format_thousand_sep' => esc_attr( wc_get_price_thousand_separator() ),
             'currency_format'              => esc_attr( str_replace( array( '%1$s', '%2$s' ), array( '%s', '%v' ), get_woocommerce_price_format() ) ), // For accounting JS
             'rounding_precision'           => wc_get_rounding_precision(),
+            'admin_url'                    => get_admin_url(),
             'assets_url'                   => WEPOS_ASSETS,
             'placeholder_image'            => wc_placeholder_img_src(),
             'ajax_loader'                  => WEPOS_ASSETS . '/images/spinner-2x.gif',

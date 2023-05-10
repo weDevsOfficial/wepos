@@ -86,7 +86,7 @@ class Installer {
                 `product_log_id` bigint unsigned NOT NULL,
                 `counter_id` bigint unsigned NOT NULL,
                 PRIMARY KEY (`id`),
-            FOREIGN KEY (product_log_id) REFERENCES wp_wepos_product_logs (id) ON DELETE CASCADE
+            FOREIGN KEY (product_log_id) REFERENCES {$wpdb->prefix}wepos_product_logs (id) ON DELETE CASCADE
             ) ENGINE=InnoDB AUTO_INCREMENT=1 {$collate};",
         ];
 

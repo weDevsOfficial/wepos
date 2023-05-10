@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Updater function for wePOS v1.2.5.
+ * Updater function for wePOS v1.2.7.
  *
  * @since WEPOS_LITE_SINCE
  *
  * @return void
  */
-function wepos_1_2_5_updates() {
+function wepos_1_2_7_updates() {
     wepos_create_product_log_tables();
 }
 
@@ -43,7 +43,7 @@ function wepos_create_product_log_tables() {
             `product_log_id` bigint unsigned NOT NULL,
             `counter_id` bigint unsigned NOT NULL,
             PRIMARY KEY (`id`),
-        FOREIGN KEY (product_log_id) REFERENCES wp_wepos_product_logs (id) ON DELETE CASCADE
+        FOREIGN KEY (product_log_id) REFERENCES {$wpdb->prefix}wepos_product_logs (id) ON DELETE CASCADE
         ) ENGINE=InnoDB AUTO_INCREMENT=1 {$collate};",
     ];
 
@@ -58,4 +58,4 @@ function wepos_create_product_log_tables() {
     }
 }
 
-wepos_1_2_5_updates();
+wepos_1_2_7_updates();

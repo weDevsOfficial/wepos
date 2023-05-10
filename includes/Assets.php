@@ -107,6 +107,11 @@ class Assets {
                 'version'   => filemtime( WEPOS_PATH . '/assets/js/vendor'. $prefix .'.js' ),
                 'in_footer' => true
             ],
+            'wepos-select2' => [
+                'src'       => WEPOS_ASSETS . '/js/select2.min.js',
+                'version'   => filemtime( WEPOS_PATH . '/assets/js/select2.min.js' ),
+                'in_footer' => true
+            ],
             'wepos-bootstrap' => [
                 'src'       => WEPOS_ASSETS . '/js/bootstrap'. $prefix .'.js',
                 'deps'      => $dependency,
@@ -139,6 +144,7 @@ class Assets {
      * @return array
      */
     public function get_styles() {
+        $prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
         $styles = [
             'wepos-flaticon' => [
@@ -148,18 +154,24 @@ class Assets {
                 'src' =>  WEPOS_ASSETS . '/css/fonts.css'
             ],
             'wepos-style' => [
-                'src' =>  WEPOS_ASSETS . '/css/style.css'
+                'src' =>  WEPOS_ASSETS . '/css/style' . $prefix . '.css'
+            ],
+            'wepos-bootstrap' => [
+                'src' =>  WEPOS_ASSETS . '/css/bootstrap' . $prefix . '.css'
             ],
             'wepos-frontend' => [
-                'src' =>  WEPOS_ASSETS . '/css/frontend.css'
+                'src' =>  WEPOS_ASSETS . '/css/frontend' . $prefix . '.css'
             ],
             'wepos-admin' => [
-                'src' =>  WEPOS_ASSETS . '/css/admin.css'
+                'src' =>  WEPOS_ASSETS . '/css/admin' . $prefix . '.css'
             ],
             'wepos-tinymce' => [
                 'src'     => site_url( '/wp-includes/css/editor.css' ),
                 'deps'    => array(),
                 'version' => time()
+            ],
+            'wepos-select2' => [
+                'src' =>  WEPOS_ASSETS . '/css/select2.min.css'
             ],
         ];
 
@@ -172,7 +184,9 @@ class Assets {
             wp_enqueue_style( 'wepos-flaticon' );
             wp_enqueue_style( 'wepos-font' );
             wp_enqueue_style( 'wepos-style' );
+            wp_enqueue_style( 'wepos-bootstrap' );
             wp_enqueue_style( 'wepos-frontend' );
+            wp_enqueue_style( 'wepos-select2' );
 
             // Load scripts
             wp_enqueue_script( 'wepos-blockui' );
@@ -180,6 +194,7 @@ class Assets {
             wp_enqueue_script( 'wepos-vendor' );
             wp_enqueue_script( 'wepos-bootstrap' );
             wp_enqueue_script( 'heartbeat' );
+            wp_enqueue_script( 'wepos-select2' );
 
             do_action( 'wepos_load_forntend_scripts' );
 
@@ -215,6 +230,7 @@ class Assets {
             'currency_format_thousand_sep' => esc_attr( wc_get_price_thousand_separator() ),
             'currency_format'              => esc_attr( str_replace( array( '%1$s', '%2$s' ), array( '%s', '%v' ), get_woocommerce_price_format() ) ), // For accounting JS
             'rounding_precision'           => wc_get_rounding_precision(),
+            'admin_url'                    => get_admin_url(),
             'assets_url'                   => WEPOS_ASSETS,
             'placeholder_image'            => wc_placeholder_img_src(),
             'ajax_loader'                  => WEPOS_ASSETS . '/images/spinner-2x.gif',
@@ -224,7 +240,9 @@ class Assets {
             'states'                       => WC()->countries->get_states(),
             'current_user_id'              => get_current_user_id(),
             'current_cashier'              => wepos_get_cashier_data_by_user_id( get_current_user_id() ),
-            'home_url'                     => home_url()
+            'home_url'                     => home_url(),
+            'wp_date_format'               => get_option( 'date_format' ),
+            'wp_time_format'               => get_option( 'time_format' ),
         ] );
 
         wp_localize_script( 'wepos-vendor', 'wepos', $localize_data );

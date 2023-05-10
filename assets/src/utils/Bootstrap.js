@@ -11,9 +11,13 @@ import VueHotkey from 'v-hotkey'
 import Multiselect from 'vue-multiselect'
 import Modal from './components/Modal.vue'
 import Switches from './components/Switches.vue'
-import "vue-multiselect/dist/vue-multiselect.min.css"
 import productIndexedDb from "../utils/productIndexedDb"
 import productLogs from "../utils/productLogs"
+import * as VueChartJS from 'vue-chartjs'
+import "vue-multiselect/dist/vue-multiselect.min.css"
+
+import * as Date_Helper from './date-helper';
+window.Date_Helper = Date_Helper;
 
 import dayjs from 'dayjs';
 window.dayjs = dayjs;
@@ -29,6 +33,9 @@ import '@mathieustan/vue-datepicker/dist/vue-datepicker.min.css';
 Vue.use(VueDatePicker, {
     lang: 'en'
 });
+
+import DateRangePicker from 'vue2-daterange-picker';
+import 'vue2-daterange-picker/dist/vue2-daterange-picker.css';
 
 Vue.directive( 'tooltip', VTooltip )
 Vue.directive( 'close-popover', VClosePopover )
@@ -75,18 +82,20 @@ window.wepos_get_lib = function( lib ) {
 
 export const EventBus = new Vue();
 
-window.weLo_                    = _;
-window.wepos._                  = _;
-window.wepos.api                = new API_Helper();
-window.wepos.libs['Vue']        = Vue;
-window.wepos.libs['Router']     = Router;
-window.wepos.libs['Vuex']       = Vuex;
-window.wepos.libs['TextEditor'] = TextEditor;
-window.wepos.libs['EventBus']   = EventBus;
-window.wepos.libs['Modal']      = Modal;
-window.wepos.libs['Switches']   = Switches;
-window.wepos.productIndexedDb   = productIndexedDb;
-window.wepos.productLogs        = productLogs;
+window.weLo_                         = _;
+window.wepos._                       = _;
+window.wepos.api                     = new API_Helper();
+window.wepos.libs['Vue']             = Vue;
+window.wepos.libs['Router']          = Router;
+window.wepos.libs['Vuex']            = Vuex;
+window.wepos.libs['TextEditor']      = TextEditor;
+window.wepos.libs['EventBus']        = EventBus;
+window.wepos.libs['Modal']           = Modal;
+window.wepos.libs['Switches']        = Switches;
+window.wepos.libs['DateRangePicker'] = DateRangePicker;
+window.wepos.libs['VueChartJS']      = VueChartJS;
+window.wepos.productIndexedDb        = productIndexedDb;
+window.wepos.productLogs             = productLogs;
 
 // WordPress Hooks
 import { createHooks } from '@wordpress/hooks';

@@ -2,12 +2,12 @@
 Contributors: tareq1988, wedevs, nizamuddinbabu
 Donate Link: http://tareq.co/donate/
 Tags: WooCommerce POS, point of sale, free pos, pos plugin, woocommerce point of sale
-Requires at least: 4.4
-Tested up to: 6.0
-WC requires at least: 3.0
-WC tested up to: 6.6.1
-Requires PHP: 5.6
-Stable tag: 1.2.4
+Requires at least: 5.4
+Tested up to: 6.1.1
+WC requires at least: 5.0.0
+WC tested up to: 7.2.2
+Requires PHP: 7.2
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,20 @@ No FAQ
 9. Admin Dashboard Settings
 
 == Changelog ==
+
+= v1.2.6 -> 30th December, 2022 =
+- **New:** Integrated Vue date range picker, select2 and Vue chart JS packages
+- **New:** Added helper methods for getting day JS and date range picker date formats
+- **New:** Added helper method for getting custom date ranges
+- **Refactor:** Order created via wePOS setter
+
+= v1.2.5 -> 1st November, 2022 =
+- **Feature:** "View POS" menu on "My Account" page
+- **Enhancement:** Added all decimal separator support as per wooCommerce settings to put a discount or adding a fee from POS frontend
+- **Enhancement:** Updated webpack to v5
+- **Fix:** Broken layout on smaller width print receipt
+- **Fix:** Variable product visible on POS frontend even no attributes used
+- **Chore:** Variable replace automation
 
 = v1.2.4 -> 28th June, 2022 =
 - **Fix:** Localization issue on changing site language

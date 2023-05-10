@@ -32,12 +32,12 @@ class Ajax {
      * @return array
      */
     public function heartbeat_received_data_handler( $response, $data ) {
-        $counter_id = ! empty( $data['wepos_counter_id'] ) ? $data['wepos_counter_id'] : 0;
+        $counter_id = ! empty( $data['wepos_counter_id'] ) ? absint( wp_unslash( $data['wepos_counter_id'] ) ) : 0;
 
         if ( empty( $counter_id ) ) {
             return $response;
         }
-        
+
         $response['product_logs']       = wepos()->products_log->get_product_logs( [ 'counter_id' => $counter_id ] );
         $response['heartbeat_interval'] = 15;
 

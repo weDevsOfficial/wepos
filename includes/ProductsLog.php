@@ -46,8 +46,7 @@ class ProductsLog {
     public function __construct() {
         global $wpdb;
 
-        $userinfo     = wp_get_current_user();
-        $cashier_data = wepos_get_cashier_data_by_user_id( $userinfo->ID );
+        $cashier_data = wepos_get_cashier_data_by_user_id( get_current_user_id() );
 
         // Default counter number will be 1 if wePOS Pro not installed.
         $this->counter_id = isset( $cashier_data->counter_id ) ? $cashier_data->counter_id : 1;
@@ -126,11 +125,11 @@ class ProductsLog {
     /**
      * Handle product logs data.
      *
-     * @since WEPOS_LITE_SINCE
+     * @since  WEPOS_LITE_SINCE
      *
-     * @param array $args
+     * @param  array $args
      *
-     * @return bool
+     * @return array $product_logs_status
      */
     public function handle_product_logs_data( $args = [] ) {
         $product_logs_status = [

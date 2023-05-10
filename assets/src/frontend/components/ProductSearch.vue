@@ -246,11 +246,7 @@ export default {
                 const eligibleProducts   = this.filterEligibleProducts( response );
                 const eligibleProductIds = this.getProductIds( eligibleProducts );
 
-                this.searchableProduct = this.products.filter( product => {
-                    if ( eligibleProductIds.includes( product.id ) ) {
-                        return true;
-                    }
-                } );
+                this.searchableProduct = this.products.filter( product => eligibleProductIds.includes( product.id ) );
             } );
         },
 

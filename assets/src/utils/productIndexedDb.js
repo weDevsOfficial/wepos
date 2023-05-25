@@ -6,6 +6,8 @@ export default {
         request.onerror = ( event ) => {
             console.error( "An error occurred with IndexedDB" );
             console.error( event );
+
+            reject( event );
         }
 
         // This method is only invoked after changing IndexedDB version.
@@ -28,6 +30,8 @@ export default {
         request.onerror = ( event ) => {
             console.error( "An error occurred with IndexedDB" );
             console.error( event );
+
+            reject( event );
         };
 
         request.onsuccess = ( event ) => {
@@ -35,7 +39,9 @@ export default {
 
             db.onerror = ( event ) => {
                 // Generic error handler for all errors targeted at this database's requests.
-                console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
+                console.error( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
+
+                reject( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
             }
 
             const transaction = db.transaction( ["ProductsDB"], "readwrite" );
@@ -59,6 +65,8 @@ export default {
         request.onerror = ( event ) => {
             console.error( "An error occurred with IndexedDB" );
             console.error( event );
+
+            reject( event );
         };
 
         request.onsuccess = ( event ) => {
@@ -66,7 +74,9 @@ export default {
 
             db.onerror = ( event ) => {
                 // Generic error handler for all errors targeted at this database's requests.
-                console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
+                console.error( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
+
+                reject( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
             }
 
             const transaction = db.transaction( ["ProductsDB"], "readwrite" );
@@ -93,6 +103,8 @@ export default {
             request.onerror = ( event ) => {
                 console.error( "An error occurred with IndexedDB" );
                 console.error( event );
+
+                reject( event );
             };
 
             request.onsuccess = ( event ) => {
@@ -100,7 +112,9 @@ export default {
 
                 db.onerror = ( event ) => {
                     // Generic error handler for all errors targeted at this database's requests.
-                    console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
+                    console.error( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
+
+                    reject( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
                 }
 
                 const transaction = db.transaction( ["ProductsDB"], "readwrite" );
@@ -122,7 +136,7 @@ export default {
                 console.error( "An error occurred with IndexedDB" );
                 console.error( event );
 
-                reject(event);
+                reject( event );
             };
 
             request.onsuccess = ( event ) => {
@@ -130,8 +144,7 @@ export default {
 
                 db.onerror = ( event ) => {
                     // Generic error handler for all errors targeted at this database's requests.
-                    // console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
-                    reject( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
+                    reject( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
                 }
 
                 const transaction = db.transaction( ["ProductsDB"], "readwrite" );
@@ -161,7 +174,7 @@ export default {
                 console.error( "An error occurred with IndexedDB" );
                 console.error( event );
 
-                reject(event);
+                reject( event );
             };
 
             request.onsuccess = ( event ) => {
@@ -169,7 +182,9 @@ export default {
 
                 db.onerror = ( event ) => {
                     // Generic error handler for all errors targeted at this database's requests.
-                    console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
+                    console.error( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
+
+                    reject( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
                 }
 
                 const transaction = db.transaction( ["ProductsDB"], "readwrite" );
@@ -189,6 +204,8 @@ export default {
         request.onerror = ( event ) => {
             console.error( "An error occurred with IndexedDB" );
             console.error( event );
+
+            reject( event );
         };
 
         request.onsuccess = ( event ) => {
@@ -196,7 +213,9 @@ export default {
 
             db.onerror = ( event ) => {
                 // Generic error handler for all errors targeted at this database's requests.
-                console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
+                console.error( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
+
+                reject( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
             }
 
             const transaction = db.transaction( ["ProductsDB"], "readwrite" );
@@ -213,6 +232,8 @@ export default {
         request.onerror = ( event ) => {
             console.error( "An error occurred with IndexedDB" );
             console.error( event );
+
+            reject( event );
         };
 
         request.onsuccess = ( event ) => {
@@ -220,7 +241,9 @@ export default {
 
             db.onerror = ( event ) => {
                 // Generic error handler for all errors targeted at this database's requests.
-                console.error( `Database error: ${event.target.error.code} - ${event.target.error.message}` );
+                console.error( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
+
+                reject( `wePOS IndexedDB Database error: ${event.target.error.code} - ${event.target.error.message}` );
             }
 
             const transaction = db.transaction( ["ProductsDB"], "readwrite" );

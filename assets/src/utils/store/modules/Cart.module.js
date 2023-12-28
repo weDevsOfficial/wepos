@@ -53,28 +53,37 @@ export default {
             return taxLineTotal;
         },
         getTotalTax( state ) {
-            var self = this,
+            let self = this,
                 taxLineTotal = 0,
                 taxFeeTotal = 0;
             weLo_.forEach( state.cartdata.line_items, function( item, key ) {
                 taxLineTotal += Math.abs( item.tax_amount * item.quantity );
-            });
+            } );
 
             if ( state.settings.woo_tax != undefined && state.settings.woo_tax.wc_tax_display_cart == 'incl' ) {
                 taxLineTotal = 0;
             }
 
             weLo_.forEach( state.cartdata.fee_lines, function( item, key ) {
-                if ( item.type == 'fee' ) {
-                    if ( item.tax_status == 'taxable' ) {
-                        var itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
-                        var taxClass = weLo_.find( state.availableTax, { 'class' : itemTaxClass.toString() } );
-                        if ( taxClass !== undefined ) {
-                            taxFeeTotal += ( Math.abs(item.total)*Math.abs( taxClass.rate ) )/100;
-                        }
-                    }
+                if ( item.tax_status !== 'taxable' ) {
+                    return;
                 }
-            });
+
+                let itemTaxClass = item.tax_class === '' ? 'standard' : item.tax_class;
+                let taxClass     = weLo_.find( state.availableTax, { 'class' : itemTaxClass.toString() } );
+
+                if ( ! taxClass ) {
+                    return;
+                }
+
+                if ( item.type === 'discount' ) {
+                    taxLineTotal += item.total / taxClass.rate;
+                }
+
+                if ( item.type === 'fee' ) {
+                    taxFeeTotal += ( Math.abs( item.total ) * Math.abs( taxClass.rate ) ) / 100;
+                }
+            } );
 
             return taxLineTotal + taxFeeTotal;
         },
@@ -170,7 +179,7 @@ export default {
                 value: discountData.value.toString(),
                 isEdit: false,
                 discount_type: discountData.type,
-                tax_status: 'none',
+                tax_status: 'taxable',
                 tax_class: '',
                 total: 0
             });
@@ -183,7 +192,7 @@ export default {
                 value: feeData.value.toString(),
                 isEdit: false,
                 fee_type: feeData.type,
-                tax_status: 'none',
+                tax_status: 'taxable',
                 tax_class: '',
                 total: 0
             });

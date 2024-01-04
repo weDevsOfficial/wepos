@@ -126,8 +126,8 @@ export default {
     }
 
     .wepos-checkout-print-wrapper {
-        color: #000;
-        font-family: Helvetica, Verdana, Calibri, Arial, "Franklin Gothic", sans-serif;
+        color: #000000;
+        font-family: Helvetica, Verdana, Calibri, Arial, "Franklin Gothic", sans-serif !important;
         display: inline-block !important;
     }
 

@@ -30,6 +30,9 @@ class Common {
     public function init_hooks() {
         // Manipulate WooCommerce Order Data.
         add_action( 'woocommerce_new_order', [ $this, 'set_order_created_via_wepos' ], 10, 2 );
+
+        // Manipulate Tax Amount of Fees Item.
+        add_action( 'woocommerce_order_item_fee_after_calculate_taxes', [ $this, 'remove_tax_amount_from_discount_fee' ], 10, 1 );
     }
 
     /**
@@ -52,5 +55,28 @@ class Common {
         }
 
         $order->set_created_via( 'wepos' );
+    }
+
+    /**
+     * Remove Tax Amount from Discount Fees.
+     *
+     * @since WEPOS_LITE_SINCE
+     *
+     * @param \WC_Order_Item_Fee $item The order item fee object.
+     *
+     * @return void|\WP_Error
+     */
+    public function remove_tax_amount_from_discount_fee( $item ) {
+        // Check if the discount applied via wePOS.
+        if ( 'wepos_discount' !== $item->get_meta( 'fee_type' ) ) {
+            return;
+        }
+
+        // Check if the WooCommerce tax setting 
+        if ( 'incl' !== get_option( 'woocommerce_tax_display_shop', 'excl' ) ) {
+            return;
+        }
+
+        $item->set_taxes( [] );
     }
 }

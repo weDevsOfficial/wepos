@@ -179,9 +179,15 @@ export default {
                 value: discountData.value.toString(),
                 isEdit: false,
                 discount_type: discountData.type,
-                tax_status: 'taxable',
+                tax_status: 'incl' !== state.settings.woo_tax.wc_tax_display_shop ? 'taxable' : 'none',
                 tax_class: '',
-                total: 0
+                total: 0,
+                meta_data : [
+                    {
+                        key: 'fee_type',
+                        value: 'wepos_discount',
+                    },
+                ],
             });
         },
 
@@ -192,9 +198,15 @@ export default {
                 value: feeData.value.toString(),
                 isEdit: false,
                 fee_type: feeData.type,
-                tax_status: 'taxable',
+                tax_status: 'incl' !== state.settings.woo_tax.wc_tax_display_shop ? 'taxable' : 'none',
                 tax_class: '',
-                total: 0
+                total: 0,
+                meta_data : [
+                    {
+                        key: 'fee_type',
+                        value: 'wepos_fee',
+                    },
+                ],
             });
         },
 

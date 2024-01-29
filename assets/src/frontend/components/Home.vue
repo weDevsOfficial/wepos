@@ -253,6 +253,39 @@
                                     <td class="price">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</td>
                                     <td class="action"></td>
                                 </tr>
+
+                                <template v-if="cartdata.coupon_lines.length > 0">
+                                    <tr class="cart-meta-data" v-for="(fee,key) in cartdata.coupon_lines">
+                                        <template v-if="fee.type=='discount'">
+                                            <td class="label">{{ __( 'Discount', 'wepos' ) }} <span class="name">{{ getDiscountAmount( fee ) }}</span></td>
+                                            <td class="price">&minus;{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                                            <td class="action"><span class="flaticon-cancel-music" @click="removeCouponLine(key)"></span></td>
+                                        </template>
+                                        <template v-else>
+                                            <template v-if="cartdata.coupon_lines[key].isEdit">
+                                                <td class="label" colspan="2">
+                                                    <input type="text" class="fee-name" v-model="feeData.name" :placeholder="__( 'Fee Name', 'wepos' )" ref="fee_name">
+                                                    <input type="number" class="fee-amount" min="0" step="any" v-model="feeData.value" :placeholder="__( 'Total', 'wepos' )" ref="fee_total">
+                                                    <template v-if="settings.wepos_general.enable_fee_tax == 'yes'">
+                                                        <label for="fee-tax-status"><input type="checkbox" id="fee-tax-status" class="fee-tax-status" v-model="feeData.tax_status" :true-value="'taxable'" :false-value="'none'"> {{ __( 'Taxable', 'wepos' ) }}</label>
+                                                        <select class="fee-tax-class" v-model="feeData.tax_class" v-if="feeData.tax_status=='taxable'">
+                                                            <option v-for="feeTax in availableTax" :value="feeTax.class == 'standard' ? '' : feeTax.class">{{ unSanitizeString( feeTax.class ) }} - {{ feeTax.percentage_rate }}</option>
+                                                        </select>
+                                                    </template>
+                                                    <button :disabled="feeData.name == ''" @click.prevent="saveFee(key)">{{ __( 'Apply', 'wepos' ) }}</button>
+                                                    <button class="cancel" @click.prevent="cancelEditFee(key)">{{ __( 'Cancel', 'wepos' ) }}</button>
+                                                </td>
+                                                <td class="action"><span class="flaticon-cancel-music" @click="removeCouponLine(key)"></span></td>
+                                            </template>
+                                            <template v-else>
+                                                <td class="label" @dblclick.prevent="editFeeData(key)">{{ __( 'Fee', 'wepos' ) }} <span class="name">{{ fee.name }} {{ getDiscountAmount( fee ) }}</span></td>
+                                                <td class="price">{{ formatPrice( Math.abs( fee.total ) ) }}</td>
+                                                <td class="action"><span class="flaticon-cancel-music" @click="removeCouponLine(key)"></span></td>
+                                            </template>
+                                        </template>
+                                    </tr>
+                                </template>
+
                                 <template v-if="cartdata.fee_lines.length > 0">
                                     <tr class="cart-meta-data" v-for="(fee,key) in cartdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
@@ -448,6 +481,20 @@
                                     </span>
                                     <span class="wepos-right">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</span>
                                 </li>
+
+                                <template v-if="cartdata.coupon_lines.length > 0">
+                                    <li class="wepos-clearfix" v-for="(fee,key) in cartdata.coupon_lines">
+                                        <template v-if="fee.type=='discount'">
+                                            <span class="wepos-left">{{ __( 'Discount', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ getDiscountAmount( fee ) }}</span></span>
+                                            <span class="wepos-right">-{{ formatPrice( Math.abs( fee.total ) ) }}</span>
+                                        </template>
+                                        <template v-else>
+                                            <span class="wepos-left">{{ __( 'Fee', 'wepos' ) }} <span class="metadata">{{ fee.name }} {{ getDiscountAmount( fee ) }}</span></span>
+                                            <span class="wepos-right">{{ formatPrice( fee.total ) }}</span>
+                                        </template>
+                                    </li>
+                                </template>
+
                                 <template v-if="cartdata.fee_lines.length > 0">
                                     <li class="wepos-clearfix" v-for="(fee,key) in cartdata.fee_lines">
                                         <template v-if="fee.type=='discount'">
@@ -619,6 +666,7 @@ export default {
             availableGatewayContent: wepos.hooks.applyFilters( 'wepos_avaialable_gateway_content', [] ),
             afterMainContents: wepos.hooks.applyFilters( 'wepos_after_main_content', [] ),
             beforCartPanels: wepos.hooks.applyFilters( 'wepos_before_cart_panel', [] ),
+            couponData: {},
         }
     },
     computed: {
@@ -792,6 +840,7 @@ export default {
                     shipping: this.orderdata.shipping,
                     line_items: this.cartdata.line_items,
                     fee_lines: this.cartdata.fee_lines,
+                    coupon_lines: this.cartdata.coupon_lines,
                     customer_id: this.orderdata.customer_id,
                     customer_note: this.orderdata.customer_note,
                     payment_method: this.orderdata.payment_method,
@@ -830,6 +879,7 @@ export default {
                         this.printdata = wepos.hooks.applyFilters( 'wepos_after_payment_print_data', {
                             line_items: this.cartdata.line_items,
                             fee_lines: this.cartdata.fee_lines,
+                            coupon_lines: this.cartdata.coupon_lines,
                             subtotal: this.$store.getters['Cart/getSubtotal'],
                             taxtotal: this.$store.getters['Cart/getTotalTax'],
                             ordertotal: this.$store.getters['Cart/getTotal'],
@@ -881,7 +931,43 @@ export default {
             return ( product.images.length > 0 ) ? product.images[0].name : product.name;
         },
         setDiscount( value, type ) {
-            this.$store.dispatch( 'Cart/addDiscountAction', { title: this.__( 'Discount', 'wepos' ), value: value, type: type } );
+            this.createCoupon( value, type, this.dispatchCoupon );
+        },
+        createCoupon( amount, discount_type, callback ) {
+            let self = this;
+            let id   = Date.now();
+            let code = discount_type + id + amount;
+
+            self.couponData = {};
+
+            const discountdata = {
+                code: code,
+                amount: amount,
+                usage_limit: 1,
+            }
+
+            if ( 'percent' ===  discount_type ) {
+                discountdata.discount_type = discount_type;
+            }
+
+            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/coupons', discountdata )
+                .done( data => {
+                    self.couponData = data;
+
+                    callback( data, discount_type );
+                } ).fail( data => {
+                    alert( data.responseJSON.message );
+            } );
+        },
+        dispatchCoupon( couponData, type ) {
+            this.$store.dispatch(
+                'Cart/addDiscountAction',
+                {
+                    title: this.__( 'Discount', 'wepos' ),
+                    value: couponData,
+                    type
+                }
+            );
         },
         saveFee( key ) {
             this.$store.dispatch( 'Cart/saveFeeValueAction', { key: key, feeData: this.feeData } );
@@ -900,6 +986,9 @@ export default {
         },
         setFee( value, type ) {
             this.$store.dispatch( 'Cart/addFeeAction', { title: this.__( 'Fee', 'wepos' ), value: value, type: type } );
+        },
+        removeCouponLine( key ) {
+            this.$store.dispatch( 'Cart/removeCouponLineItemsAction', key );
         },
         removeFeeLine( key ) {
             this.$store.dispatch( 'Cart/removeFeeLineItemsAction', key );

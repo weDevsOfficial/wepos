@@ -944,6 +944,12 @@ export default {
                 code: code,
                 amount: amount,
                 usage_limit: 1,
+                meta_data : [
+                    {
+                        key: 'wepos_cart_discount',
+                        value: 'yes',
+                    },
+                ],
             }
 
             if ( 'percent' ===  discount_type ) {

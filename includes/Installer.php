@@ -24,6 +24,7 @@ class Installer {
         $this->add_version_info();
         $this->add_user_roles();
         $this->flush_rewrites();
+        $this->schedule_cron_jobs();
     }
 
     /**
@@ -75,5 +76,31 @@ class Installer {
      */
     private function flush_rewrites() {
         set_transient( 'wepos-flush-rewrites', 1 );
+    }
+
+    /**
+     * Schedule Cron Jobs.
+     *
+     * @since WEPOS_SINCE
+     *
+     * @return void
+     */
+    private function schedule_cron_jobs() {
+        if ( ! function_exists( 'WC' ) || ! WC()->queue() ) {
+            return;
+        }
+
+        // Schedule daily cron job.
+        $hook = 'wepos_daily_midnight_cron';
+
+        // Check if we've defined the cron hook.
+        $cron_schedule = as_next_scheduled_action( $hook ); // This method will return false if the hook is not scheduled
+        if ( ! $cron_schedule ) {
+            as_unschedule_all_actions( $hook );
+        }
+
+        // Schedule recurring cron action.
+        $now = wepos_current_datetime()->modify( 'midnight' )->getTimestamp();
+        WC()->queue()->schedule_cron( $now, '0 0 * * *', $hook, [], 'dokan' );
     }
 }

@@ -37,7 +37,7 @@ class CouponController extends \WC_REST_Coupons_Controller {
      */
     public function create_item_permissions_check( $request ) {
         $parent_permission = parent::create_item_permissions_check( $request );
-        
+
         if ( true === $parent_permission ) {
             return true;
         }

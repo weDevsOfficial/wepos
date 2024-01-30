@@ -33,10 +33,11 @@ class Discounts {
      */
     public function __construct() {
         add_action( 'load-edit.php', [ $this, 'hide_discount_coupons' ] );
+        add_action( 'wepos_daily_midnight_cron', [ $this, 'remove_discount_coupons' ] );
     }
 
     /**
-     * Remove Discount Coupons from Admin Coupon List Table.
+     * Hide Discount Coupons from Admin Coupon List Table.
      *
      * @since WEPOS_SINCE
      *
@@ -114,5 +115,21 @@ class Discounts {
         );
 
         return $query->get_posts();
+    }
+
+    /**
+     * Remove Discount Coupons.
+     *
+     * @since WEPOS_SINCE
+     *
+     * @return void
+     */
+    public function remove_discount_coupons() {
+        $coupons = $this->get_discount_coupons();
+
+        foreach ( $coupons as $coupon_id ) {
+            $coupon = new \WC_Coupon( $coupon_id );
+            $coupon->delete( true );
+        }
     }
 }

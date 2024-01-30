@@ -956,7 +956,7 @@ export default {
                 discountdata.discount_type = discount_type;
             }
 
-            wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/coupons', discountdata )
+            wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/coupons', discountdata )
                 .done( data => {
                     self.couponData = data;
 

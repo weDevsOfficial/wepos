@@ -200,7 +200,7 @@ export default {
                 value: feeData.value.toString(),
                 isEdit: false,
                 fee_type: feeData.type,
-                tax_status: 'incl' !== state.settings.woo_tax.wc_tax_display_shop ? 'taxable' : 'none',
+                tax_status: 'yes' === state.settings.wepos_general.enable_fee_tax ? 'taxable' : 'none',
                 tax_class: '',
                 total: 0,
             });

@@ -247,7 +247,7 @@
                                     <td class="label">
                                         {{ __( 'Subtotal', 'wepos' ) }}
                                         <span class="name" v-if="settings.woo_tax.wc_tax_display_cart == 'incl' && $store.getters['Cart/getTotalLineTax'] > 0">
-                                            {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
+                                            {{ __( 'Including Tax', 'wepos' ) }}
                                         </span>
                                     </td>
                                     <td class="price">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</td>
@@ -476,7 +476,7 @@
                                     <span class="wepos-left">
                                         {{ __( 'Subtotal', 'wepos' ) }}
                                         <span class="metadata" v-if="settings.woo_tax.wc_tax_display_cart == 'incl'">
-                                            {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
+                                            {{ __( 'Including Tax', 'wepos' ) }}
                                         </span>
                                     </span>
                                     <span class="wepos-right">{{ formatPrice( $store.getters['Cart/getSubtotal'] ) }}</span>

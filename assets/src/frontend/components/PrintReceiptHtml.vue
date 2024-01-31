@@ -33,7 +33,7 @@
                         <td colspan="2" class="name">
                             {{ __( 'Subtotal', 'wepos' ) }}
                             <span class="metadata" v-if="settings.woo_tax.wc_tax_display_cart == 'incl'">
-                                {{ __( 'Includes Tax', 'wepos' ) }} {{ formatPrice( $store.getters['Cart/getTotalLineTax'] ) }}
+                                {{ __( 'Including Tax', 'wepos' ) }}
                             </span>
                         </td>
                         <td class="price">{{ formatPrice( printdata.subtotal ) }}</td>

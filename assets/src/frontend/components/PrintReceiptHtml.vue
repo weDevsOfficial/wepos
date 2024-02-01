@@ -50,7 +50,7 @@
                         <td class="price">{{ formatPrice( Math.abs( fee.total ) ) }}</td>
                     </tr>
                     <tr v-if="printdata.taxtotal">
-                        <td colspan="2" class="name">{{ settings.woo_tax.wc_tax_display_cart === 'incl' ? __( 'Fee Tax', 'wepos' ) : __( 'Tax', 'wepos' ) }}</td>
+                        <td colspan="2" class="name">{{ settings.woo_tax.wc_tax_display_cart === 'incl' && settings.wepos_general.enable_fee_tax === 'yes' ? __( 'Fee Tax', 'wepos' ) : __( 'Tax', 'wepos' ) }}</td>
                         <td class="price">{{ formatPrice(printdata.taxtotal) }}</td>
                     </tr>
                     <tr>

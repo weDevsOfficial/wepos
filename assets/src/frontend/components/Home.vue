@@ -318,7 +318,7 @@
                                     </tr>
                                 </template>
                                 <tr class="tax" v-if="$store.getters['Cart/getTotalTax']">
-                                    <td class="label">{{ __( 'Tax', 'wepos' ) }}</td>
+                                    <td class="label">{{ settings.woo_tax.wc_tax_display_cart === 'incl' ? __( 'Fee Tax', 'wepos' ) : __( 'Tax', 'wepos' ) }}</td>
                                     <td class="price">{{ formatPrice( $store.getters['Cart/getTotalTax'] ) }}</td>
                                     <td class="action"></td>
                                 </tr>
@@ -866,6 +866,19 @@ export default {
 
             wepos.api.post( wepos.rest.root + wepos.rest.wcversion + '/orders', orderdata )
             .done( response => {
+                const orderResult = response;
+                const totalTaxes  = {};
+
+                // Looping through line items and get total tax for each items.
+                orderResult.line_items.forEach( item => {
+                    totalTaxes[item.product_id] = item.total_tax
+                } );
+
+                // Preserve total tax amount for each of the line items to the cart.
+                this.cartdata.line_items.forEach( item => {
+                    item.total_tax = totalTaxes[ item.product_id ];
+                } );
+
                 wepos.api.post( wepos.rest.root + wepos.rest.posversion + '/payment/process', response )
                 .done( data => {
                     if ( data.result == 'success' ) {

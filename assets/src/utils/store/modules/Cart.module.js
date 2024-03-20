@@ -49,10 +49,13 @@ export default {
 
             return taxLineTotal;
         },
-        getTotalTax( state ) {
+        getTotalTax( state, getters ) {
             let self = this,
                 taxLineTotal = 0,
-                taxFeeTotal = 0;
+                taxFeeTotal = 0,
+                discountPercentage = 0,
+                couponTaxDiscount = 0;
+
             weLo_.forEach( state.cartdata.line_items, function( item, key ) {
                 taxLineTotal += Math.abs( item.tax_amount * item.quantity );
             } );
@@ -88,8 +91,12 @@ export default {
                     return;
                 }
 
-                taxLineTotal += item.total / taxClass.rate;
+                discountPercentage = ( item.total / getters.getSubtotal ) * 100;
+
+                couponTaxDiscount += ( discountPercentage / 100 ) * taxLineTotal;
             } );
+
+            taxLineTotal += couponTaxDiscount;
 
             return taxLineTotal + taxFeeTotal;
         },

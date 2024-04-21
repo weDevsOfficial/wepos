@@ -1,30 +1,89 @@
 <template>
     <div class="search-box" v-click-outside="outside">
         <form action="" autocomplete="off" @submit.prevent="handleProductScan">
-            <input type="text" ref="productSearch" name="search" id="product-search" v-model="serachInput" :placeholder="placeholder" @focus.prevent="triggerFocus" @keyup.prevent="searchProduct">
-            <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
-            <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
+            <input
+                type="text"
+                ref="productSearch"
+                name="search"
+                id="product-search"
+                v-model="serachInput"
+                :placeholder="placeholder"
+                @focus.prevent="triggerFocus"
+                @keyup.prevent="searchProduct"
+            />
+            <span
+                class="search-icon flaticon-musica-searcher"
+                v-if="mode == 'product'"
+            ></span>
+            <span
+                class="search-icon flaticon-supermarket-scanner"
+                v-if="mode == 'scan'"
+            ></span>
             <div class="search-type" v-hotkey="hotkeys">
-                <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
-                <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
+                <a
+                    href="#"
+                    :class="{ active: mode == 'product' }"
+                    @click.prevent="changeMode('product')"
+                    >{{ __("Product", "wepos") }}</a
+                >
+                <a
+                    href="#"
+                    :class="{ active: mode == 'scan' }"
+                    @click.prevent="changeMode('scan')"
+                    >{{ __("Scan", "wepos") }}</a
+                >
             </div>
-            <div class="search-result" v-show="showResults && mode=='product'">
+            <div
+                class="search-result"
+                v-show="showResults && mode == 'product'"
+            >
                 <div v-if="searchableProduct.length">
-                    <keyboard-control :listLength="searchableProduct.length" @key-down="onKeyDown" @key-up="onKeyUp">
-                        <template slot-scope="{selectedIndex}">
-                            <li v-for="(product, index) in searchableProduct" class="product-search-item" :class="{'selected': index === selectedIndex}" :key="index">
+                    <keyboard-control
+                        :listLength="searchableProduct.length"
+                        @key-down="onKeyDown"
+                        @key-up="onKeyUp"
+                    >
+                        <template slot-scope="{ selectedIndex }">
+                            <li
+                                v-for="(product, index) in searchableProduct"
+                                class="product-search-item"
+                                :class="{ selected: index === selectedIndex }"
+                                :key="index"
+                            >
                                 <template v-if="product.type == 'simple'">
-                                    <a href="#" class="wepos-clearfix" @click="addToCartAction( product )">{{ product.name }}
-                                        <span class="price">{{ formatPrice( product.price ) }}</span>
-                                        <span class="sku" v-if="product.sku">{{ product.sku }}</span>
-                                        <span class="action flaticon-enter-arrow wepos-right"></span>
+                                    <a
+                                        href="#"
+                                        class="wepos-clearfix"
+                                        @click="addToCartAction(product)"
+                                        >{{ product.name }}
+                                        <span class="price">{{
+                                            formatPrice(product.price)
+                                        }}</span>
+                                        <span class="sku" v-if="product.sku">{{
+                                            product.sku
+                                        }}</span>
+                                        <span
+                                            class="action flaticon-enter-arrow wepos-right"
+                                        ></span>
                                     </a>
                                 </template>
                                 <template v-if="product.type == 'variable'">
-                                    <a href="#" class="" @click.prevent="selectVariation( product )">{{ product.name }}
-                                        <span class="price">{{ formatPrice( product.price ) }}</span>
-                                        <span class="sku" v-if="product.sku">{{ product.sku }}</span>
-                                        <span class="action flaticon-enter-arrow wepos-right"></span>
+                                    <a
+                                        href="#"
+                                        class=""
+                                        @click.prevent="
+                                            selectVariation(product)
+                                        "
+                                        >{{ product.name }}
+                                        <span class="price">{{
+                                            formatPrice(product.price)
+                                        }}</span>
+                                        <span class="sku" v-if="product.sku">{{
+                                            product.sku
+                                        }}</span>
+                                        <span
+                                            class="action flaticon-enter-arrow wepos-right"
+                                        ></span>
                                     </a>
                                 </template>
                             </li>
@@ -32,30 +91,49 @@
                     </keyboard-control>
                 </div>
                 <div v-else class="no-data-found">
-                    {{ __( 'No product found', 'wepos' ) }}
+                    {{ __("No product found", "wepos") }}
                 </div>
                 <div class="suggession">
                     <span class="term">
-                        <span class="flaticon-swap"></span> {{ __( 'to navigate', 'wepos' ) }}
+                        <span class="flaticon-swap"></span>
+                        {{ __("to navigate", "wepos") }}
                     </span>
                     <span class="term">
-                        <span class="flaticon-enter-arrow"></span> {{ __( 'to select', 'wepos' ) }}
+                        <span class="flaticon-enter-arrow"></span>
+                        {{ __("to select", "wepos") }}
                     </span>
                     <span class="term">
-                        <strong>esc</strong> {{ __( 'to dismiss', 'wepos' ) }}
+                        <strong>esc</strong> {{ __("to dismiss", "wepos") }}
                     </span>
                 </div>
             </div>
         </form>
-        <modal :title="__( 'Select Variations', 'wepos' )" v-if="showVariationModal" @close="showVariationModal = false" width="500px" height="auto" :footer="true" :header="true">
+        <modal
+            :title="__('Select Variations', 'wepos')"
+            v-if="showVariationModal"
+            @close="showVariationModal = false"
+            width="500px"
+            height="auto"
+            :footer="true"
+            :header="true"
+        >
             <template slot="body">
-                <div class="variation-attribute-wrapper" v-for="attribute in selectedVariationProduct.attributes">
+                <div
+                    class="variation-attribute-wrapper"
+                    v-for="attribute in selectedVariationProduct.attributes"
+                >
                     <div class="attribute">
                         <p>{{ attribute.name }}</p>
                         <div class="options">
                             <template v-for="option in attribute.options">
                                 <label>
-                                    <input type="radio" v-model="chosenAttribute[attribute.name]" :value="option">
+                                    <input
+                                        type="radio"
+                                        v-model="
+                                            chosenAttribute[attribute.name]
+                                        "
+                                        :value="option"
+                                    />
                                     <div class="box">
                                         {{ option }}
                                     </div>
@@ -67,7 +145,13 @@
             </template>
 
             <template slot="footer">
-                <button class="add-variation-btn" :disabled="attributeDisabled" @click="addVariationProduct()">{{ __( 'Add Product', 'wepos' ) }}</button>
+                <button
+                    class="add-variation-btn"
+                    :disabled="attributeDisabled"
+                    @click="addVariationProduct()"
+                >
+                    {{ __("Add Product", "wepos") }}
+                </button>
             </template>
         </modal>
     </div>
@@ -75,107 +159,117 @@
 
 <script>
 // import Modal from './Modal.vue';
-import KeyboardControl from './KeyboardControl.vue';
-import VueHotkey from 'v-hotkey';
+import KeyboardControl from "./KeyboardControl.vue";
 
-let Modal = wepos_get_lib( 'Modal' );
+let Modal = wepos_get_lib("Modal");
 
 export default {
-    name: 'ProductInlineSearch',
+    name: "ProductInlineSearch",
 
     props: {
         products: {
             type: Array,
             default() {
                 return [];
-            }
+            },
         },
         settings: {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
 
-    components : {
+    components: {
         Modal,
-        KeyboardControl
+        KeyboardControl,
     },
     data() {
         return {
             showResults: false,
             showVariationModal: false,
-            mode: 'scan',
-            serachInput: '',
+            mode: "scan",
+            serachInput: "",
             searchableProduct: [],
             selectedVariationProduct: {},
             attributeDisabled: true,
             chosenAttribute: {},
-        }
+        };
     },
 
     computed: {
         placeholder() {
-            return ( this.mode == 'scan' ) ? this.__( 'Scan your product', 'wepos' ) : this.__( 'Search product by typing', 'wepos' );
+            return this.mode == "scan"
+                ? this.__("Scan your product", "wepos")
+                : this.__("Search product by typing", "wepos");
         },
 
         hotkeys() {
             return {
-                'f1': this.changeProductSearch,
-                'f2': this.changeScan,
-                'esc': this.searchClose,
-            }
-        }
+                f1: this.changeProductSearch,
+                f2: this.changeScan,
+                esc: this.searchClose,
+            };
+        },
     },
 
     watch: {
-        chosenAttribute( newdata, olddata ) {
-            if( Object.keys(newdata).length == this.selectedVariationProduct.attributes.length ) {
+        chosenAttribute(newdata, olddata) {
+            if (
+                Object.keys(newdata).length ==
+                this.selectedVariationProduct.attributes.length
+            ) {
                 this.attributeDisabled = false;
             }
-        }
+        },
     },
 
     methods: {
         changeScan(e) {
             e.preventDefault();
-            this.changeMode('scan');
+            this.changeMode("scan");
         },
 
         changeProductSearch(e) {
             e.preventDefault();
-            this.changeMode('product');
+            this.changeMode("product");
         },
 
         searchClose() {
             this.showResults = false;
             this.showVariationModal = false;
-            this.changeMode('scan');
+            this.changeMode("scan");
             this.$refs.productSearch.blur();
         },
 
         onKeyDown() {
-            jQuery('.product-search-item.selected').next().children('a').focus();
+            jQuery(".product-search-item.selected")
+                .next()
+                .children("a")
+                .focus();
         },
 
         onKeyUp() {
-            jQuery('.product-search-item.selected').prev().children('a').focus();
+            jQuery(".product-search-item.selected")
+                .prev()
+                .children("a")
+                .focus();
         },
 
         triggerFocus() {
             this.showResults = true;
-            this.$emit( 'onfocus' );
+            this.$emit("onfocus");
         },
 
         outside() {
             this.showResults = false;
-            this.$emit( 'onblur' );
+            this.$emit("onblur");
         },
 
-        changeMode( mode ) {
+        changeMode(mode) {
             this.mode = mode;
-            if ( this.mode == 'scan' ) {
+            if (this.mode == "scan") {
                 this.searchableProduct = [];
                 this.showResults = false;
             }
@@ -183,111 +277,125 @@ export default {
         },
 
         handleProductScan() {
-            if ( this.mode == 'product' ) {
+            if (this.mode == "product") {
                 return;
             }
             var generalSettings = this.settings.wepos_general,
-                field = generalSettings.barcode_scanner_field == 'custom' ? 'barcode' : generalSettings.barcode_scanner_field,
+                field =
+                    generalSettings.barcode_scanner_field == "custom"
+                        ? "barcode"
+                        : generalSettings.barcode_scanner_field,
                 selectedProduct = {},
-                filterProduct = this.products.filter( (product) => {
-                    if ( product.type == 'simple' ) {
-                        if ( product[field].toString() == this.serachInput ) {
+                filterProduct = this.products.filter((product) => {
+                    if (product.type == "simple") {
+                        if (product[field].toString() == this.serachInput) {
                             return true;
                         }
                     }
-                    if ( product.type == 'variable' ) {
+                    if (product.type == "variable") {
                         var ifFound = false;
-                        if ( product.variations.length > 0 ) {
-                            weLo_.forEach( product.variations, ( item, key ) => {
-                                if ( item[field].toString() == this.serachInput ) {
+                        if (product.variations.length > 0) {
+                            weLo_.forEach(product.variations, (item, key) => {
+                                if (
+                                    item[field].toString() == this.serachInput
+                                ) {
                                     ifFound = true;
                                 }
-                            } );
+                            });
                         }
 
-                        if ( ifFound ) {
+                        if (ifFound) {
                             return true;
                         }
                     }
                     return false;
-                } );
+                });
 
-            if ( filterProduct.length > 0 ) {
+            if (filterProduct.length > 0) {
                 filterProduct = filterProduct[0];
 
-                if ( filterProduct.type == 'variable' ) {
+                if (filterProduct.type == "variable") {
                     var variations = filterProduct.variations;
-                    var selectedVariationProduct = variations.filter( (item) => {
-                        if ( item[field].toString() == this.serachInput ) {
+                    var selectedVariationProduct = variations.filter((item) => {
+                        if (item[field].toString() == this.serachInput) {
                             return true;
                         }
                         return false;
-                    } );
-                    selectedProduct           = selectedVariationProduct[0];
+                    });
+                    selectedProduct = selectedVariationProduct[0];
                     selectedProduct.parent_id = filterProduct.id;
-                    selectedProduct.type      = filterProduct.type;
-                    selectedProduct.name      = filterProduct.name;
+                    selectedProduct.type = filterProduct.type;
+                    selectedProduct.name = filterProduct.name;
 
-                    this.$emit( 'onProductAdded', selectedProduct );
+                    this.$emit("onProductAdded", selectedProduct);
                 } else {
-                    this.$emit( 'onProductAdded', filterProduct );
+                    this.$emit("onProductAdded", filterProduct);
                 }
             }
 
-            this.serachInput = '';
+            this.serachInput = "";
         },
 
         searchProduct(e) {
-            if ( this.serachInput ) {
-                if ( this.mode == 'product' ) {
-                    this.searchableProduct = this.products.filter( (product) => {
-                        if ( product.id.toString().indexOf( this.serachInput ) != -1 ) {
+            if (this.serachInput) {
+                if (this.mode == "product") {
+                    this.searchableProduct = this.products.filter((product) => {
+                        if (
+                            product.id.toString().indexOf(this.serachInput) !=
+                            -1
+                        ) {
                             return true;
-                        } else if ( product.name.toString().toLowerCase().indexOf( this.serachInput.toLowerCase() ) != -1 ) {
-                            return true
-                        } else if ( product.sku.indexOf( this.serachInput ) != -1 ) {
-                            return true
+                        } else if (
+                            product.name
+                                .toString()
+                                .toLowerCase()
+                                .indexOf(this.serachInput.toLowerCase()) != -1
+                        ) {
+                            return true;
+                        } else if (
+                            product.sku.indexOf(this.serachInput) != -1
+                        ) {
+                            return true;
                         } else {
                             return false;
                         }
-                    } );
+                    });
                 }
             }
         },
 
-        selectVariation( product ) {
+        selectVariation(product) {
             this.selectedVariationProduct = product;
             this.showVariationModal = true;
         },
 
         addVariationProduct() {
-            var chosenVariationProduct = this.findMatchingVariations( this.selectedVariationProduct.variations, this.chosenAttribute );
-            var variationProduct       = chosenVariationProduct[0];
+            var chosenVariationProduct = this.findMatchingVariations(
+                this.selectedVariationProduct.variations,
+                this.chosenAttribute
+            );
+            var variationProduct = chosenVariationProduct[0];
             variationProduct.parent_id = this.selectedVariationProduct.id;
-            variationProduct.type      = this.selectedVariationProduct.type;
-            variationProduct.name      = this.selectedVariationProduct.name;
+            variationProduct.type = this.selectedVariationProduct.type;
+            variationProduct.name = this.selectedVariationProduct.name;
 
-            this.$emit( 'onProductAdded', variationProduct );
+            this.$emit("onProductAdded", variationProduct);
             this.showVariationModal = false;
             this.chosenAttribute = {};
         },
 
-        addToCartAction( product ) {
-            this.$emit( 'onProductAdded', product );
-        }
-
+        addToCartAction(product) {
+            this.$emit("onProductAdded", product);
+        },
     },
 
     mounted() {
         this.$refs.productSearch.focus();
-    }
+    },
 };
-
-
 </script>
 
 <style lang="less">
-
 .variation-attribute-wrapper {
     padding: 10px 20px 0px;
 
@@ -305,25 +413,25 @@ export default {
             text-align: left;
             label {
                 display: inline-block;
-                input[type=radio] {
+                input[type="radio"] {
                     -webkit-appearance: none;
                     display: none;
 
                     &:checked {
                         + .box {
-                            background: #1ABC9C;
+                            background: #1abc9c;
                             color: #fff;
-                            border: 1px solid #1ABC9C;
+                            border: 1px solid #1abc9c;
                         }
                     }
                 }
                 .box {
                     padding: 6px 10px;
-                    border: 1px solid #E0E5EA;
+                    border: 1px solid #e0e5ea;
                     margin-right: 5px;
                     margin-bottom: 5px;
                     cursor: pointer;
-                    font-size: 13px;
+                    font-size: 14px;
                     border-radius: 3px;
                 }
             }
@@ -334,20 +442,20 @@ export default {
 .add-variation-btn {
     border: none;
     padding: 10px 10px;
-    background: #3B80F4;
+    background: #3b80f4;
     color: #fff;
     border-radius: 3px;
     width: 150px;
     font-size: 14px;
     cursor: pointer;
 
-    &:focus, &:active {
+    &:focus,
+    &:active {
         outline: none;
     }
 
     &:disabled {
-        background: #76A2ED;
+        background: #76a2ed;
     }
 }
-
 </style>

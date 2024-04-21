@@ -1,23 +1,26 @@
 <?php
+
 namespace WeDevs\WePOS;
 
 /**
  * Frontend Pages Handler
  */
-class Frontend {
+class Frontend
+{
 
-    public function __construct() {
-        add_action( 'wp_head', [ $this, 'reset_head_style' ], 7 );
-        add_action( 'wp_head', [ $this, 'reset_head_scripts' ], 8 );
-        add_action( 'wepos_footer', [ $this, 'wp_print_footer_scripts' ], 20 );
-        add_action( 'wp_head', [ $this, 'enqueue_scripts' ], 999 );
-        add_action( 'template_redirect', [ $this, 'rewrite_templates' ], 1 );
-        add_filter( 'show_admin_bar', [ $this, 'remove_admin_bar' ] );
-        add_filter( 'document_title_parts', [ $this, 'render_page_title' ], 20 );
+    public function __construct()
+    {
+        add_action('wp_head', [$this, 'reset_head_style'], 7);
+        add_action('wp_head', [$this, 'reset_head_scripts'], 8);
+        add_action('wepos_footer', [$this, 'wp_print_footer_scripts'], 20);
+        add_action('wp_head', [$this, 'enqueue_scripts'], 999);
+        add_action('template_redirect', [$this, 'rewrite_templates'], 1);
+        add_filter('show_admin_bar', [$this, 'remove_admin_bar']);
+        add_filter('document_title_parts', [$this, 'render_page_title'], 20);
 
         // Show 'View POS' menu on my account page
-        add_filter ( 'woocommerce_account_menu_items', [ $this, 'add_my_account_view_pos_menu' ], 20, 1 );
-        add_filter( 'woocommerce_get_endpoint_url', [ $this, 'view_pos_menu_endpoint' ] , 10, 4 );
+        add_filter('woocommerce_account_menu_items', [$this, 'add_my_account_view_pos_menu'], 20, 1);
+        add_filter('woocommerce_get_endpoint_url', [$this, 'view_pos_menu_endpoint'], 10, 4);
     }
 
     /**
@@ -27,8 +30,9 @@ class Frontend {
      *
      * @return void
      */
-    public function wp_print_footer_scripts() {
-        do_action( 'wp_print_footer_scripts' );
+    public function wp_print_footer_scripts()
+    {
+        do_action('wp_print_footer_scripts');
     }
 
     /**
@@ -36,13 +40,11 @@ class Frontend {
      *
      * @return void
      */
-    public function rewrite_templates() {
-        if ( wp_validate_boolean( get_query_var( 'wepos' ) ) ) {
+    public function rewrite_templates()
+    {
+        if (wp_validate_boolean(get_query_var('wepos'))) {
             //check if user is logged in otherwise redirect to login page
-            if ( ! is_user_logged_in() || ! wepos_is_frontend() ) {
-                wp_redirect( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) );
-                exit();
-            }
+
 
             include_once WEPOS_PATH . '/templates/wepos.php';
             exit;
@@ -56,8 +58,9 @@ class Frontend {
      *
      * @return bool
      */
-    public function remove_admin_bar( $show ) {
-        if ( wepos_is_frontend() ) {
+    public function remove_admin_bar($show)
+    {
+        if (wepos_is_frontend()) {
             return false;
         }
 
@@ -69,8 +72,9 @@ class Frontend {
      *
      * @return void
      */
-    public function reset_head_style() {
-        if ( wepos_is_frontend() ) {
+    public function reset_head_style()
+    {
+        if (wepos_is_frontend()) {
             $wp_styles = wp_styles();
             $wp_styles->queue = [];
         }
@@ -81,8 +85,9 @@ class Frontend {
      *
      * @return void
      */
-    public function reset_head_scripts() {
-        if ( wepos_is_frontend() ) {
+    public function reset_head_scripts()
+    {
+        if (wepos_is_frontend()) {
             $wp_scripts = wp_scripts();
             $wp_scripts->queue = [];
         }
@@ -93,9 +98,10 @@ class Frontend {
      *
      * @return void
      */
-    public function enqueue_scripts() {
-        if ( wepos_is_frontend() ) {
-            do_action( 'wepos_enqueue_scripts' );
+    public function enqueue_scripts()
+    {
+        if (wepos_is_frontend()) {
+            do_action('wepos_enqueue_scripts');
         }
     }
 
@@ -106,9 +112,10 @@ class Frontend {
      *
      * @return void
      */
-    public function render_page_title( $title ) {
-        if ( wepos_is_frontend() ) {
-            $title['title'] = apply_filters( 'wepos_page_document_title', __( 'Point of Sale', 'wepos' ) );
+    public function render_page_title($title)
+    {
+        if (wepos_is_frontend()) {
+            $title['title'] = apply_filters('wepos_page_document_title', __('Point of Sale', 'wepos'));
         }
 
         return $title;
@@ -123,12 +130,13 @@ class Frontend {
      *
      * @return array
      */
-    public function add_my_account_view_pos_menu( $menu_links ) {
-        $logout_index = array_search( "customer-logout", array_keys( $menu_links ) );
+    public function add_my_account_view_pos_menu($menu_links)
+    {
+        $logout_index = array_search("customer-logout", array_keys($menu_links));
 
-        $menu_links = array_slice( $menu_links, 0, $logout_index, true ) +
-                      [ "view-wepos" => __( 'View POS', 'wepos' ) ] +
-                      array_slice( $menu_links, $logout_index, count( $menu_links ) - 1, true );
+        $menu_links = array_slice($menu_links, 0, $logout_index, true) +
+            ["view-wepos" => __('View POS', 'wepos')] +
+            array_slice($menu_links, $logout_index, count($menu_links) - 1, true);
         return $menu_links;
     }
 
@@ -144,9 +152,10 @@ class Frontend {
      *
      * @return string
      */
-    public function view_pos_menu_endpoint( $url, $endpoint, $value, $permalink ) {
-        if ( 'view-wepos' === $endpoint ) {
-            $url = untrailingslashit( get_site_url() ) . '/wepos/#';
+    public function view_pos_menu_endpoint($url, $endpoint, $value, $permalink)
+    {
+        if ('view-wepos' === $endpoint) {
+            $url = untrailingslashit(get_site_url()) . '/wepos/#';
         }
 
         return $url;

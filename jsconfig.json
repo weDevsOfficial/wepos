@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["./assets/src/*"],
+        "frontend/*": ["./assets/src/frontend/*"],
+        "admin/*": ["./assets/src/admin/*"],
+      }
+    }
+  }

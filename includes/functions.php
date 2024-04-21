@@ -7,8 +7,9 @@
  *
  * @return void
  */
-function wepos_footer() {
-    do_action( 'wepos_footer' );
+function wepos_footer()
+{
+    do_action('wepos_footer');
 }
 
 /**
@@ -19,26 +20,27 @@ function wepos_footer() {
  *
  * @return array
  */
-function wepos_get_translations_for_plugin_domain( $domain, $language_dir = null ) {
+function wepos_get_translations_for_plugin_domain($domain, $language_dir = null)
+{
 
-    if ( $language_dir == null ) {
+    if ($language_dir == null) {
         $language_dir      = WEPOS_PATH . '/languages/';
     }
 
-    $languages     = get_available_languages( $language_dir );
+    $languages     = get_available_languages($language_dir);
     $get_site_lang = is_admin() ? get_user_locale() : get_locale();
     $mo_file_name  = $domain . '-' . $get_site_lang;
     $translations  = [];
 
-    if ( in_array( $mo_file_name, $languages ) && file_exists( $language_dir . $mo_file_name . '.mo' ) ) {
+    if (in_array($mo_file_name, $languages) && file_exists($language_dir . $mo_file_name . '.mo')) {
         $mo = new MO();
-        if ( $mo->import_from_file( $language_dir . $mo_file_name . '.mo' ) ) {
+        if ($mo->import_from_file($language_dir . $mo_file_name . '.mo')) {
             $translations = $mo->entries;
         }
     }
 
     return [
-        'header'       => isset( $mo ) ? $mo->headers : '',
+        'header'       => isset($mo) ? $mo->headers : '',
         'translations' => $translations,
     ];
 }
@@ -50,9 +52,10 @@ function wepos_get_translations_for_plugin_domain( $domain, $language_dir = null
  *
  * @return array
  */
-function wepos_get_jed_locale_data( $domain, $language_dir = null ) {
-    $plugin_translations = wepos_get_translations_for_plugin_domain( $domain, $language_dir );
-    $translations = get_translations_for_domain( $domain );
+function wepos_get_jed_locale_data($domain, $language_dir = null)
+{
+    $plugin_translations = wepos_get_translations_for_plugin_domain($domain, $language_dir);
+    $translations = get_translations_for_domain($domain);
 
     $locale = array(
         'domain'      => $domain,
@@ -66,16 +69,16 @@ function wepos_get_jed_locale_data( $domain, $language_dir = null ) {
         ),
     );
 
-    if ( ! empty( $translations->headers['Plural-Forms'] ) ) {
-        $locale['locale_data'][ $domain ]['']['plural_forms'] = $translations->headers['Plural-Forms'];
-    } else if ( ! empty( $plugin_translations['header'] ) ) {
-        $locale['locale_data'][ $domain ]['']['plural_forms'] = $plugin_translations['header']['Plural-Forms'];
+    if (!empty($translations->headers['Plural-Forms'])) {
+        $locale['locale_data'][$domain]['']['plural_forms'] = $translations->headers['Plural-Forms'];
+    } else if (!empty($plugin_translations['header'])) {
+        $locale['locale_data'][$domain]['']['plural_forms'] = $plugin_translations['header']['Plural-Forms'];
     }
 
-    $entries = array_merge( $plugin_translations['translations'], $translations->entries );
+    $entries = array_merge($plugin_translations['translations'], $translations->entries);
 
-    foreach ( $entries as $msgid => $entry ) {
-        $locale['locale_data'][ $domain ][ $msgid ] = $entry->translations;
+    foreach ($entries as $msgid => $entry) {
+        $locale['locale_data'][$domain][$msgid] = $entry->translations;
     }
 
     return $locale;
@@ -91,17 +94,18 @@ function wepos_get_jed_locale_data( $domain, $language_dir = null ) {
  *
  * @return array
  */
-function wepos_sort_terms_hierarchicaly( &$cats, &$into, $parent_id = 0 ) {
-    foreach ( $cats as $i => $cat) {
-        if ( $cat->parent == $parent_id ) {
+function wepos_sort_terms_hierarchicaly(&$cats, &$into, $parent_id = 0)
+{
+    foreach ($cats as $i => $cat) {
+        if ($cat->parent == $parent_id) {
             $into[$cat->term_id] = $cat;
-            unset( $cats[$i] );
+            unset($cats[$i]);
         }
     }
 
-    foreach ( $into as $top_cat ) {
+    foreach ($into as $top_cat) {
         $top_cat->children = array();
-        wepos_sort_terms_hierarchicaly( $cats, $top_cat->children, $top_cat->term_id );
+        wepos_sort_terms_hierarchicaly($cats, $top_cat->children, $top_cat->term_id);
     }
 }
 
@@ -112,10 +116,11 @@ function wepos_sort_terms_hierarchicaly( &$cats, &$into, $parent_id = 0 ) {
  *
  * @return array
  */
-function wepos_get_product_category() {
-    $categories        = get_terms( 'product_cat', [ 'hide_empty' => false ] );
+function wepos_get_product_category()
+{
+    $categories        = get_terms('product_cat', ['hide_empty' => false]);
     $category_hierarchy = [];
-    wepos_sort_terms_hierarchicaly( $categories, $category_hierarchy );
+    wepos_sort_terms_hierarchicaly($categories, $category_hierarchy);
     return $category_hierarchy;
 }
 
@@ -128,11 +133,12 @@ function wepos_get_product_category() {
  *
  * @return array
  */
-function wepos_get_post_type( $post_type ) {
-    $pages_array = array( '-1' => __( '- select -', 'wepos' ) );
-    $pages       = get_posts( array('post_type' => $post_type, 'numberposts' => -1) );
+function wepos_get_post_type($post_type)
+{
+    $pages_array = array('-1' => __('- select -', 'wepos'));
+    $pages       = get_posts(array('post_type' => $post_type, 'numberposts' => -1));
 
-    if ( $pages ) {
+    if ($pages) {
         foreach ($pages as $page) {
             $pages_array[$page->ID] = $page->post_title;
         }
@@ -148,21 +154,22 @@ function wepos_get_post_type( $post_type ) {
  *
  * @return array
  */
-function wepos_get_settings_sections() {
+function wepos_get_settings_sections()
+{
     $sections = [
         [
             'id'    => 'wepos_general',
-            'title' => __( 'General', 'wepos' ),
+            'title' => __('General', 'wepos'),
             'icon'  => 'dashicons-admin-generic'
         ],
         [
             'id'    => 'wepos_receipts',
-            'title' => __( 'Receipts', 'wepos' ),
+            'title' => __('Receipts', 'wepos'),
             'icon'  => 'dashicons-media-text'
         ]
     ];
 
-    return apply_filters( 'wepos_settings_sections', $sections );
+    return apply_filters('wepos_settings_sections', $sections);
 }
 
 /**
@@ -172,52 +179,53 @@ function wepos_get_settings_sections() {
  *
  * @return array
  */
-function wepos_get_settings_fields() {
+function wepos_get_settings_fields()
+{
     $settings_fields = [
         'wepos_general' => [
             'enable_fee_tax' => [
                 'name'    => 'enable_fee_tax',
-                'label'   => __( 'Calculate tax for Fee', 'wepos' ),
-                'desc'    => __( 'Choose if tax caluclate for fee in POS cart and checkout', 'wepos' ),
+                'label'   => __('Calculate tax for Fee', 'wepos'),
+                'desc'    => __('Choose if tax caluclate for fee in POS cart and checkout', 'wepos'),
                 'type'    => 'select',
                 'default' => 'yes',
                 'options' => [
-                    'yes' => __( 'Yes', 'wepos' ),
-                    'no'  => __( 'No', 'wepos' ),
+                    'yes' => __('Yes', 'wepos'),
+                    'no'  => __('No', 'wepos'),
                 ]
             ],
             'barcode_scanner_field' => [
                 'name'    => 'barcode_scanner_field',
-                'label'   => __( 'Barcode Scanner field', 'wepos' ),
-                'desc'    => __( 'Choose your barcode field. If you select <code>Custom Field</code> then you need to set barcode number manually in product edit page', 'wepos' ),
+                'label'   => __('Barcode Scanner field', 'wepos'),
+                'desc'    => __('Choose your barcode field. If you select <code>Custom Field</code> then you need to set barcode number manually in product edit page', 'wepos'),
                 'type'    => 'select',
                 'default' => 'sku',
                 'options' => [
-                    'id'     => __( 'ID', 'wepos' ),
-                    'sku'    => __( 'SKU', 'wepos' ),
-                    'custom' => __( 'Custom field', 'wepos' ),
+                    'id'     => __('ID', 'wepos'),
+                    'sku'    => __('SKU', 'wepos'),
+                    'custom' => __('Custom field', 'wepos'),
                 ]
             ],
         ],
         'wepos_receipts' => [
             'receipt_header' => [
                 'name'    => 'receipt_header',
-                'label'   => __( 'Order receipt header', 'wepos' ),
-                'desc'    => __( 'Enter your order receipt header', 'wepos' ),
+                'label'   => __('Order receipt header', 'wepos'),
+                'desc'    => __('Enter your order receipt header', 'wepos'),
                 'type'    => 'wpeditor',
-                'default' => get_option( 'blogname' )
+                'default' => get_option('blogname')
             ],
             'receipt_footer' => [
                 'name'    => 'receipt_footer',
-                'label'   => __( 'Order receipt footer', 'wepos' ),
-                'desc'    => __( 'Enter your order receipt footer text', 'wepos' ),
+                'label'   => __('Order receipt footer', 'wepos'),
+                'desc'    => __('Enter your order receipt footer text', 'wepos'),
                 'type'    => 'wpeditor',
-                'default' => __( 'Thank you', 'wepos' )
+                'default' => __('Thank you', 'wepos')
             ],
         ],
     ];
 
-    return apply_filters( 'wepos_settings_fields', $settings_fields );
+    return apply_filters('wepos_settings_fields', $settings_fields);
 }
 
 /**
@@ -229,12 +237,13 @@ function wepos_get_settings_fields() {
  *
  * @return mixed
  */
-function wepos_get_option( $option, $section, $default = '' ) {
+function wepos_get_option($option, $section, $default = '')
+{
 
-    $options = get_option( $section );
+    $options = get_option($section);
 
-    if ( isset( $options[ $option ] ) ) {
-        return $options[ $option ];
+    if (isset($options[$option])) {
+        return $options[$option];
     }
 
     return $default;
@@ -245,42 +254,44 @@ function wepos_get_option( $option, $section, $default = '' ) {
  *
  * @return bool
  */
-function wepos_is_frontend() {
+function wepos_is_frontend()
+{
     $hasPermission = false;
 
-    if ( wp_validate_boolean( get_query_var( 'wepos' ) ) ) {
-        if ( current_user_can( 'manage_woocommerce' ) || apply_filters( 'wepos_frontend_permissions', false ) ) {
+    if (wp_validate_boolean(get_query_var('wepos'))) {
+        if (current_user_can('manage_woocommerce') || apply_filters('wepos_frontend_permissions', false)) {
             $hasPermission = true;
         }
     }
 
-    return $hasPermission;
+    return true;
 }
 
-function wepos_get_product_price( $product ) {
+function wepos_get_product_price($product)
+{
     $price = $product->get_price();
 
-    if ( $product->is_taxable() ) {
+    if ($product->is_taxable()) {
 
-        if ( WC()->cart->display_prices_including_tax() ) {
-            $row_price        = wc_get_price_including_tax( $product, array( 'qty' => $quantity ) );
-            $product_subtotal = wc_price( $row_price );
+        if (WC()->cart->display_prices_including_tax()) {
+            $row_price        = wc_get_price_including_tax($product, array('qty' => $quantity));
+            $product_subtotal = wc_price($row_price);
 
-            if ( ! wc_prices_include_tax() && WC()->cart->get_subtotal_tax() > 0 ) {
+            if (!wc_prices_include_tax() && WC()->cart->get_subtotal_tax() > 0) {
                 $product_subtotal .= ' <small class="tax_label">' . WC()->countries->inc_tax_or_vat() . '</small>';
             }
         } else {
-            $row_price        = wc_get_price_excluding_tax( $product, array( 'qty' => $quantity ) );
-            $product_subtotal = wc_price( $row_price );
+            $row_price        = wc_get_price_excluding_tax($product, array('qty' => $quantity));
+            $product_subtotal = wc_price($row_price);
 
-            if ( wc_prices_include_tax() && $this->get_subtotal_tax() > 0 ) {
+            if (wc_prices_include_tax() && $this->get_subtotal_tax() > 0) {
                 $product_subtotal .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
             }
         }
     } else {
         $row_price        = $price * $quantity;
-        $product_subtotal = wc_price( $row_price );
+        $product_subtotal = wc_price($row_price);
     }
 
-    return apply_filters( 'woocommerce_cart_product_subtotal', $product_subtotal, $product, $quantity, $this );
+    return apply_filters('woocommerce_cart_product_subtotal', $product_subtotal, $product, $quantity, $this);
 }

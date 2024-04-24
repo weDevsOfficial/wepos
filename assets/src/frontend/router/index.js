@@ -1,5 +1,7 @@
 import Home from "frontend/components/Home.vue";
 import Login from "frontend/components/Login.vue";
+import OrdersHistory from "frontend/components/OrdersHistory.vue";
+import Customers from "../components/Customers.vue";
 
 let Vue = wepos_get_lib("Vue");
 let Router = wepos_get_lib("Router");
@@ -11,12 +13,21 @@ const router = new Router({
             path: "/",
             name: "Home",
             component: Home,
-            extract: true,
         },
         {
             path: "/login",
             name: "Login",
             component: Login,
+        },
+        {
+            path: "/order-history",
+            name: "OrderHistory",
+            component: OrdersHistory,
+        },
+        {
+            path: "/customers",
+            name: "Customers",
+            component: Customers,
         },
     ]),
 });

@@ -49,21 +49,22 @@ export default {
         padding: 0;
         gap: 5px;
         a {
-            background-color: var(--primary-color);
-            color: white;
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
             padding: 8px 20px;
             display: inline-block;
             min-width: 65px;
             text-align: center;
             border-radius: 4px;
-            border: 1px solid transparent;
+
             transition: all 0.25s ease-in;
             cursor: pointer;
             &:hover,
             &.active {
-                border: 1px solid var(--primary-color);
-                color: var(--primary-color);
-                background: white;
+                background-color: var(--primary-color);
+                color: white;
+                border: 1px solid transparent;
             }
         }
     }

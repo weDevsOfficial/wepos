@@ -30,7 +30,8 @@ class Manager
             WEPOS_INCLUDES . '/REST/TaxController.php'      => '\WeDevs\WePOS\REST\TaxController',
             WEPOS_INCLUDES . '/REST/CustomerController.php' => '\WeDevs\WePOS\REST\CustomerController',
             WEPOS_INCLUDES . '/REST/ProductController.php'  => '\WeDevs\WePOS\REST\ProductController',
-            WEPOS_INCLUDES . '/REST/UserController.php'  => '\WeDevs\WePOS\REST\UserController'
+            WEPOS_INCLUDES . '/REST/UserController.php'  => '\WeDevs\WePOS\REST\UserController',
+            WEPOS_INCLUDES . '/REST/OrderController.php'  => '\WeDevs\WePOS\REST\OrderController',
         ));
 
         // Init REST API routes.

@@ -12,6 +12,7 @@ body {
     background-color: #F0F2F4;
     font-size: 14px;
     font-family: "Inter" "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    
 }
 
 [v-cloak] {
@@ -1283,4 +1284,24 @@ div:focus, span:focus, button:focus, input:focus {
     &--baseline {
         align-items: baseline;
     }
+}
+
+.page {
+    &__wrapper {
+        padding: 16px;
+    }
+    &__title {
+        font-size: 25px;
+        margin: 0 0 15px;
+    }
+}
+.vue-table-root .ve-table .ve-table-container .ve-table-content-wrapper table.ve-table-content thead.ve-table-header tr.ve-table-header-tr {
+    height: 50px;
+}
+.vue-table-root .ve-table .ve-table-container .ve-table-content-wrapper table.ve-table-content tbody.ve-table-body tr.ve-table-body-tr, 
+.vue-table-root .ve-table .ve-table-container .ve-table-content-wrapper table.ve-table-content tbody.ve-table-body tr.ve-table-expand-tr {
+    height: 50px;
+}
+.vue-table-root .ve-table .ve-table-container .ve-table-content-wrapper table.ve-table-content thead.ve-table-header tr.ve-table-header-tr th.ve-table-header-th {
+    color: var(--primary-color);
 }

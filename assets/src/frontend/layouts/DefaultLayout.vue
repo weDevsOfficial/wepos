@@ -13,7 +13,14 @@
                         <span class="menu-text">Home</span>
                     </a>
                 </router-link>
-
+                <router-link tag="li" to="/products">
+                    <a>
+                        <span
+                            class="nav-icon flaticon-delivery-package-opened"
+                        ></span>
+                        <span class="menu-text">Products</span>
+                    </a>
+                </router-link>
                 <router-link tag="li" to="/order-history">
                     <a>
                         <span class="nav-icon flaticon-giftbox"></span>
@@ -48,7 +55,7 @@
         .logo {
             padding: 10px;
             img {
-                width: 50px;
+                width: 45px;
                 border-radius: 50%;
             }
 
@@ -64,7 +71,7 @@
             list-style-type: none;
             li {
                 text-align: center;
-                padding: 5px 10px;
+                padding: 10px;
                 &:hover,
                 &.router-link-active {
                     background-color: #2c70e3;

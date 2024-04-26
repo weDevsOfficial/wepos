@@ -32,6 +32,14 @@ export default {
             orderStatus: "any",
             columns: [
                 {
+                    field: "",
+                    key: "index",
+                    title: "#",
+                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                        return `${++rowIndex}`;
+                    },
+                },
+                {
                     field: "order",
                     key: "a",
                     title: "Order",

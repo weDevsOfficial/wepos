@@ -706,3 +706,10 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "https://wedevs.com/"
 msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "In Stock"
+msgstr ""
+
+msgid "Stock Out"
+msgstr ""

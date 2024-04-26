@@ -193,6 +193,16 @@ export default {
 
             return product.stock_quantity > productCartQty;
         },
+        getProductImage(product) {
+            return product.images.length > 0
+                ? product.images[0].woocommerce_thumbnail
+                : wepos.placeholder_image;
+        },
+        getProductImageName(product) {
+            return product.images.length > 0
+                ? product.images[0].name
+                : product.name;
+        },
     },
 
     computed: {

@@ -207,7 +207,7 @@
 <script>
 import { DEFAULT_PAGE_SIZE } from "@/const";
 import DefaultLayout from "../layouts/DefaultLayout.vue";
-import ActionButton from "./ActionButton.vue";
+import ActionsButton from "./ActionsButton.vue";
 
 let Modal = wepos_get_lib("Modal");
 
@@ -241,6 +241,14 @@ export default {
             },
             columns: [
                 {
+                    field: "",
+                    key: "index",
+                    title: "#",
+                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                        return `${++rowIndex}`;
+                    },
+                },
+                {
                     field: "id",
                     key: "id",
                     title: "",
@@ -270,7 +278,7 @@ export default {
                     key: "e",
                     align: "left",
                     renderBodyCell: ({ row, column, rowIndex }, h) => {
-                        return h(ActionButton, {
+                        return h(ActionsButton, {
                             props: { actionId: row["id"] },
                             on: {
                                 onEditAction: this.editCustomer,

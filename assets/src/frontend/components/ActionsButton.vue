@@ -40,7 +40,7 @@
 
 <script>
 export default {
-    name: "ActionButton",
+    name: "ActionsButton",
     props: ["actionId"],
     data() {
         return { show: false };

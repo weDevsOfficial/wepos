@@ -1,29 +1,32 @@
-const webpack = require('webpack');
-const path = require('path');
-const package = require('./package.json');
-const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const { VueLoaderPlugin } = require('vue-loader');
+const webpack = require("webpack");
+const path = require("path");
+const package = require("./package.json");
+const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const { VueLoaderPlugin } = require("vue-loader");
 
 const vendorPackages = Object.keys(package.dependencies);
-vendorPackages.splice(vendorPackages.indexOf('lodash'), 1);
+vendorPackages.splice(vendorPackages.indexOf("lodash"), 1);
 
 // Naming and path settings
 var entryPoint = {
-    frontend: './assets/src/frontend/main.js',
-    admin: './assets/src/admin/main.js',
+    frontend: "./assets/src/frontend/main.js",
+    admin: "./assets/src/admin/main.js",
     vendor: vendorPackages,
-    bootstrap: './assets/src/utils/Bootstrap.js',
-    wphook: './assets/vendors/wp-hook/index.js',
-    style: './assets/less/style.less',
+    bootstrap: "./assets/src/utils/Bootstrap.js",
+    wphook: "./assets/vendors/wp-hook/index.js",
+    style: "./assets/less/style.less",
 };
 
-var exportPath = path.resolve(__dirname, './assets/js');
+var exportPath = path.resolve(__dirname, "./assets/js");
 
-module.exports = ( env, argv ) => {
-    let appName = argv.mode === 'development' ? '[name].js' : '[name].min.js';
-    let appNameCss = argv.mode === 'development' ? '../css/[name].css' : '../css/[name].min.css';
+module.exports = (env, argv) => {
+    let appName = argv.mode === "development" ? "[name].js" : "[name].min.js";
+    let appNameCss =
+        argv.mode === "development"
+            ? "../css/[name].css"
+            : "../css/[name].min.css";
 
     return {
         entry: entryPoint,
@@ -35,29 +38,27 @@ module.exports = ( env, argv ) => {
 
         resolve: {
             alias: {
-                'vue$': 'vue/dist/vue.esm.js',
-                '@': path.resolve('./assets/src/'),
-                'frontend': path.resolve('./assets/src/frontend/'),
-                'admin': path.resolve('./assets/src/admin/'),
-            }
+                vue$: "vue/dist/vue.esm.js",
+                "@": path.resolve("./assets/src/"),
+                frontend: path.resolve("./assets/src/frontend/"),
+                admin: path.resolve("./assets/src/admin/"),
+            },
         },
 
         externals: {
-            _: 'window.wepos._'
+            _: "window.wepos._",
         },
 
         plugins: [
-            new MiniCssExtractPlugin(
-                {
-                    filename: ( { chunk } ) => {
-                        return appNameCss;
-                    },
-                }
-            ),
+            new MiniCssExtractPlugin({
+                filename: ({ chunk }) => {
+                    return appNameCss;
+                },
+            }),
             new VueLoaderPlugin(),
             new webpack.ProvidePlugin({
-                _: '_'
-            })
+                _: "_",
+            }),
         ],
 
         module: {
@@ -66,15 +67,15 @@ module.exports = ( env, argv ) => {
                     test: /\.(js|jsx|ts)$/,
                     exclude: /node_modules/,
                     use: {
-                        loader: 'babel-loader',
+                        loader: "babel-loader",
                     },
                 },
                 {
                     test: /\.vue$/,
-                    loader: 'vue-loader',
+                    loader: "vue-loader",
                     options: {
-                        extractCSS: true
-                    }
+                        extractCSS: true,
+                    },
                 },
                 {
                     test: /\.(le|c)ss$/,
@@ -88,24 +89,24 @@ module.exports = ( env, argv ) => {
                     test: /\.(png|woff|woff2|eot|ttf|svg)$/,
                     use: [
                         {
-                            loader: 'file-loader',
+                            loader: "file-loader",
                             options: {
-                                outputPath: 'fonts',
+                                outputPath: "fonts",
                             },
                         },
                     ],
-                }
-            ]
+                },
+            ],
         },
 
         optimization: {
             minimize: true,
             minimizer: [
                 new TerserPlugin({
-                    extractComments: false
+                    extractComments: false,
                 }),
-                new CssMinimizerPlugin()
+                new CssMinimizerPlugin(),
             ],
         },
-    }
-}
+    };
+};

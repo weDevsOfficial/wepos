@@ -20,7 +20,7 @@
     "lodash": "^4.17.21",
     "v-hotkey": "^0.9.0",
     "v-tooltip": "^2.0.0-rc.33",
-    "vue": "^2.7.8",
+    "vue": "^2.7.16",
     "vue-chartjs": "^3.5.1",
     "vue-easytable": "^2.27.1",
     "vue-js-popover": "^1.2.1",

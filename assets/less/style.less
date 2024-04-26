@@ -6,6 +6,10 @@
     --green-color: #1abc9c;
 
 }
+
+// Components
+@import url('./components/_quick-edit.less');
+
 body {
     margin: 0;
     padding: 0;
@@ -1113,6 +1117,31 @@ div:focus, span:focus, button:focus, input:focus {
     .wepos-modal-content {
         width: 300px !important;
         top: 300px !important;
+    }
+}
+
+.wepos-search  {
+    position: relative;
+    min-width: 320px;
+    input {
+        -webkit-appearance: none;
+        background: #fff;
+        border: none;
+        border-radius: 2px;
+        box-shadow: 0 1px 5px -8px rgba(0, 0, 0, .3);
+        box-sizing: border-box;
+        height: 35px;
+        outline: none;
+        padding: 5px 25px 5px 15px;
+        width: 100%;
+    }
+    span {
+        &.search-icon {
+            color:var(--primary-color);
+    position: absolute;
+    right: 10px;
+    top: 25%;
+        }
     }
 }
 

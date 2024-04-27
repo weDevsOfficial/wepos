@@ -11,7 +11,12 @@
                             <label for="title">{{
                                 __("Title", "wepos")
                             }}</label>
-                            <input id="title" type="text" placeholder="Title" />
+                            <input
+                                id="title"
+                                type="text"
+                                v-model="product.name"
+                                placeholder="Title"
+                            />
                         </div>
                         <div class="form-row">
                             <label>{{ __("Categories", "wepos") }}</label>
@@ -23,15 +28,14 @@
                                     class="wepos-multiselect"
                                     v-model="selectedCategories"
                                     :options="categoriesList"
+                                    :multiple="true"
                                     selectLabel=""
                                     deselectLabel=""
                                     selectedLabel=""
                                     :placeholder="
                                         __('Select categories', 'wepos')
                                     "
-                                    @select="handleCategorySelect"
-                                    @remove="removeCategorySelect"
-                                    track-by="code"
+                                    track-by="name"
                                     label="name"
                                     style="margin-right: 20px"
                                 >
@@ -39,16 +43,23 @@
                                         slot="singleLabel"
                                         slot-scope="props"
                                     >
-                                        <span v-html="props.option.name"></span>
+                                        {{ props.option.name }}
                                     </template>
                                     <template slot="option" slot-scope="props">
-                                        <span v-html="props.option.name"></span>
+                                        <span>
+                                            <template
+                                                v-for="pad in props.option
+                                                    .level"
+                                            >
+                                                &nbsp;
+                                            </template>
+                                            {{ props.option.name }}
+                                        </span>
                                     </template>
+
                                     <template slot="noResult">
                                         <div class="no-data-found">
-                                            {{
-                                                __("No category found", "wepos")
-                                            }}
+                                            {{ __("Not found", "wepos") }}
                                         </div>
                                     </template>
                                 </multiselect>
@@ -68,9 +79,7 @@
                                     deselectLabel=""
                                     selectedLabel=""
                                     :placeholder="__('Select tags', 'wepos')"
-                                    @select="handleTagSelect"
-                                    @remove="removeTagSelect"
-                                    track-by="code"
+                                    track-by="name"
                                     label="name"
                                     style="margin-right: 20px"
                                 >
@@ -94,7 +103,11 @@
                     </div>
                     <div class="right-side wepos-right">
                         <div class="featured-image">
-                            <img alt="" style="width: 100%" />
+                            <img
+                                alt=""
+                                :src="getProductImage(selectedProduct || {})"
+                                tyle="width: 100%"
+                            />
                         </div>
                     </div>
                     <div class="wepos-clearfix"></div>
@@ -103,7 +116,12 @@
                     <h3>{{ __("Product Data", "wepos") }}</h3>
                     <div class="form-row">
                         <label for="sku">{{ __("SKU", "wepos") }}</label>
-                        <input id="sku" type="text" placeholder="SKU" />
+                        <input
+                            id="sku"
+                            type="text"
+                            v-model="product.sku"
+                            placeholder="SKU"
+                        />
                     </div>
                     <div class="form-row">
                         <label for="price">{{ __("Price", "wepos") }}</label>
@@ -112,6 +130,7 @@
                             type="number"
                             min="0"
                             step="any"
+                            v-model="product.price"
                             placeholder="Price"
                         />
                     </div>
@@ -122,6 +141,7 @@
                         <input
                             id="sale_price"
                             type="number"
+                            v-model="product.sale_price"
                             min="0"
                             step="any"
                             placeholder="Sale price"
@@ -135,22 +155,31 @@
                             min="0"
                             step="any"
                             placeholder="Weight"
+                            v-model="product.weight"
                         />
                     </div>
                     <div class="form-row">
                         <label>{{ __("Visibility", "wepos") }}</label>
-                        <select>
-                            <option value="visible">Visible</option>
-                            <option value="catalog">Catalog</option>
-                            <option value="search">Search</option>
-                            <option value="hidden">Hidden</option>
+                        <select v-model="product.catalog_visibility">
+                            <option value="visible">
+                                {{ __("Visible", "wepos") }}
+                            </option>
+                            <option value="catalog">
+                                {{ __("Catalog", "wepos") }}
+                            </option>
+                            <option value="search">
+                                {{ __("Search", "wepos") }}
+                            </option>
+                            <option value="hidden">
+                                {{ __("Hidden", "wepos") }}
+                            </option>
                         </select>
                     </div>
                     <div class="form-row">
                         <label for="manage_stock" class="checkbox"
                             ><input
+                                v-model="product.manage_stock"
                                 id="manage_stock"
-                                v-model="manage_stock"
                                 type="checkbox"
                             />
                             <span class="text">{{
@@ -158,7 +187,10 @@
                             }}</span></label
                         >
                     </div>
-                    <div class="form-row split-row" v-show="manage_stock">
+                    <div
+                        class="form-row split-row"
+                        v-show="product.manage_stock"
+                    >
                         <div class="col-1">
                             <label for="stock_qty">{{
                                 __("Stock Quantity", "wepos")
@@ -166,6 +198,7 @@
                             <input
                                 id="stock_qty"
                                 type="number"
+                                v-model="product.stock_quantity"
                                 min="0"
                                 step="any"
                                 placeholder="0"
@@ -175,7 +208,7 @@
                             <label>{{
                                 __("Allow backorders?", "wepos")
                             }}</label>
-                            <select>
+                            <select v-model="product.backorders">
                                 <option value="no">
                                     {{ __("Do not allow", "wepos") }}
                                 </option>
@@ -200,7 +233,10 @@
             <button class="wepos-btn wepos-left" @click="cancelEdit">
                 {{ __("Cancel", "wepos") }}
             </button>
-            <button class="wepos-btn wepos-primary-button wepos-right">
+            <button
+                class="wepos-btn wepos-btn-primary wepos-right"
+                @click="updateProduct"
+            >
                 {{ __("Update", "wepos") }}
             </button>
             <div class="wepos-clearfix"></div>
@@ -211,26 +247,188 @@
 <script>
 export default {
     name: "QuickEditProduct",
+    props: ["selectedProduct"],
     data() {
         return {
+            product: {
+                name: "",
+                sku: "",
+                price: 0,
+                sale_price: 0,
+                image: "",
+                manage_stock: false,
+                stock_quantity: 0,
+                catalog_visibility: "visible",
+                backordered: false,
+                backorders_allowed: false,
+                backorders: "notify",
+                weight: "",
+            },
             manage_stock: false,
             categoriesList: [],
-            selectedCategories: {},
+            selectedCategories: [],
             tagsList: [],
             selectedTags: {},
         };
     },
     methods: {
-        handleCategorySelect() {},
-        removeCategorySelect() {},
         handleTagSelect() {},
         removeTagSelect() {},
         cancelEdit() {
             this.$emit("onCancel");
         },
-        onUpdateProduct() {
-            this.$emit("onUpdate");
+        updateProduct() {
+            const updateProductData = {
+                ...this.selectedProduct,
+                ...this.product,
+                categories: this.selectedCategories,
+                tags: this.selectedTags,
+                stock_quantity: this.product.stock_quantity || 0,
+                low_stock_amount: this.product.low_stock_amount || 0,
+            };
+
+            var $contentWrap = jQuery(".quick-edit-product-wrap");
+            $contentWrap.block({
+                message: null,
+                overlayCSS: {
+                    background:
+                        "#fff url(" + wepos.ajax_loader + ") no-repeat center",
+                    opacity: 0.4,
+                },
+            });
+
+            wepos.api
+                .post(
+                    wepos.rest.root +
+                        wepos.rest.posversion +
+                        `/products/${this.selectedProduct.id}`,
+                    updateProductData
+                )
+                .done((response) => {
+                    this.onUpdateProduct(true);
+                    $contentWrap.unblock();
+                    this.closeNewCustomerModal();
+                })
+                .fail((response) => {
+                    this.onUpdateProduct(false);
+                    $contentWrap.unblock();
+                });
         },
+        onUpdateProduct(result) {
+            this.$emit("onUpdate", result);
+        },
+        fetchCategories() {
+            wepos.api
+                .get(
+                    wepos.rest.root +
+                        wepos.rest.wcversion +
+                        "/products/categories?hide_empty=true&_fields=id,name,parent_id&per_page=100"
+                )
+                .then((response) => {
+                    response.sort(function (a, b) {
+                        return a.name.localeCompare(b.name);
+                    });
+                    var tree = (function (response, root) {
+                        var r = [],
+                            o = {};
+                        response.forEach(function (a) {
+                            o[a.id] = {
+                                response: a,
+                                children: o[a.id] && o[a.id].children,
+                            };
+                            if (a.parent_id === root) {
+                                r.push(o[a.id]);
+                            } else {
+                                o[a.parent_id] = o[a.parent_id] || {};
+                                o[a.parent_id].children =
+                                    o[a.parent_id].children || [];
+                                o[a.parent_id].children.push(o[a.id]);
+                            }
+                        });
+                        return r;
+                    })(response, null);
+
+                    var selectedCat = {
+                        id: -1,
+                        level: 0,
+                        name: this.__("All categories", "wepos"),
+                        parent_id: null,
+                    };
+                    var sorted = tree.reduce(
+                        (function traverse(level) {
+                            return function (r, a) {
+                                a.response.level = level;
+                                return r.concat(
+                                    a.response,
+                                    (a.children || []).reduce(
+                                        traverse(level + 1),
+                                        []
+                                    )
+                                );
+                            };
+                        })(0),
+                        []
+                    );
+                    this.categoriesList = sorted;
+                    this.categoriesList.unshift(selectedCat);
+                });
+        },
+        fetchTags() {
+            wepos.api
+                .get(
+                    wepos.rest.root +
+                        wepos.rest.wcversion +
+                        "/products/tags?hide_empty=false&_fields=id,name&per_page=100"
+                )
+                .then((response) => {
+                    response.sort(function (a, b) {
+                        return a.name.localeCompare(b.name);
+                    });
+                    this.tagsList = response;
+                });
+        },
+        prepareProductData() {
+            const {
+                name,
+                sku,
+                price,
+                sale_price,
+                image,
+                manage_stock,
+                stock_quantity,
+                backordered,
+                backorders_allowed,
+                backorders,
+                catalog_visibility,
+                weight,
+                categories,
+                tags,
+                ...restProps
+            } = this.selectedProduct;
+            this.product = {
+                name,
+                sku,
+                price,
+                sale_price,
+                image,
+                manage_stock,
+                stock_quantity,
+                catalog_visibility,
+                backordered,
+                backorders_allowed,
+                backorders,
+                catalog_visibility,
+                weight,
+            };
+            this.selectedCategories = categories;
+            this.selectedTags = tags;
+        },
+    },
+
+    created() {
+        this.fetchCategories();
+        this.fetchTags();
+        this.prepareProductData();
     },
 };
 </script>

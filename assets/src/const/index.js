@@ -4,3 +4,9 @@ export const STOCK_MAPPERS = {
     instock: "In Stock",
     outofoutofstock: "Stock Out",
 };
+
+export const ALLOW_BACKORDERS = [
+    { value: "no", name: "Do not allow" },
+    { value: "notify", name: "Allow, but notify customer" },
+    { value: "yes", name: "Allow" },
+];

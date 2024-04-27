@@ -41,8 +41,10 @@
         </div>
         <!-- quick edit -->
         <quick-edit
-            v-show="showQuickEdit"
+            v-if="showQuickEdit"
             @onCancel="cancelQuickEdit"
+            @onUpdate="updateQuickEdit"
+            :selected-product="selectedProduct"
         ></quick-edit>
     </default-layout>
 </template>
@@ -60,6 +62,7 @@ export default {
     components: { DefaultLayout, Modal, QuickEdit },
     data() {
         return {
+            selectedProduct: {},
             showQuickEdit: false,
             isDisabled: false,
             showNewCustomerModal: false,
@@ -76,7 +79,7 @@ export default {
                     field: "",
                     key: "index",
                     title: "#",
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    renderBodyCell: ({ rowIndex }, h) => {
                         return `${++rowIndex}`;
                     },
                 },
@@ -84,7 +87,7 @@ export default {
                     field: "image",
                     key: "image",
                     title: "Image",
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    renderBodyCell: ({ row }, h) => {
                         return h("img", {
                             attrs: { src: row["image"], width: 65 },
                         });
@@ -101,7 +104,7 @@ export default {
                     key: "stock",
                     title: "Stock",
                     align: "left",
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    renderBodyCell: ({ row }, h) => {
                         return h(
                             "span",
                             {
@@ -117,7 +120,7 @@ export default {
                     key: "price",
                     title: "Price",
                     align: "left",
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    renderBodyCell: ({ row }, h) => {
                         const productId = row["id"];
                         const prices = this.productPrice[productId];
                         const priceFrom = prices[0];
@@ -142,7 +145,7 @@ export default {
                     key: "e",
                     align: "left",
                     width: 80,
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    renderBodyCell: ({ row }, h) => {
                         return h(ActionsButton, {
                             props: { actionId: row["id"] },
                             on: {
@@ -168,6 +171,19 @@ export default {
         cancelQuickEdit() {
             this.showQuickEdit = false;
         },
+        updateQuickEdit(result) {
+            if (result) {
+                this.showQuickEdit = false;
+                this.success({
+                    title: this.__("Updated product successfully", "wepos"),
+                });
+                this.startFetchProducts(1);
+            } else {
+                this.error({
+                    title: this.__("Update product failed", "wepos"),
+                });
+            }
+        },
         confirmDeleteProduct() {
             this.showLoading();
             wepos.api
@@ -190,17 +206,8 @@ export default {
             this.selectedProductId = productId;
             this.isEditProduct = true;
             if (this.productByKey[productId]) {
-                this.customer = this.productByKey[productId];
-                if (wepos.countries[this.customer.country]) {
-                    this.selectedCountry = {
-                        code: this.customer.country,
-                        name: wepos.countries[this.customer.country],
-                    };
-                }
+                this.selectedProduct = this.productByKey[productId];
             }
-            if (wepos.countries) {
-            }
-            this.showNewCustomerModal = true;
         },
         deleteProduct(productId) {
             this.selectedProductId = productId;

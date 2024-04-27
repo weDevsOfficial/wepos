@@ -137,11 +137,16 @@ export default {
                 confirmButtonText: this.__("Confirm", "wepos"),
             });
         },
-
-        toast({ title, type = "", position = "" }) {
+        success({ title, position = "top-right" }) {
+            this.toast({ title, type: "success" });
+        },
+        error({ title, position = "top-right" }) {
+            this.toast({ title, type: "error" });
+        },
+        toast({ title, type = "", position = "top-right" }) {
             const toast = this.$swal.mixin({
                 toast: true,
-                position: "top-right",
+                position,
                 showConfirmButton: false,
                 timer: 2000,
                 timerProgressBar: true,
@@ -194,8 +199,8 @@ export default {
             return product.stock_quantity > productCartQty;
         },
         getProductImage(product) {
-            return product.images.length > 0
-                ? product.images[0].woocommerce_thumbnail
+            return product?.images.length > 0
+                ? product?.images[0].woocommerce_thumbnail
                 : wepos.placeholder_image;
         },
         getProductImageName(product) {

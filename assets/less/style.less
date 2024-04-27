@@ -773,18 +773,18 @@ div:focus, span:focus, button:focus, input:focus {
     }
 
     &.wepos-btn-primary {
-        background: #1A9ED4;
+        background: var(--primary-color);
         color: #fff;
-        border: none;
         &:hover {
-            color: #fff;
-            background: #29ace2;
-            border: none;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            background: #fff;
         }
         &:disabled {
-            background: #33a9da;
+            background: #adadad;
             color: #eee;
             cursor: no-drop;
+            border:none;
         }
     }
 

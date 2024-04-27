@@ -47,11 +47,12 @@ export default {
     },
     methods: {
         editAction() {
-            this.togglePopover();
+            this.show = false;
+
             this.$emit("onEditAction", this.actionId);
         },
         deleteAction() {
-            this.togglePopover();
+            this.show = false;
             this.$emit("onDeleteAction", this.actionId);
         },
         togglePopover() {

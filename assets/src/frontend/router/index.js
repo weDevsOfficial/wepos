@@ -1,7 +1,8 @@
 import Home from "frontend/components/Home.vue";
 import Login from "frontend/components/Login.vue";
-import OrdersHistory from "frontend/components/OrdersHistory.vue";
+import Orders from "frontend/components/Orders.vue";
 import Customers from "../components/Customers.vue";
+import OrderDetail from "../components/OrderDetail.vue";
 import Products from "../components/Products.vue";
 
 let Vue = wepos_get_lib("Vue");
@@ -25,11 +26,18 @@ const router = new Router({
             name: "Products",
             component: Products,
         },
+
         {
-            path: "/order-history",
-            name: "OrderHistory",
-            component: OrdersHistory,
+            path: "/orders",
+            name: "Orders",
+            component: Orders,
         },
+        {
+            path: "/orders/:orderId(\\d+)",
+            name: "OrderDetail",
+            component: OrderDetail,
+        },
+
         {
             path: "/customers",
             name: "Customers",

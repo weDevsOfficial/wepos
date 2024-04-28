@@ -3,7 +3,11 @@
         <div class="page page__wrapper">
             <h1 class="page__title">{{ __("Orders", "wepos") }}</h1>
             <filter-order @onOrderFilterSelected="selectProductFilter" />
-            <ve-table :columns="columns" :table-data="tableData" />
+            <ve-table
+                :columns="columns"
+                :table-data="tableData"
+                :columnHiddenOption="columnHiddenOption"
+            />
             <div class="table-pagination">
                 <ve-pagination
                     :total="totalPages"
@@ -21,21 +25,43 @@
 </template>
 
 <script>
-import { DEFAULT_PAGE_SIZE } from "@/const";
+import { DEFAULT_PAGE_SIZE, ORDER_STATUS } from "@/const";
 import DefaultLayout from "../layouts/DefaultLayout.vue";
 import FilterOrder from "./FilterOrder.vue";
+import ActionsButton from "./OrderActionsButton.vue";
+
 export default {
-    name: "OrderHistory",
-    components: { DefaultLayout, FilterOrder },
+    name: "Orders",
+    components: { DefaultLayout, FilterOrder, ActionsButton },
     data() {
         return {
+            selectedOrderId: 0,
             orderStatus: "any",
+            columnHiddenOption: {
+                // default hidden column keys
+                defaultHiddenColumnKeys: ["id"],
+            },
             columns: [
+                {
+                    field: "id",
+                    key: "id",
+                    title: "",
+                },
                 {
                     field: "",
                     key: "index",
                     title: "#",
                     renderBodyCell: ({ row, column, rowIndex }, h) => {
+                        return h(
+                            "router-link",
+                            {
+                                props: { actionId: row["id"] },
+                                attrs: {
+                                    to: `/orders/${row["id"]}`,
+                                },
+                            },
+                            [++rowIndex]
+                        );
                         return `${++rowIndex}`;
                     },
                 },
@@ -51,7 +77,15 @@ export default {
                     title: "Total",
                     align: "left",
                 },
-                { field: "status", key: "c", title: "Status", align: "left" },
+                {
+                    field: "status",
+                    key: "c",
+                    title: "Status",
+                    align: "left",
+                    renderBodyCell: ({ row }) => {
+                        return `${ORDER_STATUS[row["status"]]}`;
+                    },
+                },
                 {
                     field: "customer",
                     key: "d",
@@ -60,6 +94,21 @@ export default {
                 },
                 { field: "gateway", key: "e", title: "Gateway", align: "left" },
                 { field: "date", key: "f", title: "Date", align: "left" },
+                {
+                    field: "",
+                    key: "actions",
+                    title: "",
+                    width: 80,
+                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                        return h(ActionsButton, {
+                            props: { actionId: row["id"] },
+                            on: {
+                                onEditAction: this.editOrder,
+                                onRefundAction: this.refundOrder,
+                            },
+                        });
+                    },
+                },
             ],
             tableData: [],
             page: 1,
@@ -71,6 +120,22 @@ export default {
         };
     },
     methods: {
+        confirmRefundOrder() {},
+        async editOrder(orderId) {
+            this.$router.push(`/orders/${orderId}`);
+        },
+        refundOrder(orderId) {
+            this.selectedOrderId = orderId;
+            this.confirmAlert({
+                title: this.__("Are you sure", "wepos"),
+                text: this.__("You want to refund this order?", "wepos"),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.confirmRefundOrder();
+                }
+            });
+        },
+
         startFetchOrders() {
             this.tableData = [];
             this.fetchOrders();
@@ -97,14 +162,15 @@ export default {
         appendOrders(orders) {
             orders.forEach((order) => {
                 const orderData = {
+                    id: order.id,
                     order: `Order #${order.id}`,
-                    total: `${order.total} ${order.currency_symbol}`,
+                    total: this.formatPrice(order.total),
                     status: order.status,
                     date: this.formatDate(order.date_created),
                     gateway: order.payment_method_title,
                     customer: order.customer_id
                         ? `${order.billing.first_name} ${order.billing.last_name}`
-                        : "Guest user",
+                        : this.__("Guest user", "wepos"),
                 };
                 this.tableData = this.tableData.concat(orderData);
             });

@@ -244,7 +244,7 @@ export default {
                     field: "",
                     key: "index",
                     title: "#",
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    renderBodyCell: ({ rowIndex }, h) => {
                         return `${++rowIndex}`;
                     },
                 },
@@ -277,7 +277,8 @@ export default {
                     title: "Action",
                     key: "e",
                     align: "left",
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    width: 80,
+                    renderBodyCell: ({ row }, h) => {
                         return h(ActionsButton, {
                             props: { actionId: row["id"] },
                             on: {
@@ -477,6 +478,7 @@ export default {
                 city: "",
                 phone: "",
             };
+            this.stateList = [];
             this.selectedState = null;
             this.selectedCountry = null;
             this.showNewCustomerModal = false;

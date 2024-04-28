@@ -9,6 +9,8 @@
 
 // Components
 @import url('./components/_quick-edit.less');
+@import url('./components/_general.less');
+@import url('./components/_table.less');
 
 body {
     margin: 0;
@@ -771,7 +773,13 @@ div:focus, span:focus, button:focus, input:focus {
             background: #fafafa;
         }
     }
-
+    &.wepos-btn-danger {
+        background: #ff3f3f;
+        color: #fff;
+        &:hover {
+            opacity: .75;
+        }
+    }
     &.wepos-btn-primary {
         background: var(--primary-color);
         color: #fff;

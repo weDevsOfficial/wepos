@@ -21,7 +21,7 @@
                         <span class="menu-text">Products</span>
                     </a>
                 </router-link>
-                <router-link tag="li" to="/order-history">
+                <router-link tag="li" to="/orders">
                     <a>
                         <span class="nav-icon flaticon-giftbox"></span>
                         <span class="menu-text">Orders</span>
@@ -32,6 +32,12 @@
                     <a>
                         <span class="nav-icon flaticon-user-1"></span>
                         <span class="menu-text">Customers</span>
+                    </a>
+                </router-link>
+                <router-link tag="li" to="/reports">
+                    <a>
+                        <span class="nav-icon flaticon-report"></span>
+                        <span class="menu-text">Reports</span>
                     </a>
                 </router-link>
             </ul>
@@ -104,6 +110,16 @@
             }
             ul li {
                 text-align: left;
+                a {
+                    display: flex;
+                    align-items: center;
+                    margin-right: 10px;
+                    span.flaticon-report {
+                        &::before {
+                            display: block;
+                        }
+                    }
+                }
             }
         }
     }
@@ -113,6 +129,8 @@
         padding: 10px;
         z-index: 10;
         flex-grow: 1;
+        height: calc(100vh);
+        overflow-y: scroll;
         @media (max-width: 780px) {
             height: 100vh;
             overflow-y: scroll;

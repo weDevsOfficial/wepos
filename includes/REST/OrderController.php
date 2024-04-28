@@ -36,6 +36,33 @@ class OrderController extends \WC_REST_Orders_Controller
             ),
             'schema' => array($this, 'get_item_schema'),
         ));
+        register_rest_route(
+            $this->namespace,
+            '/' . $this->base . '/(?P<id>[\d]+)',
+            array(
+                'args'   => array(
+                    'id' => array(
+                        'description' => __('Unique identifier for the resource.', 'woocommerce'),
+                        'type'        => 'integer',
+                    ),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array($this, 'get_item'),
+                    'permission_callback' => array($this, 'get_item_permissions_check'),
+                    'args'                => array(
+                        'context' => $this->get_context_param(array('default' => 'view')),
+                    ),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array($this, 'update_item'),
+                    'permission_callback' => array($this, 'update_item_permissions_check'),
+                    'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE),
+                ),
+                'schema' => array($this, 'get_public_item_schema'),
+            )
+        );
     }
 
     /**

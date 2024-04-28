@@ -10,3 +10,13 @@ export const ALLOW_BACKORDERS = [
     { value: "notify", name: "Allow, but notify customer" },
     { value: "yes", name: "Allow" },
 ];
+
+export const ORDER_STATUS = {
+    pending: "Pending",
+    processing: "Processing",
+    "on-hold": "On hold",
+    completed: "Completed",
+    cancelled: "Cancelled",
+    refunded: "Refunded",
+    failed: "Failed",
+};

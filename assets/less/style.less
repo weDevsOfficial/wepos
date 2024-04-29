@@ -752,7 +752,7 @@ div:focus, span:focus, button:focus, input:focus {
     font-size: 14px;
     text-decoration: none;
     padding: 0px 10px;
-    border-radius: 3px;
+    border-radius: 4px;
     border: 1px solid #E2E2E2;
     display: inline-block;
     height: 28px;
@@ -795,7 +795,20 @@ div:focus, span:focus, button:focus, input:focus {
             border:none;
         }
     }
-
+    &.wepos-btn-back {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        span {
+            &::before {
+                font-size: 15px!important;
+            }
+        }
+        
+    }
     &.wepos-btn-large {
         font-size: 16px;
         padding: 0 35px;

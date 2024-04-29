@@ -1,5 +1,5 @@
 <template>
-    <default-layout>
+    <div>
         <div class="page page__wrapper product__wrapper">
             <div class="flex align--center page__actions justify--sb">
                 <div class="flex page__actions--left">
@@ -24,7 +24,6 @@
                 :table-data="tableData"
                 :columnHiddenOption="columnHiddenOption"
                 max-height="max(calc(100vh - 150px), 400px)"
-                min-height="400px"
             />
             <div class="table-pagination">
                 <ve-pagination
@@ -46,12 +45,12 @@
             @onUpdate="updateQuickEdit"
             :selected-product="selectedProduct"
         ></quick-edit>
-    </default-layout>
+    </div>
 </template>
 
 <script>
 import { DEFAULT_PAGE_SIZE, STOCK_MAPPERS } from "@/const";
-import DefaultLayout from "../layouts/DefaultLayout.vue";
+
 import ActionsButton from "./ActionsButton.vue";
 import QuickEdit from "./QuickEditProduct.vue";
 
@@ -59,7 +58,7 @@ let Modal = wepos_get_lib("Modal");
 
 export default {
     name: "Customers",
-    components: { DefaultLayout, Modal, QuickEdit },
+    components: { Modal, QuickEdit },
     data() {
         return {
             selectedProduct: {},

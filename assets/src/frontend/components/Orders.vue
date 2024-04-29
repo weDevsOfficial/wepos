@@ -1,44 +1,42 @@
 <template>
-    <default-layout>
-        <div class="page page__wrapper">
-            <h1 class="page__title">{{ __("Orders", "wepos") }}</h1>
-            <filter-order @onOrderFilterSelected="selectProductFilter" />
-            <ve-table
-                :columns="columns"
-                :table-data="tableData"
-                :columnHiddenOption="columnHiddenOption"
+    <div class="page page__wrapper">
+        <h1 class="page__title">{{ __("Orders", "wepos") }}</h1>
+        <filter-order @onOrderFilterSelected="selectProductFilter" />
+        <ve-table
+            :columns="columns"
+            :table-data="tableData"
+            :columnHiddenOption="columnHiddenOption"
+            max-height="max(calc(100vh - 200px), 400px)"
+        />
+        <div class="table-pagination">
+            <ve-pagination
+                :total="totalPages"
+                :page-index="pageIndex"
+                :page-size="pageSize"
+                @on-page-number-change="pageNumberChange"
+                @on-page-size-change="pageSizeChange"
             />
-            <div class="table-pagination">
-                <ve-pagination
-                    :total="totalPages"
-                    :page-index="pageIndex"
-                    :page-size="pageSize"
-                    @on-page-number-change="pageNumberChange"
-                    @on-page-size-change="pageSizeChange"
-                />
-            </div>
-            <div v-show="!orderLoading && showEmpty" class="empty-data">
-                Data Empty.
-            </div>
         </div>
-    </default-layout>
+        <div v-show="!orderLoading && showEmpty" class="empty-data">
+            {{ __("Data Empty", "wepos") }}.
+        </div>
+    </div>
 </template>
 
 <script>
 import { DEFAULT_PAGE_SIZE, ORDER_STATUS } from "@/const";
-import DefaultLayout from "../layouts/DefaultLayout.vue";
+
 import FilterOrder from "./FilterOrder.vue";
 import ActionsButton from "./OrderActionsButton.vue";
 
 export default {
     name: "Orders",
-    components: { DefaultLayout, FilterOrder, ActionsButton },
+    components: { FilterOrder, ActionsButton },
     data() {
         return {
             selectedOrderId: 0,
             orderStatus: "any",
             columnHiddenOption: {
-                // default hidden column keys
                 defaultHiddenColumnKeys: ["id"],
             },
             columns: [
@@ -51,17 +49,7 @@ export default {
                     field: "",
                     key: "index",
                     title: "#",
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
-                        return h(
-                            "router-link",
-                            {
-                                props: { actionId: row["id"] },
-                                attrs: {
-                                    to: `/orders/${row["id"]}`,
-                                },
-                            },
-                            [++rowIndex]
-                        );
+                    renderBodyCell: ({ rowIndex }) => {
                         return `${++rowIndex}`;
                     },
                 },
@@ -99,7 +87,7 @@ export default {
                     key: "actions",
                     title: "",
                     width: 80,
-                    renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    renderBodyCell: ({ row }, h) => {
                         return h(ActionsButton, {
                             props: { actionId: row["id"] },
                             on: {
@@ -121,7 +109,7 @@ export default {
     },
     methods: {
         confirmRefundOrder() {},
-        async editOrder(orderId) {
+        editOrder(orderId) {
             this.$router.push(`/orders/${orderId}`);
         },
         refundOrder(orderId) {
@@ -140,13 +128,10 @@ export default {
             this.tableData = [];
             this.fetchOrders();
         },
-        // page number change
         pageNumberChange(pageIndex) {
             this.page = pageIndex;
             this.startFetchOrders();
         },
-
-        // page size change
         pageSizeChange(pageSize) {
             this.page = 1;
             this.pageSize = pageSize;

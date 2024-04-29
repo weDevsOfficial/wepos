@@ -1,5 +1,5 @@
 <template>
-    <default-layout>
+    <div>
         <div class="page page__wrapper">
             <div class="flex align--center page__actions justify--sb">
                 <div class="flex page__actions--left">
@@ -201,7 +201,7 @@
                 </button>
             </template>
         </modal>
-    </default-layout>
+    </div>
 </template>
 
 <script>

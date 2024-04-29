@@ -16,11 +16,11 @@
                 <div>
                     <ul>
                         <li>
-                            <a href="#" @click="editAction"
+                            <router-link :to="`/orders/${actionId}`"
                                 ><span
                                     class="flaticon-empty-cart quick-menu-icon"
                                 ></span
-                                >{{ __("View Details", "wepos") }}</a
+                                >{{ __("View Details", "wepos") }}</router-link
                             >
                         </li>
                         <li>

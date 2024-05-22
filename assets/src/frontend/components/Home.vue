@@ -1235,6 +1235,17 @@ export default {
                         }
                     }
 
+                    .clear-button {
+                        color: #BDC0C9;
+                        background-color: transparent;
+                        border: none;
+                        height: 35px;
+
+                        &:hover {
+                            color: #E9485E;
+                        }
+                    }
+
                     .search-type {
                         position: absolute;
                         top: 0px;

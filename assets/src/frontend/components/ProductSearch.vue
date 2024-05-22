@@ -5,6 +5,7 @@
             <span class="search-icon flaticon-musica-searcher" v-if="mode == 'product'"></span>
             <span class="search-icon flaticon-supermarket-scanner" v-if="mode == 'scan'"></span>
             <div class="search-type" v-hotkey="hotkeys">
+                <button type="button" class="clear-button" v-if="serachInput != ''" @click="clearSearch">X</button>
                 <a href="#" :class="{ active: mode == 'product'}" @click.prevent="changeMode('product')">{{ __( 'Product', 'wepos' ) }}</a>
                 <a href="#" :class="{ active: mode == 'scan'}" @click.prevent="changeMode('scan')">{{ __( 'Scan', 'wepos' ) }}</a>
             </div>
@@ -153,6 +154,11 @@ export default {
             this.showVariationModal = false;
             this.changeMode('scan');
             this.$refs.productSearch.blur();
+        },
+
+        clearSearch() {
+            this.searchClose();
+            this.serachInput = '';
         },
 
         onKeyDown() {

@@ -33,6 +33,13 @@ class ProductsLogController extends \WP_REST_Controller {
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => [ $this, 'get_items' ],
                 'permission_callback' => [ $this, 'get_items_permission' ],
+                'args' => array(
+                    'id' => [
+                        'description' => __( 'Unique identifier for the object.', 'wepos' ),
+                        'type'        => 'integer',
+                        'required'    => true,
+                    ],
+                ),
             ],
             [
                 'methods'             => \WP_REST_Server::EDITABLE,

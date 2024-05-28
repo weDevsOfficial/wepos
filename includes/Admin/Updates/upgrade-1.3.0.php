@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Updater function for wePOS v1.2.7.
+ * Updater function for wePOS v1.3.0.
  *
  * @since WEPOS_LITE_SINCE
  *
  * @return void
  */
-function wepos_1_2_7_updates() {
+function wepos_1_3_0_updates() {
     wepos_create_product_log_tables();
 }
 
@@ -58,4 +58,4 @@ function wepos_create_product_log_tables() {
     }
 }
 
-wepos_1_2_7_updates();
+wepos_1_3_0_updates();

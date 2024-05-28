@@ -974,8 +974,6 @@ export default {
 
                     fetchingToast.title = this.__( 'Products refreshed successfully!', 'wepos' );
                     fetchingToast.type  = 'success';
-                } else {
-
                 }
             } ).fail( ( response, status, xhr ) => {
                 fetchingToast.title = this.__( 'Failed to refresh products!', 'wepos' );

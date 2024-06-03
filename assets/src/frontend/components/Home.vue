@@ -837,7 +837,7 @@ export default {
                                 id: response.payment_method,
                                 title: response.payment_method_title
                             },
-                            order_id: response.id,
+                            order_id: response.number,
                             order_date: response.date_created,
                             cashamount: this.cashAmount.toString(),
                             changeamount: this.changeAmount.toString()

@@ -272,28 +272,9 @@ final class WePOS {
      * @return void
      */
     public function activate() {
-        $installed = get_option( 'we_pos_installed' );
+        $installer = new WeDevs\WePOS\Installer();
 
-        if ( ! $installed ) {
-            update_option( 'we_pos_installed', time() );
-        }
-
-        if ( function_exists( 'dokan' ) ) {
-            $users_query = new WP_User_Query( [
-                'role__in' => [ 'seller', 'vendor_staff' ]
-            ] );
-            $users       = $users_query->get_results();
-
-            if ( count( $users ) > 0 ) {
-                foreach ( $users as $user ) {
-                    $user->add_cap( 'publish_shop_orders' );
-                    $user->add_cap( 'list_users' );
-                }
-            }
-        }
-
-        update_option( 'we_pos_version', WEPOS_VERSION );
-        set_transient( 'wepos-flush-rewrites', 1 );
+        $installer->run();
     }
 
     /**
@@ -304,17 +285,9 @@ final class WePOS {
      * @return void
      */
     public function deactivate() {
-        $users_query = new WP_User_Query( [
-            'role__in' => [ 'seller', 'vendor_staff' ]
-        ] );
-        $users = $users_query->get_results();
+        $uninstaller = new WeDevs\WePOS\Uninstaller();
 
-        if ( count( $users ) > 0 ) {
-            foreach ( $users as $user ) {
-                $user->remove_cap( 'publish_shop_orders' );
-                $user->remove_cap( 'list_users' );
-            }
-        }
+        $uninstaller->run();
     }
 
     /**
@@ -357,9 +330,11 @@ final class WePOS {
             $this->container['dokan'] = new WeDevs\WePOS\Dokan();
         }
 
-        $this->container['common'] = new WeDevs\WePOS\Common();
-        $this->container['rest']   = new WeDevs\WePOS\REST\Manager();
-        $this->container['assets'] = new WeDevs\WePOS\Assets();
+        $this->container['common']       = new WeDevs\WePOS\Common();
+        $this->container['rest']         = new WeDevs\WePOS\REST\Manager();
+        $this->container['assets']       = new WeDevs\WePOS\Assets();
+        $this->container['products_log'] = new WeDevs\WePOS\ProductsLog();
+        $this->container['ajax']         = new WeDevs\WePOS\Ajax();
 
         // Payment gateway manager
         $this->container['gateways'] = new \WeDevs\WePOS\Gateways\Manager();

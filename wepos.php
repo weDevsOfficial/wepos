@@ -272,28 +272,9 @@ final class WePOS {
      * @return void
      */
     public function activate() {
-        $installed = get_option( 'we_pos_installed' );
+        $installer = new WeDevs\WePOS\Installer();
 
-        if ( ! $installed ) {
-            update_option( 'we_pos_installed', time() );
-        }
-
-        if ( function_exists( 'dokan' ) ) {
-            $users_query = new WP_User_Query( [
-                'role__in' => [ 'seller', 'vendor_staff' ]
-            ] );
-            $users       = $users_query->get_results();
-
-            if ( count( $users ) > 0 ) {
-                foreach ( $users as $user ) {
-                    $user->add_cap( 'publish_shop_orders' );
-                    $user->add_cap( 'list_users' );
-                }
-            }
-        }
-
-        update_option( 'we_pos_version', WEPOS_VERSION );
-        set_transient( 'wepos-flush-rewrites', 1 );
+        $installer->run();
     }
 
     /**
@@ -349,6 +330,7 @@ final class WePOS {
             new WeDevs\WePOS\Admin\Products();
             new WeDevs\WePOS\Admin\Updates();
             new WeDevs\WePOS\Admin\LimitedTimePromotion();
+            new WeDevs\WePOS\Admin\Discounts();
         } else {
             $this->container['frontend'] = new WeDevs\WePOS\Frontend();
         }

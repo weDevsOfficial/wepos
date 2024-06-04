@@ -386,7 +386,11 @@ final class WePOS {
      * @return void
      */
     public function appsero_init_tracker_wepos() {
-        $client = new Appsero\Client( '48fa1273-3e91-4cd6-9c07-d18ad6bc2f54', 'wePos', __FILE__ );
+        if ( ! class_exists( 'WeDevs\WePOS\Dependencies\Appsero\Client' ) ) {
+            return;
+        }
+
+        $client = new WeDevs\WePOS\Dependencies\Appsero\Client( '48fa1273-3e91-4cd6-9c07-d18ad6bc2f54', 'wePos', __FILE__ );
 
         // Active insights
         $client->insights()

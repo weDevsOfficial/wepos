@@ -76,6 +76,7 @@ final class WePOS {
         require_once __DIR__ . '/vendor/autoload.php';
 
         $this->define_constants();
+        $this->includes();
 
         register_activation_hook( __FILE__, [ $this, 'activate' ] );
         register_deactivation_hook( __FILE__, [ $this, 'deactivate' ] );
@@ -130,8 +131,6 @@ final class WePOS {
         if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
             return;
         }
-
-        require_once WEPOS_INCLUDES . '/functions.php';
     }
 
     /**
@@ -258,7 +257,6 @@ final class WePOS {
      * @return void
      */
     public function init_plugin() {
-        $this->includes();
         $this->init_hooks();
 
         do_action( 'wepos_loaded' );

@@ -53,7 +53,7 @@ class Installer {
      */
     private function add_user_roles() {
         if ( function_exists( 'dokan' ) ) {
-            $users_query = new WP_User_Query( [
+            $users_query = new \WP_User_Query( [
                 'role__in' => [ 'seller', 'vendor_staff' ],
             ] );
             $users       = $users_query->get_results();

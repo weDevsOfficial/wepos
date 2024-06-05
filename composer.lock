@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e4887978d1d1ba1cd4b89483804cef80",
+    "content-hash": "27e02975995a4bd995d2583eb526dcd8",
     "packages": [
         {
             "name": "appsero/client",
@@ -59,43 +59,6 @@
                 "source": "https://github.com/Appsero/client/tree/v2.0.2"
             },
             "time": "2024-01-30T08:15:01+00:00"
-        },
-        {
-            "name": "appsero/updater",
-            "version": "v1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Appsero/updater.git",
-                "reference": "541cf090d42a9354aee2cf6438b3eee0e5e34a99"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Appsero/updater/zipball/541cf090d42a9354aee2cf6438b3eee0e5e34a99",
-                "reference": "541cf090d42a9354aee2cf6438b3eee0e5e34a99",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Appsero\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tareq Hasan",
-                    "email": "tareq@appsero.com"
-                }
-            ],
-            "description": "Appsero client updater module",
-            "support": {
-                "issues": "https://github.com/Appsero/updater/issues",
-                "source": "https://github.com/Appsero/updater/tree/v1.0.0"
-            },
-            "time": "2023-12-06T08:32:44+00:00"
         }
     ],
     "packages-dev": [
@@ -1633,7 +1596,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-json": "*"
     },
     "platform-dev": [],

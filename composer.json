@@ -12,7 +12,6 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.4",
-    "appsero/updater": "^v1.0.0",
     "appsero/client": "^v2.0.2",
     "ext-json": "*"
   },
@@ -34,7 +33,6 @@
       "classmap_directory": "/dependencies/classes/",
       "classmap_prefix": "WeDevs_WePOS_",
       "packages": [
-        "appsero/updater",
         "appsero/client"
       ],
       "excluded_packages": [

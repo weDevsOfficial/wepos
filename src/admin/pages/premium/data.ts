@@ -18,6 +18,13 @@ export const UPGRADE_URL = 'https://dokan.co/wordpress/wepos/pricing/';
 export const DOKAN_POS_DOC_URL =
 	'https://dokan.co/docs/wepos/tutorials/how-to-use-wepos-with-dokan/';
 
+/**
+ * YouTube id played in the Dokan section's video frame. The Figma frame is a
+ * video placeholder with no source attached — this is the wePOS overview video
+ * from readme.txt; swap the id when the Dokan POS walkthrough is published.
+ */
+export const DOKAN_POS_VIDEO_ID = '9zURW3eo5y4';
+
 /** Coupon advertised in the hero banner. */
 export const COUPON_CODE = 'Upgrade2Pro';
 

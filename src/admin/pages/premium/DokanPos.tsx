@@ -18,7 +18,7 @@ const DokanPos = () => (
 			<img
 				src={ premiumAsset( 'dokan-pos.png' ) }
 				alt={ __( 'wePOS running as a Dokan vendor POS', 'wepos' ) }
-				className="block aspect-[16/9] w-full object-cover"
+				className="block max-h-[562px] w-full object-cover"
 			/>
 		</div>
 

@@ -11,10 +11,10 @@ const TrustedBy = () => (
 			<img
 				src={ premiumAsset( 'trusted-logos.svg' ) }
 				alt={ __(
-					'Dokan, WP User Frontend, WP ERP, WP Project Manager, FlyWP, WP Hive, weMail, Appsero, weDocs, wePOS and InboxWP',
+					'Dokan, WP User Frontend, WP ERP, WP Project Manager Pro, FlyWP, WP Hive and weMail',
 					'wepos'
 				) }
-				className="block h-[42px] w-full min-w-[1013px] object-contain"
+				className="mx-auto block h-[42px] w-[1013px] max-w-none"
 			/>
 		</div>
 	</section>

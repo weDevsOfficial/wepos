@@ -5,7 +5,6 @@ import {
   PopoverTrigger,
   PopoverContent,
   Button,
-  PopoverClose,
   SmartSelect,
 } from '@wedevs/plugin-ui';
 import { __ } from '@wordpress/i18n';
@@ -20,7 +19,8 @@ import {
 
 interface ProductVariationSelectorProps {
   product: POSProduct;
-  onAddToCart: (cartItem: CartItem) => void;
+  // Returns false when the cart rejected the item (stock / sold individually).
+  onAddToCart: (cartItem: CartItem) => boolean | void;
   children: React.ReactNode;
   anchor?: HTMLElement | null;
   open?: boolean;
@@ -32,17 +32,33 @@ export const ProductVariationSelector: React.FC<
 > = ({ product, onAddToCart, children, open, onOpenChange }) => {
   const [selectedAttributes, setSelectedAttributes] =
     useState<SelectedAttributes>({});
+  const [internalOpen, setInternalOpen] = useState(false);
 
-  // Find matching variation based on selected attributes
+  // The grid view mounts this uncontrolled; the list view drives `open` itself.
+  const isControlled = open !== undefined;
+
+  const setOpen = useCallback(
+    (next: boolean) => {
+      if (!isControlled) setInternalOpen(next);
+      onOpenChange?.(next);
+    },
+    [isControlled, onOpenChange],
+  );
+
+  // Find matching variation based on selected attributes.
+  // Keyed on the slices actually read, so an unrelated re-render that hands down
+  // a fresh product object doesn't rescan every variation.
   const matchingVariation = useMemo(
     () => findMatchingVariation(product, selectedAttributes),
-    [product, selectedAttributes],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [product.id, product.variations, product.attributes, selectedAttributes],
   );
 
   // Check if all required attributes are selected
   const isAllAttributesSelected = useMemo(
     () => areAllVariationAttributesSelected(product, selectedAttributes),
-    [product, selectedAttributes],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [product.attributes, selectedAttributes],
   );
 
   // Handle attribute selection
@@ -66,14 +82,19 @@ export const ProductVariationSelector: React.FC<
       selectedAttributes,
     );
 
-    onAddToCart(cartItem);
+    // Only tear the picker down once the item actually landed in the cart —
+    // otherwise the rejection toast fires while the popover closes over the
+    // cashier's picks.
+    if (onAddToCart(cartItem) === false) return;
+
     setSelectedAttributes({});
-  }, [matchingVariation, selectedAttributes, product, onAddToCart]);
+    setOpen(false);
+  }, [matchingVariation, selectedAttributes, product, onAddToCart, setOpen]);
 
 
   return (
     <>
-      <Popover open={open} onOpenChange={onOpenChange}>
+      <Popover open={isControlled ? open : internalOpen} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           {children}
         </PopoverTrigger>
@@ -129,16 +150,16 @@ export const ProductVariationSelector: React.FC<
               )
             )}
 
-              <PopoverClose className='w-full'>
-                <Button
-                  variant="default"
-                  onClick={handleAddVariation}
-                  disabled={!isAllAttributesSelected}
-                  className="flex-1 w-full bg-primary hover:bg-primary/90"
-                  >
-                    {__('Add Product', 'wepos')}
-                </Button>
-              </PopoverClose>
+              {/* Held disabled while the combination is unresolvable, so the
+                  "not available" panel above is the whole story. */}
+              <Button
+                variant="default"
+                onClick={handleAddVariation}
+                disabled={!isAllAttributesSelected || !matchingVariation}
+                className="flex-1 w-full bg-primary hover:bg-primary/90"
+                >
+                  {__('Add Product', 'wepos')}
+              </Button>
           </div>
         </PopoverContent>
       </Popover>

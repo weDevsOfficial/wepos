@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Search, ScanBarcode, ArrowUpDown, CornerDownLeft } from 'lucide-react';
 import {
   Input,
@@ -12,7 +12,7 @@ import {
   toast,
 } from '@wedevs/plugin-ui';
 import { CartItem, POSProduct, ProductVariation } from '../types';
-import { formatPrice, pickRegularDisplayPrice, pickSaleDisplayPrice } from '../utils/helpers';
+import { formatPrice, hasStock, pickRegularDisplayPrice, pickSaleDisplayPrice } from '../utils/helpers';
 import {
   areAllVariationAttributesSelected,
   buildVariationCartItem,
@@ -28,7 +28,8 @@ interface SearchBarProps {
   products: POSProduct[];
   settings: any;
   onProductAdded: (product: POSProduct) => void;
-  onCartItemAdded: (cartItem: CartItem) => void;
+  // Returns false when the cart rejected the item (stock / sold individually).
+  onCartItemAdded: (cartItem: CartItem) => boolean | void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ products, settings, onProductAdded, onCartItemAdded }) => {
@@ -163,12 +164,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ products, settings, onProductAdde
         const variations = (found.variations || []) as ProductVariation[];
         const matchedVariation = variations.find((item: any) => item[field]?.toString() === barcode);
         if (matchedVariation) {
-          // The scanned code identifies the variation outright, so its own
-          // attributes are the selection.
-          const selected = Object.fromEntries(
-            (matchedVariation.attributes || []).map((attribute) => [attribute.name, attribute.option]),
-          );
-          onCartItemAdded(buildVariationCartItem(found, matchedVariation, selected));
+          // The scanned code identifies the variation outright, so there is no
+          // separate selection — buildVariationCartItem labels the row from the
+          // variation's own attributes.
+          onCartItemAdded(buildVariationCartItem(found, matchedVariation, {}));
         }
       } else {
         onProductAdded(found);
@@ -193,6 +192,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ products, settings, onProductAdde
 
   // Select variation product (opens modal)
   const selectVariation = useCallback((product: POSProduct) => {
+    // The grid and list views refuse to render the selector for an out-of-stock
+    // product; say so here instead of failing at the end of the picker.
+    if (!hasStock(product)) {
+      toast.error(sprintf(__('%s is out of stock', 'wepos'), product.name));
+      return;
+    }
+
     setSelectedVariationProduct(product);
     setChosenAttribute({});
     setShowVariationModal(true);
@@ -209,7 +215,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ products, settings, onProductAdde
       return;
     }
 
-    onCartItemAdded(buildVariationCartItem(selectedVariationProduct, matched, chosenAttribute));
+    // Keep the modal and the search term when the cart rejects the item, so the
+    // cashier can adjust instead of starting over.
+    if (onCartItemAdded(buildVariationCartItem(selectedVariationProduct, matched, chosenAttribute)) === false) {
+      return;
+    }
+
     setShowVariationModal(false);
     setChosenAttribute({});
     setShowResults(false);

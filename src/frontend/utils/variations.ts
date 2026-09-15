@@ -1,6 +1,7 @@
 import { CartItem, POSProduct, ProductVariation } from '../types';
 import {
   firstPresentNumber,
+  nextCartItemId,
   pickRegularDisplayPrice,
   pickSaleDisplayPrice,
   toFiniteNumber,
@@ -18,17 +19,27 @@ export const getVariationAttributes = (product: POSProduct) =>
 
 /**
  * True once every variation attribute has a chosen option.
+ *
+ * A product with no variation attributes has nothing to pick, so this is
+ * vacuously true — both call sites gate their "Add Product" button on it and
+ * would otherwise pin it off forever.
  */
 export const areAllVariationAttributesSelected = (
   product: POSProduct,
   selected: SelectedAttributes,
-): boolean => {
-  const required = getVariationAttributes(product);
+): boolean =>
+  getVariationAttributes(product).every((attribute) => !!selected[attribute.name]);
 
-  if (required.length === 0) return false;
-
-  return required.every((attribute) => !!selected[attribute.name]);
-};
+/**
+ * A variation can only be sold while it is published and purchasable.
+ *
+ * WC_Product_Variable::get_children() returns 'private' children too — that is
+ * what unchecking "Enabled" on a variation produces — and the REST response
+ * carries them, so the client has to gate them out itself. Both flags are
+ * treated as opt-out so a payload that omits them still resolves.
+ */
+const isVariationSellable = (variation: ProductVariation): boolean =>
+  (!variation.status || variation.status === 'publish') && variation.purchasable !== false;
 
 /**
  * Resolve the variation matching the chosen attributes.
@@ -39,6 +50,11 @@ export const areAllVariationAttributesSelected = (
  * attribute to exist on the variation never matches those products.
  *
  * Exact matches win over "Any" wildcards, mirroring WC_Data_Store_WP::find_matching_product_variation.
+ *
+ * Resolution requires a complete selection. A variation whose attributes are all
+ * "Any" comes back with an empty attributes array, which `every` matches
+ * vacuously — without this guard it would resolve against an empty selection and
+ * the picker would price an arbitrary variation before anything was chosen.
  */
 export const findMatchingVariation = (
   product: POSProduct,
@@ -47,12 +63,15 @@ export const findMatchingVariation = (
   const variations = (product.variations || []) as ProductVariation[];
 
   if (variations.length === 0) return null;
+  if (!areAllVariationAttributesSelected(product, selected)) return null;
 
-  const candidates = variations.filter((variation) =>
-    (variation.attributes || []).every(
-      // Empty option means "Any" — matches whatever the shopper chose.
-      (attribute) => !attribute.option || selected[attribute.name] === attribute.option,
-    ),
+  const candidates = variations.filter(
+    (variation) =>
+      isVariationSellable(variation) &&
+      (variation.attributes || []).every(
+        // Empty option means "Any" — matches whatever the shopper chose.
+        (attribute) => !attribute.option || selected[attribute.name] === attribute.option,
+      ),
   );
 
   if (candidates.length === 0) return null;
@@ -94,7 +113,6 @@ export const buildVariationCartItem = (
   // Parent order first so the row reads the same as the variation picker.
   getVariationAttributes(product).forEach((attribute) => pushName(attribute.name));
   (variation.attributes || []).forEach((attribute) => pushName(attribute.name));
-  Object.keys(selected).forEach(pushName);
 
   const variationAttributes = names
     .map((name) => ({
@@ -105,7 +123,7 @@ export const buildVariationCartItem = (
     .filter((attribute) => !!attribute.option);
 
   return {
-    id: Date.now(),
+    id: nextCartItemId(),
     product_id: product.id,
     variation_id: variation.id,
     name: product.name,

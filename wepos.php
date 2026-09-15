@@ -361,6 +361,7 @@ final class WePOS {
             $this->container['settings']       = new WeDevs\WePOS\Admin\Settings();
             $this->container['dashboard']      = new WeDevs\WePOS\Admin\Dashboard();
             $this->container['appearance']     = new WeDevs\WePOS\Admin\Appearance();
+            $this->container['premium']        = new WeDevs\WePOS\Admin\Premium();
 
             new WeDevs\WePOS\Admin\Products();
             new WeDevs\WePOS\Admin\Updates();

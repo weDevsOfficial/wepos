@@ -55,7 +55,7 @@ class Premium {
     public static function is_visible() {
 
         if( function_exists( 'wepos_pro' ) ) {
-            return true;
+            return false;
         }
         /**
          * Toggle the Premium upsell submenu.

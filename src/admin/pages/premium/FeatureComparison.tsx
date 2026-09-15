@@ -3,19 +3,19 @@ import { Check, Crown, Lock } from 'lucide-react';
 import { COMPARISON_ROWS } from './data';
 
 const CheckCell = () => (
-	<span className="inline-flex size-8 items-center justify-center rounded-full bg-[#ecfdf5]">
-		<Check className="size-4 text-[#059669]" />
+	<span className="inline-flex size-10 items-center justify-center rounded-full bg-[linear-gradient(135deg,#ecfdf5_0%,#f0fdfa_100%)]">
+		<Check className="size-5 text-[#009966]" />
 	</span>
 );
 
 const LockCell = () => (
-	<span className="inline-flex size-8 items-center justify-center rounded-full bg-[#f3f4f6]">
-		<Lock className="size-4 text-[#9ca3af]" />
+	<span className="inline-flex size-10 items-center justify-center rounded-full bg-[#f5f5f4]/60">
+		<Lock className="size-5 text-[#79716b]" />
 	</span>
 );
 
 const FeatureComparison = () => (
-	<div className="flex flex-col items-start gap-11 lg:flex-row lg:justify-center">
+	<div className="flex w-full max-w-[1000px] flex-col items-start gap-11 lg:flex-row lg:justify-center">
 		<div className="flex w-full flex-col gap-4 lg:w-[385px] lg:shrink-0">
 			<h2 className="m-0 text-[30px] font-bold leading-[1.3] text-[#1f2937]">
 				{ __(
@@ -31,39 +31,43 @@ const FeatureComparison = () => (
 			</p>
 		</div>
 
-		<div className="w-full overflow-hidden rounded-2xl border border-[rgba(231,229,228,0.5)] bg-white lg:flex-1">
+		<div className="w-full overflow-hidden rounded-2xl border border-[rgba(231,229,228,0.5)] bg-white bg-[radial-gradient(circle_at_top_right,rgba(212,186,158,0.08)_0%,rgba(255,255,255,0)_50%)] lg:flex-1">
 			<table className="w-full border-collapse text-left">
 				<thead>
-					<tr className="bg-[linear-gradient(90deg,#fffbf2_0%,#ffffff_60%)]">
-						<th className="px-6 py-5 text-sm font-medium text-[#374151]">
+					<tr className="bg-[linear-gradient(173deg,#fffbf2_0%,#fafaf9_50%,rgba(240,253,250,0.3)_100%)]">
+						<th className="border-b border-[rgba(231,229,228,0.7)] px-10 py-5 text-sm font-semibold text-[#4b5563]">
 							{ __( 'Feature', 'wepos' ) }
 						</th>
-						<th className="w-[110px] px-4 py-5 text-center text-sm font-medium text-[#374151]">
+						<th className="w-[120px] border-b border-[rgba(231,229,228,0.7)] px-5 py-5 text-center text-sm font-semibold text-[#4b5563]">
 							{ __( 'Lite', 'wepos' ) }
 						</th>
-						<th className="w-[110px] px-4 py-5 text-sm font-medium text-[#374151]">
+						<th className="w-[120px] border-b border-[rgba(231,229,228,0.7)] px-5 py-5 text-sm font-semibold text-[#4b5563]">
 							<span className="flex items-center justify-center gap-2">
 								{ __( 'Pro', 'wepos' ) }
-								<span className="inline-flex size-6 items-center justify-center rounded-full bg-[#f59e0b]">
-									<Crown className="size-[14px] text-white" />
+								<span className="inline-flex size-7 items-center justify-center rounded-full bg-[linear-gradient(135deg,#ffb900_0%,#fe9a00_100%)]">
+									<Crown className="size-4 text-white" />
 								</span>
 							</span>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{ COMPARISON_ROWS.map( ( row ) => (
+					{ COMPARISON_ROWS.map( ( row, index ) => (
 						<tr
 							key={ row.feature }
-							className="border-t border-[#f3f4f6]"
+							className={
+								index < COMPARISON_ROWS.length - 1
+									? 'border-b border-[rgba(231,229,228,0.6)]'
+									: ''
+							}
 						>
-							<td className="px-6 py-4 text-sm text-[#374151]">
+							<td className="px-10 py-[11px] text-sm font-semibold text-[#4b5563]">
 								{ row.feature }
 							</td>
-							<td className="px-4 py-4 text-center">
+							<td className="px-5 py-[11px] text-center">
 								{ row.lite ? <CheckCell /> : <LockCell /> }
 							</td>
-							<td className="px-4 py-4 text-center">
+							<td className="px-5 py-[11px] text-center">
 								<CheckCell />
 							</td>
 						</tr>

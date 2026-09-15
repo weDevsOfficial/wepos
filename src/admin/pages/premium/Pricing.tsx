@@ -28,7 +28,7 @@ const BillingToggle = () => (
 );
 
 const Pricing = () => (
-	<section className="flex flex-col items-center gap-8">
+	<section className="flex w-full max-w-[1000px] flex-col items-center gap-8">
 		<SectionHeading
 			title={ __( 'Simple Pricing That Grows With You', 'wepos' ) }
 			description={ sprintf(

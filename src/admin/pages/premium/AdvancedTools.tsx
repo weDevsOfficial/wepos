@@ -13,7 +13,7 @@ const AdvancedTools = () => (
 			) }
 		/>
 
-		<div className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+		<div className="grid w-full max-w-[1000px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 			{ PRO_TOOLS.map( ( { icon: Icon, title, description } ) => (
 				<div
 					key={ title }

@@ -20,8 +20,8 @@ const HeroBanner = () => {
 	};
 
 	return (
-		<div className="relative overflow-hidden rounded-[20px] bg-[#100844] px-10 py-[53px]">
-			<div className="relative z-10 flex max-w-[831px] flex-col gap-[57px]">
+		<div className="relative w-full max-w-[1216px] overflow-hidden rounded-[20px] bg-[#100844] px-10 py-[53px] lg:min-h-[345px]">
+			<div className="relative z-10 flex max-w-[831px] flex-col gap-[57px] lg:h-[239px] lg:justify-between lg:gap-0">
 				<div className="flex flex-col gap-4 text-white">
 					<h1 className="m-0 text-[30px] font-bold leading-[1.3] text-white">
 						{ __(

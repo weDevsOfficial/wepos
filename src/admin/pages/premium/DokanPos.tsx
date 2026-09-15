@@ -52,7 +52,7 @@ const VideoFrame = () => {
 };
 
 const DokanPos = () => (
-	<section className="flex flex-col items-center gap-10">
+	<section className="flex w-full max-w-[1000px] flex-col items-center gap-11">
 		<SectionHeading
 			title={ __( 'Dokan Multivendor POS', 'wepos' ) }
 			description={ __(
